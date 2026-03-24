@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --axios-black:  #080808;
+  --axios-dark:   #0a0a0a;
+  --axios-border: rgba(255,255,255,0.08);
+  --axios-muted:  rgba(255,255,255,0.35);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--axios-dark);
+  color: white;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+/* Serif utility */
+.font-serif { font-family: 'EB Garamond', Georgia, serif; }
