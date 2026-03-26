@@ -4,28 +4,35 @@ import { supabase } from '../lib/supabase'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [user,    setUser]    = useState(null)
+  const [loading, setLoading] = useState(true) // ← key fix for refresh crash
 
   useEffect(() => {
-    // Get initial session
+    // Get the current session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
-    // Listen for auth changes
+    // Listen for auth state changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      setLoading(false)
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  const signIn = (email, password) =>
-    supabase.auth.signInWithPassword({ email, password })
+  const signIn = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data
+  }
 
-  const signOut = () => supabase.auth.signOut()
+  const signOut = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+  }
 
   return (
     <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
@@ -34,8 +41,8 @@ export function AuthProvider({ children }) {
   )
 }
 
-export const useAuth = () => {
+export function useAuth() {
   const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used inside AuthProvider')
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
   return ctx
 }
