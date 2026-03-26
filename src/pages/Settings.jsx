@@ -129,6 +129,29 @@ export default function Settings() {
 
   const handleSignOut = async () => { await signOut(); navigate('/') }
 
+  const [wipeStep,   setWipeStep]   = useState(0) // 0=idle, 1=confirm, 2=wiping, 3=done
+  const [wipeError,  setWipeError]  = useState('')
+
+  const handleWipe = async () => {
+    if (wipeStep === 0) { setWipeStep(1); return }
+    if (wipeStep === 1) {
+      setWipeStep(2); setWipeError('')
+      try {
+        const tables = ['food_logs','water_logs','weight_logs','workouts','exercises','prayer_logs','devotionals']
+        for (const table of tables) {
+          await supabase.from(table).delete().eq('user_id', user.id)
+        }
+        // Reset onboarded so questionnaire runs again
+        await supabase.from('profiles').update({ onboarded: false }).eq('id', user.id)
+        setWipeStep(3)
+        setTimeout(() => setWipeStep(0), 3000)
+      } catch(e) {
+        setWipeError(e.message || 'Wipe failed.')
+        setWipeStep(0)
+      }
+    }
+  }
+
   const anim = (delay=0) => ({
     opacity: visible ? 1 : 0,
     transform: visible ? 'translateY(0)' : 'translateY(12px)',
@@ -148,6 +171,7 @@ export default function Settings() {
         .ax-back:hover{background:rgba(255,255,255,0.07)!important;}
         .ax-signout:hover{background:rgba(255,50,50,0.06)!important;border-color:rgba(255,80,80,0.3)!important;color:rgba(255,120,120,0.8)!important;}
         .ax-reob:hover{border-color:rgba(255,255,255,0.25)!important;color:rgba(255,255,255,0.6)!important;}
+        .ax-wipe:hover{background:rgba(255,30,30,0.08)!important;border-color:rgba(255,60,60,0.4)!important;}
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'#080808', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
@@ -220,6 +244,52 @@ export default function Settings() {
               {saved ? <>{Ico.check()} Saved</> : saving ? 'Saving…' : 'Save Changes'}
             </button>
           </div>
+
+          {/* Danger Zone */}
+          <Card style={anim(380)}>
+            <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
+              <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,80,80,0.9),rgba(255,80,80,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,80,80,0.4)' }} />
+              <p style={{ color:'rgba(255,100,100,0.6)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Danger Zone</p>
+            </div>
+
+            <p style={{ color:'rgba(255,255,255,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6, marginBottom:16 }}>
+              Permanently deletes all your logged data — food, water, weight, workouts, prayers, and devotionals. Your account remains active. This cannot be undone.
+            </p>
+
+            {wipeStep === 1 && (
+              <div style={{ background:'rgba(255,40,40,0.08)', border:'1px solid rgba(255,60,60,0.25)', borderRadius:10, padding:'14px', marginBottom:14 }}>
+                <p style={{ color:'rgba(255,120,120,0.9)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, marginBottom:4 }}>Are you sure?</p>
+                <p style={{ color:'rgba(255,100,100,0.6)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>All your data will be permanently erased. Tap again to confirm.</p>
+              </div>
+            )}
+
+            {wipeStep === 3 && (
+              <div style={{ background:'rgba(255,40,40,0.06)', border:'1px solid rgba(255,60,60,0.2)', borderRadius:10, padding:'14px', marginBottom:14 }}>
+                <p style={{ color:'rgba(255,120,120,0.8)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>✓ All data wiped successfully.</p>
+              </div>
+            )}
+
+            {wipeError && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>{wipeError}</p>}
+
+            <button onClick={handleWipe} disabled={wipeStep === 2} className="ax-wipe"
+              style={{
+                width:'100%', padding:'12px',
+                background: wipeStep === 1 ? 'rgba(255,40,40,0.12)' : 'transparent',
+                border:`1px solid ${wipeStep === 1 ? 'rgba(255,60,60,0.45)' : 'rgba(255,60,60,0.2)'}`,
+                borderRadius:9,
+                color: wipeStep === 1 ? 'rgba(255,100,100,0.95)' : 'rgba(255,80,80,0.5)',
+                fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase',
+                fontFamily:'Helvetica Neue,sans-serif', fontWeight:700,
+                cursor: wipeStep === 2 ? 'not-allowed' : 'pointer',
+                opacity: wipeStep === 2 ? 0.5 : 1,
+                transition:'all 0.2s',
+              }}>
+              {wipeStep === 0 && '⚠ Wipe All Data'}
+              {wipeStep === 1 && '⚠ Confirm — Erase Everything'}
+              {wipeStep === 2 && 'Wiping…'}
+              {wipeStep === 3 && '✓ Done'}
+            </button>
+          </Card>
 
           {/* Account */}
           <Card style={anim(420)}>
