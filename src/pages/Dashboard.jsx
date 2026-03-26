@@ -76,11 +76,12 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',     path:'/dashboard',  icon: Ico.home },
-    { label:'Food',     path:'/food',       icon: Ico.food },
-    { label:'Prayer',   path:'/prayer',     icon: Ico.prayer },
-    { label:'Fitness',  path:'/fitness',    icon: Ico.fitness },
-    { label:'Settings', path:'/settings',   icon: Ico.settings },
+    { label:'Home',      path:'/dashboard',  icon: Ico.home },
+    { label:'Food',      path:'/food',       icon: Ico.food },
+    { label:'Water',     path:'/water',      icon: Ico.water },
+    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness },
+    { label:'Devotion',  path:'/devotional', icon: Ico.book },
+    { label:'Settings',  path:'/settings',   icon: Ico.settings },
   ]
   return (
     <nav style={{
