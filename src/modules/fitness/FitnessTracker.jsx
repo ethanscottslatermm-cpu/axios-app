@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useWeightLog } from '../../hooks/useWeightLog'
+import { BottomNav } from '../../pages/Dashboard'
+import { supabase } from '../../lib/supabase'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 const todayStr = new Date().toISOString().split('T')[0]
@@ -373,7 +375,6 @@ export default function FitnessTracker() {
   const loadWorkouts = async () => {
     setLoadingW(true)
     try {
-      const { supabase } = await import('../../lib/supabase')
       const { data } = await supabase
         .from('workouts')
         .select('*, exercises(*)')
@@ -388,7 +389,6 @@ export default function FitnessTracker() {
   }
 
   const handleSaveWorkout = async ({ workout, exercises }) => {
-    const { supabase } = await import('../../lib/supabase')
     const { data: wData, error: wErr } = await supabase
       .from('workouts')
       .insert({ label: workout.label, type: workout.type, duration: parseInt(workout.duration)||null, date: todayStr })
@@ -411,7 +411,6 @@ export default function FitnessTracker() {
   }
 
   const handleDeleteWorkout = async (id) => {
-    const { supabase } = await import('../../lib/supabase')
     await supabase.from('workouts').delete().eq('id', id)
     setWorkouts(w => w.filter(x => x.id !== id))
   }
