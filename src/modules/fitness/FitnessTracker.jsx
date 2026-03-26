@@ -60,6 +60,21 @@ function Card({ children, style={} }) {
   )
 }
 
+// ── Reusable Input Field (must be top-level to avoid focus-reset bug) ─────────
+function InputField({ label, value, onChange, type='text', placeholder='' }) {
+  const [focused, setFocused] = useState(false)
+  return (
+    <div style={{ marginBottom:12 }}>
+      {label && <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>}
+      <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s' }}>
+        <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
+          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+          style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }} />
+      </div>
+    </div>
+  )
+}
+
 // ── Log Workout Sheet ──────────────────────────────────────────────────────────
 function LogWorkoutSheet({ onSave, onClose }) {
   const [visible,  setVisible]  = useState(false)
@@ -85,20 +100,6 @@ function LogWorkoutSheet({ onSave, onClose }) {
       setError(e.message || 'Failed to save.')
       setSaving(false)
     }
-  }
-
-  const InputField = ({ label, value, onChange, type='text', placeholder='' }) => {
-    const [focused, setFocused] = useState(false)
-    return (
-      <div style={{ marginBottom:12 }}>
-        {label && <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>}
-        <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s' }}>
-          <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-            onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-            style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }} />
-        </div>
-      </div>
-    )
   }
 
   return (
