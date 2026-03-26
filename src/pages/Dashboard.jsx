@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useFoodLog } from '../hooks/useFoodLog'
@@ -5,40 +6,255 @@ import { useWaterLog } from '../hooks/useWaterLog'
 import { useWeightLog } from '../hooks/useWeightLog'
 import { usePrayers } from '../hooks/usePrayers'
 
-const today = new Date()
-const todayStr = today.toISOString().split('T')[0]
-const dayName = today.toLocaleDateString('en-US', { weekday: 'long' })
-const dateStr = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+// ─── Date helpers ──────────────────────────────────────────────────────────────
+const today      = new Date()
+const todayStr   = today.toISOString().split('T')[0]
+const dayName    = today.toLocaleDateString('en-US', { weekday: 'long' })
+const dateStr    = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
+// ─── Constants ─────────────────────────────────────────────────────────────────
 const CALORIE_GOAL = 2200
-const WATER_GOAL = 8
+const WATER_GOAL   = 8
 
 const modules = [
-  { key: 'food',       label: 'Food',       path: '/food' },
-  { key: 'water',      label: 'Water',      path: '/water' },
-  { key: 'weight',     label: 'Weight',     path: '/weight' },
-  { key: 'prayer',     label: 'Prayer',     path: '/prayer' },
-  { key: 'devotional', label: 'Devotional', path: '/devotional' },
-  { key: 'fitness',    label: 'Fitness',    path: '/fitness' },
+  { key: 'food',       label: 'Food Journal',    path: '/food',       icon: FoodIcon },
+  { key: 'water',      label: 'Water',            path: '/water',      icon: WaterIcon },
+  { key: 'weight',     label: 'Weight',           path: '/weight',     icon: WeightIcon },
+  { key: 'prayer',     label: 'Prayer',           path: '/prayer',     icon: PrayerIcon },
+  { key: 'devotional', label: 'Devotional',       path: '/devotional', icon: BookIcon },
+  { key: 'fitness',    label: 'Fitness',          path: '/fitness',    icon: FitnessIcon },
 ]
 
+// ─── Greeting logic ────────────────────────────────────────────────────────────
+function getGreeting() {
+  const h = new Date().getHours()
+  if (h < 12) return 'Good Morning'
+  if (h < 17) return 'Good Afternoon'
+  return 'Good Evening'
+}
+
+// ─── SVG Icons ─────────────────────────────────────────────────────────────────
+function FoodIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+    </svg>
+  )
+}
+function WaterIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+    </svg>
+  )
+}
+function WeightIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/>
+    </svg>
+  )
+}
+function PrayerIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+    </svg>
+  )
+}
+function BookIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </svg>
+  )
+}
+function FitnessIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6.5 6.5h11M6.5 17.5h11M3 9.5h18M3 14.5h18"/>
+    </svg>
+  )
+}
+function SettingsIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  )
+}
+function ChevronRight({ size = 14 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  )
+}
+
+// ─── Glow Progress Bar ─────────────────────────────────────────────────────────
+function GlowBar({ pct, height = 3 }) {
+  return (
+    <div style={{
+      width: '100%', height, borderRadius: 99,
+      background: 'rgba(255,255,255,0.07)',
+      overflow: 'hidden', position: 'relative'
+    }}>
+      <div style={{
+        height: '100%',
+        width: `${pct}%`,
+        background: 'white',
+        borderRadius: 99,
+        transition: 'width 0.8s cubic-bezier(0.16,1,0.3,1)',
+        boxShadow: '0 0 8px rgba(255,255,255,0.6)',
+      }} />
+    </div>
+  )
+}
+
+// ─── Stat Card ─────────────────────────────────────────────────────────────────
+function StatCard({ label, value, sub, pct, animate, delay = 0 }) {
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), delay)
+    return () => clearTimeout(t)
+  }, [delay])
+
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.03)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: 12,
+      padding: '16px 18px',
+      opacity: visible ? 1 : 0,
+      transform: visible ? 'translateY(0)' : 'translateY(12px)',
+      transition: 'opacity 0.5s ease, transform 0.5s ease',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* subtle corner glow */}
+      <div style={{
+        position: 'absolute', top: 0, right: 0,
+        width: 60, height: 60,
+        background: 'radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+      <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: 8, fontFamily: 'Helvetica Neue, sans-serif' }}>{label}</p>
+      <p style={{ color: '#fff', fontSize: 26, fontWeight: 900, lineHeight: 1, marginBottom: 4, fontFamily: 'Helvetica Neue, sans-serif' }}>{value}</p>
+      <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 11, marginBottom: pct != null ? 10 : 0, fontFamily: 'Helvetica Neue, sans-serif' }}>{sub}</p>
+      {pct != null && <GlowBar pct={pct} />}
+    </div>
+  )
+}
+
+// ─── Module Pill ───────────────────────────────────────────────────────────────
+function ModulePill({ label, path, done, Icon, delay = 0, navigate }) {
+  const [visible, setVisible] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), delay)
+    return () => clearTimeout(t)
+  }, [delay])
+
+  return (
+    <button
+      onClick={() => navigate(path)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '14px 16px',
+        background: hovered
+          ? 'rgba(255,255,255,0.06)'
+          : done ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
+        border: `1px solid ${done ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.07)'}`,
+        borderRadius: 10,
+        cursor: 'pointer',
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateX(0)' : 'translateX(-10px)',
+        transition: 'opacity 0.4s ease, transform 0.4s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
+        boxShadow: hovered ? '0 0 16px rgba(255,255,255,0.04)' : 'none',
+        textAlign: 'left', width: '100%',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        {/* status dot */}
+        <div style={{
+          width: 7, height: 7, borderRadius: '50%',
+          background: done ? '#fff' : 'rgba(255,255,255,0.18)',
+          boxShadow: done ? '0 0 6px rgba(255,255,255,0.7)' : 'none',
+          flexShrink: 0,
+        }} />
+        <div style={{ color: done ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.25)' }}>
+          <Icon size={15} />
+        </div>
+        <div>
+          <p style={{ color: done ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.4)', fontSize: 13, fontWeight: 600, fontFamily: 'Helvetica Neue, sans-serif', marginBottom: 1 }}>{label}</p>
+          <p style={{ color: done ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.18)', fontSize: 11, fontFamily: 'Helvetica Neue, sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
+        </div>
+      </div>
+      <div style={{ color: 'rgba(255,255,255,0.2)' }}>
+        <ChevronRight />
+      </div>
+    </button>
+  )
+}
+
+// ─── Section Header ────────────────────────────────────────────────────────────
+function SectionHeader({ title, action, actionLabel }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* illuminated edge line */}
+        <div style={{ width: 2, height: 16, background: 'linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0.1))', borderRadius: 2, boxShadow: '0 0 6px rgba(255,255,255,0.5)' }} />
+        <p style={{ color: '#fff', fontSize: 13, fontWeight: 700, letterSpacing: '0.04em', fontFamily: 'Helvetica Neue, sans-serif', textTransform: 'uppercase', fontSize: 11 }}>{title}</p>
+      </div>
+      {action && (
+        <button onClick={action} style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'Helvetica Neue, sans-serif', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.06em' }}>
+          {actionLabel}
+        </button>
+      )}
+    </div>
+  )
+}
+
+// ─── Card wrapper ──────────────────────────────────────────────────────────────
+function Card({ children, style = {} }) {
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.03)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: 14,
+      padding: '20px',
+      ...style,
+    }}>
+      {children}
+    </div>
+  )
+}
+
+// ─── Main Dashboard ────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user }  = useAuth()
 
-  const { totals, logs: foodLogs }   = useFoodLog(todayStr)
-  const { count: waterCount }        = useWaterLog(todayStr)
+  const { totals, logs: foodLogs } = useFoodLog(todayStr)
+  const { count: waterCount }      = useWaterLog(todayStr)
   const { latest, goal: weightGoal } = useWeightLog()
-  const { prayers }                  = usePrayers()
+  const { prayers }                = usePrayers()
 
-  const todayPrayers   = prayers.filter(p => p.date === todayStr).length
-  const answeredCount  = prayers.filter(p => p.answered).length
-  const calRemaining   = Math.max(0, CALORIE_GOAL - (totals?.calories || 0))
-  const calPct         = Math.min(100, Math.round(((totals?.calories || 0) / CALORIE_GOAL) * 100))
-  const waterPct       = Math.min(100, Math.round((waterCount / WATER_GOAL) * 100))
+  // derive name from email or Supabase profile (replace with real useProfile hook if available)
+  const displayName = 'Ethan'
+
+  const todayPrayers  = prayers.filter(p => p.date === todayStr).length
+  const answeredCount = prayers.filter(p => p.answered).length
+  const calories      = totals?.calories || 0
+  const calRemaining  = Math.max(0, CALORIE_GOAL - calories)
+  const calPct        = Math.min(100, Math.round((calories / CALORIE_GOAL) * 100))
+  const waterPct      = Math.min(100, Math.round((waterCount / WATER_GOAL) * 100))
 
   const loggedModules = {
-    food:       (totals?.calories || 0) > 0,
+    food:       calories > 0,
     water:      waterCount > 0,
     weight:     !!latest,
     prayer:     todayPrayers > 0,
@@ -46,228 +262,270 @@ export default function Dashboard() {
     fitness:    false,
   }
   const loggedCount = Object.values(loggedModules).filter(Boolean).length
+  const recentFood  = (foodLogs || []).slice(-3).reverse()
 
-  const recentFood = foodLogs.slice(-3).reverse()
+  const greeting = getGreeting()
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
+      {/* Global styles injected once */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@1&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
 
-      {/* Top bar */}
-      <div className="px-7 py-5 border-b border-white/[0.08] flex items-center justify-between">
-        <div>
-          <p className="text-white/25 text-[10px] tracking-[0.28em] uppercase mb-0.5">{dayName}</p>
-          <h1 className="text-white font-black text-xl tracking-wide">Good morning.</h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <p className="text-white/35 text-xs tracking-wider">{dateStr}</p>
-          <button
-            onClick={() => navigate('/food')}
-            className="bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-sm hover:opacity-85 transition-opacity"
-          >
-            + Log entry
-          </button>
-        </div>
-      </div>
+        @keyframes fadeSlideDown {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.08); }
+          50%       { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+        }
+        .axios-dash-btn-primary:hover {
+          background: rgba(255,255,255,0.9) !important;
+          box-shadow: 0 0 20px rgba(255,255,255,0.25) !important;
+        }
+        .axios-settings-btn:hover {
+          background: rgba(255,255,255,0.07) !important;
+          border-color: rgba(255,255,255,0.2) !important;
+        }
+        .axios-log-row:hover { background: rgba(255,255,255,0.03); }
+        .axios-water-dot-filled { animation: pulse-glow 2s ease-in-out infinite; }
+      `}</style>
 
-      <div className="flex-1 px-7 py-6 space-y-6">
+      <div style={{
+        display: 'flex', flexDirection: 'column', minHeight: '100vh',
+        background: '#080808',
+        WebkitFontSmoothing: 'antialiased',
+      }}>
 
-        {/* Stat cards */}
-        <div className="grid grid-cols-4 gap-3">
-          <div className="bg-white/[0.04] border border-white/[0.08] rounded-md px-4 py-3.5">
-            <p className="text-white/30 text-[10px] tracking-[0.2em] uppercase mb-1.5">Calories</p>
-            <p className="text-white text-2xl font-black mb-0.5">
-              {(totals?.calories || 0).toLocaleString()}
+        {/* ── Top Bar ─────────────────────────────────────────────────────── */}
+        <div style={{
+          padding: '18px 20px',
+          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          animation: 'fadeSlideDown 0.5s ease both',
+          position: 'sticky', top: 0, zIndex: 50,
+          background: 'rgba(8,8,8,0.92)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+        }}>
+          {/* Greeting */}
+          <div>
+            <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', marginBottom: 4, fontFamily: 'Helvetica Neue, sans-serif' }}>
+              {dayName} · {dateStr}
             </p>
-            <p className="text-white/25 text-[11px]">of {CALORIE_GOAL.toLocaleString()} goal</p>
+            <h1 style={{ color: '#fff', fontWeight: 900, fontSize: 'clamp(18px, 4vw, 22px)', letterSpacing: '-0.01em', fontFamily: 'Helvetica Neue, sans-serif', lineHeight: 1 }}>
+              {greeting},{' '}
+              <span style={{ fontStyle: 'italic', fontFamily: "'EB Garamond', serif", fontWeight: 400, fontSize: 'clamp(20px, 4.5vw, 24px)' }}>
+                {displayName}.
+              </span>
+            </h1>
           </div>
-          <div className="bg-white/[0.04] border border-white/[0.08] rounded-md px-4 py-3.5">
-            <p className="text-white/30 text-[10px] tracking-[0.2em] uppercase mb-1.5">Water</p>
-            <p className="text-white text-2xl font-black mb-0.5">{waterCount} / {WATER_GOAL}</p>
-            <p className="text-white/25 text-[11px]">glasses today</p>
-          </div>
-          <div className="bg-white/[0.04] border border-white/[0.08] rounded-md px-4 py-3.5">
-            <p className="text-white/30 text-[10px] tracking-[0.2em] uppercase mb-1.5">Weight</p>
-            <p className="text-white text-2xl font-black mb-0.5">
-              {latest ? `${latest} lb` : '—'}
-            </p>
-            <p className="text-white/25 text-[11px]">
-              {latest && weightGoal ? `${Math.max(0, latest - weightGoal).toFixed(1)} from goal` : 'not logged'}
-            </p>
-          </div>
-          <div className="bg-white/[0.04] border border-white/[0.08] rounded-md px-4 py-3.5">
-            <p className="text-white/30 text-[10px] tracking-[0.2em] uppercase mb-1.5">Streak</p>
-            <p className="text-white text-2xl font-black mb-0.5">{loggedCount} / 6</p>
-            <p className="text-white/25 text-[11px]">modules today</p>
+
+          {/* Right actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button
+              onClick={() => navigate('/settings')}
+              className="axios-settings-btn"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: 36, height: 36, borderRadius: 9,
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.4)',
+                cursor: 'pointer',
+                transition: 'background 0.2s, border-color 0.2s',
+              }}
+              title="Settings"
+            >
+              <SettingsIcon size={16} />
+            </button>
+            <button
+              onClick={() => navigate('/food')}
+              className="axios-dash-btn-primary"
+              style={{
+                background: '#fff', color: '#080808',
+                fontSize: 11, fontWeight: 800,
+                letterSpacing: '0.18em', textTransform: 'uppercase',
+                padding: '9px 16px', borderRadius: 8, border: 'none',
+                cursor: 'pointer', whiteSpace: 'nowrap',
+                transition: 'background 0.2s, box-shadow 0.2s',
+                fontFamily: 'Helvetica Neue, sans-serif',
+              }}
+            >
+              + Log entry
+            </button>
           </div>
         </div>
 
-        {/* Main grid */}
-        <div className="grid grid-cols-[1.6fr_1fr] gap-4">
+        {/* ── Scrollable Body ──────────────────────────────────────────────── */}
+        <div style={{
+          flex: 1,
+          padding: '20px 16px 40px',
+          maxWidth: 680,
+          width: '100%',
+          margin: '0 auto',
+          display: 'flex', flexDirection: 'column', gap: 20,
+        }}>
 
-          {/* Left column */}
-          <div className="space-y-4">
-
-            {/* Module status grid */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-5">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-white text-[13px] font-medium tracking-wide">Today's modules</p>
-                <p className="text-white/30 text-[11px]">{loggedCount} of 6 logged</p>
-              </div>
-              <div className="grid grid-cols-3 gap-2.5">
-                {modules.map(({ key, label, path }) => {
-                  const done = loggedModules[key]
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => navigate(path)}
-                      className={`p-3 rounded-md border text-left transition-all hover:border-white/30 ${
-                        done
-                          ? 'bg-white/[0.06] border-white/[0.12]'
-                          : 'bg-white/[0.02] border-white/[0.06]'
-                      }`}
-                    >
-                      <div className={`w-2 h-2 rounded-full mb-2 ${done ? 'bg-white' : 'bg-white/20'}`} />
-                      <p className={`text-[13px] font-medium mb-0.5 ${done ? 'text-white' : 'text-white/40'}`}>
-                        {label}
-                      </p>
-                      <p className={`text-[11px] ${done ? 'text-white/35' : 'text-white/20'}`}>
-                        {done ? 'Logged' : 'Pending'}
-                      </p>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Recent food log */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-5">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-white text-[13px] font-medium tracking-wide">Recent food log</p>
-                <button onClick={() => navigate('/food')} className="text-white/30 text-[11px] hover:text-white/60 transition-colors">
-                  View all
-                </button>
-              </div>
-              {recentFood.length === 0 ? (
-                <p className="text-white/20 text-sm italic text-center py-4">Nothing logged yet today.</p>
-              ) : (
-                <div className="space-y-0">
-                  {recentFood.map((entry, i) => (
-                    <div key={entry.id}
-                      className={`flex items-center justify-between py-2.5 ${
-                        i < recentFood.length - 1 ? 'border-b border-white/[0.05]' : ''
-                      }`}
-                    >
-                      <span className="text-white/70 text-sm">{entry.food_name}</span>
-                      <span className="text-white/40 text-sm">{entry.calories} cal</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Calorie progress */}
-              <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                <div>
-                  <p className="text-white/25 text-[10px] tracking-[0.18em] uppercase mb-1">Remaining</p>
-                  <p className="text-white font-black text-base">{calRemaining.toLocaleString()} cal left</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-36 h-1.5 bg-white/[0.08] rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-white rounded-full transition-all"
-                      style={{ width: `${calPct}%` }}
-                    />
-                  </div>
-                  <span className="text-white/30 text-[11px]">{calPct}%</span>
-                </div>
-              </div>
-            </div>
+          {/* ── Stat Cards ────────────────────────────────────────────────── */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+            <StatCard
+              label="Calories"
+              value={calories.toLocaleString()}
+              sub={`of ${CALORIE_GOAL.toLocaleString()} goal`}
+              pct={calPct}
+              delay={80}
+            />
+            <StatCard
+              label="Water"
+              value={`${waterCount} / ${WATER_GOAL}`}
+              sub="glasses today"
+              pct={waterPct}
+              delay={140}
+            />
+            <StatCard
+              label="Weight"
+              value={latest ? `${latest} lb` : '—'}
+              sub={latest && weightGoal ? `${Math.max(0, latest - weightGoal).toFixed(1)} lb from goal` : 'not logged'}
+              delay={200}
+            />
+            <StatCard
+              label="Today"
+              value={`${loggedCount} / 6`}
+              sub="modules logged"
+              pct={Math.round((loggedCount / 6) * 100)}
+              delay={260}
+            />
           </div>
 
-          {/* Right column */}
-          <div className="space-y-4">
-
-            {/* Prayer snapshot */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-5">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-white text-[13px] font-medium tracking-wide">Prayer</p>
-                <button onClick={() => navigate('/prayer')} className="text-white/30 text-[11px] hover:text-white/60 transition-colors">
-                  Open
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-2 mb-3">
-                <div className="bg-white/[0.04] rounded-md p-3">
-                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Today</p>
-                  <p className="text-white text-xl font-black">{todayPrayers}</p>
-                  <p className="text-white/25 text-[10px]">logged</p>
-                </div>
-                <div className="bg-white/[0.04] rounded-md p-3">
-                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Answered</p>
-                  <p className="text-white text-xl font-black">{answeredCount}</p>
-                  <p className="text-white/25 text-[10px]">total</p>
-                </div>
-              </div>
-              <button
-                onClick={() => navigate('/prayer')}
-                className="w-full border border-white/[0.1] rounded-sm py-2 text-white/40 text-[11px] tracking-[0.15em] uppercase hover:border-white/30 hover:text-white/60 transition-all"
-              >
-                + Log a prayer
-              </button>
-            </div>
-
-            {/* Water tracker */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-5">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-white text-[13px] font-medium tracking-wide">Water intake</p>
-                <button onClick={() => navigate('/water')} className="text-white/30 text-[11px] hover:text-white/60 transition-colors">
-                  Open
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {Array.from({ length: WATER_GOAL }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`w-7 h-7 rounded-full border transition-all ${
-                      i < waterCount
-                        ? 'bg-white border-white/30'
-                        : 'bg-white/[0.06] border-white/[0.1]'
-                    }`}
-                  />
-                ))}
-              </div>
-              <p className="text-white/25 text-[11px]">
-                {waterCount >= WATER_GOAL
-                  ? 'Goal reached — well done.'
-                  : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
-              </p>
-              {/* Water progress bar */}
-              <div className="mt-3 w-full h-1 bg-white/[0.06] rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-white rounded-full transition-all"
-                  style={{ width: `${waterPct}%` }}
+          {/* ── Module Status ─────────────────────────────────────────────── */}
+          <Card>
+            <SectionHeader title="Today's Modules" actionLabel={`${loggedCount} of 6`} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {modules.map(({ key, label, path, icon: Icon }, i) => (
+                <ModulePill
+                  key={key}
+                  label={label}
+                  path={path}
+                  done={loggedModules[key]}
+                  Icon={Icon}
+                  delay={300 + i * 55}
+                  navigate={navigate}
                 />
-              </div>
+              ))}
             </div>
+          </Card>
 
-            {/* Quick nav */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-5">
-              <p className="text-white text-[13px] font-medium tracking-wide mb-3">Quick access</p>
-              <div className="space-y-1.5">
-                {modules.map(({ label, path }) => (
-                  <button
-                    key={path}
-                    onClick={() => navigate(path)}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-sm hover:bg-white/[0.04] transition-colors group"
+          {/* ── Food Log ──────────────────────────────────────────────────── */}
+          <Card>
+            <SectionHeader title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" />
+            {recentFood.length === 0 ? (
+              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontStyle: 'italic', fontFamily: 'Helvetica Neue, sans-serif', textAlign: 'center', padding: '16px 0' }}>
+                Nothing logged yet today.
+              </p>
+            ) : (
+              <div>
+                {recentFood.map((entry, i) => (
+                  <div
+                    key={entry.id}
+                    className="axios-log-row"
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '10px 6px',
+                      borderBottom: i < recentFood.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                      borderRadius: 6,
+                      transition: 'background 0.15s',
+                    }}
                   >
-                    <span className="text-white/50 text-sm group-hover:text-white/80 transition-colors">{label}</span>
-                    <span className="text-white/20 text-lg group-hover:text-white/50 transition-colors">›</span>
-                  </button>
+                    <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, fontFamily: 'Helvetica Neue, sans-serif' }}>{entry.food_name}</span>
+                    <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, fontFamily: 'Helvetica Neue, sans-serif' }}>{entry.calories} cal</span>
+                  </div>
                 ))}
               </div>
+            )}
+            {/* Calorie bar */}
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+              <div>
+                <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 4, fontFamily: 'Helvetica Neue, sans-serif' }}>Remaining</p>
+                <p style={{ color: '#fff', fontWeight: 900, fontSize: 16, fontFamily: 'Helvetica Neue, sans-serif' }}>{calRemaining.toLocaleString()} cal</p>
+              </div>
+              <div style={{ flex: 1 }}>
+                <GlowBar pct={calPct} height={4} />
+                <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10, textAlign: 'right', marginTop: 5, fontFamily: 'Helvetica Neue, sans-serif' }}>{calPct}%</p>
+              </div>
             </div>
+          </Card>
 
-          </div>
+          {/* ── Water Tracker ─────────────────────────────────────────────── */}
+          <Card>
+            <SectionHeader title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" />
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
+              {Array.from({ length: WATER_GOAL }).map((_, i) => (
+                <div
+                  key={i}
+                  className={i < waterCount ? 'axios-water-dot-filled' : ''}
+                  style={{
+                    width: 32, height: 32, borderRadius: '50%',
+                    background: i < waterCount ? '#fff' : 'rgba(255,255,255,0.06)',
+                    border: `1px solid ${i < waterCount ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                    transition: 'background 0.3s, border-color 0.3s',
+                  }}
+                />
+              ))}
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 12, fontFamily: 'Helvetica Neue, sans-serif', marginBottom: 10 }}>
+              {waterCount >= WATER_GOAL
+                ? 'Goal reached — well done.'
+                : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
+            </p>
+            <GlowBar pct={waterPct} height={3} />
+          </Card>
+
+          {/* ── Prayer ────────────────────────────────────────────────────── */}
+          <Card>
+            <SectionHeader title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+              {[
+                { label: 'Today', value: todayPrayers, sub: 'logged' },
+                { label: 'Answered', value: answeredCount, sub: 'total' },
+              ].map(({ label, value, sub }) => (
+                <div key={label} style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 10, padding: '14px 16px',
+                }}>
+                  <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 8, fontFamily: 'Helvetica Neue, sans-serif' }}>{label}</p>
+                  <p style={{ color: '#fff', fontSize: 26, fontWeight: 900, fontFamily: 'Helvetica Neue, sans-serif', lineHeight: 1, marginBottom: 4 }}>{value}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 11, fontFamily: 'Helvetica Neue, sans-serif' }}>{sub}</p>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => navigate('/prayer')}
+              style={{
+                width: '100%', padding: '11px', borderRadius: 8,
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.4)',
+                fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+                fontFamily: 'Helvetica Neue, sans-serif', fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'border-color 0.2s, color 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(255,255,255,0.4)' }}
+            >
+              + Log a prayer
+            </button>
+          </Card>
+
         </div>
       </div>
-    </div>
+    </>
   )
 }
