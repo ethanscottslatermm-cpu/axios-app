@@ -4,7 +4,6 @@ import { AuthProvider } from './context/AuthContext'
 import { AppProvider } from './context/AppContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import OnboardingRoute from './components/OnboardingRoute'
-import ModuleShell from './components/layout/ModuleShell'
 import Login      from './pages/Login'
 import Dashboard  from './pages/Dashboard'
 import Settings   from './pages/Settings'
@@ -22,6 +21,9 @@ const queryClient = new QueryClient({
   },
 })
 
+// All routes render full-width with no ModuleShell.
+// Navigation is handled by the BottomNav inside each page.
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -32,39 +34,35 @@ export default function App() {
               {/* Public */}
               <Route path="/" element={<Login />} />
 
-              {/* Onboarding — protected but separate from main app shell */}
+              {/* Onboarding */}
               <Route path="/onboarding" element={
                 <ProtectedRoute><Onboarding /></ProtectedRoute>
               } />
 
-              {/* Dashboard — NO ModuleShell, has its own bottom nav */}
+              {/* Main pages — no ModuleShell on any route */}
               <Route path="/dashboard" element={
                 <ProtectedRoute><OnboardingRoute><Dashboard /></OnboardingRoute></ProtectedRoute>
               } />
-
-              {/* Settings — NO ModuleShell, has its own bottom nav */}
               <Route path="/settings" element={
                 <ProtectedRoute><OnboardingRoute><Settings /></OnboardingRoute></ProtectedRoute>
               } />
-
-              {/* Module routes — keep ModuleShell for sidebar on tablet/desktop */}
               <Route path="/food" element={
-                <ProtectedRoute><OnboardingRoute><ModuleShell><FoodJournal /></ModuleShell></OnboardingRoute></ProtectedRoute>
+                <ProtectedRoute><OnboardingRoute><FoodJournal /></OnboardingRoute></ProtectedRoute>
               } />
               <Route path="/water" element={
-                <ProtectedRoute><OnboardingRoute><ModuleShell><WaterTracker /></ModuleShell></OnboardingRoute></ProtectedRoute>
+                <ProtectedRoute><OnboardingRoute><WaterTracker /></OnboardingRoute></ProtectedRoute>
               } />
               <Route path="/weight" element={
-                <ProtectedRoute><OnboardingRoute><ModuleShell><WeightTracker /></ModuleShell></OnboardingRoute></ProtectedRoute>
+                <ProtectedRoute><OnboardingRoute><WeightTracker /></OnboardingRoute></ProtectedRoute>
               } />
               <Route path="/fitness" element={
-                <ProtectedRoute><OnboardingRoute><ModuleShell><FitnessTracker /></ModuleShell></OnboardingRoute></ProtectedRoute>
+                <ProtectedRoute><OnboardingRoute><FitnessTracker /></OnboardingRoute></ProtectedRoute>
               } />
               <Route path="/prayer" element={
-                <ProtectedRoute><OnboardingRoute><ModuleShell><PrayerTracker /></ModuleShell></OnboardingRoute></ProtectedRoute>
+                <ProtectedRoute><OnboardingRoute><PrayerTracker /></OnboardingRoute></ProtectedRoute>
               } />
               <Route path="/devotional" element={
-                <ProtectedRoute><OnboardingRoute><ModuleShell><Devotional /></ModuleShell></OnboardingRoute></ProtectedRoute>
+                <ProtectedRoute><OnboardingRoute><Devotional /></OnboardingRoute></ProtectedRoute>
               } />
 
               {/* Catch-all */}
