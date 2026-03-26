@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePrayers } from '../../hooks/usePrayers'
 import { BottomNav } from '../../pages/Dashboard'
+import { supabase } from '../../lib/supabase'
+import { useQueryClient } from '@tanstack/react-query'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 
@@ -240,7 +242,8 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible }) {
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function PrayerTracker() {
   const navigate   = useNavigate()
-  const { prayers, addPrayer, toggleAnswered, deletePrayer, loading } = usePrayers()
+  const qc         = useQueryClient()
+  const { prayers, addPrayer, toggleAnswered, isLoading: loading } = usePrayers()
 
   const [visible,   setVisible]   = useState(false)
   const [showAdd,   setShowAdd]   = useState(false)
@@ -393,8 +396,8 @@ export default function PrayerTracker() {
                 <PrayerCard
                   key={prayer.id}
                   prayer={prayer}
-                  onToggleAnswered={toggleAnswered}
-                  onDelete={deletePrayer}
+                  onToggleAnswered={(id, currentAnswered) => toggleAnswered.mutate({ id, answered: !currentAnswered })}
+                  onDelete={async (id) => { await supabase.from('prayer_logs').delete().eq('id', id); qc.invalidateQueries({ queryKey: ['prayer_logs'] }); }}
                   delay={i * 45}
                   visible={visible}
                 />
@@ -407,7 +410,7 @@ export default function PrayerTracker() {
 
       {showAdd && (
         <AddPrayerSheet
-          onSave={addPrayer}
+          onSave={async (p) => await addPrayer.mutateAsync({ category: p.category, prayer_text: p.prayer_text, note: p.note })}
           onClose={() => setShowAdd(false)}
         />
       )}
