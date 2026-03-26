@@ -193,6 +193,27 @@ function AISearchPanel({ onSelect, onClose }) {
   )
 }
 
+// ── Input Row (top-level to prevent focus-reset on every keystroke) ────────────
+function InputRow({ label, field, type='text', placeholder='', form, set }) {
+  const [focused, setFocused] = useState(false)
+  return (
+    <div style={{ marginBottom:12 }}>
+      <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
+      <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(255,255,255,0.07)' : 'none' }}>
+        <input
+          type={type}
+          value={form[field]}
+          onChange={e => set(field, e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          placeholder={placeholder}
+          style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }}
+        />
+      </div>
+    </div>
+  )
+}
+
 // ── Manual Add Sheet ───────────────────────────────────────────────────────────
 function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
   const [form, setForm] = useState({
@@ -229,26 +250,6 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
       setError(e.message || 'Failed to save.')
       setSaving(false)
     }
-  }
-
-  const InputRow = ({ label, field, type='text', placeholder='' }) => {
-    const [focused, setFocused] = useState(false)
-    return (
-      <div style={{ marginBottom:12 }}>
-        <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
-        <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(255,255,255,0.07)' : 'none' }}>
-          <input
-            type={type}
-            value={form[field]}
-            onChange={e => set(field, e.target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            placeholder={placeholder}
-            style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }}
-          />
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -288,8 +289,8 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
           </div>
         </div>
 
-        <InputRow label="Food Name" field="food_name" placeholder="e.g. Grilled salmon" />
-        <InputRow label="Calories" field="calories" type="number" placeholder="350" />
+        <InputRow label="Food Name" field="food_name" placeholder="e.g. Grilled salmon" form={form} set={set} />
+        <InputRow label="Calories" field="calories" type="number" placeholder="350" form={form} set={set} />
 
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:4 }}>
           {[['Protein (g)', 'protein', '32'], ['Carbs (g)', 'carbs', '0'], ['Fat (g)', 'fat', '14']].map(([label, field, ph]) => (
