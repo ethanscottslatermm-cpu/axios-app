@@ -139,7 +139,7 @@ function CustomOzSheet({ onSave, onClose }) {
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function WaterTracker() {
   const navigate = useNavigate()
-  const { logs, count, addGlass, removeGlass, loading } = useWaterLog(todayStr)
+  const { logs, count, addGlass, removeGlass, isLoading: loading } = useWaterLog(todayStr)
 
   const [visible,   setVisible]   = useState(false)
   const [showCustom,setShowCustom]= useState(false)
@@ -157,7 +157,7 @@ export default function WaterTracker() {
   const handleAddGlass = async (oz = 8) => {
     setJustAdded(true)
     setTimeout(() => setJustAdded(false), 600)
-    await addGlass()
+    await addGlass.mutateAsync()
   }
 
   const handleCustom = async (oz) => {
@@ -249,7 +249,7 @@ export default function WaterTracker() {
                   index={i}
                   filled={i < count}
                   onAdd={() => handleAddGlass(8)}
-                  onRemove={() => removeGlass()}
+                  onRemove={() => removeGlass.mutate(undefined)}
                   animDelay={i * 50}
                   visible={visible}
                 />
@@ -296,7 +296,7 @@ export default function WaterTracker() {
                           {time && <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{time}</p>}
                         </div>
                       </div>
-                      <button onClick={() => removeGlass(log.id)}
+                      <button onClick={() => removeGlass.mutate(log.id)}
                         style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:7, padding:'6px 8px', cursor:'pointer', color:'rgba(255,255,255,0.25)', display:'flex', alignItems:'center', transition:'all 0.2s' }}
                         onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,60,60,0.1)';e.currentTarget.style.borderColor='rgba(255,60,60,0.25)';e.currentTarget.style.color='rgba(255,100,100,0.8)'}}
                         onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,0.04)';e.currentTarget.style.borderColor='rgba(255,255,255,0.08)';e.currentTarget.style.color='rgba(255,255,255,0.25)'}}>
