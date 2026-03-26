@@ -154,7 +154,7 @@ export default function WaterTracker() {
   const handleAddGlass = async (oz = 8) => {
     setJustAdded(true)
     setTimeout(() => setJustAdded(false), 600)
-    await addGlass(oz)
+    await addGlass()
   }
 
   const handleCustom = async (oz) => {
@@ -286,7 +286,7 @@ export default function WaterTracker() {
                         <div style={{ color:'rgba(255,255,255,0.3)' }}>{Ico.drop(14)}</div>
                         <div>
                           <p style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>
-                            {log.oz || 8} oz
+                            1 glass
                           </p>
                           {time && <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{time}</p>}
                         </div>
