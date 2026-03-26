@@ -41,7 +41,6 @@ const Ico = {
 const modules = [
   { key:'food',       label:'Food Journal', path:'/food',       icon: Ico.food },
   { key:'water',      label:'Water',        path:'/water',      icon: Ico.water },
-  { key:'weight',     label:'Weight',       path:'/weight',     icon: Ico.weight },
   { key:'prayer',     label:'Prayer',       path:'/prayer',     icon: Ico.prayer },
   { key:'devotional', label:'Devotional',   path:'/devotional', icon: Ico.book },
   { key:'fitness',    label:'Fitness',      path:'/fitness',    icon: Ico.fitness },
@@ -144,7 +143,6 @@ export default function Dashboard() {
   const loggedModules = {
     food:       calories > 0,
     water:      waterCount > 0,
-    weight:     !!latest,
     prayer:     todayPrayers > 0,
     devotional: false,
     fitness:    false,
@@ -219,7 +217,7 @@ export default function Dashboard() {
               { label:'Calories', value: calories.toLocaleString(), sub:`of ${CALORIE_GOAL.toLocaleString()} goal`, pct: calPct },
               { label:'Water',    value:`${waterCount} / ${WATER_GOAL}`, sub:'glasses today', pct: waterPct },
               { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null },
-              { label:'Today',    value:`${loggedCount} / 6`, sub:'modules logged', pct: Math.round((loggedCount/6)*100) },
+              { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100) },
             ].map(({ label, value, sub, pct }) => (
               <div key={label} style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
                 <div style={{ position:'absolute', top:0, right:0, width:50, height:50, background:'radial-gradient(circle at top right,rgba(255,255,255,0.05),transparent 70%)', pointerEvents:'none' }} />
@@ -233,7 +231,7 @@ export default function Dashboard() {
 
           {/* Modules */}
           <Card style={anim(160)}>
-            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 6`} />
+            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} />
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {modules.map(({ key, label, path, icon }, i) => {
                 const done = loggedModules[key]
