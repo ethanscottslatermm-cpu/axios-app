@@ -294,7 +294,7 @@ function WorkoutCard({ workout, delay, visible, onDelete }) {
             <span style={{ padding:'2px 8px', borderRadius:99, background:'rgba(255,255,255,0.07)', color:'rgba(255,255,255,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{workout.type}</span>
           </div>
           <div style={{ display:'flex', gap:12 }}>
-            <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{formatDate(workout.date)}</p>
+            <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{formatDate(workout.created_at?.split('T')[0])}</p>
             {workout.duration && <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', display:'flex', alignItems:'center', gap:4 }}>{Ico.timer(11)} {workout.duration} min</p>}
             {workout.exercises?.length > 0 && <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{workout.exercises.length} exercises</p>}
           </div>
@@ -392,7 +392,7 @@ export default function FitnessTracker() {
   const handleSaveWorkout = async ({ workout, exercises }) => {
     const { data: wData, error: wErr } = await supabase
       .from('workouts')
-      .insert({ label: workout.label, type: workout.type, duration: parseInt(workout.duration)||null, date: todayStr })
+      .insert({ label: workout.label, type: workout.type, duration: parseInt(workout.duration)||null })
       .select().single()
     if (wErr) throw wErr
     if (exercises.length > 0) {
@@ -428,7 +428,7 @@ export default function FitnessTracker() {
 
   // Weekly workout count
   const weekAgo      = new Date(); weekAgo.setDate(weekAgo.getDate()-7)
-  const weeklyCount  = workouts.filter(w => new Date(w.date||w.created_at) >= weekAgo).length
+  const weeklyCount  = workouts.filter(w => new Date(w.created_at) >= weekAgo).length
 
   const anim = (d=0) => ({
     opacity: visible?1:0,
