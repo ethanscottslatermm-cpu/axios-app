@@ -397,7 +397,7 @@ export default function FitnessTracker() {
   const handleSaveWorkout = async ({ workout, exercises }) => {
     const { data: wData, error: wErr } = await supabase
       .from('workouts')
-      .insert({ label: workout.label, type: workout.type, duration: parseInt(workout.duration)||null, user_id: user.id })
+      .insert({ label: workout.label, type: workout.type, duration: parseInt(workout.duration)||null, user_id: user.id, workout_date: todayStr })
       .select().single()
     if (wErr) throw wErr
     if (exercises.length > 0) {
