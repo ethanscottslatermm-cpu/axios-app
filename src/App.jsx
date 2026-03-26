@@ -5,11 +5,8 @@ import { AppProvider } from './context/AppContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import ModuleShell from './components/layout/ModuleShell'
 import Login from './pages/Login'
-
-// Pages — create these as you build each module
 import Dashboard from './pages/Dashboard'
-
-// Lazy-load modules (add as you build them)
+import Settings from './pages/Settings'
 import FoodJournal    from './modules/food/FoodJournal'
 import WaterTracker   from './modules/water/WaterTracker'
 import WeightTracker  from './modules/weight/WeightTracker'
@@ -20,7 +17,7 @@ import Devotional     from './modules/devotional/Devotional'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5,   // 5 min cache
+      staleTime: 1000 * 60 * 5,
       retry: 1,
     },
   },
@@ -34,49 +31,46 @@ export default function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Login />} />
-
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <ModuleShell><Dashboard /></ModuleShell>
                 </ProtectedRoute>
               } />
-
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              } />
               <Route path="/food" element={
                 <ProtectedRoute>
                   <ModuleShell><FoodJournal /></ModuleShell>
                 </ProtectedRoute>
               } />
-
               <Route path="/water" element={
                 <ProtectedRoute>
                   <ModuleShell><WaterTracker /></ModuleShell>
                 </ProtectedRoute>
               } />
-
               <Route path="/weight" element={
                 <ProtectedRoute>
                   <ModuleShell><WeightTracker /></ModuleShell>
                 </ProtectedRoute>
               } />
-
               <Route path="/fitness" element={
                 <ProtectedRoute>
                   <ModuleShell><FitnessTracker /></ModuleShell>
                 </ProtectedRoute>
               } />
-
               <Route path="/prayer" element={
                 <ProtectedRoute>
                   <ModuleShell><PrayerTracker /></ModuleShell>
                 </ProtectedRoute>
               } />
-
               <Route path="/devotional" element={
                 <ProtectedRoute>
                   <ModuleShell><Devotional /></ModuleShell>
                 </ProtectedRoute>
               } />
-
               {/* Catch-all */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
