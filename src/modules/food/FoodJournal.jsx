@@ -364,7 +364,7 @@ export default function FoodJournal() {
   const [prefill, setPrefill]   = useState(null)
   const [activeMeal, setActiveMeal] = useState('All')
 
-  const { logs, totals, addEntry, deleteEntry, loading } = useFoodLog(todayStr)
+  const { logs, totals, addEntry, deleteEntry, isLoading: loading } = useFoodLog(todayStr)
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t) }, [])
 
@@ -387,7 +387,7 @@ export default function FoodJournal() {
   }
 
   const handleSave = async (entry) => {
-    await addEntry({ ...entry, date: todayStr })
+    await addEntry.mutateAsync({ ...entry, date: todayStr })
   }
 
   // Group logs by meal type
@@ -537,7 +537,7 @@ export default function FoodJournal() {
                 <FoodRow
                   key={entry.id}
                   entry={entry}
-                  onDelete={deleteEntry}
+                  onDelete={(id) => deleteEntry.mutate(id)}
                   delay={i * 40}
                   visible={visible}
                 />
