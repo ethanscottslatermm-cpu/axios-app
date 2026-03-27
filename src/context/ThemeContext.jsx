@@ -142,9 +142,35 @@ export function ThemeProvider({ children }) {
     const theme = THEMES[themeKey]
     if (!theme) return
     const root = document.documentElement
+
+    // Set all theme variables
     Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v))
-    document.body.style.background = theme.vars['--bg-primary']
+
+    // Also update legacy axios variables for backward compat
+    root.style.setProperty('--axios-black', theme.vars['--bg-primary'])
+    root.style.setProperty('--axios-dark',  theme.vars['--bg-primary'])
+    root.style.setProperty('--axios-border',theme.vars['--border'])
+    root.style.setProperty('--axios-muted', theme.vars['--text-muted'])
+
+    // Force body background and text color
+    document.body.style.setProperty('background', theme.vars['--bg-primary'], 'important')
+    document.body.style.setProperty('color', theme.vars['--text-primary'], 'important')
+
+    // Store in localStorage as instant-load fallback
+    localStorage.setItem('axios-theme', themeKey)
   }, [themeKey])
+
+  // Apply theme from localStorage immediately on first paint (before Supabase loads)
+  useEffect(() => {
+    const saved = localStorage.getItem('axios-theme')
+    if (saved && THEMES[saved]) {
+      const theme = THEMES[saved]
+      const root = document.documentElement
+      Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v))
+      document.body.style.setProperty('background', theme.vars['--bg-primary'], 'important')
+      document.body.style.setProperty('color', theme.vars['--text-primary'], 'important')
+    }
+  }, [])
 
   const setTheme = async (key) => {
     if (!THEMES[key]) return
