@@ -330,7 +330,7 @@ export default function Dashboard() {
 
 
         {/* Streaks */}
-        <div style={{ padding:'0 16px 8px' }}>
+        <div style={{ padding:'0 16px 100px' }}>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
             <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Streaks</p>
             <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic' }}>consecutive days</p>
