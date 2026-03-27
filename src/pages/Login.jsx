@@ -25,15 +25,27 @@ const styles = `
     0%   { transform: translateY(-100%); }
     100% { transform: translateY(100vh); }
   }
+  @keyframes borderGlow {
+    0%,100% { box-shadow: 0 0 18px rgba(255,255,255,0.07), 0 0 40px rgba(255,255,255,0.03), inset 0 0 20px rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.13); }
+    50%     { box-shadow: 0 0 28px rgba(255,255,255,0.13), 0 0 70px rgba(255,255,255,0.06), inset 0 0 30px rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.28); }
+  }
+  @keyframes inputPulse {
+    0%,100% { box-shadow: 0 0 0px rgba(255,255,255,0); }
+    50%     { box-shadow: 0 0 12px rgba(255,255,255,0.08); }
+  }
 
   .word-in  { animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
   .word-out { animation: fadeOutUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
 
+  .login-card {
+    animation: borderGlow 4s ease-in-out infinite;
+  }
+
   .login-input {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255,255,255,0.05);
-    border: 0.5px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.14);
     border-radius: 2px;
     color: white;
     padding: 13px 14px;
@@ -41,10 +53,15 @@ const styles = `
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
     outline: none;
     -webkit-appearance: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.3s, box-shadow 0.3s;
     caret-color: white;
   }
-  .login-input:focus { border-color: rgba(255,255,255,0.55); }
+  .login-input:focus {
+    border-color: rgba(255,255,255,0.6);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.04);
+    animation: inputPulse 2s ease-in-out infinite;
+    background: rgba(255,255,255,0.07);
+  }
 
   .enter-btn {
     width: 100%;
@@ -59,11 +76,11 @@ const styles = `
     text-transform: uppercase;
     cursor: pointer;
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
-    transition: opacity 0.2s, transform 0.15s;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
     -webkit-appearance: none;
   }
-  .enter-btn:hover  { opacity: 0.88; transform: translateY(-1px); }
-  .enter-btn:active { transform: translateY(0); }
+  .enter-btn:hover  { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 0 24px rgba(255,255,255,0.3), 0 4px 20px rgba(0,0,0,0.4); }
+  .enter-btn:active { transform: translateY(0); box-shadow: none; }
   .enter-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 `
 
@@ -119,7 +136,7 @@ export default function Login() {
         {/* Radial vignette — edges dark, center open so physique shows */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1,
-          background: 'radial-gradient(ellipse at 50% 35%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.88) 100%)',
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.93) 100%)',
         }} />
 
         {/* Bottom fade */}
@@ -137,7 +154,7 @@ export default function Login() {
         {/* Atmospheric shimmer */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 2,
-          background: 'radial-gradient(ellipse at 50% 35%, rgba(255,255,255,0.03) 0%, transparent 65%)',
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 40%, transparent 70%)',
           animation: 'shimmer 7s ease-in-out infinite',
         }} />
 
@@ -219,8 +236,8 @@ export default function Login() {
           {/* Form */}
           <form onSubmit={handleSubmit} style={{
             width: '100%',
-            background: 'rgba(8,8,8,0.72)',
-            border: '0.5px solid rgba(255,255,255,0.1)',
+            background: 'rgba(6,6,6,0.82)',
+            border: '1px solid rgba(255,255,255,0.13)',
             borderRadius: '2px',
             padding: 'clamp(1.25rem, 5vw, 2rem)',
             backdropFilter: 'blur(24px)',

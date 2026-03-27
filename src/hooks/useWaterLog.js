@@ -2,6 +2,36 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
+export function useWaterHistory() {
+  const { user } = useAuth()
+
+  const { data: history = [], isLoading } = useQuery({
+    queryKey: ['water_history', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('water_logs')
+        .select('date, oz')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false })
+      if (error) throw error
+
+      const grouped = {}
+      data.forEach(row => {
+        if (!grouped[row.date]) {
+          grouped[row.date] = { date: row.date, glasses: 0, oz: 0 }
+        }
+        grouped[row.date].glasses += 1
+        grouped[row.date].oz      += row.oz || 8
+      })
+
+      return Object.values(grouped).sort((a, b) => b.date.localeCompare(a.date))
+    },
+    enabled: !!user,
+  })
+
+  return { history, isLoading }
+}
+
 export function useWaterLog(date) {
   const { user } = useAuth()
   const qc = useQueryClient()
