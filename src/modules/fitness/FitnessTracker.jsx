@@ -216,7 +216,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
 }
 
 // ── Log Weight Sheet ───────────────────────────────────────────────────────────
-function LogWeightSheet({ onSave, onClose, current }) {
+function LogWeightSheet({ onSave, onClose, current, todayStr }) {
   const [weight,  setWeight]  = useState('')
   const [note,    setNote]    = useState('')
   const [saving,  setSaving]  = useState(false)
@@ -636,7 +636,7 @@ export default function FitnessTracker() {
       </div>
 
       {showWorkout && <LogWorkoutSheet onSave={handleSaveWorkout} onClose={() => setShowWorkout(false)} />}
-      {showWeight  && <LogWeightSheet  onSave={handleSaveWeight}  onClose={() => setShowWeight(false)} current={latest} />}
+      {showWeight  && <LogWeightSheet  onSave={handleSaveWeight}  onClose={() => setShowWeight(false)} current={latest} todayStr={todayStr} />}
 
       <BottomNav />
     </>
