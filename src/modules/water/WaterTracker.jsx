@@ -23,7 +23,7 @@ const Ico = {
 function GlowBar({ pct, h=5 }) {
   return (
     <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'#fff', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 10px rgba(255,255,255,0.5)' }} />
+      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'var(--btn-bg)', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 10px rgba(255,255,255,0.5)' }} />
     </div>
   )
 }
@@ -33,16 +33,16 @@ function SectionHead({ title, sub }) {
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
-        <p style={{ color:'rgba(255,255,255,0.55)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {sub && <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
+      {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
     </div>
   )
 }
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:14, padding:'18px 16px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px', ...style }}>
       {children}
     </div>
   )
@@ -78,7 +78,7 @@ function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
         opacity: visible ? 1 : 0,
         boxShadow: filled ? '0 0 14px rgba(255,255,255,0.25)' : 'none',
         transitionDelay: `${animDelay}ms`,
-        color: filled ? '#080808' : 'rgba(255,255,255,0.2)',
+        color: filled ? 'var(--bg-primary)' : 'rgba(255,255,255,0.2)',
       }}
     >
       {Ico.drop(filled ? 18 : 16)}
@@ -102,32 +102,32 @@ function CustomOzSheet({ onSave, onClose }) {
   }
 
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}>
-      <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'#0d0d0d', borderTop:'1px solid rgba(255,255,255,0.1)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(32px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}>
+      <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(32px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)' }}>
         <div style={{ width:36, height:4, background:'rgba(255,255,255,0.13)', borderRadius:99, margin:'0 auto 22px' }} />
-        <h2 style={{ color:'#fff', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:22, letterSpacing:'-0.01em' }}>Custom Amount</h2>
+        <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:22, letterSpacing:'-0.01em' }}>Custom Amount</h2>
 
         <div style={{ textAlign:'center', marginBottom:24 }}>
-          <div style={{ display:'inline-flex', alignItems:'baseline', gap:8, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:16, padding:'18px 28px' }}>
+          <div style={{ display:'inline-flex', alignItems:'baseline', gap:8, background:'var(--stat-bg)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:16, padding:'18px 28px' }}>
             <input
               type="number"
               value={oz}
               onChange={e => setOz(e.target.value)}
               placeholder="16"
               autoFocus
-              style={{ background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:100, textAlign:'center' }}
+              style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:100, textAlign:'center' }}
             />
-            <span style={{ color:'rgba(255,255,255,0.35)', fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>oz</span>
+            <span style={{ color:'var(--text-muted)', fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>oz</span>
           </div>
         </div>
 
         <div style={{ display:'flex', gap:10 }}>
           <button onClick={onClose}
-            style={{ flex:1, padding:'13px', background:'transparent', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, color:'rgba(255,255,255,0.4)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+            style={{ flex:1, padding:'13px', background:'transparent', border:'1px solid var(--border)', borderRadius:10, color:'rgba(255,255,255,0.4)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
             Cancel
           </button>
           <button onClick={handleSave} disabled={saving || !oz}
-            style={{ flex:2, padding:'13px', background:'#fff', color:'#080808', border:'none', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving || !oz ? 'not-allowed' : 'pointer', opacity: saving || !oz ? 0.5 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}>
+            style={{ flex:2, padding:'13px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving || !oz ? 'not-allowed' : 'pointer', opacity: saving || !oz ? 0.5 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}>
             {Ico.check()} Log It
           </button>
         </div>
@@ -200,37 +200,37 @@ export default function WaterTracker() {
         .ax-ripple { animation: ripple 0.5s ease-out forwards; }
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'#080808', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
         <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${WATER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.11, pointerEvents:'none', filter:'grayscale(100%)' }} />
         <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.2) 40%, rgba(8,8,8,0.88) 100%)', pointerEvents:'none' }} />
 
         {/* ── Sticky Header ── */}
-        <div style={{ position:'sticky', top:0, zIndex:50, background:'rgba(8,8,8,0.93)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid rgba(255,255,255,0.07)', padding:'14px 16px 14px' }}>
+        <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 14px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
-              <p style={{ color:'rgba(255,255,255,0.22)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
-              <h1 style={{ color:'#fff', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Water Intake</h1>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
+              <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Water Intake</h1>
             </div>
           </div>
 
           {/* Progress summary */}
           <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:12 }}>
             <div>
-              <p style={{ color:'rgba(255,255,255,0.25)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>Today</p>
-              <p style={{ color:'#fff', fontSize:34, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>
-                {count} <span style={{ fontSize:14, color:'rgba(255,255,255,0.35)', fontWeight:400 }}>/ {WATER_GOAL} glasses</span>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>Today</p>
+              <p style={{ color:'var(--text-primary)', fontSize:34, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>
+                {count} <span style={{ fontSize:14, color:'var(--text-muted)', fontWeight:400 }}>/ {WATER_GOAL} glasses</span>
               </p>
               <p style={{ color: goalMet ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
                 {goalMet ? '✓ Goal reached — well done.' : `${remaining} glass${remaining !== 1 ? 'es' : ''} remaining`}
               </p>
             </div>
             <div style={{ textAlign:'right' }}>
-              <p style={{ color:'rgba(255,255,255,0.25)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>Progress</p>
-              <p style={{ color:'#fff', fontSize:30, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{pct}<span style={{ fontSize:13, color:'rgba(255,255,255,0.35)', fontWeight:400 }}>%</span></p>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>Progress</p>
+              <p style={{ color:'var(--text-primary)', fontSize:30, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{pct}<span style={{ fontSize:13, color:'var(--text-muted)', fontWeight:400 }}>%</span></p>
             </div>
           </div>
           <GlowBar pct={pct} />
@@ -255,7 +255,7 @@ export default function WaterTracker() {
                 />
               ))}
             </div>
-            <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center' }}>
+            <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center' }}>
               Tap a glass to add · tap a filled glass to remove
             </p>
           </Card>
@@ -266,14 +266,14 @@ export default function WaterTracker() {
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               {quickSizes.map(({ label, sub, oz }) => (
                 <button key={oz} onClick={() => handleAddGlass(oz)} className="ax-quick"
-                  style={{ padding:'16px', borderRadius:12, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', cursor:'pointer', textAlign:'left', transition:'all 0.18s' }}>
-                  <p style={{ color:'#fff', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{label}</p>
-                  <p style={{ color:'rgba(255,255,255,0.3)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                  style={{ padding:'16px', borderRadius:12, background:'var(--bg-card)', border:'1px solid var(--border)', cursor:'pointer', textAlign:'left', transition:'all 0.18s' }}>
+                  <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{label}</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
                 </button>
               ))}
             </div>
             <button onClick={() => setShowCustom(true)} className="ax-custom"
-              style={{ width:'100%', marginTop:10, padding:'13px', borderRadius:12, background:'transparent', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
+              style={{ width:'100%', marginTop:10, padding:'13px', borderRadius:12, background:'transparent', border:'1px solid var(--border)', color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
               {Ico.plus(13)} Custom amount
             </button>
           </div>
@@ -286,18 +286,18 @@ export default function WaterTracker() {
                 {[...(logs||[])].reverse().map((log, i) => {
                   const time = log.created_at ? new Date(log.created_at).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) : ''
                   return (
-                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'11px 12px', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:10, opacity: visible?1:0, transform: visible?'translateX(0)':'translateX(-8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
+                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'11px 12px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10, opacity: visible?1:0, transform: visible?'translateX(0)':'translateX(-8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
                       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                        <div style={{ color:'rgba(255,255,255,0.3)' }}>{Ico.drop(14)}</div>
+                        <div style={{ color:'var(--text-muted)' }}>{Ico.drop(14)}</div>
                         <div>
                           <p style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>
                             1 glass
                           </p>
-                          {time && <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{time}</p>}
+                          {time && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{time}</p>}
                         </div>
                       </div>
                       <button onClick={() => removeGlass.mutate(log.id)}
-                        style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:7, padding:'6px 8px', cursor:'pointer', color:'rgba(255,255,255,0.25)', display:'flex', alignItems:'center', transition:'all 0.2s' }}
+                        style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:7, padding:'6px 8px', cursor:'pointer', color:'var(--text-muted)', display:'flex', alignItems:'center', transition:'all 0.2s' }}
                         onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,60,60,0.1)';e.currentTarget.style.borderColor='rgba(255,60,60,0.25)';e.currentTarget.style.color='rgba(255,100,100,0.8)'}}
                         onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,0.04)';e.currentTarget.style.borderColor='rgba(255,255,255,0.08)';e.currentTarget.style.color='rgba(255,255,255,0.25)'}}>
                         {Ico.trash()}
@@ -311,13 +311,13 @@ export default function WaterTracker() {
 
           {/* Empty state */}
           {!loading && (logs||[]).length === 0 && (
-            <div style={{ background:'rgba(255,255,255,0.02)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center', ...anim(280) }}>
+            <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center', ...anim(280) }}>
               <div style={{ color:'rgba(255,255,255,0.15)', marginBottom:12, display:'flex', justifyContent:'center' }}>{Ico.drop(32)}</div>
-              <p style={{ color:'rgba(255,255,255,0.25)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:16 }}>
+              <p style={{ color:'var(--text-muted)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:16 }}>
                 No water logged yet today.<br/>Start with your first glass.
               </p>
               <button onClick={() => handleAddGlass(8)}
-                style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'rgba(255,255,255,0.55)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                 {Ico.plus(12)} Log first glass
               </button>
             </div>
