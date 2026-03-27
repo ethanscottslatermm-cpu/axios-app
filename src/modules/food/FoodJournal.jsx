@@ -43,9 +43,9 @@ function GlowBar({ pct, h = 4, color = '#fff' }) {
 // ── Macro Pill ─────────────────────────────────────────────────────────────────
 function MacroPill({ label, value, unit = 'g' }) {
   return (
-    <div style={{ flex:1, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'10px 10px' }}>
-      <p style={{ color:'rgba(255,255,255,0.28)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
-      <p style={{ color:'#fff', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}<span style={{ fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.4)', marginLeft:2 }}>{unit}</span></p>
+    <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 10px' }}>
+      <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
+      <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}<span style={{ fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.4)', marginLeft:2 }}>{unit}</span></p>
     </div>
   )
 }
@@ -56,9 +56,9 @@ function SectionHead({ title, count }) {
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
-        <p style={{ color:'rgba(255,255,255,0.55)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {count != null && <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{count} {count === 1 ? 'item' : 'items'}</p>}
+      {count != null && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{count} {count === 1 ? 'item' : 'items'}</p>}
     </div>
   )
 }
@@ -104,12 +104,12 @@ function AISearchPanel({ onSelect, onClose }) {
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:200,
-      background:'rgba(0,0,0,0.85)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)',
+      background:'var(--overlay-bg)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)',
       display:'flex', flexDirection:'column', padding:'0 0 env(safe-area-inset-bottom)',
     }}>
       {/* Header */}
-      <div style={{ padding:'16px 16px 0', display:'flex', alignItems:'center', gap:12, borderBottom:'1px solid rgba(255,255,255,0.08)', paddingBottom:14 }}>
-        <div style={{ flex:1, display:'flex', alignItems:'center', gap:10, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:11, padding:'11px 14px' }}>
+      <div style={{ padding:'16px 16px 0', display:'flex', alignItems:'center', gap:12, borderBottom:'1px solid var(--border)', paddingBottom:14 }}>
+        <div style={{ flex:1, display:'flex', alignItems:'center', gap:10, background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:11, padding:'11px 14px' }}>
           <div style={{ color:'rgba(255,255,255,0.4)' }}>{Ico.spark()}</div>
           <input
             ref={inputRef}
@@ -117,16 +117,16 @@ function AISearchPanel({ onSelect, onClose }) {
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKey}
             placeholder="Search any food…"
-            style={{ flex:1, background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:15, fontFamily:'Helvetica Neue,sans-serif' }}
+            style={{ flex:1, background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:15, fontFamily:'Helvetica Neue,sans-serif' }}
           />
           {query && (
-            <button onClick={() => { setQuery(''); setResults([]) }} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.3)', display:'flex' }}>
+            <button onClick={() => { setQuery(''); setResults([]) }} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', display:'flex' }}>
               {Ico.close()}
             </button>
           )}
         </div>
         <button onClick={search} disabled={loading || !query.trim()}
-          style={{ background:'#fff', color:'#080808', border:'none', borderRadius:9, padding:'11px 16px', fontSize:12, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: loading || !query.trim() ? 'not-allowed' : 'pointer', opacity: loading || !query.trim() ? 0.5 : 1, whiteSpace:'nowrap' }}>
+          style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'11px 16px', fontSize:12, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: loading || !query.trim() ? 'not-allowed' : 'pointer', opacity: loading || !query.trim() ? 0.5 : 1, whiteSpace:'nowrap' }}>
           {loading ? '…' : 'Search'}
         </button>
         <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)', display:'flex' }}>
@@ -136,15 +136,15 @@ function AISearchPanel({ onSelect, onClose }) {
 
       {/* AI badge */}
       <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:6 }}>
-        <div style={{ color:'rgba(255,255,255,0.35)' }}>{Ico.spark()}</div>
-        <p style={{ color:'rgba(255,255,255,0.28)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em' }}>AI-powered nutrition lookup · tap a result to add it</p>
+        <div style={{ color:'var(--text-muted)' }}>{Ico.spark()}</div>
+        <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em' }}>AI-powered nutrition lookup · tap a result to add it</p>
       </div>
 
       {/* Results */}
       <div style={{ flex:1, overflowY:'auto', padding:'0 16px 16px' }}>
         {loading && (
           <div style={{ textAlign:'center', padding:'40px 0' }}>
-            <p style={{ color:'rgba(255,255,255,0.3)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>Looking up nutrition data…</p>
+            <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>Looking up nutrition data…</p>
           </div>
         )}
         {error && <p style={{ color:'rgba(255,100,100,0.8)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'20px 0' }}>{error}</p>}
@@ -160,7 +160,7 @@ function AISearchPanel({ onSelect, onClose }) {
           {results.map((item, i) => (
             <button key={i} onClick={() => onSelect(item)}
               style={{
-                background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:12,
+                background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12,
                 padding:'14px 16px', textAlign:'left', cursor:'pointer', width:'100%',
                 transition:'background 0.2s, border-color 0.2s',
               }}
@@ -169,18 +169,18 @@ function AISearchPanel({ onSelect, onClose }) {
             >
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
                 <div>
-                  <p style={{ color:'#fff', fontSize:14, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{item.name}</p>
-                  <p style={{ color:'rgba(255,255,255,0.3)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{item.serving}</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{item.name}</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{item.serving}</p>
                 </div>
                 <div style={{ textAlign:'right', flexShrink:0 }}>
-                  <p style={{ color:'#fff', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{item.calories}</p>
-                  <p style={{ color:'rgba(255,255,255,0.3)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>cal</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{item.calories}</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>cal</p>
                 </div>
               </div>
               <div style={{ display:'flex', gap:8 }}>
                 {[['P', item.protein], ['C', item.carbs], ['F', item.fat]].map(([l, v]) => (
-                  <div key={l} style={{ flex:1, background:'rgba(255,255,255,0.05)', borderRadius:7, padding:'6px 8px', textAlign:'center' }}>
-                    <p style={{ color:'rgba(255,255,255,0.3)', fontSize:9, letterSpacing:'0.15em', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{l}</p>
+                  <div key={l} style={{ flex:1, background:'var(--bg-card)', borderRadius:7, padding:'6px 8px', textAlign:'center' }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.15em', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{l}</p>
                     <p style={{ color:'rgba(255,255,255,0.7)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{v}g</p>
                   </div>
                 ))}
@@ -199,7 +199,7 @@ function InputRow({ label, field, type='text', placeholder='', form, set }) {
   return (
     <div style={{ marginBottom:12 }}>
       <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
-      <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(255,255,255,0.07)' : 'none' }}>
+      <div style={{ background:'var(--stat-bg)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(255,255,255,0.07)' : 'none' }}>
         <input
           type={type}
           value={form[field]}
@@ -207,7 +207,7 @@ function InputRow({ label, field, type='text', placeholder='', form, set }) {
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder={placeholder}
-          style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }}
+          style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }}
         />
       </div>
     </div>
@@ -255,12 +255,12 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:300,
-      background:'rgba(0,0,0,0.7)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)',
+      background:'var(--overlay-bg)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)',
       display:'flex', alignItems:'flex-end',
     }}>
       <div style={{
         width:'100%', maxWidth:520, margin:'0 auto',
-        background:'#0e0e0e', borderTop:'1px solid rgba(255,255,255,0.1)',
+        background:'var(--bg-secondary)', borderTop:'1px solid var(--border)',
         borderRadius:'18px 18px 0 0', padding:'20px 18px max(24px,env(safe-area-inset-bottom))',
         transform: visible ? 'translateY(0)' : 'translateY(100%)',
         transition:'transform 0.35s cubic-bezier(.16,1,.3,1)',
@@ -270,7 +270,7 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
         <div style={{ width:36, height:4, background:'rgba(255,255,255,0.15)', borderRadius:99, margin:'0 auto 20px' }} />
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
-          <h2 style={{ color:'#fff', fontSize:17, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>
+          <h2 style={{ color:'var(--text-primary)', fontSize:17, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>
             {prefill ? 'Confirm & Add' : 'Add Food'}
           </h2>
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)' }}>{Ico.close(18)}</button>
@@ -296,9 +296,9 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
           {[['Protein (g)', 'protein', '32'], ['Carbs (g)', 'carbs', '0'], ['Fat (g)', 'fat', '14']].map(([label, field, ph]) => (
             <div key={field}>
               <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
-              <div style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:10, padding:'11px 12px' }}>
+              <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'11px 12px' }}>
                 <input type="number" value={form[field]} onChange={e => set(field, e.target.value)} placeholder={ph}
-                  style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }} />
+                  style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }} />
               </div>
             </div>
           ))}
@@ -307,7 +307,7 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:10 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'#fff', color:'#080808', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:16, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s,box-shadow 0.2s' }}
+          style={{ width:'100%', padding:'15px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:16, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s,box-shadow 0.2s' }}
           onMouseEnter={e => { if (!saving) { e.currentTarget.style.background='rgba(255,255,255,0.88)'; e.currentTarget.style.boxShadow='0 0 22px rgba(255,255,255,0.2)' }}}
           onMouseLeave={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='none' }}
         >
@@ -332,20 +332,20 @@ function FoodRow({ entry, onDelete, delay = 0, visible }) {
     <div style={{
       display:'flex', alignItems:'center', gap:12,
       padding:'13px 14px', borderRadius:12,
-      background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)',
+      background:'var(--bg-card)', border:'1px solid var(--border)',
       opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-10px)',
       transition: `opacity 0.4s ease ${delay}ms, transform 0.4s ease ${delay}ms`,
     }}>
       <div style={{ flex:1, minWidth:0 }}>
         <p style={{ color:'rgba(255,255,255,0.85)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{entry.food_name}</p>
         <div style={{ display:'flex', gap:10 }}>
-          {entry.protein > 0 && <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>P {entry.protein}g</p>}
-          {entry.carbs   > 0 && <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>C {entry.carbs}g</p>}
-          {entry.fat     > 0 && <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>F {entry.fat}g</p>}
+          {entry.protein > 0 && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>P {entry.protein}g</p>}
+          {entry.carbs   > 0 && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>C {entry.carbs}g</p>}
+          {entry.fat     > 0 && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>F {entry.fat}g</p>}
         </div>
       </div>
-      <p style={{ color:'#fff', fontSize:15, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{entry.calories}</p>
-      <p style={{ color:'rgba(255,255,255,0.25)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>cal</p>
+      <p style={{ color:'var(--text-primary)', fontSize:15, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{entry.calories}</p>
+      <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>cal</p>
       <button onClick={handleDelete}
         style={{ background: confirming ? 'rgba(255,60,60,0.15)' : 'rgba(255,255,255,0.05)', border:`1px solid ${confirming ? 'rgba(255,60,60,0.35)' : 'rgba(255,255,255,0.08)'}`, borderRadius:8, padding:'7px 9px', cursor:'pointer', color: confirming ? 'rgba(255,100,100,0.9)' : 'rgba(255,255,255,0.3)', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', flexShrink:0 }}
         title={confirming ? 'Tap again to confirm' : 'Delete'}>
@@ -421,7 +421,7 @@ export default function FoodJournal() {
         .ax-meal-tab:hover{background:rgba(255,255,255,0.05)!important;}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'#080808', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
         {/* Food market background */}
         <div style={{
           position:'fixed', inset:0, zIndex:0,
@@ -439,24 +439,24 @@ export default function FoodJournal() {
         }} />
 
         {/* ── Sticky Header ── */}
-        <div style={{ position:'sticky', top:0, zIndex:50, background:'rgba(8,8,8,0.93)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid rgba(255,255,255,0.07)', padding:'14px 16px 12px' }}>
+        <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 12px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
-              <p style={{ color:'rgba(255,255,255,0.22)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
-              <h1 style={{ color:'#fff', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Food Journal</h1>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
+              <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Food Journal</h1>
             </div>
             {/* Action buttons */}
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={() => setShowAI(true)} className="ax-ai-btn"
-                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 12px', borderRadius:9, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.55)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.06em', transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.06em', transition:'all 0.2s' }}>
                 {Ico.spark()} AI
               </button>
               <button onClick={handleManualAdd} className="ax-add-btn"
-                style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 14px', borderRadius:9, background:'#fff', color:'#080808', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 14px', borderRadius:9, background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s' }}>
                 {Ico.plus(13)} Add
               </button>
             </div>
@@ -465,13 +465,13 @@ export default function FoodJournal() {
           {/* Calorie ring summary */}
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
             <div>
-              <p style={{ color:'rgba(255,255,255,0.25)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Consumed</p>
-              <p style={{ color:'#fff', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>{calories.toLocaleString()} <span style={{ fontSize:13, fontWeight:400, color:'rgba(255,255,255,0.35)' }}>cal</span></p>
-              <p style={{ color:'rgba(255,255,255,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>{calLeft.toLocaleString()} remaining of {CALORIE_GOAL.toLocaleString()}</p>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Consumed</p>
+              <p style={{ color:'var(--text-primary)', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>{calories.toLocaleString()} <span style={{ fontSize:13, fontWeight:400, color:'var(--text-muted)' }}>cal</span></p>
+              <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>{calLeft.toLocaleString()} remaining of {CALORIE_GOAL.toLocaleString()}</p>
             </div>
             <div style={{ textAlign:'right' }}>
-              <p style={{ color:'rgba(255,255,255,0.25)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Progress</p>
-              <p style={{ color:'#fff', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{calPct}<span style={{ fontSize:13, color:'rgba(255,255,255,0.35)', fontWeight:400 }}>%</span></p>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Progress</p>
+              <p style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{calPct}<span style={{ fontSize:13, color:'var(--text-muted)', fontWeight:400 }}>%</span></p>
             </div>
           </div>
           <div style={{ marginTop:10 }}>
@@ -517,15 +517,15 @@ export default function FoodJournal() {
             )}
 
             {!loading && filteredLogs.length === 0 && (
-              <div style={{ background:'rgba(255,255,255,0.02)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:12, padding:'32px 20px', textAlign:'center' }}>
+              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:12, padding:'32px 20px', textAlign:'center' }}>
                 <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:12 }}>Nothing logged yet.</p>
                 <div style={{ display:'flex', gap:8, justifyContent:'center' }}>
                   <button onClick={() => setShowAI(true)}
-                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'var(--bg-card)', border:'1px solid var(--border)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                     {Ico.spark(12)} Search with AI
                   </button>
                   <button onClick={handleManualAdd}
-                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'var(--bg-card)', border:'1px solid var(--border)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                     {Ico.plus(12)} Add manually
                   </button>
                 </div>
@@ -547,8 +547,8 @@ export default function FoodJournal() {
             {/* Meal-grouped totals when viewing All */}
             {activeMeal === 'All' && allLogs.length > 0 && (
               <div style={{ marginTop:16, paddingTop:14, borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{allLogs.length} {allLogs.length === 1 ? 'entry' : 'entries'} today</p>
-                <p style={{ color:'#fff', fontWeight:900, fontSize:15, fontFamily:'Helvetica Neue,sans-serif' }}>{calories.toLocaleString()} cal total</p>
+                <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{allLogs.length} {allLogs.length === 1 ? 'entry' : 'entries'} today</p>
+                <p style={{ color:'var(--text-primary)', fontWeight:900, fontSize:15, fontFamily:'Helvetica Neue,sans-serif' }}>{calories.toLocaleString()} cal total</p>
               </div>
             )}
           </div>
