@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
+import LineChart from '../../components/LineChart'
 import { useHaptic } from '../../hooks/useHaptic'
 import { useFoodHistory } from '../../hooks/useFoodLog'
 import { useNavigate } from 'react-router-dom'
@@ -562,7 +563,24 @@ export default function FoodJournal() {
       </div>
 
 
-              {/* Past Days */}
+              {/* Calorie Trend */}
+              {foodHistory.length >= 2 && (
+                <div style={{ marginBottom:28 }}>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+                    <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>14-Day Trend</p>
+                    <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>calories</p>
+                  </div>
+                  <LineChart
+                    data={[...foodHistory].reverse().slice(-14).map(d => ({
+                      label: new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { month:'numeric', day:'numeric' }),
+                      value: Math.round(d.calories),
+                    }))}
+                    height={90}
+                  />
+                </div>
+              )}
+
+                            {/* Past Days */}
               {foodHistory.length > 0 && (
                 <div style={{ marginTop: 32 }}>
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
