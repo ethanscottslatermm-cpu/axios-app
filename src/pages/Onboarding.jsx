@@ -54,7 +54,7 @@ function SelectField({ value, onChange, options, placeholder }) {
         onClick={() => setOpen(o => !o)}
         style={{
           width:'100%', padding:'13px 16px', borderRadius:10, border:'1px solid rgba(255,255,255,0.12)',
-          background:'rgba(255,255,255,0.04)', color: value ? '#fff' : 'rgba(255,255,255,0.3)',
+          background:'var(--stat-bg)', color: value ? '#fff' : 'rgba(255,255,255,0.3)',
           fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer',
           display:'flex', justifyContent:'space-between', alignItems:'center',
         }}
@@ -65,7 +65,7 @@ function SelectField({ value, onChange, options, placeholder }) {
         </svg>
       </button>
       {open && (
-        <div style={{ position:'absolute', top:'calc(100% + 6px)', left:0, right:0, zIndex:200, background:'#111', border:'1px solid rgba(255,255,255,0.12)', borderRadius:10, overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:'calc(100% + 6px)', left:0, right:0, zIndex:200, background:'var(--bg-secondary)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:10, overflow:'hidden' }}>
           {options.map(opt => (
             <button key={opt} onClick={() => { onChange(opt); setOpen(false) }}
               style={{ width:'100%', padding:'12px 16px', background: value === opt ? 'rgba(255,255,255,0.08)' : 'transparent', border:'none', color: value === opt ? '#fff' : 'rgba(255,255,255,0.6)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
@@ -166,7 +166,7 @@ export default function Onboarding() {
       `}</style>
 
       <div style={{
-        minHeight:'100vh', background:'#080808', display:'flex', flexDirection:'column',
+        minHeight:'100vh', background:'var(--bg-primary)', display:'flex', flexDirection:'column',
         alignItems:'center', justifyContent:'center', padding:'24px 20px',
         WebkitFontSmoothing:'antialiased',
       }}>
@@ -186,10 +186,10 @@ export default function Onboarding() {
           <StepDots total={STEPS.length} current={step} />
 
           <div style={{ marginBottom:28, textAlign:'center' }}>
-            <h2 style={{ color:'#fff', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', marginBottom:8 }}>
+            <h2 style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', marginBottom:8 }}>
               {current.title}
             </h2>
-            <p style={{ color:'rgba(255,255,255,0.35)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>
+            <p style={{ color:'var(--text-muted)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>
               {current.subtitle}
             </p>
           </div>
@@ -198,7 +198,7 @@ export default function Onboarding() {
           <div style={{ display:'flex', flexDirection:'column', gap:14, marginBottom:24 }}>
             {current.fields.map(field => (
               <div key={field.key}>
-                <label style={{ display:'block', color:'rgba(255,255,255,0.35)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>
+                <label style={{ display:'block', color:'var(--text-muted)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>
                   {field.label}
                 </label>
                 {field.type === 'select' ? (
@@ -208,13 +208,13 @@ export default function Onboarding() {
                     options={field.options}
                   />
                 ) : (
-                  <div className="ax-field" style={{ display:'flex', alignItems:'center', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:10, padding:'13px 16px', transition:'border-color 0.2s,box-shadow 0.2s' }}>
+                  <div className="ax-field" style={{ display:'flex', alignItems:'center', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'13px 16px', transition:'border-color 0.2s,box-shadow 0.2s' }}>
                     <input
                       type={field.type}
                       value={data[field.key] || ''}
                       onChange={e => set(field.key, e.target.value)}
                       placeholder={field.placeholder}
-                      style={{ flex:1, background:'transparent', border:'none', color:'#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }}
+                      style={{ flex:1, background:'transparent', border:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }}
                     />
                   </div>
                 )}
@@ -228,13 +228,13 @@ export default function Onboarding() {
 
           {/* CTA */}
           <button onClick={goNext} disabled={saving} className="ax-ob-btn"
-            style={{ width:'100%', padding:'15px', background:'#fff', color:'#080808', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, transition:'background 0.2s,box-shadow 0.2s', marginBottom:14 }}>
+            style={{ width:'100%', padding:'15px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, transition:'background 0.2s,box-shadow 0.2s', marginBottom:14 }}>
             {saving ? 'Saving…' : isLast ? 'Complete Setup' : 'Continue →'}
           </button>
 
           {step > 0 && (
             <button onClick={goBack}
-              style={{ width:'100%', padding:'12px', background:'transparent', border:'none', color:'rgba(255,255,255,0.28)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+              style={{ width:'100%', padding:'12px', background:'transparent', border:'none', color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
               ← Back
             </button>
           )}
