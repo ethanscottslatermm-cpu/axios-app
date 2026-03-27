@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getQuote, getMarketNews, searchSymbol } from '../../lib/finnhub'
-import { useAuth } from '../../context/AuthContext'
-import { supabase } from '../../lib/supabase'
+import { BottomNav } from '../../pages/Dashboard'
 
 // ── Default watchlist ──────────────────────────────────────────────────────────
 const DEFAULT_SYMBOLS = ['DIA', 'SPY', 'QQQ', 'AAPL', 'TSLA']
@@ -128,7 +127,6 @@ function NewsCard({ item }) {
 }
 
 export default function FinanceTracker() {
-  const navigate = useNavigate()
   const [visible,     setVisible]     = useState(false)
   const [watchlist,   setWatchlist]   = useState(DEFAULT_SYMBOLS)
   const [news,        setNews]        = useState([])
@@ -289,6 +287,7 @@ export default function FinanceTracker() {
           </div>
         )}
       </div>
+      <BottomNav />
     </>
   )
 }
