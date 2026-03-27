@@ -46,9 +46,9 @@ function SectionHead({ title, sub }) {
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
-        <p style={{ color:'rgba(255,255,255,0.55)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {sub && <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
+      {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
     </div>
   )
 }
@@ -77,10 +77,10 @@ function AddPrayerSheet({ onSave, onClose }) {
   }
 
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}>
       <div style={{
         width:'100%', maxWidth:520, margin:'0 auto',
-        background:'#0d0d0d', borderTop:'1px solid rgba(255,255,255,0.1)',
+        background:'var(--sheet-bg)', borderTop:'1px solid var(--border)',
         borderRadius:'18px 18px 0 0',
         padding:'20px 18px max(28px,env(safe-area-inset-bottom))',
         transform: visible ? 'translateY(0)' : 'translateY(100%)',
@@ -92,8 +92,8 @@ function AddPrayerSheet({ onSave, onClose }) {
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:22 }}>
           <div>
-            <p style={{ color:'rgba(255,255,255,0.22)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>New Entry</p>
-            <h2 style={{ color:'#fff', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>Log a Prayer</h2>
+            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>New Entry</p>
+            <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>Log a Prayer</h2>
           </div>
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)' }}>{Ico.close(18)}</button>
         </div>
@@ -119,7 +119,7 @@ function AddPrayerSheet({ onSave, onClose }) {
             onChange={e => setText(e.target.value)}
             placeholder="Write your prayer here…"
             rows={5}
-            style={{ width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:12, padding:'14px', color:'#fff', fontSize:14, fontFamily:"'EB Garamond', serif", fontStyle:'italic', lineHeight:1.7, resize:'none', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond', serif", fontStyle:'italic', lineHeight:1.7, resize:'none', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e => e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.09)'}
           />
@@ -132,7 +132,7 @@ function AddPrayerSheet({ onSave, onClose }) {
             value={note}
             onChange={e => setNote(e.target.value)}
             placeholder="Any context or scripture reference…"
-            style={{ width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:10, padding:'12px 14px', color:'#fff', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e => e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.09)'}
           />
@@ -141,7 +141,7 @@ function AddPrayerSheet({ onSave, onClose }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:8 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'#fff', color:'#080808', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s,box-shadow 0.2s' }}
+          style={{ width:'100%', padding:'15px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s,box-shadow 0.2s' }}
           onMouseEnter={e => { if(!saving){ e.currentTarget.style.background='rgba(255,255,255,0.88)'; e.currentTarget.style.boxShadow='0 0 22px rgba(255,255,255,0.2)' }}}
           onMouseLeave={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='none' }}
         >
@@ -183,11 +183,11 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible }) {
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:10, marginBottom:10 }}>
         <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
           {/* Category badge */}
-          <span style={{ padding:'3px 10px', borderRadius:99, background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em', fontWeight:600 }}>
+          <span style={{ padding:'3px 10px', borderRadius:99, background:'rgba(255,255,255,0.07)', border:'1px solid var(--border)', color:'var(--text-secondary)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em', fontWeight:600 }}>
             {prayer.category}
           </span>
           {isToday && (
-            <span style={{ padding:'3px 8px', borderRadius:99, background:'rgba(255,255,255,0.05)', color:'rgba(255,255,255,0.25)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.12em' }}>
+            <span style={{ padding:'3px 8px', borderRadius:99, background:'var(--bg-card)', color:'var(--text-muted)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.12em' }}>
               TODAY
             </span>
           )}
@@ -211,7 +211,7 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible }) {
         </p>
         {prayer.prayer_text?.length > 160 && (
           <button onClick={() => setExpanded(e => !e)}
-            style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:4, padding:0 }}>
+            style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:4, padding:0 }}>
             {expanded ? 'Show less' : 'Read more'}
           </button>
         )}
@@ -219,7 +219,7 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible }) {
 
       {/* Note */}
       {prayer.note && (
-        <p style={{ color:'rgba(255,255,255,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6, marginBottom:14, paddingLeft:10, borderLeft:'2px solid rgba(255,255,255,0.1)' }}>
+        <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6, marginBottom:14, paddingLeft:10, borderLeft:'2px solid rgba(255,255,255,0.1)' }}>
           {prayer.note}
         </p>
       )}
@@ -299,23 +299,23 @@ export default function PrayerTracker() {
         .ax-filter-tab:hover{background:rgba(255,255,255,0.06)!important;}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'#080808', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
         <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${PRAYER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.11, pointerEvents:'none', filter:'grayscale(100%)' }} />
         <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.5) 0%, rgba(8,8,8,0.18) 40%, rgba(8,8,8,0.9) 100%)', pointerEvents:'none' }} />
 
         {/* ── Sticky Header ── */}
-        <div style={{ position:'sticky', top:0, zIndex:50, background:'rgba(8,8,8,0.93)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid rgba(255,255,255,0.07)', padding:'14px 16px 14px' }}>
+        <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 14px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
-              <p style={{ color:'rgba(255,255,255,0.22)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
-              <h1 style={{ color:'#fff', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Prayer</h1>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
+              <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Prayer</h1>
             </div>
             <button onClick={() => setShowAdd(true)} className="ax-add-btn"
-              style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 16px', borderRadius:9, background:'#fff', color:'#080808', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 16px', borderRadius:9, background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s', flexShrink:0 }}>
               {Ico.plus(13)} Pray
             </button>
           </div>
@@ -328,9 +328,9 @@ export default function PrayerTracker() {
               { label:'Streak',   value: `${streak}d` },
               { label:'Total',    value: (prayers||[]).length },
             ].map(({ label, value }) => (
-              <div key={label} style={{ flex:1, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
-                <p style={{ color:'rgba(255,255,255,0.25)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
-                <p style={{ color:'#fff', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}</p>
+              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
+                <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
+                <p style={{ color:'var(--text-primary)', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}</p>
               </div>
             ))}
           </div>
@@ -379,13 +379,13 @@ export default function PrayerTracker() {
             )}
 
             {!loading && filtered.length === 0 && (
-              <div style={{ background:'rgba(255,255,255,0.02)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center' }}>
+              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center' }}>
                 <div style={{ color:'rgba(255,255,255,0.15)', marginBottom:12, display:'flex', justifyContent:'center' }}>{Ico.dove(32)}</div>
-                <p style={{ color:'rgba(255,255,255,0.25)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:16 }}>
+                <p style={{ color:'var(--text-muted)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:16 }}>
                   {filter === 'All' ? 'Your prayer journal is empty.\nBegin with a single word.' : `No ${filter.toLowerCase()} prayers.`}
                 </p>
                 <button onClick={() => setShowAdd(true)}
-                  style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'rgba(255,255,255,0.55)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                  style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                   {Ico.plus(12)} Log your first prayer
                 </button>
               </div>
