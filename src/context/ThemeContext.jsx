@@ -241,7 +241,10 @@ const ThemeContext = createContext(null)
 
 export function ThemeProvider({ children }) {
   const { user } = useAuth()
-  const [themeKey, setThemeKey] = useState('obsidian')
+  const [themeKey, setThemeKey] = useState(() => {
+    const saved = localStorage.getItem('axios-theme')
+    return (saved && THEMES[saved]) ? saved : 'obsidian'
+  })
   const [loading,  setLoading]  = useState(true)
 
   useEffect(() => {
