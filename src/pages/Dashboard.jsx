@@ -49,14 +49,14 @@ const modules = [
 function GlowBar({ pct, h = 3 }) {
   return (
     <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${pct}%`, background:'#fff', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(255,255,255,0.55)' }} />
+      <div style={{ height:'100%', width:`${pct}%`, background:'var(--btn-bg)', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(255,255,255,0.55)' }} />
     </div>
   )
 }
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:14, padding:'18px 16px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px', ...style }}>
       {children}
     </div>
   )
@@ -67,9 +67,9 @@ function SectionHead({ title, action, actionLabel }) {
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
-        <p style={{ color:'rgba(255,255,255,0.55)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {action && <button onClick={action} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.28)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</button>}
+      {action && <button onClick={action} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</button>}
     </div>
   )
 }
@@ -169,7 +169,7 @@ export default function Dashboard() {
         .ax-btn-white:hover{background:rgba(255,255,255,0.88)!important;box-shadow:0 0 22px rgba(255,255,255,0.22)!important;}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'#080808', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
         {/* Car background */}
         <div style={{
           position:'fixed', inset:0, zIndex:0,
@@ -189,20 +189,20 @@ export default function Dashboard() {
         {/* Sticky Header */}
         <div style={{
           position:'sticky', top:0, zIndex:50,
-          background:'rgba(8,8,8,0.93)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)',
-          borderBottom:'1px solid rgba(255,255,255,0.07)',
+          background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)',
+          borderBottom:'1px solid var(--border)',
           padding:'14px 16px 12px',
         }}>
-          <p style={{ color:'rgba(255,255,255,0.22)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>
+          <p style={{ color:'var(--text-muted)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>
             {dayName} · {dateStr}
           </p>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10 }}>
-            <h1 style={{ color:'#fff', fontWeight:900, fontSize:21, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
+            <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:21, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
               {getGreeting()},{' '}
               <span style={{ fontStyle:'italic', fontFamily:"'EB Garamond',serif", fontWeight:400, fontSize:23 }}>{displayName}.</span>
             </h1>
             <button onClick={() => navigate('/food')} className="ax-btn-white"
-              style={{ background:'#fff', color:'#080808', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
+              style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
               {Ico.plus(12)} Log
             </button>
           </div>
@@ -219,11 +219,11 @@ export default function Dashboard() {
               { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null },
               { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100) },
             ].map(({ label, value, sub, pct }) => (
-              <div key={label} style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
+              <div key={label} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
                 <div style={{ position:'absolute', top:0, right:0, width:50, height:50, background:'radial-gradient(circle at top right,rgba(255,255,255,0.05),transparent 70%)', pointerEvents:'none' }} />
-                <p style={{ color:'rgba(255,255,255,0.28)', fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
-                <p style={{ color:'#fff', fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
-                <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginBottom: pct != null ? 10 : 0 }}>{sub}</p>
+                <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
+                <p style={{ color:'var(--text-primary)', fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
+                <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginBottom: pct != null ? 10 : 0 }}>{sub}</p>
                 {pct != null && <GlowBar pct={pct} />}
               </div>
             ))}
@@ -276,12 +276,12 @@ export default function Dashboard() {
             }
             <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', gap:14 }}>
               <div>
-                <p style={{ color:'rgba(255,255,255,0.25)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
-                <p style={{ color:'#fff', fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
+                <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
+                <p style={{ color:'var(--text-primary)', fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
               </div>
               <div style={{ flex:1 }}>
                 <GlowBar pct={calPct} h={4} />
-                <p style={{ color:'rgba(255,255,255,0.22)', fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
+                <p style={{ color:'var(--text-muted)', fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
               </div>
             </div>
           </Card>
@@ -294,7 +294,7 @@ export default function Dashboard() {
                 <div key={i} style={{ width:30, height:30, borderRadius:'50%', background: i < waterCount ? '#fff' : 'rgba(255,255,255,0.06)', border:`1px solid ${i < waterCount ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'}`, boxShadow: i < waterCount ? '0 0 8px rgba(255,255,255,0.4)' : 'none', transition:'all 0.3s' }} />
               ))}
             </div>
-            <p style={{ color:'rgba(255,255,255,0.25)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
+            <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
               {waterCount >= WATER_GOAL ? 'Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
             </p>
             <GlowBar pct={waterPct} />
@@ -305,10 +305,10 @@ export default function Dashboard() {
             <SectionHead title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" />
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
               {[{ label:'Today', value: todayPrayers, sub:'logged' },{ label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
-                <div key={label} style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'13px 14px' }}>
-                  <p style={{ color:'rgba(255,255,255,0.28)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
-                  <p style={{ color:'#fff', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
-                  <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                <div key={label} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'13px 14px' }}>
+                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
                 </div>
               ))}
             </div>
