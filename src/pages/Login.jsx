@@ -131,19 +131,18 @@ export default function Login() {
           backgroundSize: 'cover',
           backgroundPosition: '50% 30%',
           backgroundRepeat: 'no-repeat',
-          filter: 'contrast(1.25) brightness(1.08) saturate(1.1)',
         }} />
 
         {/* Radial vignette — edges dark, center open so physique shows */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1,
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.38) 55%, rgba(0,0,0,0.88) 100%)',
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.93) 100%)',
         }} />
 
         {/* Bottom fade */}
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0, height: '40%', zIndex: 2,
-          background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0) 100%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 100%)',
         }} />
 
         {/* Top fade */}
