@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
+import { useHaptic } from '../../hooks/useHaptic'
 import { useFoodHistory } from '../../hooks/useFoodLog'
 import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
@@ -358,6 +359,7 @@ function FoodRow({ entry, onDelete, delay = 0, visible }) {
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function FoodJournal() {
   const todayStr = useToday()
+  const haptic = useHaptic()
   const navigate  = useNavigate()
   const [visible, setVisible]   = useState(false)
   const [showAI,  setShowAI]    = useState(false)
@@ -389,6 +391,7 @@ export default function FoodJournal() {
   }
 
   const handleSave = async (entry) => {
+    haptic.bump()
     await addEntry.mutateAsync({ ...entry, date: todayStr })
   }
 

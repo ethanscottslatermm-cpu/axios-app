@@ -244,7 +244,7 @@ export default function Login() {
             WebkitBackdropFilter: 'blur(24px)',
             boxShadow: '0 8px 60px rgba(0,0,0,0.7), inset 0 0 0 0.5px rgba(255,255,255,0.04)',
           }}>
-            <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '0.58rem', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 12px rgba(255,255,255,0.6), 0 0 30px rgba(255,255,255,0.25), 0 0 60px rgba(255,255,255,0.1)' }}>
+            <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 12px rgba(255,255,255,0.6), 0 0 30px rgba(255,255,255,0.25), 0 0 60px rgba(255,255,255,0.1)' }}>
               Secure Access
             </p>
 
@@ -282,7 +282,7 @@ export default function Login() {
               {loading ? 'Entering...' : 'Enter'}
             </button>
 
-            <p style={{ color: 'rgba(255,255,255,0.12)', fontSize: '0.56rem', letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.85)', textShadow: '0 0 10px rgba(255,255,255,0.55), 0 0 25px rgba(255,255,255,0.2), 0 0 50px rgba(255,255,255,0.08)' }}>
+            <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.85)', textShadow: '0 0 10px rgba(255,255,255,0.55), 0 0 25px rgba(255,255,255,0.2), 0 0 50px rgba(255,255,255,0.08)' }}>
               Authorized access only
             </p>
           </form>

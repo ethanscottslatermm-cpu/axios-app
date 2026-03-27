@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useToday } from '../../hooks/useToday'
+import { useHaptic } from '../../hooks/useHaptic'
 import { useNavigate } from 'react-router-dom'
 import { useWeightLog } from '../../hooks/useWeightLog'
 import { BottomNav } from '../../pages/Dashboard'
@@ -360,6 +361,7 @@ function WeightSparkline({ logs }) {
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function FitnessTracker() {
   const todayStr = useToday()
+  const haptic = useHaptic()
   const navigate = useNavigate()
   const { user } = useAuth()
   const { logs: weightLogs, latest, goal: weightGoal, addEntry: addWeightEntry } = useWeightLog()
@@ -396,6 +398,7 @@ export default function FitnessTracker() {
   }
 
   const handleSaveWorkout = async ({ workout, exercises }) => {
+    haptic.success()
     const { data: wData, error: wErr } = await supabase
       .from('workouts')
       .insert({ label: workout.label, type: workout.type, duration: parseInt(workout.duration)||null, user_id: user.id, workout_date: todayStr })
@@ -424,6 +427,7 @@ export default function FitnessTracker() {
   }
 
   const handleSaveWeight = async ({ weight_lbs, note, date }) => {
+    haptic.bump()
     await addWeightEntry.mutateAsync({ weight_lbs, logged_date: date, note })
   }
 

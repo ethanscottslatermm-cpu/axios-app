@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useToday } from '../../hooks/useToday'
+import { useHaptic } from '../../hooks/useHaptic'
 import { useNavigate } from 'react-router-dom'
 import { usePrayers } from '../../hooks/usePrayers'
 import { BottomNav } from '../../pages/Dashboard'
@@ -242,6 +243,7 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible, todayS
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function PrayerTracker() {
   const todayStr = useToday()
+  const haptic = useHaptic()
   const navigate   = useNavigate()
   const qc         = useQueryClient()
   const { prayers, addPrayer, toggleAnswered, isLoading: loading } = usePrayers()
@@ -398,7 +400,7 @@ export default function PrayerTracker() {
                   key={prayer.id}
                   prayer={prayer}
                   todayStr={todayStr}
-                  onToggleAnswered={(id, currentAnswered) => toggleAnswered.mutate({ id, answered: !currentAnswered })}
+                  onToggleAnswered={(id, currentAnswered) => { haptic.success(); toggleAnswered.mutate({ id, answered: !currentAnswered }) }}
                   onDelete={async (id) => { await supabase.from('prayer_logs').delete().eq('id', id); qc.invalidateQueries({ queryKey: ['prayer_logs'] }); }}
                   delay={i * 45}
                   visible={visible}
@@ -412,7 +414,7 @@ export default function PrayerTracker() {
 
       {showAdd && (
         <AddPrayerSheet
-          onSave={async (p) => await addPrayer.mutateAsync({ category: p.category, prayer_text: p.prayer_text, note: p.note })}
+          onSave={async (p) => { haptic.bump(); await addPrayer.mutateAsync({ category: p.category, prayer_text: p.prayer_text, note: p.note }) }}
           onClose={() => setShowAdd(false)}
           todayStr={todayStr}
         />

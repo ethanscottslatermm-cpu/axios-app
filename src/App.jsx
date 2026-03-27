@@ -9,6 +9,7 @@ import Login      from './pages/Login'
 import Dashboard  from './pages/Dashboard'
 import Settings   from './pages/Settings'
 import Onboarding from './pages/Onboarding'
+import Widget     from './pages/Widget'
 import FoodJournal    from './modules/food/FoodJournal'
 import WaterTracker   from './modules/water/WaterTracker'
 import WeightTracker  from './modules/weight/WeightTracker'
@@ -33,6 +34,9 @@ export default function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/onboarding" element={
                   <ProtectedRoute><Onboarding /></ProtectedRoute>
+                } />
+                <Route path="/widget" element={
+                  <ProtectedRoute><Widget /></ProtectedRoute>
                 } />
                 <Route path="/dashboard" element={
                   <ProtectedRoute><OnboardingRoute><Dashboard /></OnboardingRoute></ProtectedRoute>

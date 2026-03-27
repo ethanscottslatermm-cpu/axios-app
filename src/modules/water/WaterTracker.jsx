@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useToday } from '../../hooks/useToday'
+import { useHaptic } from '../../hooks/useHaptic'
 import { useWaterHistory } from '../../hooks/useWaterLog'
 import { useNavigate } from 'react-router-dom'
 import { useWaterLog } from '../../hooks/useWaterLog'
@@ -139,6 +140,7 @@ function CustomOzSheet({ onSave, onClose }) {
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function WaterTracker() {
   const todayStr = useToday()
+  const haptic = useHaptic()
   const navigate = useNavigate()
   const { logs, count, addGlass, removeGlass, isLoading: loading } = useWaterLog(todayStr)
   const { history: waterHistory } = useWaterHistory()
@@ -157,6 +159,7 @@ export default function WaterTracker() {
   const goalMet  = count >= WATER_GOAL
 
   const handleAddGlass = async (oz = 8) => {
+    haptic.tap()
     setJustAdded(true)
     setTimeout(() => setJustAdded(false), 600)
     await addGlass.mutateAsync()
@@ -298,7 +301,7 @@ export default function WaterTracker() {
                           {time && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{time}</p>}
                         </div>
                       </div>
-                      <button onClick={() => removeGlass.mutate(log.id)}
+                      <button onClick={() => { haptic.delete(); removeGlass.mutate(log.id) }}
                         style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:7, padding:'6px 8px', cursor:'pointer', color:'var(--text-muted)', display:'flex', alignItems:'center', transition:'all 0.2s' }}
                         onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,60,60,0.1)';e.currentTarget.style.borderColor='rgba(255,60,60,0.25)';e.currentTarget.style.color='rgba(255,100,100,0.8)'}}
                         onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,0.04)';e.currentTarget.style.borderColor='rgba(255,255,255,0.08)';e.currentTarget.style.color='rgba(255,255,255,0.25)'}}>
