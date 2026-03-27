@@ -16,6 +16,7 @@ import WeightTracker  from './modules/weight/WeightTracker'
 import FitnessTracker from './modules/fitness/FitnessTracker'
 import PrayerTracker  from './modules/prayer/PrayerTracker'
 import Devotional     from './modules/devotional/Devotional'
+import FinanceTracker from './modules/finance/FinanceTracker'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,6 +62,9 @@ export default function App() {
                 } />
                 <Route path="/devotional" element={
                   <ProtectedRoute><OnboardingRoute><Devotional /></OnboardingRoute></ProtectedRoute>
+                } />
+                <Route path="/finance" element={
+                  <ProtectedRoute><OnboardingRoute><FinanceTracker /></OnboardingRoute></ProtectedRoute>
                 } />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
