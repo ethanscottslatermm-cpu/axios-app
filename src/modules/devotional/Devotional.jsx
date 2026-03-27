@@ -44,16 +44,16 @@ function SectionHead({ title, sub }) {
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
-        <p style={{ color:'rgba(255,255,255,0.55)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {sub && <p style={{ color:'rgba(255,255,255,0.22)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
+      {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
     </div>
   )
 }
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:14, padding:'20px 18px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 18px', ...style }}>
       {children}
     </div>
   )
@@ -82,24 +82,24 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
   }
 
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', display:'flex', alignItems:'flex-end' }}>
-      <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'#0d0d0d', borderTop:'1px solid rgba(255,255,255,0.1)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(28px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)', maxHeight:'90vh', overflowY:'auto' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', display:'flex', alignItems:'flex-end' }}>
+      <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(28px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)', maxHeight:'90vh', overflowY:'auto' }}>
 
         <div style={{ width:36, height:4, background:'rgba(255,255,255,0.13)', borderRadius:99, margin:'0 auto 22px' }} />
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
           <div>
-            <p style={{ color:'rgba(255,255,255,0.22)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Today's Devotional</p>
-            <h2 style={{ color:'#fff', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>My Journal</h2>
+            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Today's Devotional</p>
+            <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>My Journal</h2>
           </div>
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)' }}>{Ico.close(18)}</button>
         </div>
 
         {/* Verse reminder */}
         {verseText && (
-          <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'12px 14px', marginBottom:20 }}>
-            <p style={{ color:'rgba(255,255,255,0.3)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{verseRef?.toUpperCase().replace(/\//g,' ')}</p>
-            <p style={{ color:'rgba(255,255,255,0.55)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{verseText}</p>
+          <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', marginBottom:20 }}>
+            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{verseRef?.toUpperCase().replace(/\//g,' ')}</p>
+            <p style={{ color:'var(--text-secondary)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{verseText}</p>
           </div>
         )}
 
@@ -107,7 +107,7 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
         <div style={{ marginBottom:16 }}>
           <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Reflection</label>
           <textarea value={reflection} onChange={e => setReflection(e.target.value)} placeholder="What does this scripture mean to you today?" rows={5}
-            style={{ width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:12, padding:'14px', color:'#fff', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e=>e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.09)'} />
         </div>
@@ -118,7 +118,7 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
             Application <span style={{ color:'rgba(255,255,255,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span>
           </label>
           <textarea value={application} onChange={e => setApplication(e.target.value)} placeholder="How will you apply this today?" rows={3}
-            style={{ width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:12, padding:'14px', color:'#fff', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e=>e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.09)'} />
         </div>
@@ -126,7 +126,7 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:8 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'#fff', color:'#080808', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving?'not-allowed':'pointer', opacity: saving?0.6:1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s' }}
+          style={{ width:'100%', padding:'15px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving?'not-allowed':'pointer', opacity: saving?0.6:1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s' }}
           onMouseEnter={e=>{if(!saving){e.currentTarget.style.background='rgba(255,255,255,0.88)'}}}
           onMouseLeave={e=>{e.currentTarget.style.background='#fff'}}>
           {saving ? 'Saving…' : <>{Ico.check()} Save Journal</>}
@@ -140,13 +140,13 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
 function PastEntry({ entry, delay, visible }) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:14, overflow:'hidden', opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(12px)', transition:`opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms` }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(12px)', transition:`opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms` }}>
       <button onClick={() => setExpanded(e=>!e)} style={{ width:'100%', padding:'14px 16px', background:'none', border:'none', cursor:'pointer', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
           <p style={{ color:'rgba(255,255,255,0.6)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:2 }}>
             {entry.scripture_ref?.toUpperCase().replace(/\//g,' ')}
           </p>
-          <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
+          <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
             {new Date(entry.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
           </p>
         </div>
@@ -155,19 +155,19 @@ function PastEntry({ entry, delay, visible }) {
       {expanded && (
         <div style={{ padding:'0 16px 16px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
           {entry.scripture_text && (
-            <p style={{ color:'rgba(255,255,255,0.5)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, padding:'14px 0', borderBottom:'1px solid rgba(255,255,255,0.05)', marginBottom:14 }}>
+            <p style={{ color:'var(--text-secondary)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, padding:'14px 0', borderBottom:'1px solid rgba(255,255,255,0.05)', marginBottom:14 }}>
               "{entry.scripture_text}"
             </p>
           )}
           {entry.reflection && (
             <div style={{ marginBottom:10 }}>
-              <p style={{ color:'rgba(255,255,255,0.3)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Reflection</p>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Reflection</p>
               <p style={{ color:'rgba(255,255,255,0.65)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{entry.reflection}</p>
             </div>
           )}
           {entry.application && (
             <div>
-              <p style={{ color:'rgba(255,255,255,0.3)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Application</p>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Application</p>
               <p style={{ color:'rgba(255,255,255,0.65)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{entry.application}</p>
             </div>
           )}
@@ -286,24 +286,24 @@ export default function Devotional() {
         }
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'#080808', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
         <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${PRAYER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 35%', backgroundRepeat:'no-repeat', opacity:0.1, pointerEvents:'none', filter:'grayscale(100%)' }} />
         <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.45) 0%, rgba(8,8,8,0.15) 35%, rgba(8,8,8,0.9) 100%)', pointerEvents:'none' }} />
 
         {/* ── Sticky Header ── */}
-        <div style={{ position:'sticky', top:0, zIndex:50, background:'rgba(8,8,8,0.93)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid rgba(255,255,255,0.07)', padding:'14px 16px' }}>
+        <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
-              <p style={{ color:'rgba(255,255,255,0.22)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
-              <h1 style={{ color:'#fff', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Daily Devotional</h1>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
+              <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Daily Devotional</h1>
             </div>
             {today && (
               <button onClick={() => setShowJournal(true)} className="ax-edit-btn"
-                style={{ display:'flex', alignItems:'center', gap:5, padding:'8px 12px', borderRadius:9, background:'transparent', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'8px 12px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
                 {Ico.edit()} Edit
               </button>
             )}
@@ -316,9 +316,9 @@ export default function Devotional() {
               { label:'Total',    value: history.length + (today ? 1 : 0) },
               { label:'Today',    value: today ? '✓' : '—' },
             ].map(({ label, value }) => (
-              <div key={label} style={{ flex:1, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
-                <p style={{ color:'rgba(255,255,255,0.25)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
-                <p style={{ color:'#fff', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}</p>
+              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
+                <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
+                <p style={{ color:'var(--text-primary)', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}</p>
               </div>
             ))}
           </div>
@@ -333,11 +333,11 @@ export default function Devotional() {
           </p>
 
           {/* Scripture card */}
-          <div style={{ position:'relative', background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:16, padding:'24px 20px', overflow:'hidden', ...anim(100) }}>
+          <div style={{ position:'relative', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding:'24px 20px', overflow:'hidden', ...anim(100) }}>
             {/* Decorative cross */}
             <div style={{ position:'absolute', top:16, right:16, color:'rgba(255,255,255,0.04)', pointerEvents:'none' }}>{Ico.cross(48)}</div>
 
-            <p style={{ color:'rgba(255,255,255,0.3)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:16 }}>
+            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:16 }}>
               {verseLoading ? 'Loading…' : verse?.reference}
             </p>
 
@@ -359,13 +359,13 @@ export default function Devotional() {
           {/* Journal section */}
           {!today ? (
             <div style={anim(200)}>
-              <div style={{ background:'rgba(255,255,255,0.02)', border:'1px dashed rgba(255,255,255,0.1)', borderRadius:14, padding:'32px 20px', textAlign:'center', marginBottom:0 }}>
+              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.1)', borderRadius:14, padding:'32px 20px', textAlign:'center', marginBottom:0 }}>
                 <div style={{ color:'rgba(255,255,255,0.15)', marginBottom:14, display:'flex', justifyContent:'center' }}>{Ico.book(30)}</div>
-                <p style={{ color:'rgba(255,255,255,0.3)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:20 }}>
+                <p style={{ color:'var(--text-muted)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:20 }}>
                   Reflect on today's scripture.<br/>Write what it means to you.
                 </p>
                 <button onClick={() => setShowJournal(true)} className="ax-journal-btn"
-                  style={{ padding:'13px 28px', background:'#fff', color:'#080808', border:'none', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:7 }}>
+                  style={{ padding:'13px 28px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:7 }}>
                   {Ico.edit()} Write Reflection
                 </button>
               </div>
@@ -374,27 +374,27 @@ export default function Devotional() {
             <Card style={anim(200)}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
                 <SectionHead title="Today's Journal" />
-                <span style={{ display:'flex', alignItems:'center', gap:5, color:'rgba(255,255,255,0.5)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
+                <span style={{ display:'flex', alignItems:'center', gap:5, color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
                   {Ico.check()} Completed
                 </span>
               </div>
 
               {today.reflection && (
                 <div style={{ marginBottom:14 }}>
-                  <p style={{ color:'rgba(255,255,255,0.3)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Reflection</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Reflection</p>
                   <p style={{ color:'rgba(255,255,255,0.75)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.8 }}>{today.reflection}</p>
                 </div>
               )}
 
               {today.application && (
                 <div style={{ paddingTop:12, borderTop:'1px solid rgba(255,255,255,0.06)' }}>
-                  <p style={{ color:'rgba(255,255,255,0.3)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Application</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Application</p>
                   <p style={{ color:'rgba(255,255,255,0.75)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.8 }}>{today.application}</p>
                 </div>
               )}
 
               <button onClick={() => setShowJournal(true)} className="ax-edit-btn"
-                style={{ marginTop:16, width:'100%', padding:'10px', borderRadius:9, background:'transparent', border:'1px solid rgba(255,255,255,0.09)', color:'rgba(255,255,255,0.35)', fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6, transition:'all 0.2s' }}>
+                style={{ marginTop:16, width:'100%', padding:'10px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'var(--text-muted)', fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6, transition:'all 0.2s' }}>
                 {Ico.edit()} Edit Entry
               </button>
             </Card>
