@@ -95,6 +95,7 @@ export default function Settings() {
     calorie_goal:'', water_goal:'', faith_focus:'',
   })
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [isAdmin,   setIsAdmin]   = useState(false)
   const [saving,  setSaving]  = useState(false)
   const [saved,   setSaved]   = useState(false)
   const [error,   setError]   = useState('')
@@ -106,6 +107,7 @@ export default function Settings() {
       .then(({ data }) => {
         if (data) {
           if (data.avatar_url) setAvatarUrl(data.avatar_url)
+          if (data.role === 'admin') setIsAdmin(true)
           setProfile(p => ({ ...p, ...data }))
         }
       })
@@ -394,6 +396,13 @@ export default function Settings() {
               <p style={{ color:'rgba(255,255,255,0.4)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Signed in as</p>
               <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>{user?.email}</p>
             </div>
+            {/* Admin panel — only visible to admin */}
+            {isAdmin && (
+              <button onClick={() => navigate('/admin')} style={{ width:'100%', padding:'12px', background:'rgba(255,255,255,0.04)', border:'1px solid var(--border)', borderRadius:9, color:'var(--text-primary)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:10 }}>
+                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Admin Panel
+              </button>
+            )}
             {/* Re-run onboarding */}
             <button onClick={() => navigate('/onboarding')} className="ax-reob"
               style={{ width:'100%', padding:'12px', background:'transparent', border:'1px solid var(--border)', borderRadius:9, color:'var(--text-muted)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s', marginBottom:10 }}>
