@@ -89,7 +89,7 @@ export default function Settings() {
   const { themeKey, setTheme } = useTheme()
 
   const [profile, setProfile] = useState({
-    name:'', age:'', gender:'', height_ft:'', height_in:'',
+    name:'', age:'', gender:'', height_ft:'', height_in:'', avatar_url:'', avatar_url:'',
     weight_lbs:'', goal_weight:'', primary_goal:'', activity_level:'',
     calorie_goal:'', water_goal:'', faith_focus:'',
   })
@@ -131,8 +131,9 @@ export default function Settings() {
 
   const handleSignOut = async () => { await signOut(); navigate('/') }
 
-  const [wipeStep,   setWipeStep]   = useState(0) // 0=idle, 1=confirm, 2=wiping, 3=done
-  const [wipeError,  setWipeError]  = useState('')
+  const [wipeStep,        setWipeStep]       = useState(0)
+  const [wipeError,       setWipeError]      = useState('')
+  const [avatarUploading, setAvatarUploading] = useState(false)
 
   const handleWipe = async () => {
     if (wipeStep === 0) { setWipeStep(1); return }
@@ -154,6 +155,26 @@ export default function Settings() {
     }
   }
 
+  const uploadAvatar = async (file) => {
+    if (!file || !user) return
+    setAvatarUploading(true)
+    try {
+      const ext   = file.name.split(".").pop()
+      const fpath = user.id + "/avatar." + ext
+      const { error: upErr } = await supabase.storage
+        .from("avatars")
+        .upload(fpath, file, { upsert: true, contentType: file.type })
+      if (upErr) throw upErr
+      const { data } = supabase.storage.from("avatars").getPublicUrl(fpath)
+      const url = data.publicUrl + "?t=" + Date.now()
+      await supabase.from("profiles").upsert({ id: user.id, avatar_url: url }, { onConflict: "id" })
+      setProfile(p => ({ ...p, avatar_url: url }))
+    } catch (e) {
+      console.error("Avatar upload failed:", e)
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
   const anim = (delay=0) => ({
     opacity: visible ? 1 : 0,
     transform: visible ? 'translateY(0)' : 'translateY(12px)',
@@ -174,6 +195,9 @@ export default function Settings() {
         .ax-signout:hover{background:rgba(255,50,50,0.06)!important;border-color:rgba(255,80,80,0.3)!important;color:rgba(255,120,120,0.8)!important;}
         .ax-reob:hover{border-color:rgba(255,255,255,0.25)!important;color:rgba(255,255,255,0.6)!important;}
         .ax-wipe:hover{background:rgba(255,30,30,0.08)!important;border-color:rgba(255,60,60,0.4)!important;}
+        @keyframes spin{to{transform:rotate(360deg);}}
+        @keyframes spin{to{transform:rotate(360deg);}}
+        @keyframes spin{to{transform:rotate(360deg);}}
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
@@ -186,10 +210,29 @@ export default function Settings() {
             style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
             {Ico.back()}
           </button>
-          <div>
+          <div style={{ flex:1 }}>
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
             <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:18, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>Settings</h1>
           </div>
+          {/* Profile avatar — top right */}
+          <label style={{ cursor:'pointer', flexShrink:0 }} title="Change photo">
+            <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) uploadAvatar(f) }} />
+            <div style={{ width:40, height:40, borderRadius:'50%', border:'1.5px solid var(--border)', overflow:'hidden', background:'var(--bg-card)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', flexShrink:0 }}>
+              {profile.avatar_url ? (
+                <img src={profile.avatar_url} alt="avatar" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              ) : (
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:'var(--text-muted)' }}>
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              )}
+              {avatarUploading && (
+                <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.55)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <div style={{ width:14, height:14, border:'2px solid rgba(255,255,255,0.25)', borderTop:'2px solid #fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }} />
+                </div>
+              )}
+            </div>
+          </label>
         </div>
 
         <div style={{ maxWidth:520, width:'100%', margin:'0 auto', padding:'20px 16px 0', display:'flex', flexDirection:'column', gap:16, position:'relative', zIndex:1 }}>
