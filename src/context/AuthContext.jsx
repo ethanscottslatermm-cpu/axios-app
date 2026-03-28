@@ -27,6 +27,15 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Sign out when app is swiped away / closed
+  useEffect(() => {
+    const handleClose = () => {
+      if (user) supabase.auth.signOut()
+    }
+    window.addEventListener('pagehide', handleClose)
+    return () => window.removeEventListener('pagehide', handleClose)
+  }, [user])
+
   // Auto-logout after 3 minutes of inactivity
   useEffect(() => {
     if (!user) return

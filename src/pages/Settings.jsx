@@ -90,10 +90,11 @@ export default function Settings() {
   const { themeKey, setTheme } = useTheme()
 
   const [profile, setProfile] = useState({
-    name:'', age:'', gender:'', height_ft:'', height_in:'', avatar_url:'', avatar_url:'',
+    name:'', age:'', gender:'', height_ft:'', height_in:'',
     weight_lbs:'', goal_weight:'', primary_goal:'', activity_level:'',
     calorie_goal:'', water_goal:'', faith_focus:'',
   })
+  const [avatarUrl, setAvatarUrl] = useState('')
   const [saving,  setSaving]  = useState(false)
   const [saved,   setSaved]   = useState(false)
   const [error,   setError]   = useState('')
@@ -114,8 +115,9 @@ export default function Settings() {
     if (!profile.name?.trim()) { setError('Name is required.'); return }
     setError(''); setSaving(true)
     try {
+      const { avatar_url: _av, ...profileData } = profile
       const { error: dbErr } = await supabase.from('profiles').upsert({
-        id: user.id, ...profile,
+        id: user.id, ...profileData,
         age:         parseInt(profile.age) || null,
         height_ft:   parseInt(profile.height_ft) || null,
         height_in:   parseInt(profile.height_in) || null,
@@ -176,7 +178,7 @@ export default function Settings() {
       const { data } = supabase.storage.from('avatars').getPublicUrl(fpath)
       const url = data.publicUrl + '?t=' + Date.now()
       await supabase.from('profiles').upsert({ id: user.id, avatar_url: url }, { onConflict: 'id' })
-      setProfile(p => ({ ...p, avatar_url: url }))
+      setAvatarUrl(url)
     } catch (e) {
       console.error('Avatar upload failed:', e)
     } finally {
@@ -226,8 +228,8 @@ export default function Settings() {
           <label style={{ cursor:'pointer', flexShrink:0 }} title="Change photo">
             <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) openCrop(f) }} />
             <div style={{ width:40, height:40, borderRadius:'50%', border:'1.5px solid var(--border)', overflow:'hidden', background:'var(--bg-card)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', flexShrink:0 }}>
-              {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt="avatar" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="avatar" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
               ) : (
                 <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:'var(--text-muted)' }}>
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
