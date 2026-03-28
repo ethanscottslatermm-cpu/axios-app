@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { webAuthnSupported, registerBiometric, hasRegisteredDevice } from '../hooks/useWebAuthn'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -91,7 +92,9 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [wordIndex, setWordIndex] = useState(0)
+  const [wordIndex,    setWordIndex]    = useState(0)
+  const [offerFaceId, setOfferFaceId] = useState(false)
+  const [registeringFaceId, setRegisteringFaceId] = useState(false)
   const [phase, setPhase] = useState('in')
 
   useEffect(() => {
@@ -110,13 +113,27 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const { error } = await signIn(email, password)
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
+    try {
+      const data = await signIn(email, password)
+      // Check if Face ID is supported and not yet registered
+      if (webAuthnSupported() && data?.user) {
+        const already = await hasRegisteredDevice(data.user.id)
+        if (!already) { setOfferFaceId(true); setLoading(false); return }
+      }
       navigate('/dashboard')
+    } catch(err) {
+      setError(err.message)
+      setLoading(false)
     }
+  }
+
+  const handleRegisterFaceId = async () => {
+    setRegisteringFaceId(true)
+    try {
+      const { data: { user: u } } = await import('../lib/supabase').then(m => m.supabase.auth.getUser())
+      if (u) await registerBiometric(u)
+    } catch(e) { /* ignore — they can set it up later */ }
+    finally { setRegisteringFaceId(false); navigate('/dashboard') }
   }
 
   return (
@@ -278,9 +295,23 @@ export default function Login() {
               <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>
             )}
 
+            {offerFaceId ? (
+              <div style={{ textAlign:'center' }}>
+                <p style={{ color:'rgba(255,255,255,0.7)', fontSize:'0.75rem', fontFamily:'"Helvetica Neue",sans-serif', marginBottom:'1.2rem', lineHeight:1.5 }}>Enable Face ID for faster sign-in?</p>
+                <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId}
+                  style={{ width:'100%', padding:'13px', borderRadius:8, border:'none', background:'#fff', color:'#000', fontSize:'0.75rem', fontWeight:700, fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer', marginBottom:10 }}>
+                  {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
+                </button>
+                <button type="button" onClick={() => navigate('/dashboard')}
+                  style={{ width:'100%', padding:'11px', borderRadius:8, border:'1px solid rgba(255,255,255,0.15)', background:'transparent', color:'rgba(255,255,255,0.45)', fontSize:'0.7rem', fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.12em', textTransform:'uppercase', cursor:'pointer' }}>
+                  Skip for now
+                </button>
+              </div>
+            ) : (
             <button type="submit" disabled={loading} className="enter-btn">
               {loading ? 'Entering...' : 'Enter'}
             </button>
+            )}
 
             <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.85)', textShadow: '0 0 10px rgba(255,255,255,0.55), 0 0 25px rgba(255,255,255,0.2), 0 0 50px rgba(255,255,255,0.08)' }}>
               Authorized access only

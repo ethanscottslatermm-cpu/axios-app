@@ -19,6 +19,7 @@ import Devotional     from './modules/devotional/Devotional'
 import FinanceTracker from './modules/finance/FinanceTracker'
 import Admin       from './pages/Admin'
 import AdminGuard  from './components/AdminGuard'
+import AppLock     from './components/AppLock'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ export default function App() {
       <AuthProvider>
         <ThemeProvider>
           <AppProvider>
+            <AppLock>
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Login />} />
@@ -74,6 +76,7 @@ export default function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </BrowserRouter>
+            </AppLock>
           </AppProvider>
         </ThemeProvider>
       </AuthProvider>

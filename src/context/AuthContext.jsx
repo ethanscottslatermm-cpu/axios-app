@@ -6,19 +6,19 @@ const INACTIVITY_MS = 3 * 60 * 1000 // 3 minutes
 
 export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null)
-  const [loading, setLoading] = useState(true) // ← key fix for refresh crash
-  const timerRef = useRef(null)
-
+  const [loading, setLoading] = useState(true)
+  const [locked,  setLocked]  = useState(false) // biometric lock
+  const timerRef   = useRef(null)
   const resetTimer = useRef(null)
 
   useEffect(() => {
-    // Get the current session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
+      const u = session?.user ?? null
+      setUser(u)
+      if (u) setLocked(true) // lock on every app open if session exists
       setLoading(false)
     })
 
-    // Listen for auth state changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       setLoading(false)
@@ -27,43 +27,40 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  // Sign out when app is swiped away / closed
+  // Lock (not sign out) when app is swiped away / closed
   useEffect(() => {
-    const handleClose = () => {
-      if (user) supabase.auth.signOut()
-    }
+    const handleClose = () => { if (user) setLocked(true) }
     window.addEventListener('pagehide', handleClose)
     return () => window.removeEventListener('pagehide', handleClose)
   }, [user])
 
-  // Auto-logout after 3 minutes of inactivity
+  // Auto-lock after 3 minutes of inactivity
   useEffect(() => {
-    if (!user) return
+    if (!user || locked) return
 
-    const logout = () => supabase.auth.signOut().then(() => setUser(null))
+    const lock = () => setLocked(true)
 
     const reset = () => {
       clearTimeout(timerRef.current)
-      timerRef.current = setTimeout(logout, INACTIVITY_MS)
+      timerRef.current = setTimeout(lock, INACTIVITY_MS)
     }
 
     resetTimer.current = reset
 
     const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click']
     events.forEach(e => window.addEventListener(e, reset, { passive: true }))
-    reset() // start the timer
+    reset()
 
     return () => {
       clearTimeout(timerRef.current)
       events.forEach(e => window.removeEventListener(e, reset))
     }
-  }, [user])
+  }, [user, locked])
 
   const signIn = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
 
-    // Check account status before allowing in
     const { data: profile } = await supabase
       .from('profiles')
       .select('status, suspended_until')
@@ -84,16 +81,20 @@ export function AuthProvider({ children }) {
       }
     }
 
+    setLocked(false) // freshly signed in — no lock needed
     return data
   }
 
   const signOut = async () => {
     await supabase.auth.signOut()
     setUser(null)
+    setLocked(false)
   }
 
+  const unlock = () => setLocked(false)
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, locked, signIn, signOut, unlock }}>
       {children}
     </AuthContext.Provider>
   )
