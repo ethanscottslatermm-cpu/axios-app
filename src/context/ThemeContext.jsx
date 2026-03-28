@@ -251,7 +251,18 @@ export function ThemeProvider({ children }) {
     if (!user) { setLoading(false); return }
     supabase.from('profiles').select('theme').eq('id', user.id).single()
       .then(({ data }) => {
-        if (data?.theme && THEMES[data.theme]) setThemeKey(data.theme)
+        const local = localStorage.getItem('axios-theme')
+        const db    = data?.theme
+        if (local && THEMES[local]) {
+          // localStorage is the user's last explicit choice — trust it
+          setThemeKey(local)
+          // Sync back to Supabase if out of date
+          if (db !== local) {
+            supabase.from('profiles').upsert({ id: user.id, theme: local }, { onConflict: 'id' })
+          }
+        } else if (db && THEMES[db]) {
+          setThemeKey(db)
+        }
         setLoading(false)
       })
       .catch(() => setLoading(false))
