@@ -104,7 +104,10 @@ export default function Settings() {
     if (!user) return
     supabase.from('profiles').select('*').eq('id', user.id).single()
       .then(({ data }) => {
-        if (data) setProfile(p => ({ ...p, ...data }))
+        if (data) {
+          if (data.avatar_url) setAvatarUrl(data.avatar_url)
+          setProfile(p => ({ ...p, ...data }))
+        }
       })
     setTimeout(() => setVisible(true), 60)
   }, [user])
