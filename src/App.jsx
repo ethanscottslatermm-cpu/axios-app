@@ -17,6 +17,8 @@ import FitnessTracker from './modules/fitness/FitnessTracker'
 import PrayerTracker  from './modules/prayer/PrayerTracker'
 import Devotional     from './modules/devotional/Devotional'
 import FinanceTracker from './modules/finance/FinanceTracker'
+import Admin       from './pages/Admin'
+import AdminGuard  from './components/AdminGuard'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +67,9 @@ export default function App() {
                 } />
                 <Route path="/finance" element={
                   <ProtectedRoute><OnboardingRoute><FinanceTracker /></OnboardingRoute></ProtectedRoute>
+                } />
+                <Route path="/admin" element={
+                  <ProtectedRoute><AdminGuard><Admin /></AdminGuard></ProtectedRoute>
                 } />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

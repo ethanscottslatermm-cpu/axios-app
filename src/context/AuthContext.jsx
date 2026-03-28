@@ -62,6 +62,28 @@ export function AuthProvider({ children }) {
   const signIn = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
+
+    // Check account status before allowing in
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('status, suspended_until')
+      .eq('id', data.user.id)
+      .single()
+
+    if (profile?.status === 'inactive' || profile?.status === 'deleted') {
+      await supabase.auth.signOut()
+      throw new Error('This account has been deactivated. Contact your administrator.')
+    }
+
+    if (profile?.status === 'suspended') {
+      const until = profile.suspended_until ? new Date(profile.suspended_until) : null
+      if (!until || until > new Date()) {
+        await supabase.auth.signOut()
+        const untilStr = until ? ` until ${until.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.` : '.'
+        throw new Error(`This account is suspended${untilStr}`)
+      }
+    }
+
     return data
   }
 
