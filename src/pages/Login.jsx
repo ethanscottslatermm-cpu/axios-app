@@ -233,9 +233,13 @@ export default function Login() {
               <span style={{
                 color: 'white', fontWeight: 900,
                 fontSize: 'clamp(1.8rem, 8vw, 2.8rem)',
-                letterSpacing: '0.18em', textTransform: 'uppercase',
+                letterSpacing: '0.2em', textTransform: 'uppercase',
                 lineHeight: 1, fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                textShadow: '0 0 40px rgba(255,255,255,0.12)',
+                textShadow: `-1px -1px 1px rgba(255,255,255,0.18),
+                              1px  1px 2px rgba(0,0,0,0.9),
+                             -2px -2px 4px rgba(255,255,255,0.07),
+                              2px  2px 6px rgba(0,0,0,0.7),
+                              0 0 40px rgba(255,255,255,0.08)`,
               }}>AXIOS</span>
             </div>
             <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
