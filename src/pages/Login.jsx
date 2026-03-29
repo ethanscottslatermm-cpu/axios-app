@@ -68,37 +68,35 @@ const styles = `
   .login-input {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.18);
     border-radius: 2px;
-    color: white;
+    color: rgba(255,255,255,0.9);
     padding: 13px 14px;
     font-size: 1rem;
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
     outline: none;
     -webkit-appearance: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
     caret-color: white;
+    box-shadow: 0 0 12px rgba(0,0,0,0.5), inset 0 1px 3px rgba(0,0,0,0.4);
   }
   .login-input:focus {
-    border-color: rgba(255,255,255,0.75);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 0 24px rgba(255,255,255,0.14), 0 0 50px rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.6);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.04), inset 0 1px 3px rgba(0,0,0,0.4);
     animation: inputPulse 2s ease-in-out infinite;
-    background: rgba(255,255,255,0.08);
-    border-left: 1px solid rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.05);
+    border-left: 1px solid rgba(255,255,255,0.85);
   }
   .login-input-icon {
     padding-left: 36px;
   }
 
   .enter-btn {
-    background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.25) 50%, transparent 65%);
-    background-size: 300% 100%;
-    animation: btnShine 4s ease-in-out infinite;
     width: 100%;
-    background: white;
-    color: black;
-    border: none;
+    background: rgba(0,0,0,0.6);
+    color: rgba(255,255,255,0.92);
+    border: 1px solid rgba(255,255,255,0.28);
     border-radius: 2px;
     padding: 14px;
     font-size: 0.72rem;
@@ -107,12 +105,17 @@ const styles = `
     text-transform: uppercase;
     cursor: pointer;
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
-    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
     -webkit-appearance: none;
+    box-shadow: 0 0 18px rgba(255,255,255,0.06), 0 0 40px rgba(255,255,255,0.03), inset 0 0 20px rgba(255,255,255,0.03);
+    text-shadow: 0 0 14px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.2);
+    animation: btnShine 4s ease-in-out infinite;
+    background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.07) 50%, transparent 65%);
+    background-size: 300% 100%;
   }
-  .enter-btn:hover  { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 0 30px rgba(255,255,255,0.45), 0 0 60px rgba(255,255,255,0.15), 0 4px 20px rgba(0,0,0,0.4); }
+  .enter-btn:hover  { transform: translateY(-1px); border-color: rgba(255,255,255,0.55); box-shadow: 0 0 28px rgba(255,255,255,0.14), 0 0 60px rgba(255,255,255,0.06), inset 0 0 24px rgba(255,255,255,0.05); }
   .enter-btn:active { transform: translateY(0); box-shadow: none; }
-  .enter-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 `
 
 export default function Login() {
@@ -286,13 +289,13 @@ export default function Login() {
           {/* Form */}
           <form onSubmit={handleSubmit} style={{
             width: '100%',
-            background: 'rgba(6,6,6,0.82)',
-            border: '1px solid rgba(255,255,255,0.13)',
+            background: 'rgba(4,4,4,0.88)',
+            border: '1px solid rgba(255,255,255,0.2)',
             borderRadius: '2px',
             padding: 'clamp(1.25rem, 5vw, 2rem)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            boxShadow: '0 8px 60px rgba(0,0,0,0.7), inset 0 0 0 0.5px rgba(255,255,255,0.04)',
+            backdropFilter: 'blur(28px)',
+            WebkitBackdropFilter: 'blur(28px)',
+            boxShadow: '0 8px 60px rgba(0,0,0,0.85), 0 0 40px rgba(255,255,255,0.04), inset 0 0 0 0.5px rgba(255,255,255,0.07)',
           }}>
             <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 12px rgba(255,255,255,0.6), 0 0 30px rgba(255,255,255,0.25), 0 0 60px rgba(255,255,255,0.1)' }}>
               Secure Access
