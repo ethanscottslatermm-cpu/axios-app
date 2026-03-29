@@ -4,8 +4,9 @@ const call = async (fn, body) => {
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify(body),
   })
-  const data = await res.json()
-  if (!res.ok) throw new Error(data.error || 'Request failed')
+  let data
+  try { data = await res.json() } catch { data = {} }
+  if (!res.ok) throw new Error(`[${res.status}] ${data.error || data.message || res.statusText || 'Request failed'}`)
   return data
 }
 
