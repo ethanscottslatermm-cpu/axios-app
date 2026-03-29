@@ -366,45 +366,11 @@ export default function FinanceTracker() {
                       </div>
                       <div style={{ textAlign:'right' }}>
                         <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>
-                          {acc.balance != null ? '
-          <div style={anim(80)}>
-            <SectionHead title="Market News" sub="General" />
-            {newsLoading ? (
-              <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
-            ) : (
-              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                {news.map((item, i) => <NewsCard key={i} item={item} />)}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      <BottomNav />
-    </>
-  )
-}
- + acc.balance.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) : '—'}
+                          {acc.balance != null ? '$' + acc.balance.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) : '—'}
                         </p>
                         {acc.available != null && acc.available !== acc.balance && (
                           <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>
-                            {'
-          <div style={anim(80)}>
-            <SectionHead title="Market News" sub="General" />
-            {newsLoading ? (
-              <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
-            ) : (
-              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                {news.map((item, i) => <NewsCard key={i} item={item} />)}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      <BottomNav />
-    </>
-  )
-}
- + acc.available.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })} available
+                            {'$' + acc.available.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })} available
                           </p>
                         )}
                       </div>
@@ -425,24 +391,7 @@ export default function FinanceTracker() {
                           </p>
                         </div>
                         <p style={{ color: t.amount < 0 ? '#4ade80' : 'var(--text-primary)', fontSize:14, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', marginLeft:12, flexShrink:0 }}>
-                          {(t.amount < 0 ? '+' : '-') + '
-          <div style={anim(80)}>
-            <SectionHead title="Market News" sub="General" />
-            {newsLoading ? (
-              <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
-            ) : (
-              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                {news.map((item, i) => <NewsCard key={i} item={item} />)}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      <BottomNav />
-    </>
-  )
-}
- + Math.abs(t.amount).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}
+                          {(t.amount < 0 ? '+' : '-') + '$' + Math.abs(t.amount).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}
                         </p>
                       </div>
                     ))}
@@ -456,7 +405,7 @@ export default function FinanceTracker() {
             )}
           </div>
         )}
-        {activeTab === 'news' && (
+
           <div style={anim(80)}>
             <SectionHead title="Market News" sub="General" />
             {newsLoading ? (
