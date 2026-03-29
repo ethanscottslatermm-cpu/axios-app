@@ -1,5 +1,5 @@
 const call = async (fn, body) => {
-  const res = await fetch(`/api/${fn}`, {
+  const res = await fetch(`/.netlify/functions/${fn}`, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify(body),
