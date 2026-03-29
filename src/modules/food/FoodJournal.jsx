@@ -6,6 +6,7 @@ import { useFoodHistory } from '../../hooks/useFoodLog'
 import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
+import { searchFood } from '../../lib/foodSearch'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 
@@ -71,37 +72,28 @@ function AISearchPanel({ onSelect, onClose }) {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState('')
+  const [focused, setFocused] = useState(false)
   const inputRef = useRef(null)
 
   useEffect(() => { inputRef.current?.focus() }, [])
 
-  const search = async () => {
-    if (!query.trim()) return
-    setLoading(true); setError(''); setResults([])
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: `You are a nutrition database. When given a food query, respond ONLY with a JSON array (no markdown, no explanation) of up to 5 food items. Each item must have: name (string), calories (number, per serving), protein (number, grams), carbs (number, grams), fat (number, grams), serving (string describing the serving size). Be accurate and realistic. Example format: [{"name":"Grilled Chicken Breast","calories":165,"protein":31,"carbs":0,"fat":3.6,"serving":"3.5 oz / 100g"}]`,
-          messages: [{ role: 'user', content: query }],
-        }),
-      })
-      const data = await res.json()
-      const text = data.content?.[0]?.text || ''
-      const clean = text.replace(/```json|```/g, '').trim()
-      const parsed = JSON.parse(clean)
-      setResults(Array.isArray(parsed) ? parsed : [])
-    } catch {
-      setError('Could not fetch results. Try again or add manually.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleKey = e => { if (e.key === 'Enter') search() }
+  // Debounced live search
+  useEffect(() => {
+    if (!query.trim()) { setResults([]); setError(''); return }
+    setLoading(true); setError('')
+    const t = setTimeout(async () => {
+      try {
+        const items = await searchFood(query)
+        setResults(items)
+        if (items.length === 0) setError('No results found. Try a different name.')
+      } catch {
+        setError('Search unavailable. Check your connection.')
+      } finally {
+        setLoading(false)
+      }
+    }, 350)
+    return () => clearTimeout(t)
+  }, [query])
 
   return (
     <div style={{
@@ -110,80 +102,94 @@ function AISearchPanel({ onSelect, onClose }) {
       display:'flex', flexDirection:'column', padding:'0 0 env(safe-area-inset-bottom)',
     }}>
       {/* Header */}
-      <div style={{ padding:'16px 16px 0', display:'flex', alignItems:'center', gap:12, borderBottom:'1px solid var(--border)', paddingBottom:14 }}>
-        <div style={{ flex:1, display:'flex', alignItems:'center', gap:10, background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:11, padding:'11px 14px' }}>
-          <div style={{ color:'rgba(255,255,255,0.4)' }}>{Ico.spark()}</div>
+      <div style={{ padding:'16px 16px 14px', display:'flex', alignItems:'center', gap:12, borderBottom:'1px solid var(--border)' }}>
+        <div style={{
+          flex:1, display:'flex', alignItems:'center', gap:10,
+          background: focused ? 'rgba(255,255,255,0.07)' : 'var(--bg-card)',
+          border: focused ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(255,255,255,0.12)',
+          boxShadow: focused ? '0 0 18px rgba(255,255,255,0.06)' : 'none',
+          borderRadius:11, padding:'11px 14px',
+          transition:'border-color 0.2s, box-shadow 0.2s',
+        }}>
+          <div style={{ color: loading ? 'var(--glow-bar)' : 'rgba(255,255,255,0.4)', transition:'color 0.2s' }}>
+            {loading ? (
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation:'spin 0.8s linear infinite' }}>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+            ) : (
+              <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+            )}
+          </div>
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
-            onKeyDown={handleKey}
-            placeholder="Search any food…"
-            style={{ flex:1, background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:15, fontFamily:'Helvetica Neue,sans-serif' }}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            placeholder="Search 300,000+ foods…"
+            style={{ flex:1, background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:15, fontFamily:'Helvetica Neue,sans-serif', caretColor:'var(--glow-bar)' }}
           />
           {query && (
-            <button onClick={() => { setQuery(''); setResults([]) }} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', display:'flex' }}>
+            <button onClick={() => { setQuery(''); setResults([]); setError('') }} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', display:'flex' }}>
               {Ico.close()}
             </button>
           )}
         </div>
-        <button onClick={search} disabled={loading || !query.trim()}
-          style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'11px 16px', fontSize:12, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: loading || !query.trim() ? 'not-allowed' : 'pointer', opacity: loading || !query.trim() ? 0.5 : 1, whiteSpace:'nowrap' }}>
-          {loading ? '…' : 'Search'}
-        </button>
         <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)', display:'flex' }}>
           {Ico.close(20)}
         </button>
       </div>
 
-      {/* AI badge */}
-      <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:6 }}>
-        <div style={{ color:'var(--text-muted)' }}>{Ico.spark()}</div>
-        <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em' }}>AI-powered nutrition lookup · tap a result to add it</p>
+      {/* Source badge */}
+      <div style={{ padding:'8px 16px', display:'flex', alignItems:'center', gap:6 }}>
+        <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color:'var(--text-faint)' }}>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em', textTransform:'uppercase' }}>
+          USDA FoodData Central · 300,000+ foods
+        </p>
       </div>
 
       {/* Results */}
-      <div style={{ flex:1, overflowY:'auto', padding:'0 16px 16px' }}>
-        {loading && (
-          <div style={{ textAlign:'center', padding:'40px 0' }}>
-            <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>Looking up nutrition data…</p>
-          </div>
-        )}
+      <div style={{ flex:1, overflowY:'auto', padding:'4px 16px 16px' }}>
         {error && <p style={{ color:'rgba(255,100,100,0.8)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'20px 0' }}>{error}</p>}
-        {!loading && results.length === 0 && !error && query && (
-          <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'32px 0', fontStyle:'italic' }}>No results yet — hit Search</p>
-        )}
-        {!loading && results.length === 0 && !error && !query && (
+        {!loading && results.length === 0 && !error && !query.trim() && (
           <div style={{ textAlign:'center', padding:'48px 20px' }}>
-            <p style={{ color:'rgba(255,255,255,0.12)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.7 }}>Try "grilled salmon", "oatmeal with banana",<br/>or any food you ate today.</p>
+            <p style={{ color:'rgba(255,255,255,0.12)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.7 }}>
+              Start typing to search — results appear instantly.<br/>Try "chicken breast", "brown rice", or "banana".
+            </p>
           </div>
         )}
-        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
           {results.map((item, i) => (
-            <button key={i} onClick={() => onSelect(item)}
+            <button key={item.fdcId || i} onClick={() => onSelect(item)}
               style={{
-                background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12,
-                padding:'14px 16px', textAlign:'left', cursor:'pointer', width:'100%',
-                transition:'background 0.2s, border-color 0.2s',
+                background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)',
+                borderRadius:12, padding:'14px 16px', textAlign:'left', cursor:'pointer', width:'100%',
+                transition:'background 0.15s, border-color 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.18)' }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.09)' }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.22)' }}
+              onMouseLeave={e => { e.currentTarget.style.background=''; e.currentTarget.style.borderColor='' }}
             >
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
-                <div>
-                  <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{item.name}</p>
-                  <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{item.serving}</p>
+                <div style={{ flex:1, minWidth:0, marginRight:12 }}>
+                  <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.name}</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
+                    {item.brand ? item.brand + ' · ' : ''}{item.serving}
+                  </p>
                 </div>
                 <div style={{ textAlign:'right', flexShrink:0 }}>
-                  <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{item.calories}</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{item.calories}</p>
                   <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>cal</p>
                 </div>
               </div>
-              <div style={{ display:'flex', gap:8 }}>
-                {[['P', item.protein], ['C', item.carbs], ['F', item.fat]].map(([l, v]) => (
-                  <div key={l} style={{ flex:1, background:'var(--bg-card)', borderRadius:7, padding:'6px 8px', textAlign:'center' }}>
-                    <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.15em', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{l}</p>
-                    <p style={{ color:'rgba(255,255,255,0.7)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{v}g</p>
+              <div style={{ display:'flex', gap:6 }}>
+                {[['Protein', item.protein + 'g'], ['Carbs', item.carbs + 'g'], ['Fat', item.fat + 'g']].map(([l, v]) => (
+                  <div key={l} style={{ flex:1, background:'rgba(255,255,255,0.04)', borderRadius:7, padding:'6px 8px', textAlign:'center' }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{l}</p>
+                    <p style={{ color:'var(--text-secondary)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{v}</p>
                   </div>
                 ))}
               </div>
@@ -191,6 +197,8 @@ function AISearchPanel({ onSelect, onClose }) {
           ))}
         </div>
       </div>
+
+      <style>{`@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }`}</style>
     </div>
   )
 }
