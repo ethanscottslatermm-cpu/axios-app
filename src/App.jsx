@@ -18,8 +18,9 @@ import PrayerTracker  from './modules/prayer/PrayerTracker'
 import Devotional     from './modules/devotional/Devotional'
 import FinanceTracker from './modules/finance/FinanceTracker'
 import Admin       from './pages/Admin'
-import AdminGuard  from './components/AdminGuard'
-import AppLock     from './components/AppLock'
+import AdminGuard   from './components/AdminGuard'
+import FinanceGuard from './components/FinanceGuard'
+import AppLock      from './components/AppLock'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,7 +69,7 @@ export default function App() {
                   <ProtectedRoute><OnboardingRoute><Devotional /></OnboardingRoute></ProtectedRoute>
                 } />
                 <Route path="/finance" element={
-                  <ProtectedRoute><OnboardingRoute><FinanceTracker /></OnboardingRoute></ProtectedRoute>
+                  <ProtectedRoute><OnboardingRoute><FinanceGuard><FinanceTracker /></FinanceGuard></OnboardingRoute></ProtectedRoute>
                 } />
                 <Route path="/admin" element={
                   <ProtectedRoute><AdminGuard><Admin /></AdminGuard></ProtectedRoute>
