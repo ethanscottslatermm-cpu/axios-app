@@ -183,7 +183,7 @@ export default function FinanceTracker() {
       const [bal, tx] = await Promise.all([fetchBalances(user.id), fetchTransactions(user.id)])
       setAccounts(bal.accounts); setTxns(tx.transactions); setConnected(true)
     } catch (err) {
-      if (err.message === 'No bank connected') {
+      if (err.message.includes('No bank connected')) {
         setConnected(false)
         try { const { link_token } = await getLinkToken(user.id); setLinkToken(link_token) } catch {}
       } else { setBankError(err.message) }
