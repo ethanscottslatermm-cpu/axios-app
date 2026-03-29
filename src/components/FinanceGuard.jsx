@@ -7,8 +7,9 @@ import {
   hasRegisteredDevice,
 } from '../hooks/useWebAuthn'
 
-const LOCK_AFTER_MS = 30 * 1000 // re-lock after 30s away from module
-const STORAGE_KEY   = 'finance-unlocked-at'
+const LOCK_AFTER_MS  = 30 * 1000
+const STORAGE_KEY    = 'finance-unlocked-at'
+export const FINANCE_LOCK_KEY = 'axios-finance-lock' // shared with Settings
 
 export default function FinanceGuard({ children }) {
   const { user } = useAuth()
@@ -33,6 +34,12 @@ export default function FinanceGuard({ children }) {
   useEffect(() => {
     if (!user) return
     ;(async () => {
+      // Finance lock disabled — skip all checks
+      if (localStorage.getItem(FINANCE_LOCK_KEY) !== 'true') {
+        setPhase('unlocked')
+        return
+      }
+
       // Check if still within the 30-second grace window
       const unlockedAt = parseInt(sessionStorage.getItem(STORAGE_KEY) || '0', 10)
       if (unlockedAt && Date.now() - unlockedAt < LOCK_AFTER_MS) {
