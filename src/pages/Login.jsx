@@ -86,7 +86,7 @@ const styles = `
 `
 
 export default function Login() {
-  const { signIn } = useAuth()
+  const { signIn, user: authUser } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -130,9 +130,8 @@ export default function Login() {
   const handleRegisterFaceId = async () => {
     setRegisteringFaceId(true)
     try {
-      const { data: { user: u } } = await import('../lib/supabase').then(m => m.supabase.auth.getUser())
-      if (u) await registerBiometric(u)
-    } catch(e) { /* ignore — they can set it up later */ }
+      if (authUser) await registerBiometric(authUser)
+    } catch(e) { console.error('FaceID register:', e.message) }
     finally { setRegisteringFaceId(false); navigate('/dashboard') }
   }
 
