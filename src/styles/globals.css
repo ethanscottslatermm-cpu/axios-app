@@ -33,6 +33,7 @@
   --scrollbar:     rgba(255,255,255,0.1);
   --badge-bg:      rgba(255,255,255,0.07);
   --stat-bg:       rgba(255,255,255,0.04);
+  --card-shadow:   0 0 0 0.5px rgba(255,255,255,0.06), 0 0 18px rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.45);
 }
 
 * { box-sizing: border-box; }

@@ -58,7 +58,7 @@ function SectionHead({ title, sub }) {
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'18px 16px', ...style }}>
       {children}
     </div>
   )
@@ -157,14 +157,14 @@ function LogWorkoutSheet({ onSave, onClose }) {
 
             <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:14 }}>
               {exercises.map((ex, i) => (
-                <div key={i} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'14px' }}>
+                <div key={i} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px' }}>
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
                     <p style={{ color:'rgba(255,255,255,0.45)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Exercise {i+1}</p>
                     <button onClick={() => removeEx(i)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)' }}>{Ico.trash()}</button>
                   </div>
                   {/* Name */}
                   <div style={{ marginBottom:10 }}>
-                    <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:9, padding:'11px 13px' }}>
+                    <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:9, padding:'11px 13px' }}>
                       <input value={ex.name} onChange={e => setEx(i,'name',e.target.value)} placeholder="Exercise name" style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }} />
                     </div>
                   </div>
@@ -173,7 +173,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
                     {[['Sets','sets'],['Reps','reps'],['Weight (lbs)','weight']].map(([lbl,key]) => (
                       <div key={key}>
                         <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{lbl}</p>
-                        <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:9, padding:'10px 11px' }}>
+                        <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:9, padding:'10px 11px' }}>
                           <input type="number" value={ex[key]} onChange={e => setEx(i,key,e.target.value)} placeholder="0" style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }} />
                         </div>
                       </div>
@@ -262,7 +262,7 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
         <div style={{ marginBottom:16 }}>
           <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>Note <span style={{ color:'rgba(255,255,255,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span></label>
           <input value={note} onChange={e => setNote(e.target.value)} placeholder="Morning weigh-in, post-workout…"
-            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'12px 14px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none' }}
             onFocus={e => e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.09)'} />
         </div>
@@ -289,7 +289,7 @@ function WorkoutCard({ workout, delay, visible, onDelete }) {
   }
 
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(12px)', transition:`opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms` }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, overflow:'hidden', opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(12px)', transition:`opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms` }}>
       {/* Header row */}
       <div style={{ padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:10 }}>
         <div style={{ flex:1, minWidth:0 }}>
@@ -486,7 +486,7 @@ export default function FitnessTracker() {
         <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 14px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
@@ -495,7 +495,7 @@ export default function FitnessTracker() {
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={() => setShowWeight(true)} className="ax-wt-btn"
-                style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, transition:'all 0.2s' }}>
                 {Ico.scale(14)} Weight
               </button>
               <button onClick={() => setShowWorkout(true)} className="ax-add-btn"
@@ -513,7 +513,7 @@ export default function FitnessTracker() {
               { label:'Weight',    value: latest ? `${latest}` : '—', sub:'lbs current' },
               { label:'To Goal',   value: toGoal ? `${toGoal > 0 ? '+' : ''}${toGoal}` : '—', sub:'lbs' },
             ].map(({ label, value, sub }) => (
-              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 8px', textAlign:'center' }}>
+              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'10px 8px', textAlign:'center' }}>
                 <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>{label}</p>
                 <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:2 }}>{value}</p>
                 <p style={{ color:'rgba(255,255,255,0.2)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
@@ -624,7 +624,7 @@ export default function FitnessTracker() {
               )}
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                 {[...(weightLogs||[])].sort((a,b)=>new Date(b.logged_date||b.date)-new Date(a.logged_date||a.date)).map((log, i) => (
-                  <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:11, opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
+                  <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:11, opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
                     <div>
                       <p style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
                       {log.note && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{log.note}</p>}

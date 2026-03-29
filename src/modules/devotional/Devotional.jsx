@@ -51,7 +51,7 @@ function SectionHead({ title, sub }) {
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 18px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'20px 18px', ...style }}>
       {children}
     </div>
   )
@@ -95,7 +95,7 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
 
         {/* Verse reminder */}
         {verseText && (
-          <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', marginBottom:20 }}>
+          <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'12px 14px', marginBottom:20 }}>
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{verseRef?.toUpperCase().replace(/\//g,' ')}</p>
             <p style={{ color:'var(--text-secondary)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{verseText}</p>
           </div>
@@ -105,7 +105,7 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
         <div style={{ marginBottom:16 }}>
           <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Reflection</label>
           <textarea value={reflection} onChange={e => setReflection(e.target.value)} placeholder="What does this scripture mean to you today?" rows={5}
-            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e=>e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.09)'} />
         </div>
@@ -116,7 +116,7 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
             Application <span style={{ color:'rgba(255,255,255,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span>
           </label>
           <textarea value={application} onChange={e => setApplication(e.target.value)} placeholder="How will you apply this today?" rows={3}
-            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e=>e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.09)'} />
         </div>
@@ -138,7 +138,7 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
 function PastEntry({ entry, delay, visible }) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(12px)', transition:`opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms` }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, overflow:'hidden', opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(12px)', transition:`opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms` }}>
       <button onClick={() => setExpanded(e=>!e)} style={{ width:'100%', padding:'14px 16px', background:'none', border:'none', cursor:'pointer', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
           <p style={{ color:'rgba(255,255,255,0.6)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:2 }}>
@@ -294,7 +294,7 @@ export default function Devotional() {
         <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
@@ -316,7 +316,7 @@ export default function Devotional() {
               { label:'Total',    value: history.length + (today ? 1 : 0) },
               { label:'Today',    value: today ? '✓' : '—' },
             ].map(({ label, value }) => (
-              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
+              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
                 <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
                 <p style={{ color:'var(--text-primary)', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}</p>
               </div>
@@ -333,7 +333,7 @@ export default function Devotional() {
           </p>
 
           {/* Scripture card */}
-          <div style={{ position:'relative', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding:'24px 20px', overflow:'hidden', ...anim(100) }}>
+          <div style={{ position:'relative', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:16, padding:'24px 20px', overflow:'hidden', ...anim(100) }}>
             {/* Decorative cross */}
             <div style={{ position:'absolute', top:16, right:16, color:'rgba(255,255,255,0.04)', pointerEvents:'none' }}>{Ico.cross(48)}</div>
 

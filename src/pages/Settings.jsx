@@ -37,7 +37,7 @@ function SectionLabel({ children }) {
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 18px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'20px 18px', ...style }}>
       {children}
     </div>
   )
@@ -65,7 +65,7 @@ function SelectField({ label, value, onChange, options }) {
       <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>
       <div style={{ position:'relative' }}>
         <button onClick={() => setOpen(o => !o)}
-          style={{ width:'100%', padding:'12px 14px', borderRadius:10, border:'1px solid var(--border)', background:'var(--stat-bg)', color: value ? '#fff' : 'rgba(255,255,255,0.28)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          style={{ width:'100%', padding:'12px 14px', borderRadius:10, border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', background:'var(--stat-bg)', color: value ? '#fff' : 'rgba(255,255,255,0.28)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           {value || 'Select…'}
           <span style={{ transform: open ? 'rotate(90deg)' : 'none', transition:'transform 0.2s', color:'var(--text-muted)' }}>{Ico.chevron()}</span>
         </button>
@@ -241,7 +241,7 @@ export default function Settings() {
         {/* Header */}
         <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px', display:'flex', alignItems:'center', gap:14 }}>
           <button onClick={() => navigate(-1)} className="ax-back"
-            style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+            style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
             {Ico.back()}
           </button>
           <div style={{ flex:1 }}>

@@ -58,7 +58,7 @@ function GlowBar({ pct, h = 3 }) {
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'18px 16px', ...style }}>
       {children}
     </div>
   )
@@ -227,7 +227,7 @@ export default function Dashboard() {
               { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null },
               { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100) },
             ].map(({ label, value, sub, pct }) => (
-              <div key={label} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
+              <div key={label} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
                 <div style={{ position:'absolute', top:0, right:0, width:50, height:50, background:'radial-gradient(circle at top right,rgba(255,255,255,0.05),transparent 70%)', pointerEvents:'none' }} />
                 <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
                 <p style={{ color:'var(--text-primary)', fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
@@ -313,7 +313,7 @@ export default function Dashboard() {
             <SectionHead title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" />
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
               {[{ label:'Today', value: todayPrayers, sub:'logged' },{ label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
-                <div key={label} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'13px 14px' }}>
+                <div key={label} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'13px 14px' }}>
                   <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
                   <p style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
                   <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
@@ -347,7 +347,7 @@ export default function Dashboard() {
               { label:'Prayer',  val: streaks.prayer     },
               { label:'Devot.',  val: streaks.devotional },
             ].map(({ label, val }) => (
-              <div key={label} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 6px', textAlign:'center' }}>
+              <div key={label} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'10px 6px', textAlign:'center' }}>
                 <p style={{ color:'var(--text-primary)', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1 }}>{val}</p>
                 <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>{label}</p>
                 {val >= 3 && <p style={{ fontSize:11, marginTop:2 }}>🔥</p>}

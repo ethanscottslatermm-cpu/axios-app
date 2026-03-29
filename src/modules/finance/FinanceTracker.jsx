@@ -57,7 +57,7 @@ function QuoteCard({ symbol, onRemove, canRemove }) {
   const color   = error ? 'var(--text-muted)' : up ? '#4ade80' : '#f87171'
 
   return (
-    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12 }}>
+    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12 }}>
       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
         {canRemove && (
           <button onClick={() => onRemove(symbol)} style={{ background:'none', border:'none', color:'var(--text-faint)', cursor:'pointer', padding:0, display:'flex', alignItems:'center' }}>
@@ -102,7 +102,7 @@ function IndexCard({ label, symbol }) {
   const up     = change >= 0
 
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'14px 12px', textAlign:'center' }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px 12px', textAlign:'center' }}>
       <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
       {loading ? (
         <p style={{ color:'var(--text-faint)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>—</p>
@@ -118,7 +118,7 @@ function IndexCard({ label, symbol }) {
 
 function NewsCard({ item }) {
   return (
-    <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ display:'block', textDecoration:'none', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12 }}>
+    <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ display:'block', textDecoration:'none', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12 }}>
       <p style={{ color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:4, lineHeight:1.4 }}>{item.headline}</p>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>{item.source}</p>
@@ -194,7 +194,7 @@ export default function FinanceTracker() {
             <h1 style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
             <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
           </div>
-          <button onClick={refresh} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10, padding:'8px 12px', color:'var(--text-secondary)', cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
+          <button onClick={refresh} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'8px 12px', color:'var(--text-secondary)', cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
             {Ico.refresh()} Refresh
           </button>
         </div>
@@ -239,7 +239,7 @@ export default function FinanceTracker() {
 
             {/* Add symbol */}
             {showSearch ? (
-              <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:16, marginBottom:16 }}>
+              <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:16, marginBottom:16 }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
                   <div style={{ color:'var(--text-muted)' }}>{Ico.search()}</div>
                   <input

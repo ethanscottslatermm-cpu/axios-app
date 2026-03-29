@@ -120,7 +120,7 @@ function AddPrayerSheet({ onSave, onClose, todayStr }) {
             onChange={e => setText(e.target.value)}
             placeholder="Write your prayer here…"
             rows={5}
-            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond', serif", fontStyle:'italic', lineHeight:1.7, resize:'none', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond', serif", fontStyle:'italic', lineHeight:1.7, resize:'none', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e => e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.09)'}
           />
@@ -133,7 +133,7 @@ function AddPrayerSheet({ onSave, onClose, todayStr }) {
             value={note}
             onChange={e => setNote(e.target.value)}
             placeholder="Any context or scripture reference…"
-            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none', transition:'border-color 0.2s' }}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'12px 14px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none', transition:'border-color 0.2s' }}
             onFocus={e => e.target.style.borderColor='rgba(255,255,255,0.25)'}
             onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.09)'}
           />
@@ -310,7 +310,7 @@ export default function PrayerTracker() {
         <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 14px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
@@ -331,7 +331,7 @@ export default function PrayerTracker() {
               { label:'Streak',   value: `${streak}d` },
               { label:'Total',    value: (prayers||[]).length },
             ].map(({ label, value }) => (
-              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
+              <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'10px 10px', textAlign:'center' }}>
                 <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
                 <p style={{ color:'var(--text-primary)', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}</p>
               </div>

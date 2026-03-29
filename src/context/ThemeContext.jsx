@@ -30,6 +30,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(255,255,255,0.22)',
       '--badge-bg':      'rgba(255,255,255,0.10)',
       '--stat-bg':       'rgba(255,255,255,0.07)',
+      '--card-shadow':   '0 0 0 0.5px rgba(255,255,255,0.07), 0 0 18px rgba(255,255,255,0.05), 0 2px 10px rgba(0,0,0,0.5)',
     }
   },
   ash: {
@@ -59,6 +60,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(255,255,255,0.12)',
       '--badge-bg':      'rgba(255,255,255,0.08)',
       '--stat-bg':       'rgba(255,255,255,0.05)',
+      '--card-shadow':   '0 0 0 0.5px rgba(255,255,255,0.06), 0 0 16px rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.4)',
     }
   },
   sepia: {
@@ -88,6 +90,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(44,26,14,0.15)',
       '--badge-bg':      'rgba(44,26,14,0.07)',
       '--stat-bg':       'rgba(44,26,14,0.05)',
+      '--card-shadow':   '0 0 0 0.5px rgba(44,26,14,0.1), 0 0 16px rgba(44,26,14,0.06), 0 2px 10px rgba(0,0,0,0.15)',
     }
   },
   noir: {
@@ -117,6 +120,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(255,255,255,0.28)',
       '--badge-bg':      'rgba(255,255,255,0.12)',
       '--stat-bg':       'rgba(255,255,255,0.08)',
+      '--card-shadow':   '0 0 0 0.5px rgba(255,255,255,0.08), 0 0 20px rgba(255,255,255,0.06), 0 2px 10px rgba(0,0,0,0.6)',
     }
   },
   midnight: {
@@ -146,6 +150,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(79,163,255,0.15)',
       '--badge-bg':      'rgba(79,163,255,0.08)',
       '--stat-bg':       'rgba(79,163,255,0.05)',
+      '--card-shadow':   '0 0 0 0.5px rgba(79,163,255,0.1), 0 0 18px rgba(79,163,255,0.06), 0 2px 10px rgba(0,0,0,0.5)',
     }
   },
   crimson: {
@@ -175,6 +180,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(229,57,53,0.18)',
       '--badge-bg':      'rgba(229,57,53,0.08)',
       '--stat-bg':       'rgba(229,57,53,0.05)',
+      '--card-shadow':   '0 0 0 0.5px rgba(229,57,53,0.1), 0 0 18px rgba(229,57,53,0.06), 0 2px 10px rgba(0,0,0,0.5)',
     }
   },
   arctic: {
@@ -204,6 +210,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(26,110,181,0.18)',
       '--badge-bg':      'rgba(26,110,181,0.07)',
       '--stat-bg':       'rgba(26,110,181,0.05)',
+      '--card-shadow':   '0 0 0 0.5px rgba(26,110,181,0.12), 0 0 16px rgba(26,110,181,0.06), 0 2px 10px rgba(0,0,0,0.12)',
     }
   },
   forest: {
@@ -233,6 +240,7 @@ export const THEMES = {
       '--scrollbar':     'rgba(61,158,95,0.15)',
       '--badge-bg':      'rgba(61,158,95,0.08)',
       '--stat-bg':       'rgba(61,158,95,0.05)',
+      '--card-shadow':   '0 0 0 0.5px rgba(61,158,95,0.1), 0 0 18px rgba(61,158,95,0.06), 0 2px 10px rgba(0,0,0,0.5)',
     }
   },
 }

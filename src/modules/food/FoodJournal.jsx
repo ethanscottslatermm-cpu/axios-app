@@ -45,7 +45,7 @@ function GlowBar({ pct, h = 4, color = '#fff' }) {
 // ── Macro Pill ─────────────────────────────────────────────────────────────────
 function MacroPill({ label, value, unit = 'g' }) {
   return (
-    <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 10px' }}>
+    <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'10px 10px' }}>
       <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
       <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}<span style={{ fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.4)', marginLeft:2 }}>{unit}</span></p>
     </div>
@@ -162,7 +162,7 @@ function AISearchPanel({ onSelect, onClose }) {
           {results.map((item, i) => (
             <button key={i} onClick={() => onSelect(item)}
               style={{
-                background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12,
+                background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12,
                 padding:'14px 16px', textAlign:'left', cursor:'pointer', width:'100%',
                 transition:'background 0.2s, border-color 0.2s',
               }}
@@ -298,7 +298,7 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
           {[['Protein (g)', 'protein', '32'], ['Carbs (g)', 'carbs', '0'], ['Fat (g)', 'fat', '14']].map(([label, field, ph]) => (
             <div key={field}>
               <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
-              <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'11px 12px' }}>
+              <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'11px 12px' }}>
                 <input type="number" value={form[field]} onChange={e => set(field, e.target.value)} placeholder={ph}
                   style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }} />
               </div>
@@ -334,7 +334,7 @@ function FoodRow({ entry, onDelete, delay = 0, visible }) {
     <div style={{
       display:'flex', alignItems:'center', gap:12,
       padding:'13px 14px', borderRadius:12,
-      background:'var(--bg-card)', border:'1px solid var(--border)',
+      background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)',
       opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-10px)',
       transition: `opacity 0.4s ease ${delay}ms, transform 0.4s ease ${delay}ms`,
     }}>
@@ -448,7 +448,7 @@ export default function FoodJournal() {
         <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 12px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
@@ -458,7 +458,7 @@ export default function FoodJournal() {
             {/* Action buttons */}
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={() => setShowAI(true)} className="ax-ai-btn"
-                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.06em', transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.06em', transition:'all 0.2s' }}>
                 {Ico.spark()} AI
               </button>
               <button onClick={handleManualAdd} className="ax-add-btn"
@@ -527,11 +527,11 @@ export default function FoodJournal() {
                 <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:12 }}>Nothing logged yet.</p>
                 <div style={{ display:'flex', gap:8, justifyContent:'center' }}>
                   <button onClick={() => setShowAI(true)}
-                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'var(--bg-card)', border:'1px solid var(--border)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                     {Ico.spark(12)} Search with AI
                   </button>
                   <button onClick={handleManualAdd}
-                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'var(--bg-card)', border:'1px solid var(--border)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                    style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                     {Ico.plus(12)} Add manually
                   </button>
                 </div>
@@ -589,7 +589,7 @@ export default function FoodJournal() {
                   </div>
                   <div style={{ maxHeight:320, overflowY:'auto', display:'flex', flexDirection:'column', gap:8, paddingRight:4, scrollbarWidth:'thin', scrollbarColor:'var(--scrollbar) transparent' }}>
                     {foodHistory.map((day) => (
-                      <div key={day.date} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10 }}>
+                      <div key={day.date} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10 }}>
                         <div>
                           <p style={{ color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:2 }}>
                             {new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' })}

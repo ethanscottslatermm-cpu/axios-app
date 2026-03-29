@@ -44,7 +44,7 @@ function SectionHead({ title, sub }) {
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px', ...style }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'18px 16px', ...style }}>
       {children}
     </div>
   )
@@ -214,7 +214,7 @@ export default function WaterTracker() {
         <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 14px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
-              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
+              style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
               {Ico.back()}
             </button>
             <div style={{ flex:1 }}>
@@ -272,7 +272,7 @@ export default function WaterTracker() {
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               {quickSizes.map(({ label, sub, oz }) => (
                 <button key={oz} onClick={() => handleAddGlass(oz)} className="ax-quick"
-                  style={{ padding:'16px', borderRadius:12, background:'var(--bg-card)', border:'1px solid var(--border)', cursor:'pointer', textAlign:'left', transition:'all 0.18s' }}>
+                  style={{ padding:'16px', borderRadius:12, background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', cursor:'pointer', textAlign:'left', transition:'all 0.18s' }}>
                   <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{label}</p>
                   <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
                 </button>
@@ -292,7 +292,7 @@ export default function WaterTracker() {
                 {[...(logs||[])].reverse().map((log, i) => {
                   const time = log.created_at ? new Date(log.created_at).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) : ''
                   return (
-                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'11px 12px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10, opacity: visible?1:0, transform: visible?'translateX(0)':'translateX(-8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
+                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'11px 12px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, opacity: visible?1:0, transform: visible?'translateX(0)':'translateX(-8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
                       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
                         <div style={{ color:'var(--text-muted)' }}>{Ico.drop(14)}</div>
                         <div>
@@ -303,7 +303,7 @@ export default function WaterTracker() {
                         </div>
                       </div>
                       <button onClick={() => { haptic.delete(); removeGlass.mutate(log.id) }}
-                        style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:7, padding:'6px 8px', cursor:'pointer', color:'var(--text-muted)', display:'flex', alignItems:'center', transition:'all 0.2s' }}
+                        style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:7, padding:'6px 8px', cursor:'pointer', color:'var(--text-muted)', display:'flex', alignItems:'center', transition:'all 0.2s' }}
                         onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,60,60,0.1)';e.currentTarget.style.borderColor='rgba(255,60,60,0.25)';e.currentTarget.style.color='rgba(255,100,100,0.8)'}}
                         onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,0.04)';e.currentTarget.style.borderColor='rgba(255,255,255,0.08)';e.currentTarget.style.color='rgba(255,255,255,0.25)'}}>
                         {Ico.trash()}
@@ -359,7 +359,7 @@ export default function WaterTracker() {
                   </div>
                   <div style={{ maxHeight:320, overflowY:'auto', display:'flex', flexDirection:'column', gap:8, paddingRight:4, scrollbarWidth:'thin', scrollbarColor:'var(--scrollbar) transparent' }}>
                     {waterHistory.map((day) => (
-                      <div key={day.date} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10 }}>
+                      <div key={day.date} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10 }}>
                         <div>
                           <p style={{ color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:2 }}>
                             {new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' })}

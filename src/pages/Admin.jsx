@@ -39,7 +39,7 @@ function Avatar({ name }) {
   return (
     <div style={{
       width: 40, height: 40, borderRadius: '50%',
-      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow:'var(--card-shadow)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       color: 'var(--text-secondary)', fontSize: 13, fontWeight: 700,
       fontFamily: 'Helvetica Neue,sans-serif', flexShrink: 0,
@@ -56,7 +56,7 @@ function SuspendPicker({ onConfirm, onCancel }) {
         onChange={e => setDays(e.target.value)}
         style={{
           width: 64, padding: '7px 10px', borderRadius: 8,
-          border: '1px solid var(--border)', background: 'var(--bg-card)',
+          border: '1px solid var(--border)', boxShadow:'var(--card-shadow)', background: 'var(--bg-card)',
           color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif',
           outline: 'none', textAlign: 'center',
         }}
@@ -91,7 +91,7 @@ function UserCard({ user, isSelf, onAction, expanded, onToggle }) {
 
   return (
     <div style={{
-      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow:'var(--card-shadow)',
       borderRadius: 14, overflow: 'hidden',
       transition: 'border-color 0.2s',
     }}>
@@ -172,7 +172,7 @@ function UserCard({ user, isSelf, onAction, expanded, onToggle }) {
                 <button onClick={() => onAction(user.id, 'inactive')} style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   padding: '8px 14px', borderRadius: 9,
-                  border: '1px solid var(--border)', background: 'var(--bg-card)',
+                  border: '1px solid var(--border)', boxShadow:'var(--card-shadow)', background: 'var(--bg-card)',
                   color: 'var(--text-muted)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
                 }}>
                   Set Inactive
@@ -280,7 +280,7 @@ export default function Admin() {
 
       {/* Header */}
       <div style={{ position: 'sticky', zIndex:50, top: 0, zIndex: 50, background: 'var(--header-bg)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid var(--border)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
-        <button onClick={() => navigate('/dashboard')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0 }}>
+        <button onClick={() => navigate('/dashboard')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', boxShadow:'var(--card-shadow)', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0 }}>
           {Ico.back()}
         </button>
         <div style={{ flex: 1 }}>
@@ -302,7 +302,7 @@ export default function Admin() {
             { label: 'Suspended', value: counts.suspended, color: '#fbbf24' },
             { label: 'Inactive',  value: counts.inactive,  color: '#9ca3af' },
           ].map(s => (
-            <div key={s.label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
+            <div key={s.label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
               <p style={{ color: s.color, fontSize: 24, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '-0.02em', lineHeight: 1 }}>{s.value}</p>
               <p style={{ color: 'var(--text-muted)', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginTop: 4 }}>{s.label}</p>
             </div>
