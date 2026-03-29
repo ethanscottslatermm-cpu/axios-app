@@ -28,11 +28,19 @@ exports.handler = async (event) => {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     )
 
-    // Upsert — one item per user (replace existing connection)
-    await supabase.from('plaid_items').upsert(
-      { user_id: userId, access_token, item_id, institution_name: institutionName || null },
-      { onConflict: 'user_id' }
-    )
+    // Delete existing then insert fresh (avoids upsert conflict issues)
+    await supabase.from('plaid_items').delete().eq('user_id', userId)
+    const { error: insertError } = await supabase.from('plaid_items').insert({
+      user_id: userId,
+      access_token,
+      item_id,
+      institution_name: institutionName || null,
+    })
+
+    if (insertError) {
+      console.error('Supabase insert error:', insertError)
+      return { statusCode: 500, body: JSON.stringify({ error: 'Failed to save bank connection: ' + insertError.message }) }
+    }
 
     return {
       statusCode: 200,

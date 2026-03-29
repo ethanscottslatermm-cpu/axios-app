@@ -191,9 +191,14 @@ export default function FinanceTracker() {
   }
 
   const onPlaidSuccess = useCallback(async (publicToken, metadata) => {
-    setBankLoading(true)
-    try { await exchangeToken(user.id, publicToken, metadata.institution?.name); await loadBankData() }
-    catch (err) { setBankError(err.message); setBankLoading(false) }
+    setBankLoading(true); setBankError('')
+    try {
+      await exchangeToken(user.id, publicToken, metadata.institution?.name)
+      await loadBankData()
+    } catch (err) {
+      setBankError('Connection failed: ' + err.message)
+      setBankLoading(false)
+    }
   }, [user])
 
   const { open: openPlaid, ready: plaidReady } = usePlaidLink({ token: linkToken, onSuccess: onPlaidSuccess })
