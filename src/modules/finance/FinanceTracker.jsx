@@ -2,6 +2,9 @@ const FINANCE_IMG = 'data:image/jpeg;base64,/9j/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQU
 
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { usePlaidLink } from 'react-plaid-link'
+import { useAuth } from '../../context/AuthContext'
+import { getLinkToken, exchangeToken, fetchBalances, fetchTransactions } from '../../lib/plaidClient'
 import { getQuote, getMarketNews, searchSymbol } from '../../lib/finnhub'
 import { BottomNav } from '../../pages/Dashboard'
 
@@ -138,7 +141,17 @@ export default function FinanceTracker() {
   const [results,     setResults]     = useState([])
   const [searching,   setSearching]   = useState(false)
   const [lastRefresh, setLastRefresh] = useState(Date.now())
-  const [activeTab,   setActiveTab]   = useState('markets') // markets | news
+  const [activeTab,   setActiveTab]   = useState('markets') // markets | bank | news
+
+  const { user } = useAuth()
+
+  // Bank state
+  const [linkToken,   setLinkToken]   = useState(null)
+  const [accounts,    setAccounts]    = useState(null)
+  const [txns,        setTxns]        = useState(null)
+  const [bankLoading, setBankLoading] = useState(false)
+  const [bankError,   setBankError]   = useState('')
+  const [connected,   setConnected]   = useState(false)
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t) }, [])
 
@@ -156,6 +169,34 @@ export default function FinanceTracker() {
     }, 400)
     return () => clearTimeout(t)
   }, [query])
+
+  // Load bank data when bank tab opens
+  useEffect(() => {
+    if (activeTab !== 'bank' || !user) return
+    loadBankData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, user])
+
+  const loadBankData = async () => {
+    setBankLoading(true); setBankError('')
+    try {
+      const [bal, tx] = await Promise.all([fetchBalances(user.id), fetchTransactions(user.id)])
+      setAccounts(bal.accounts); setTxns(tx.transactions); setConnected(true)
+    } catch (err) {
+      if (err.message === 'No bank connected') {
+        setConnected(false)
+        try { const { link_token } = await getLinkToken(user.id); setLinkToken(link_token) } catch {}
+      } else { setBankError(err.message) }
+    } finally { setBankLoading(false) }
+  }
+
+  const onPlaidSuccess = useCallback(async (publicToken, metadata) => {
+    setBankLoading(true)
+    try { await exchangeToken(user.id, publicToken, metadata.institution?.name); await loadBankData() }
+    catch (err) { setBankError(err.message); setBankLoading(false) }
+  }, [user])
+
+  const { open: openPlaid, ready: plaidReady } = usePlaidLink({ token: linkToken, onSuccess: onPlaidSuccess })
 
   const addSymbol = (symbol) => {
     if (!watchlist.includes(symbol)) setWatchlist(w => [...w, symbol])
@@ -201,7 +242,7 @@ export default function FinanceTracker() {
 
         {/* Tabs */}
         <div style={{ ...anim(40), display:'flex', gap:8, marginBottom:20 }}>
-          {[['markets','Markets'],['news','News']].map(([key, label]) => (
+          {[['markets','Markets'],['bank','Bank'],['news','News']].map(([key, label]) => (
             <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
               flex:1, padding:'10px', borderRadius:10, border:'1px solid var(--border)',
               background: activeTab===key ? 'rgba(255,255,255,0.08)' : 'transparent',
@@ -278,6 +319,143 @@ export default function FinanceTracker() {
         )}
 
         {/* News Tab */}
+
+        {/* Bank Tab */}
+        {activeTab === 'bank' && (
+          <div style={{ ...anim(0) }}>
+            {bankLoading && (
+              <div style={{ textAlign:'center', padding:'48px 0' }}>
+                <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.12em' }}>Loading…</p>
+              </div>
+            )}
+            {bankError && !bankLoading && (
+              <div style={{ background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.25)', borderRadius:12, padding:'14px 16px', marginBottom:16 }}>
+                <p style={{ color:'#f87171', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{bankError}</p>
+                <button onClick={loadBankData} style={{ marginTop:10, padding:'8px 14px', borderRadius:8, border:'1px solid rgba(248,113,113,0.3)', background:'transparent', color:'#f87171', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>Retry</button>
+              </div>
+            )}
+            {!connected && !bankLoading && !bankError && (
+              <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:16, padding:'32px 24px', textAlign:'center' }}>
+                <div style={{ width:56, height:56, borderRadius:'50%', background:'var(--stat-bg)', border:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
+                  <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ color:'var(--glow-bar)' }}>
+                    <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/><path d="M22 7V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2"/>
+                  </svg>
+                </div>
+                <h3 style={{ color:'var(--text-primary)', fontSize:17, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Connect Your Bank</h3>
+                <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.55, maxWidth:220, margin:'0 auto 24px' }}>
+                  Securely link your accounts to view live balances and recent transactions.
+                </p>
+                <button onClick={() => openPlaid()} disabled={!plaidReady}
+                  style={{ padding:'14px 28px', borderRadius:12, border:'1px solid var(--border)', background:'var(--btn-bg)', color:'var(--btn-text)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', cursor: plaidReady ? 'pointer' : 'not-allowed', opacity: plaidReady ? 1 : 0.5, boxShadow:'var(--card-shadow)' }}>
+                  Connect Bank
+                </button>
+              </div>
+            )}
+            {connected && accounts && !bankLoading && (
+              <>
+                <div style={{ marginBottom:20 }}>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Accounts</p>
+                    <button onClick={loadBankData} style={{ background:'transparent', border:'none', color:'var(--text-muted)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Refresh</button>
+                  </div>
+                  {accounts.map(acc => (
+                    <div key={acc.id} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'16px', marginBottom:10, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <div>
+                        <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{acc.name}</p>
+                        <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', textTransform:'capitalize' }}>{acc.institution} · {acc.subtype}</p>
+                      </div>
+                      <div style={{ textAlign:'right' }}>
+                        <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>
+                          {acc.balance != null ? '
+          <div style={anim(80)}>
+            <SectionHead title="Market News" sub="General" />
+            {newsLoading ? (
+              <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
+            ) : (
+              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                {news.map((item, i) => <NewsCard key={i} item={item} />)}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <BottomNav />
+    </>
+  )
+}
+ + acc.balance.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) : '—'}
+                        </p>
+                        {acc.available != null && acc.available !== acc.balance && (
+                          <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>
+                            {'
+          <div style={anim(80)}>
+            <SectionHead title="Market News" sub="General" />
+            {newsLoading ? (
+              <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
+            ) : (
+              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                {news.map((item, i) => <NewsCard key={i} item={item} />)}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <BottomNav />
+    </>
+  )
+}
+ + acc.available.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })} available
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {txns && txns.length > 0 && (
+                  <div>
+                    <p style={{ color:'var(--text-muted)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>Recent Transactions</p>
+                    {txns.map((t, i) => (
+                      <div key={t.id} style={{ ...anim(i * 25), background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'13px 14px', marginBottom:8, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <p style={{ color: t.pending ? 'var(--text-muted)' : 'var(--text-primary)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                            {t.name}{t.pending ? ' (pending)' : ''}
+                          </p>
+                          <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.04em' }}>
+                            {new Date(t.date + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' })} · {t.category}
+                          </p>
+                        </div>
+                        <p style={{ color: t.amount < 0 ? '#4ade80' : 'var(--text-primary)', fontSize:14, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', marginLeft:12, flexShrink:0 }}>
+                          {(t.amount < 0 ? '+' : '-') + '
+          <div style={anim(80)}>
+            <SectionHead title="Market News" sub="General" />
+            {newsLoading ? (
+              <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
+            ) : (
+              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                {news.map((item, i) => <NewsCard key={i} item={item} />)}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <BottomNav />
+    </>
+  )
+}
+ + Math.abs(t.amount).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button onClick={() => { setConnected(false); setAccounts(null); setTxns(null) }}
+                  style={{ marginTop:20, width:'100%', padding:'11px', borderRadius:10, border:'1px solid rgba(248,113,113,0.2)', background:'transparent', color:'rgba(248,113,113,0.6)', fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer' }}>
+                  Disconnect Bank
+                </button>
+              </>
+            )}
+          </div>
+        )}
         {activeTab === 'news' && (
           <div style={anim(80)}>
             <SectionHead title="Market News" sub="General" />
