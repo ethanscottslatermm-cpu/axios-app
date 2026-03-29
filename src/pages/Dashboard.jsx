@@ -84,6 +84,7 @@ export function BottomNav() {
     { label:'Food',      path:'/food',       icon: Ico.food },
     { label:'Water',     path:'/water',      icon: Ico.water },
     { label:'Fitness',   path:'/fitness',    icon: Ico.fitness },
+    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer },
     { label:'Devotion',  path:'/devotional', icon: Ico.book },
     { label:'Finance',   path:'/finance',    icon: Ico.finance },
     { label:'Settings',  path:'/settings',   icon: Ico.settings },
