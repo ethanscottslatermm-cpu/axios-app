@@ -28,18 +28,41 @@ const styles = `
   }
   @keyframes borderGlow {
     0%,100% { box-shadow: 0 0 18px rgba(255,255,255,0.07), 0 0 40px rgba(255,255,255,0.03), inset 0 0 20px rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.13); }
-    50%     { box-shadow: 0 0 28px rgba(255,255,255,0.13), 0 0 70px rgba(255,255,255,0.06), inset 0 0 30px rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.28); }
+    50%     { box-shadow: 0 0 32px rgba(255,255,255,0.16), 0 0 80px rgba(255,255,255,0.07), inset 0 0 30px rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.32); }
   }
   @keyframes inputPulse {
     0%,100% { box-shadow: 0 0 0px rgba(255,255,255,0); }
-    50%     { box-shadow: 0 0 12px rgba(255,255,255,0.08); }
+    50%     { box-shadow: 0 0 16px rgba(255,255,255,0.10), 0 0 32px rgba(255,255,255,0.04); }
+  }
+  @keyframes scanLine {
+    0%   { transform: translateY(-100vh); opacity: 0; }
+    5%   { opacity: 1; }
+    95%  { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+  @keyframes titleShimmer {
+    0%,100% { text-shadow: 0 0 30px rgba(255,255,255,0.18), 0 0 60px rgba(255,255,255,0.06); letter-spacing: 0.18em; }
+    50%     { text-shadow: 0 0 50px rgba(255,255,255,0.45), 0 0 100px rgba(255,255,255,0.14), 0 0 160px rgba(255,255,255,0.05); letter-spacing: 0.20em; }
+  }
+  @keyframes btnShine {
+    0%   { background-position: -300% center; }
+    60%,100% { background-position: 300% center; }
+  }
+  @keyframes bracketPulse {
+    0%,100% { opacity: 0.25; }
+    50%     { opacity: 0.65; }
+  }
+  @keyframes floatUp {
+    0%,100% { transform: translateY(0px); opacity: 0.6; }
+    50%     { transform: translateY(-6px); opacity: 1; }
   }
 
   .word-in  { animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
   .word-out { animation: fadeOutUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
 
   .login-card {
-    animation: borderGlow 4s ease-in-out infinite;
+    animation: borderGlow 3.5s ease-in-out infinite;
+    position: relative;
   }
 
   .login-input {
@@ -58,13 +81,17 @@ const styles = `
     caret-color: white;
   }
   .login-input:focus {
-    border-color: rgba(255,255,255,0.6);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.75);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 0 24px rgba(255,255,255,0.14), 0 0 50px rgba(255,255,255,0.05);
     animation: inputPulse 2s ease-in-out infinite;
-    background: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.08);
+    border-left: 1px solid rgba(255,255,255,0.9);
   }
 
   .enter-btn {
+    background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.25) 50%, transparent 65%);
+    background-size: 300% 100%;
+    animation: btnShine 4s ease-in-out infinite;
     width: 100%;
     background: white;
     color: black;
@@ -80,7 +107,7 @@ const styles = `
     transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
     -webkit-appearance: none;
   }
-  .enter-btn:hover  { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 0 24px rgba(255,255,255,0.3), 0 4px 20px rgba(0,0,0,0.4); }
+  .enter-btn:hover  { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 0 30px rgba(255,255,255,0.45), 0 0 60px rgba(255,255,255,0.15), 0 4px 20px rgba(0,0,0,0.4); }
   .enter-btn:active { transform: translateY(0); box-shadow: none; }
   .enter-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 `
@@ -178,7 +205,7 @@ export default function Login() {
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, height: '3px', zIndex: 3,
           background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.04), transparent)',
-          animation: 'scanline 10s linear infinite',
+          animation: 'scanLine 12s linear infinite',
           pointerEvents: 'none',
         }} />
 
@@ -199,7 +226,7 @@ export default function Login() {
                 <polygon points="13,36 26,8 32,22 20,36" fill="white" opacity="0.62"/>
                 <polygon points="20,36 30,18 34,28 22,36" fill="white" opacity="0.32"/>
               </svg>
-              <div style={{ width: '1px', height: '38px', background: 'rgba(255,255,255,0.35)' }} />
+              <div style={{ width: '1px', height: '38px', background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.7) 30%, rgba(255,255,255,0.7) 70%, transparent)', boxShadow: '0 0 6px rgba(255,255,255,0.3)' }} />
               <span style={{
                 color: 'white', fontWeight: 900,
                 fontSize: 'clamp(1.8rem, 8vw, 2.8rem)',
@@ -312,7 +339,7 @@ export default function Login() {
             </button>
             )}
 
-            <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.85)', textShadow: '0 0 10px rgba(255,255,255,0.55), 0 0 25px rgba(255,255,255,0.2), 0 0 50px rgba(255,255,255,0.08)' }}>
+            <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 14px rgba(255,255,255,0.65), 0 0 35px rgba(255,255,255,0.25), 0 0 70px rgba(255,255,255,0.1)' }}>
               Authorized access only
             </p>
           </form>
