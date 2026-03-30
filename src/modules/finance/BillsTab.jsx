@@ -198,11 +198,12 @@ export default function BillsTab({ userId }) {
 
       {/* Add / Edit Sheet */}
       {showSheet && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-          {/* Sheet panel — flex column with fixed height cap */}
-          <div style={{ width: '100%', maxWidth: 520, alignSelf: 'center', height: 'min(90vh, 680px)', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
+          onClick={e => { if (e.target === e.currentTarget) setShowSheet(false) }}>
+          {/* Sheet panel — anchored to bottom, scrollable inside */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, maxWidth: 520, margin: '0 auto', maxHeight: '88vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0' }}>
 
-            {/* Drag handle + header — fixed at top */}
+            {/* Drag handle + header */}
             <div style={{ flexShrink: 0, padding: '16px 18px 0' }}>
               <div style={{ width: 36, height: 4, background: 'rgba(255,255,255,0.15)', borderRadius: 99, margin: '0 auto 18px' }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
