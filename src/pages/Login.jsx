@@ -1,10 +1,4 @@
-import { useStat  @font-face {
-    font-family: 'The Seasons';
-    src: url('/the-seasons-regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-e, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { webAuthnSupported, registerBiometric, hasRegisteredDevice } from '../hooks/useWebAuthn'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -14,6 +8,12 @@ const HERO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAc
 const WORDS = ['Discipline.', 'Accountability.', 'Personal ownership.']
 
 const styles = `
+  @font-face {
+    font-family: 'The Seasons';
+    src: url('/the-seasons-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&display=swap');
 
   @keyframes fadeInUp {
