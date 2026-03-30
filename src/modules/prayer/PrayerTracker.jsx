@@ -241,7 +241,7 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible, todayS
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────────
-export default function PrayerTracker() {
+export default function PrayerTracker({ embedded = false }) {
   const todayStr = useToday()
   const haptic = useHaptic()
   const navigate   = useNavigate()
@@ -302,11 +302,11 @@ export default function PrayerTracker() {
         .ax-filter-tab:hover{background:rgba(255,255,255,0.06)!important;}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
-        <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${PRAYER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.11, pointerEvents:'none', filter:'grayscale(100%)' }} />
-        <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.5) 0%, rgba(8,8,8,0.18) 40%, rgba(8,8,8,0.9) 100%)', pointerEvents:'none' }} />
+      <div style={{ background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom: embedded ? 0 : 90, position:'relative' }}>
+        <div style={{ display: embedded ? 'none' : 'block', position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${PRAYER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.11, pointerEvents:'none', filter:'grayscale(100%)', display: embedded ? 'none' : undefined }} />
+        {!embedded && <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.5) 0%, rgba(8,8,8,0.18) 40%, rgba(8,8,8,0.9) 100%)', pointerEvents:'none' }} />}
 
-        {/* ── Sticky Header ── */}
+        {!embedded && (<>
         <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 14px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
@@ -338,6 +338,7 @@ export default function PrayerTracker() {
             ))}
           </div>
         </div>
+        </>)}
 
         {/* ── Body ── */}
         <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
@@ -420,7 +421,7 @@ export default function PrayerTracker() {
         />
       )}
 
-      <BottomNav />
+      {!embedded && <BottomNav />}
     </>
   )
 }

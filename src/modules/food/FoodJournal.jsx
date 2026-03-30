@@ -6,6 +6,7 @@ import { useFoodHistory } from '../../hooks/useFoodLog'
 import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
+import WaterTracker from '../water/WaterTracker'
 import { searchFood } from '../../lib/foodSearch'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
@@ -439,6 +440,7 @@ function FoodRow({ entry, onDelete, delay = 0, visible }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function FoodJournal() {
+  const [mainTab, setMainTab] = useState('food')
   const todayStr = useToday()
   const haptic = useHaptic()
   const navigate  = useNavigate()
@@ -566,8 +568,17 @@ export default function FoodJournal() {
           </div>
         </div>
 
+        {/* ── Tabs: Food | Water ── */}
+        <div style={{ display:'flex', gap:8, padding:'12px 16px 0' }}>
+          {[['food','Food Journal'],['water','Water']].map(([key,label]) => (
+            <button key={key} onClick={() => setMainTab(key)} style={{ flex:1, padding:'10px', borderRadius:10, border:'1px solid var(--border)', background: mainTab===key ? 'rgba(255,255,255,0.08)' : 'transparent', color: mainTab===key ? 'var(--text-primary)' : 'var(--text-muted)', fontSize:12, fontWeight: mainTab===key ? 700 : 400, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', letterSpacing:'0.08em', textTransform:'uppercase' }}>{label}</button>
+          ))}
+        </div>
+
+        {mainTab === 'water' && <WaterTracker embedded />}
+
         {/* ── Body ── */}
-        <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
+        <div style={{ padding:'16px', display: mainTab === 'food' ? 'flex' : 'none', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
           {/* Macro summary */}
           <div style={{ display:'flex', gap:10, ...anim(80) }}>

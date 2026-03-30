@@ -41,8 +41,6 @@ const Ico = {
 
 const modules = [
   { key:'food',       label:'Food Journal', path:'/food',       icon: Ico.food },
-  { key:'water',      label:'Water',        path:'/water',      icon: Ico.water },
-  { key:'prayer',     label:'Prayer',       path:'/prayer',     icon: Ico.prayer },
   { key:'devotional', label:'Devotional',   path:'/devotional', icon: Ico.book },
   { key:'fitness',    label:'Fitness',      path:'/fitness',    icon: Ico.fitness },
   { key:'finance',    label:'Finance',      path:'/finance',    icon: Ico.finance },
@@ -82,9 +80,7 @@ export function BottomNav() {
   const items = [
     { label:'Home',      path:'/dashboard',  icon: Ico.home },
     { label:'Food',      path:'/food',       icon: Ico.food },
-    { label:'Water',     path:'/water',      icon: Ico.water },
     { label:'Fitness',   path:'/fitness',    icon: Ico.fitness },
-    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer },
     { label:'Devotion',  path:'/devotional', icon: Ico.book },
     { label:'Finance',   path:'/finance',    icon: Ico.finance },
     { label:'Settings',  path:'/settings',   icon: Ico.settings },
