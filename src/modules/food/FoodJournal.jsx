@@ -507,7 +507,7 @@ export default function FoodJournal() {
         .ax-meal-tab:hover{background:rgba(255,255,255,0.05)!important;}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:'calc(env(safe-area-inset-bottom) + 110px)', position:'relative' }}>
         {/* Food market background */}
         <div style={{
           position:'fixed', inset:0, zIndex:0,

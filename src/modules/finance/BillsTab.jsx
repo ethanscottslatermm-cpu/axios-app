@@ -201,7 +201,7 @@ export default function BillsTab({ userId }) {
         <div style={{ position: 'fixed', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
           onClick={e => { if (e.target === e.currentTarget) setShowSheet(false) }}>
           {/* Sheet panel — anchored to bottom, scrollable inside */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, maxWidth: 520, margin: '0 auto', maxHeight: '88vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0' }}>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, maxWidth: 520, margin: '0 auto', maxHeight: 'calc(88vh - env(safe-area-inset-bottom))', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0' }}>
 
             {/* Drag handle + header */}
             <div style={{ flexShrink: 0, padding: '16px 18px 0' }}>
@@ -268,7 +268,7 @@ export default function BillsTab({ userId }) {
             </div>
 
             {/* Save footer — always pinned at bottom */}
-            <div style={{ flexShrink: 0, padding: '14px 18px 28px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ flexShrink: 0, padding: '14px 18px', paddingBottom: 'calc(env(safe-area-inset-bottom) + 80px)', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
               {error && <p style={{ color: '#f87171', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, textAlign: 'center' }}>{error}</p>}
               <button onClick={handleSave} disabled={saving}
                 style={{ width: '100%', padding: '16px', borderRadius: 12, border: 'none', background: saving ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.14)', color: saving ? 'var(--text-muted)' : 'var(--text-primary)', fontSize: 15, fontWeight: 800, fontFamily: 'Helvetica Neue,sans-serif', cursor: saving ? 'default' : 'pointer', letterSpacing: '0.02em' }}>
