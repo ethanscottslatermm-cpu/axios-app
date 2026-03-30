@@ -477,7 +477,7 @@ export default function FinanceTracker() {
         )}
 
         {/* Bills Tab */}
-        {activeTab === 'bills' && <BillsTab bills={bills} saveBills={saveBills} />}
+        {activeTab === 'bills' && <BillsTab userId={user?.id} />}
 
 
           <div style={anim(80)}>
