@@ -223,7 +223,7 @@ export default function BillsTab({ userId }) {
           <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0', maxHeight: '92vh', display: 'flex', flexDirection: 'column' }}>
 
             {/* Scrollable body */}
-            <div style={{ overflowY: 'auto', padding: '20px 18px 0' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 18px 0' }}>
               <div style={{ width: 36, height: 4, background: 'rgba(255,255,255,0.15)', borderRadius: 99, margin: '0 auto 20px' }} />
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
