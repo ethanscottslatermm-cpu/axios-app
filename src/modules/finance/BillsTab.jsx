@@ -28,8 +28,7 @@ const STATUS_LABEL = {
 
 const ORDINAL = n => n + (n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th')
 const fmtUSD  = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-
-const BLANK = { payee: '', amount: '', due_day: '1', frequency: 'monthly', category: 'other', autopay: false, notes: '' }
+const BLANK   = { payee: '', amount: '', due_day: '1', frequency: 'monthly', category: 'other', autopay: false, notes: '' }
 
 function getStatus(bill) {
   const key   = new Date().toISOString().slice(0, 7)
@@ -41,10 +40,24 @@ function getStatus(bill) {
   return 'upcoming'
 }
 
+const Field = ({ label, children }) => (
+  <div style={{ marginBottom: 14 }}>
+    <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>{label}</label>
+    {children}
+  </div>
+)
+
+const InputBox = ({ type = 'text', value, onChange, placeholder, min, max }) => (
+  <div style={{ background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '11px 14px' }}>
+    <input type={type} value={value} onChange={onChange} placeholder={placeholder} min={min} max={max}
+      style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif' }} />
+  </div>
+)
+
 export default function BillsTab({ userId }) {
-  const [bills,    setBills]    = useState([])
-  const [loading,  setLoading]  = useState(true)
-  const [saving,   setSaving]   = useState(false)
+  const [bills,     setBills]     = useState([])
+  const [loading,   setLoading]   = useState(true)
+  const [saving,    setSaving]    = useState(false)
   const [showSheet, setShowSheet] = useState(false)
   const [editBill,  setEditBill]  = useState(null)
   const [form,      setForm]      = useState(BLANK)
@@ -52,10 +65,8 @@ export default function BillsTab({ userId }) {
 
   const f = (k, v) => setForm(x => ({ ...x, [k]: v }))
 
-  // Load bills from Supabase
   useEffect(() => {
-    if (!userId) return
-    setLoading(true)
+    if (!userId) { setLoading(false); return }
     supabase
       .from('bills')
       .select('*')
@@ -68,64 +79,43 @@ export default function BillsTab({ userId }) {
   }, [userId])
 
   const openAdd = () => {
-    setEditBill(null)
-    setForm(BLANK)
-    setError('')
-    setShowSheet(true)
+    setEditBill(null); setForm(BLANK); setError(''); setShowSheet(true)
   }
 
   const openEdit = (bill) => {
     setEditBill(bill)
-    setForm({
-      payee:     bill.payee,
-      amount:    String(bill.amount),
-      due_day:   String(bill.due_day),
-      frequency: bill.frequency,
-      category:  bill.category,
-      autopay:   bill.autopay,
-      notes:     bill.notes || '',
-    })
-    setError('')
-    setShowSheet(true)
+    setForm({ payee: bill.payee, amount: String(bill.amount), due_day: String(bill.due_day), frequency: bill.frequency, category: bill.category, autopay: bill.autopay, notes: bill.notes || '' })
+    setError(''); setShowSheet(true)
   }
 
   const handleSave = async () => {
-    if (!form.payee.trim())  { setError('Payee is required.'); return }
-    if (!form.amount)        { setError('Amount is required.'); return }
+    if (!form.payee.trim()) { setError('Payee is required.'); return }
+    if (!form.amount)       { setError('Amount is required.'); return }
     setSaving(true); setError('')
 
     const payload = {
-      user_id:   userId,
-      payee:     form.payee.trim(),
-      amount:    parseFloat(form.amount) || 0,
-      due_day:   parseInt(form.due_day) || 1,
-      frequency: form.frequency,
-      category:  form.category,
-      autopay:   form.autopay,
-      notes:     form.notes.trim(),
+      user_id:     userId,
+      payee:       form.payee.trim(),
+      amount:      parseFloat(form.amount) || 0,
+      due_day:     parseInt(form.due_day)  || 1,
+      frequency:   form.frequency,
+      category:    form.category,
+      autopay:     form.autopay,
+      notes:       form.notes.trim(),
       paid_months: editBill?.paid_months || [],
     }
 
-    let result
-    if (editBill) {
-      result = await supabase.from('bills').update(payload).eq('id', editBill.id).select().single()
-    } else {
-      result = await supabase.from('bills').insert(payload).select().single()
-    }
+    const result = editBill
+      ? await supabase.from('bills').update(payload).eq('id', editBill.id).select().single()
+      : await supabase.from('bills').insert(payload).select().single()
 
-    if (result.error) {
-      setError('Failed to save: ' + result.error.message)
-      setSaving(false)
-      return
-    }
+    if (result.error) { setError('Save failed: ' + result.error.message); setSaving(false); return }
 
-    if (editBill) {
-      setBills(prev => prev.map(b => b.id === editBill.id ? result.data : b))
-    } else {
-      setBills(prev => [...prev, result.data])
-    }
-    setSaving(false)
-    setShowSheet(false)
+    setBills(prev => editBill
+      ? prev.map(b => b.id === editBill.id ? result.data : b)
+      : [...prev, result.data]
+    )
+    setSaving(false); setShowSheet(false)
   }
 
   const deleteBill = async (id) => {
@@ -137,25 +127,24 @@ export default function BillsTab({ userId }) {
     const key  = new Date().toISOString().slice(0, 7)
     const bill = bills.find(b => b.id === id)
     if (!bill) return
-    const paid = bill.paid_months || []
+    const paid    = bill.paid_months || []
     const updated = paid.includes(key) ? paid.filter(m => m !== key) : [...paid, key]
     const { data } = await supabase.from('bills').update({ paid_months: updated }).eq('id', id).select().single()
     if (data) setBills(prev => prev.map(b => b.id === id ? data : b))
   }
 
-  // Summary stats
   const monthly  = bills.filter(b => b.frequency === 'monthly').reduce((s, b) => s + Number(b.amount), 0)
   const overdueN = bills.filter(b => getStatus(b) === 'overdue').length
   const dueSoonN = bills.filter(b => getStatus(b) === 'due-soon').length
 
   return (
-    <div>
-      {/* Summary row */}
+    <>
+      {/* Summary cards */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
         {[
-          { label: 'Monthly',  val: fmtUSD(monthly), hi: false },
-          { label: 'Due Soon', val: String(dueSoonN), hi: dueSoonN > 0, color: '#facc15' },
-          { label: 'Overdue',  val: String(overdueN), hi: overdueN > 0, color: '#f87171' },
+          { label: 'Monthly',  val: fmtUSD(monthly), hi: false,          color: '' },
+          { label: 'Due Soon', val: String(dueSoonN), hi: dueSoonN > 0,  color: '#facc15' },
+          { label: 'Overdue',  val: String(overdueN), hi: overdueN > 0,  color: '#f87171' },
         ].map(({ label, val, hi, color }) => (
           <div key={label} style={{ flex: 1, background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>{label}</p>
@@ -164,49 +153,39 @@ export default function BillsTab({ userId }) {
         ))}
       </div>
 
-      {/* Add bill button */}
+      {/* Add Bill button */}
       <button onClick={openAdd} style={{ width: '100%', padding: '12px', borderRadius: 11, border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)', fontSize: 13, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
         Add Bill
       </button>
 
-      {/* Loading */}
-      {loading && <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '32px 0' }}>Loading bills…</p>}
+      {loading && <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '32px 0' }}>Loading…</p>}
 
-      {/* Empty state */}
       {!loading && bills.length === 0 && (
         <p style={{ color: 'rgba(255,255,255,0.12)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '40px 0' }}>No bills yet. Tap Add Bill to get started.</p>
       )}
 
-      {/* Bills grouped by status */}
+      {/* Bill groups */}
       {!loading && ['overdue', 'due-soon', 'upcoming', 'paid'].map(status => {
         const group = bills.filter(b => getStatus(b) === status)
-        if (group.length === 0) return null
+        if (!group.length) return null
         return (
           <div key={status} style={{ marginBottom: 20 }}>
-            <p style={{ color: STATUS_COLOR[status], fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10 }}>
-              {STATUS_LABEL[status]}
-            </p>
+            <p style={{ color: STATUS_COLOR[status], fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10 }}>{STATUS_LABEL[status]}</p>
             {group.map(bill => (
               <div key={bill.id} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', borderRadius: 12, padding: '14px 16px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                     <p style={{ color: 'var(--text-primary)', fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{bill.payee}</p>
-                    {bill.autopay && (
-                      <span style={{ fontSize: 9, background: 'rgba(74,222,128,0.12)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 5, padding: '2px 6px', letterSpacing: '0.08em', fontFamily: 'Helvetica Neue,sans-serif', flexShrink: 0 }}>AUTO</span>
-                    )}
+                    {bill.autopay && <span style={{ fontSize: 9, background: 'rgba(74,222,128,0.12)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 5, padding: '2px 6px', letterSpacing: '0.08em', fontFamily: 'Helvetica Neue,sans-serif', flexShrink: 0 }}>AUTO</span>}
                   </div>
-                  <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>
-                    {BILL_CATS[bill.category]} · Due the {ORDINAL(bill.due_day)} · {bill.frequency}
-                  </p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>{BILL_CATS[bill.category]} · Due the {ORDINAL(bill.due_day)} · {bill.frequency}</p>
                   {bill.notes ? <p style={{ color: 'var(--text-faint)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif', marginTop: 2 }}>{bill.notes}</p> : null}
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <p style={{ color: 'var(--text-primary)', fontSize: 16, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>{fmtUSD(bill.amount)}</p>
                   <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                    <button onClick={() => togglePaid(bill.id)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid ' + STATUS_COLOR[status], background: 'transparent', color: STATUS_COLOR[status], fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
-                      {status === 'paid' ? 'Undo' : 'Paid'}
-                    </button>
+                    <button onClick={() => togglePaid(bill.id)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid ' + STATUS_COLOR[status], background: 'transparent', color: STATUS_COLOR[status], fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>{status === 'paid' ? 'Undo' : 'Paid'}</button>
                     <button onClick={() => openEdit(bill)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>Edit</button>
                     <button onClick={() => deleteBill(bill.id)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(248,113,113,0.25)', background: 'transparent', color: 'rgba(248,113,113,0.6)', fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>✕</button>
                   </div>
@@ -219,104 +198,86 @@ export default function BillsTab({ userId }) {
 
       {/* Add / Edit Sheet */}
       {showSheet && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'var(--overlay-bg)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0', maxHeight: '92vh', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+          {/* Sheet panel — flex column with fixed height cap */}
+          <div style={{ width: '100%', maxWidth: 520, alignSelf: 'center', height: 'min(90vh, 680px)', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0' }}>
 
-            {/* Scrollable body */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 18px 0' }}>
-              <div style={{ width: 36, height: 4, background: 'rgba(255,255,255,0.15)', borderRadius: 99, margin: '0 auto 20px' }} />
-
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            {/* Drag handle + header — fixed at top */}
+            <div style={{ flexShrink: 0, padding: '16px 18px 0' }}>
+              <div style={{ width: 36, height: 4, background: 'rgba(255,255,255,0.15)', borderRadius: 99, margin: '0 auto 18px' }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                 <h2 style={{ color: 'var(--text-primary)', fontSize: 17, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif' }}>{editBill ? 'Edit Bill' : 'Add Bill'}</h2>
-                <button onClick={() => setShowSheet(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', fontSize: 20 }}>✕</button>
+                <button onClick={() => setShowSheet(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.45)', fontSize: 22, lineHeight: 1 }}>✕</button>
               </div>
+            </div>
 
-              {/* Payee */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>Payee</label>
-                <div style={{ background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '11px 14px' }}>
-                  <input value={form.payee} onChange={e => f('payee', e.target.value)} placeholder="e.g. Verizon, Netflix, Rent"
-                    style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif' }} />
-                </div>
-              </div>
+            {/* Scrollable fields */}
+            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '0 18px' }}>
 
-              {/* Amount */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>Amount ($)</label>
-                <div style={{ background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '11px 14px' }}>
-                  <input type="number" value={form.amount} onChange={e => f('amount', e.target.value)} placeholder="0.00"
-                    style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif' }} />
-                </div>
-              </div>
+              <Field label="Payee">
+                <InputBox value={form.payee} onChange={e => f('payee', e.target.value)} placeholder="e.g. Verizon, Netflix, Rent" />
+              </Field>
 
-              {/* Due Day */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>Due Day of Month (1–31)</label>
-                <div style={{ background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '11px 14px' }}>
-                  <input type="number" min="1" max="31" value={form.due_day} onChange={e => f('due_day', e.target.value)} placeholder="1"
-                    style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif' }} />
-                </div>
-              </div>
+              <Field label="Amount ($)">
+                <InputBox type="number" value={form.amount} onChange={e => f('amount', e.target.value)} placeholder="0.00" />
+              </Field>
 
-              {/* Frequency */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>Frequency</label>
+              <Field label="Due Day of Month (1–31)">
+                <InputBox type="number" value={form.due_day} onChange={e => f('due_day', e.target.value)} placeholder="1" min="1" max="31" />
+              </Field>
+
+              <Field label="Frequency">
                 <div style={{ display: 'flex', gap: 8 }}>
                   {['monthly', 'yearly', 'weekly', 'one-time'].map(freq => (
                     <button key={freq} onClick={() => f('frequency', freq)}
-                      style={{ flex: 1, padding: '9px 4px', borderRadius: 9, border: '1px solid ' + (form.frequency === freq ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)'), background: form.frequency === freq ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)', color: form.frequency === freq ? '#fff' : 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: form.frequency === freq ? 700 : 400, cursor: 'pointer', textTransform: 'capitalize', letterSpacing: '0.04em' }}>
+                      style={{ flex: 1, padding: '9px 4px', borderRadius: 9, border: '1px solid ' + (form.frequency === freq ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)'), background: form.frequency === freq ? 'rgba(255,255,255,0.1)' : 'transparent', color: form.frequency === freq ? '#fff' : 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: form.frequency === freq ? 700 : 400, cursor: 'pointer', textTransform: 'capitalize', letterSpacing: '0.04em' }}>
                       {freq}
                     </button>
                   ))}
                 </div>
-              </div>
+              </Field>
 
-              {/* Category */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>Category</label>
+              <Field label="Category">
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {Object.entries(BILL_CATS).map(([k, v]) => (
                     <button key={k} onClick={() => f('category', k)}
-                      style={{ padding: '8px 12px', borderRadius: 9, border: '1px solid ' + (form.category === k ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)'), background: form.category === k ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)', color: form.category === k ? '#fff' : 'rgba(255,255,255,0.35)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
+                      style={{ padding: '8px 12px', borderRadius: 9, border: '1px solid ' + (form.category === k ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)'), background: form.category === k ? 'rgba(255,255,255,0.1)' : 'transparent', color: form.category === k ? '#fff' : 'rgba(255,255,255,0.35)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
                       {v}
                     </button>
                   ))}
                 </div>
-              </div>
+              </Field>
 
-              {/* Auto-pay */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, padding: '12px 14px', background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10 }}>
-                <div>
-                  <p style={{ color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600 }}>Auto-Pay</p>
-                  <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>Bill is paid automatically</p>
+              <Field label="Auto-Pay">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10 }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif' }}>Bill is paid automatically</p>
+                  <div onClick={() => f('autopay', !form.autopay)}
+                    style={{ width: 40, height: 22, borderRadius: 11, background: form.autopay ? '#4ade80' : 'rgba(255,255,255,0.12)', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
+                    <div style={{ position: 'absolute', top: 3, left: form.autopay ? 21 : 3, width: 16, height: 16, borderRadius: 8, background: '#fff', transition: 'left 0.2s' }} />
+                  </div>
                 </div>
-                <div onClick={() => f('autopay', !form.autopay)}
-                  style={{ width: 40, height: 22, borderRadius: 11, background: form.autopay ? '#4ade80' : 'rgba(255,255,255,0.12)', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
-                  <div style={{ position: 'absolute', top: 3, left: form.autopay ? 21 : 3, width: 16, height: 16, borderRadius: 8, background: '#fff', transition: 'left 0.2s' }} />
-                </div>
-              </div>
+              </Field>
 
-              {/* Notes */}
-              <div style={{ marginBottom: 8 }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>Notes (optional)</label>
-                <div style={{ background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '11px 14px' }}>
-                  <input value={form.notes} onChange={e => f('notes', e.target.value)} placeholder="Account #, website, reminders…"
-                    style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif' }} />
-                </div>
-              </div>
+              <Field label="Notes (optional)">
+                <InputBox value={form.notes} onChange={e => f('notes', e.target.value)} placeholder="Account #, website, reminders…" />
+              </Field>
+
+              {/* Bottom padding so last field clears footer */}
+              <div style={{ height: 16 }} />
             </div>
 
-            {/* Fixed save footer */}
-            <div style={{ padding: '16px 18px max(24px,env(safe-area-inset-bottom))', borderTop: '1px solid var(--border)', flexShrink: 0 }}>
+            {/* Save footer — always pinned at bottom */}
+            <div style={{ flexShrink: 0, padding: '14px 18px 28px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
               {error && <p style={{ color: '#f87171', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, textAlign: 'center' }}>{error}</p>}
               <button onClick={handleSave} disabled={saving}
-                style={{ width: '100%', padding: '15px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', color: 'var(--text-primary)', fontSize: 15, fontWeight: 800, fontFamily: 'Helvetica Neue,sans-serif', cursor: saving ? 'default' : 'pointer', letterSpacing: '0.02em' }}>
-                {saving ? 'Saving…' : editBill ? 'Save Changes' : 'Add Bill'}
+                style={{ width: '100%', padding: '16px', borderRadius: 12, border: 'none', background: saving ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.14)', color: saving ? 'var(--text-muted)' : 'var(--text-primary)', fontSize: 15, fontWeight: 800, fontFamily: 'Helvetica Neue,sans-serif', cursor: saving ? 'default' : 'pointer', letterSpacing: '0.02em' }}>
+                {saving ? 'Saving…' : editBill ? 'Save Changes' : 'Save Bill'}
               </button>
             </div>
+
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
