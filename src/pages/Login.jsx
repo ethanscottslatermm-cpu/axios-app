@@ -356,7 +356,7 @@ export default function Login() {
             )}
 
             <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 14px rgba(255,255,255,0.65), 0 0 35px rgba(255,255,255,0.25), 0 0 70px rgba(255,255,255,0.1)' }}>
-              Authorized access only
+              Authorized personnel only
             </p>
           </form>
 
