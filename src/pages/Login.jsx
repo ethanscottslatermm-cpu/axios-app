@@ -289,13 +289,7 @@ export default function Login() {
           {/* Form */}
           <form onSubmit={handleSubmit} style={{
             width: '100%',
-            background: 'rgba(4,4,4,0.88)',
-            border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: '2px',
             padding: 'clamp(1.25rem, 5vw, 2rem)',
-            backdropFilter: 'blur(28px)',
-            WebkitBackdropFilter: 'blur(28px)',
-            boxShadow: '0 8px 60px rgba(0,0,0,0.85), 0 0 40px rgba(255,255,255,0.04), inset 0 0 0 0.5px rgba(255,255,255,0.07)',
           }}>
             <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 12px rgba(255,255,255,0.6), 0 0 30px rgba(255,255,255,0.25), 0 0 60px rgba(255,255,255,0.1)' }}>
               Secure Access
