@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext'
 import { getLinkToken, exchangeToken, fetchBalances, fetchTransactions } from '../../lib/plaidClient'
 import { getQuote, getMarketNews, searchSymbol } from '../../lib/finnhub'
 import { BottomNav } from '../../pages/Dashboard'
+import BillsTab from './BillsTab'
 
 // ── Default watchlist ──────────────────────────────────────────────────────────
 const DEFAULT_SYMBOLS = ['DIA', 'SPY', 'QQQ', 'AAPL', 'TSLA']
@@ -141,7 +142,14 @@ export default function FinanceTracker() {
   const [results,     setResults]     = useState([])
   const [searching,   setSearching]   = useState(false)
   const [lastRefresh, setLastRefresh] = useState(Date.now())
-  const [activeTab,   setActiveTab]   = useState('markets') // markets | bank | news
+  const [activeTab,   setActiveTab]   = useState('markets') // markets | bank | news | bills
+  // Bills state
+  const [bills,       setBills]       = useState(() => {
+    try { return JSON.parse(localStorage.getItem('axios-bills') || '[]') } catch { return [] }
+  })
+  const [showAddBill, setShowAddBill] = useState(false)
+  const [editBill,    setEditBill]    = useState(null)
+  const [billForm,    setBillForm]    = useState({ payee:'', amount:'', due_day:'1', frequency:'monthly', category:'other', autopay:false, notes:'' })
 
   const { user } = useAuth()
 
@@ -176,6 +184,63 @@ export default function FinanceTracker() {
     loadBankData()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, user])
+
+  const saveBills = (updated) => {
+    setBills(updated)
+    localStorage.setItem('axios-bills', JSON.stringify(updated))
+  }
+
+  const addOrUpdateBill = () => {
+    const b = {
+      id:        editBill?.id || Date.now().toString(),
+      payee:     billForm.payee.trim(),
+      amount:    parseFloat(billForm.amount) || 0,
+      due_day:   parseInt(billForm.due_day) || 1,
+      frequency: billForm.frequency,
+      category:  billForm.category,
+      autopay:   billForm.autopay,
+      notes:     billForm.notes.trim(),
+      paid_months: editBill?.paid_months || [],
+    }
+    if (!b.payee) return
+    const updated = editBill
+      ? bills.map(x => x.id === editBill.id ? b : x)
+      : [...bills, b]
+    saveBills(updated)
+    setShowAddBill(false); setEditBill(null)
+    setBillForm({ payee:'', amount:'', due_day:'1', frequency:'monthly', category:'other', autopay:false, notes:'' })
+  }
+
+  const deleteBill = (id) => saveBills(bills.filter(b => b.id !== id))
+
+  const togglePaid = (id) => {
+    const key = new Date().toISOString().slice(0,7)
+    saveBills(bills.map(b => {
+      if (b.id !== id) return b
+      const paid = b.paid_months || []
+      return { ...b, paid_months: paid.includes(key) ? paid.filter(m => m !== key) : [...paid, key] }
+    }))
+  }
+
+  const getBillStatus = (bill) => {
+    const key = new Date().toISOString().slice(0,7)
+    if ((bill.paid_months || []).includes(key)) return 'paid'
+    const today = new Date().getDate()
+    const diff  = bill.due_day - today
+    if (diff < 0)  return 'overdue'
+    if (diff <= 5) return 'due-soon'
+    return 'upcoming'
+  }
+
+  const openEditBill = (bill) => {
+    setEditBill(bill)
+    setBillForm({ payee:bill.payee, amount:String(bill.amount), due_day:String(bill.due_day), frequency:bill.frequency, category:bill.category, autopay:bill.autopay, notes:bill.notes })
+    setShowAddBill(true)
+  }
+
+  const BILL_CATS = { rent:'Rent/Mortgage', utilities:'Utilities', insurance:'Insurance', subscriptions:'Subscriptions', loans:'Loans', phone:'Phone', internet:'Internet', other:'Other' }
+  const BILL_STATUS_COLOR = { paid:'#4ade80', 'due-soon':'#facc15', overdue:'#f87171', upcoming:'var(--text-muted)' }
+  const BILL_STATUS_LABEL = { paid:'Paid', 'due-soon':'Due Soon', overdue:'Overdue', upcoming:'Upcoming' }
 
   const loadBankData = async () => {
     setBankLoading(true); setBankError('')
@@ -247,7 +312,7 @@ export default function FinanceTracker() {
 
         {/* Tabs */}
         <div style={{ ...anim(40), display:'flex', gap:8, marginBottom:20 }}>
-          {[['markets','Markets'],['bank','Bank'],['news','News']].map(([key, label]) => (
+          {[['markets','Markets'],['bank','Bank'],['bills','Bills'],['news','News']].map(([key, label]) => (
             <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
               flex:1, padding:'10px', borderRadius:10, border:'1px solid var(--border)',
               background: activeTab===key ? 'rgba(255,255,255,0.08)' : 'transparent',
@@ -410,6 +475,10 @@ export default function FinanceTracker() {
             )}
           </div>
         )}
+
+        {/* Bills Tab */}
+        {activeTab === 'bills' && <BillsTab bills={bills} saveBills={saveBills} />}
+
 
           <div style={anim(80)}>
             <SectionHead title="Market News" sub="General" />
