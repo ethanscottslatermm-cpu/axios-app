@@ -62,6 +62,10 @@ const styles = `
     0%,100% { transform: translateY(0px); opacity: 0.6; }
     50%     { transform: translateY(-6px); opacity: 1; }
   }
+  @keyframes breathe {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.04); opacity: 0.9; }
+  }
 
   .word-in  { animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
   .word-out { animation: fadeOutUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
@@ -100,9 +104,9 @@ const styles = `
 
   .enter-btn {
     width: 100%;
-    background: rgba(0,0,0,0.6);
-    color: rgba(255,255,255,0.92);
-    border: 1px solid rgba(255,255,255,0.28);
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #C9A96E;
     border-radius: 2px;
     padding: 14px;
     font-size: 0.72rem;
@@ -113,13 +117,9 @@ const styles = `
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
     transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
     -webkit-appearance: none;
-    box-shadow: 0 0 18px rgba(255,255,255,0.06), 0 0 40px rgba(255,255,255,0.03), inset 0 0 20px rgba(255,255,255,0.03);
-    text-shadow: 0 0 14px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.2);
-    animation: btnShine 4s ease-in-out infinite;
-    background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.07) 50%, transparent 65%);
-    background-size: 300% 100%;
+    box-shadow: 0 0 18px rgba(201,169,110,0.3), 0 0 40px rgba(201,169,110,0.12);
   }
-  .enter-btn:hover  { transform: translateY(-1px); border-color: rgba(255,255,255,0.55); box-shadow: 0 0 28px rgba(255,255,255,0.14), 0 0 60px rgba(255,255,255,0.06), inset 0 0 24px rgba(255,255,255,0.05); }
+  .enter-btn:hover  { transform: translateY(-1px); border-color: #C9A96E; box-shadow: 0 0 28px rgba(201,169,110,0.45), 0 0 60px rgba(201,169,110,0.2); }
   .enter-btn:active { transform: translateY(0); box-shadow: none; }
   .enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 `
@@ -186,6 +186,7 @@ export default function Login() {
           backgroundSize: 'cover',
           backgroundPosition: '50% 30%',
           backgroundRepeat: 'no-repeat',
+          animation: 'breathe 9s ease-in-out infinite',
         }} />
 
         {/* Radial vignette — edges dark, center open so physique shows */}
@@ -231,14 +232,16 @@ export default function Login() {
         }}>
 
           {/* Brand */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem', position: 'relative' }}>
+            {/* Gold logo glow */}
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '280px', height: '130px', background: 'radial-gradient(ellipse at center, rgba(201,169,110,0.18) 0%, rgba(201,169,110,0.06) 50%, transparent 72%)', borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
               <svg width="38" height="32" viewBox="0 0 46 38" fill="none">
                 <polygon points="0,36 16,2 22,14 9,36" fill="white"/>
                 <polygon points="13,36 26,8 32,22 20,36" fill="white" opacity="0.62"/>
                 <polygon points="20,36 30,18 34,28 22,36" fill="white" opacity="0.32"/>
               </svg>
-              <div style={{ width: '1px', height: '38px', background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.7) 30%, rgba(255,255,255,0.7) 70%, transparent)', boxShadow: '0 0 6px rgba(255,255,255,0.3)' }} />
+              <div style={{ width: '1px', height: '38px', background: 'linear-gradient(to bottom, transparent, #C9A96E 30%, #C9A96E 70%, transparent)', boxShadow: '0 0 8px rgba(201,169,110,0.6)' }} />
               <span style={{
                 color: 'white', fontWeight: 900,
                 fontSize: 'clamp(1.8rem, 8vw, 2.8rem)',
@@ -251,14 +254,14 @@ export default function Login() {
                               0 0 40px rgba(255,255,255,0.08)`,
               }}>AXIOS</span>
             </div>
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
+            <p style={{ color: 'rgba(201,169,110,0.75)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
               I Am Worthy
             </p>
           </div>
 
           {/* Animated word */}
           <div style={{ textAlign: 'center', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-            <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
+            <p style={{ color: 'rgba(201,169,110,0.6)', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
               Est. 1989
             </p>
             <div style={{ overflow: 'hidden', height: '2.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -266,13 +269,13 @@ export default function Login() {
                 key={wordIndex}
                 className={phase === 'in' ? 'word-in' : 'word-out'}
                 style={{
-                  color: 'rgba(255,255,255,0.8)',
-                  fontSize: 'clamp(1rem, 4vw, 1.2rem)',
+                  color: 'rgba(255,255,255,0.88)',
+                  fontSize: 'clamp(1.1rem, 4.5vw, 1.35rem)',
                   fontFamily: '"EB Garamond", Georgia, serif',
                   fontStyle: 'italic',
-                  letterSpacing: '0.04em',
+                  letterSpacing: '0.09em',
                   margin: 0,
-                  textShadow: '0 2px 20px rgba(255,255,255,0.2)',
+                  textShadow: '0 2px 20px rgba(201,169,110,0.3), 0 0 40px rgba(201,169,110,0.12)',
                 }}
               >
                 {WORDS[wordIndex]}
@@ -373,7 +376,7 @@ export default function Login() {
 
         <p style={{
           position: 'fixed', bottom: '1.5rem', left: '1.5rem',
-          color: 'rgba(255,255,255,0.15)', fontSize: '0.55rem',
+          color: 'rgba(201,169,110,0.35)', fontSize: '0.55rem',
           letterSpacing: '0.22em', textTransform: 'uppercase',
           fontStyle: 'italic', zIndex: 10,
           fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
