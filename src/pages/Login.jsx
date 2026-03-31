@@ -106,6 +106,12 @@ const styles = `
   .login-input-icon {
     padding-left: 36px;
   }
+  .login-input::placeholder {
+    color: rgba(226,226,228,0.22);
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    letter-spacing: 0.08em;
+    font-size: 0.85rem;
+  }
 
   .enter-btn {
     width: 100%;
@@ -328,7 +334,7 @@ export default function Login() {
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  placeholder=""
+                  placeholder="email"
                   autoComplete="off"
                   required
                   className="login-input login-input-icon"
@@ -347,7 +353,7 @@ export default function Login() {
                   type="password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder=""
+                  placeholder="password"
                   autoComplete="current-password"
                   required
                   className="login-input login-input-icon"
