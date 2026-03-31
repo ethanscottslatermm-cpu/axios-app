@@ -29,10 +29,6 @@ const Ico = {
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function SectionLabel({ children }) {
-  if (signingOut) return (
-    <SignOutScreen onComplete={async () => { await signOut(); navigate('/') }} />
-  )
-
   return (
     <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
       <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
@@ -222,6 +218,10 @@ export default function Settings() {
     transform: visible ? 'translateY(0)' : 'translateY(12px)',
     transition: `opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms`,
   })
+
+  if (signingOut) return (
+    <SignOutScreen onComplete={async () => { await signOut(); navigate('/') }} />
+  )
 
   return (
     <>
