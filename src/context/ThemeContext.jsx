@@ -3,6 +3,36 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from './AuthContext'
 
 export const THEMES = {
+  axios: {
+    name: 'Axios',
+    description: 'Black with gold — the signature look',
+    preview: ['#080808', '#0e0e0e', '#C9A96E'],
+    vars: {
+      '--bg-primary':    '#080808',
+      '--bg-secondary':  '#0e0e0e',
+      '--bg-card':       'rgba(201,169,110,0.05)',
+      '--bg-card-hover': 'rgba(201,169,110,0.10)',
+      '--border':        'rgba(201,169,110,0.28)',
+      '--border-focus':  'rgba(201,169,110,0.70)',
+      '--text-primary':  '#ffffff',
+      '--text-secondary':'rgba(255,255,255,0.65)',
+      '--text-muted':    'rgba(255,255,255,0.38)',
+      '--text-faint':    'rgba(255,255,255,0.18)',
+      '--glow':          'rgba(201,169,110,0.65)',
+      '--glow-bar':      '#C9A96E',
+      '--btn-bg':        '#C9A96E',
+      '--btn-text':      '#080808',
+      '--overlay-bg':    'rgba(0,0,0,0.82)',
+      '--header-bg':     'rgba(8,8,8,0.96)',
+      '--sheet-bg':      '#0d0d0d',
+      '--input-bg':      'rgba(201,169,110,0.05)',
+      '--img-opacity':   '0.11',
+      '--scrollbar':     'rgba(201,169,110,0.22)',
+      '--badge-bg':      'rgba(201,169,110,0.10)',
+      '--stat-bg':       'rgba(201,169,110,0.06)',
+      '--card-shadow':   '0 0 0 0.5px rgba(201,169,110,0.18), 0 0 18px rgba(201,169,110,0.08), 0 2px 10px rgba(0,0,0,0.5)',
+    }
+  },
   obsidian: {
     name: 'Obsidian',
     description: 'Deep black — the default',
@@ -251,7 +281,7 @@ export function ThemeProvider({ children }) {
   const { user } = useAuth()
   const [themeKey, setThemeKey] = useState(() => {
     const saved = localStorage.getItem('axios-theme')
-    return (saved && THEMES[saved]) ? saved : 'obsidian'
+    return (saved && THEMES[saved]) ? saved : 'axios'
   })
   const [loading,  setLoading]  = useState(true)
 
