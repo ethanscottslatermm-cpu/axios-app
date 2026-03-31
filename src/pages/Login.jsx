@@ -108,8 +108,8 @@ const styles = `
 
   .enter-btn {
     width: 100%;
-    background: #ffffff;
-    color: #000000;
+    background: rgba(0,0,0,0.6);
+    color: rgba(255,255,255,0.92);
     border: 1px solid #C9A96E;
     border-radius: 2px;
     padding: 14px;
@@ -121,8 +121,10 @@ const styles = `
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
     transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
     -webkit-appearance: none;
-    box-shadow: 0 0 18px rgba(201,169,110,0.3), 0 0 40px rgba(201,169,110,0.12);
-    animation: btnGoldGlow 3s ease-in-out infinite;
+    text-shadow: 0 0 14px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.2);
+    background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.07) 50%, transparent 65%);
+    background-size: 300% 100%;
+    animation: btnGoldGlow 3s ease-in-out infinite, btnShine 4s ease-in-out infinite;
   }
   .enter-btn:hover  { transform: translateY(-1px); border-color: #C9A96E; box-shadow: 0 0 28px rgba(201,169,110,0.45), 0 0 60px rgba(201,169,110,0.2); }
   .enter-btn:active { transform: translateY(0); box-shadow: none; }
