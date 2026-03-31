@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { webAuthnSupported, verifyBiometric, hasRegisteredDevice } from '../hooks/useWebAuthn'
+import LoadingScreen from './LoadingScreen'
 
 export default function AppLock({ children }) {
   const { user, locked, unlock, signOut } = useAuth()
-  const [hasCred,  setHasCred]  = useState(false)
-  const [checking, setChecking] = useState(true)
-  const [busy,     setBusy]     = useState(false)
-  const [error,    setError]    = useState('')
+  const [hasCred,    setHasCred]    = useState(false)
+  const [checking,   setChecking]   = useState(true)
+  const [busy,       setBusy]       = useState(false)
+  const [error,      setError]      = useState('')
+  const [showLoader, setShowLoader] = useState(false)
 
   useEffect(() => {
     if (!user || !locked) { setChecking(false); return }
@@ -23,7 +25,7 @@ export default function AppLock({ children }) {
     setBusy(true); setError('')
     try {
       await verifyBiometric(user.id)
-      unlock()
+      setShowLoader(true)
     } catch {
       setError('Face ID failed or was cancelled.')
     } finally {
@@ -34,6 +36,9 @@ export default function AppLock({ children }) {
   const handleSignOut = async () => {
     await signOut()
   }
+
+  // Show loader after successful biometric — then unlock into the app
+  if (showLoader) return <LoadingScreen onComplete={unlock} />
 
   // Not locked — render app normally
   if (!locked || !user) return children
