@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import SignOutScreen from '../SignOutScreen'
 
 const modules = [
   { path: '/dashboard', label: 'Dashboard' },
@@ -13,6 +15,9 @@ const modules = [
 
 export default function Sidebar() {
   const { signOut } = useAuth()
+  const [signingOut, setSigningOut] = useState(false)
+
+  if (signingOut) return <SignOutScreen onComplete={signOut} />
 
   return (
     <aside className="w-[220px] min-w-[220px] bg-black border-r border-white/[0.08] flex flex-col">
@@ -67,7 +72,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="px-5 py-4 border-t border-white/[0.08]">
         <button
-          onClick={signOut}
+          onClick={() => setSigningOut(true)}
           className="text-white/25 text-[11px] tracking-widest uppercase hover:text-white/50 transition-colors"
         >
           Sign out
