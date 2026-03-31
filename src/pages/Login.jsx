@@ -75,19 +75,14 @@ const styles = `
   .word-out { animation: fadeOutUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
 
   .login-card {
-    animation: borderGlow 3.5s ease-in-out infinite;
     position: relative;
-    border: 1px solid rgba(201,169,110,0.35);
-    border-radius: 4px;
-    background: rgba(0,0,0,0.25);
-    backdrop-filter: blur(2px);
   }
 
   .login-input {
     width: 100%;
     box-sizing: border-box;
     background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid rgba(201,169,110,0.45);
     border-radius: 2px;
     color: rgba(255,255,255,0.9);
     padding: 13px 14px;
@@ -97,14 +92,15 @@ const styles = `
     -webkit-appearance: none;
     transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
     caret-color: white;
-    box-shadow: 0 0 12px rgba(0,0,0,0.5), inset 0 1px 3px rgba(0,0,0,0.4);
+    box-shadow: 0 0 10px rgba(201,169,110,0.15), inset 0 1px 3px rgba(0,0,0,0.4);
+    animation: borderGlow 3.5s ease-in-out infinite;
   }
   .login-input:focus {
-    border-color: rgba(255,255,255,0.6);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.04), inset 0 1px 3px rgba(0,0,0,0.4);
-    animation: inputPulse 2s ease-in-out infinite;
-    background: rgba(255,255,255,0.05);
-    border-left: 1px solid rgba(255,255,255,0.85);
+    border-color: rgba(201,169,110,0.9);
+    box-shadow: 0 0 0 1px rgba(201,169,110,0.15), 0 0 20px rgba(201,169,110,0.25), 0 0 40px rgba(201,169,110,0.1), inset 0 1px 3px rgba(0,0,0,0.4);
+    animation: none;
+    background: rgba(201,169,110,0.04);
+    border-left: 1px solid #C9A96E;
   }
   .login-input-icon {
     padding-left: 36px;
