@@ -33,8 +33,8 @@ const styles = `
     100% { transform: translateY(100vh); }
   }
   @keyframes borderGlow {
-    0%,100% { box-shadow: 0 0 18px rgba(255,255,255,0.07), 0 0 40px rgba(255,255,255,0.03), inset 0 0 20px rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.13); }
-    50%     { box-shadow: 0 0 32px rgba(255,255,255,0.16), 0 0 80px rgba(255,255,255,0.07), inset 0 0 30px rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.32); }
+    0%,100% { box-shadow: 0 0 14px rgba(201,169,110,0.2), 0 0 36px rgba(201,169,110,0.08), inset 0 0 16px rgba(201,169,110,0.04); border-color: rgba(201,169,110,0.35); }
+    50%     { box-shadow: 0 0 28px rgba(201,169,110,0.45), 0 0 70px rgba(201,169,110,0.18), inset 0 0 28px rgba(201,169,110,0.08); border-color: rgba(201,169,110,0.7); }
   }
   @keyframes inputPulse {
     0%,100% { box-shadow: 0 0 0px rgba(255,255,255,0); }
@@ -66,6 +66,10 @@ const styles = `
     0%,100% { transform: scale(1); opacity: 1; }
     50%      { transform: scale(1.04); opacity: 0.9; }
   }
+  @keyframes btnGoldGlow {
+    0%,100% { box-shadow: 0 0 12px rgba(201,169,110,0.25), 0 0 28px rgba(201,169,110,0.1); }
+    50%     { box-shadow: 0 0 24px rgba(201,169,110,0.55), 0 0 56px rgba(201,169,110,0.22), 0 0 90px rgba(201,169,110,0.08); }
+  }
 
   .word-in  { animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
   .word-out { animation: fadeOutUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
@@ -73,6 +77,10 @@ const styles = `
   .login-card {
     animation: borderGlow 3.5s ease-in-out infinite;
     position: relative;
+    border: 1px solid rgba(201,169,110,0.35);
+    border-radius: 4px;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(2px);
   }
 
   .login-input {
@@ -118,6 +126,7 @@ const styles = `
     transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
     -webkit-appearance: none;
     box-shadow: 0 0 18px rgba(201,169,110,0.3), 0 0 40px rgba(201,169,110,0.12);
+    animation: btnGoldGlow 3s ease-in-out infinite;
   }
   .enter-btn:hover  { transform: translateY(-1px); border-color: #C9A96E; box-shadow: 0 0 28px rgba(201,169,110,0.45), 0 0 60px rgba(201,169,110,0.2); }
   .enter-btn:active { transform: translateY(0); box-shadow: none; }
@@ -296,7 +305,7 @@ export default function Login() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} style={{
+          <form onSubmit={handleSubmit} className="login-card" style={{
             width: '100%',
             padding: 'clamp(1.25rem, 5vw, 2rem)',
           }}>
