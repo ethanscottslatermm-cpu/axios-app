@@ -38,7 +38,7 @@ export default function AppLock({ children }) {
   }
 
   // Show loader after successful biometric — then unlock into the app
-  if (showLoader) return <LoadingScreen onComplete={unlock} />
+  if (showLoader) return <LoadingScreen onComplete={() => { unlock(); setShowLoader(false) }} />
 
   // Not locked — render app normally
   if (!locked || !user) return children
