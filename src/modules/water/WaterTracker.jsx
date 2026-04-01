@@ -22,10 +22,15 @@ const Ico = {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
+const WATER_BLUE = '#38bdf8'
+
 function GlowBar({ pct, h=5 }) {
+  const full  = pct >= 100
+  const color = full ? WATER_BLUE : 'var(--btn-bg)'
+  const glow  = full ? 'rgba(56,189,248,0.55)' : 'rgba(255,255,255,0.5)'
   return (
     <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'var(--btn-bg)', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 10px rgba(255,255,255,0.5)' }} />
+      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1), background 0.5s', boxShadow:`0 0 10px ${glow}` }} />
     </div>
   )
 }
@@ -71,16 +76,16 @@ function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
         width: '100%',
         aspectRatio: '1',
         borderRadius: 12,
-        border: `1px solid ${filled ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.09)'}`,
-        background: filled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${filled ? 'rgba(56,189,248,0.5)' : 'rgba(255,255,255,0.09)'}`,
+        background: filled ? 'rgba(56,189,248,0.22)' : 'rgba(255,255,255,0.04)',
         cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         transition: 'background 0.25s, border-color 0.25s, transform 0.15s, box-shadow 0.25s',
         transform: pressed ? 'scale(0.92)' : visible ? 'scale(1)' : 'scale(0.85)',
         opacity: visible ? 1 : 0,
-        boxShadow: filled ? '0 0 14px rgba(255,255,255,0.25)' : 'none',
+        boxShadow: filled ? '0 0 14px rgba(56,189,248,0.3)' : 'none',
         transitionDelay: `${animDelay}ms`,
-        color: filled ? 'var(--bg-primary)' : 'rgba(255,255,255,0.2)',
+        color: filled ? WATER_BLUE : 'rgba(255,255,255,0.2)',
       }}
     >
       {Ico.drop(filled ? 18 : 16)}
@@ -172,10 +177,32 @@ export default function WaterTracker() {
 
   // Quick-add sizes
   const quickSizes = [
-    { label: '8 oz',  sub: 'Glass',  oz: 8  },
-    { label: '12 oz', sub: 'Bottle', oz: 12 },
-    { label: '16 oz', sub: 'Large',  oz: 16 },
-    { label: '24 oz', sub: 'Bottle', oz: 24 },
+    { label: '8 oz',  sub: 'Glass',  oz: 8,  icon: (
+      <svg viewBox="0 0 28 36" width={22} height={28} fill="none">
+        <path d="M5 4 L7 32 H21 L23 4 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+        <line x1="5" y1="4" x2="23" y2="4" stroke={WATER_BLUE} strokeWidth="1.4"/>
+      </svg>
+    )},
+    { label: '12 oz', sub: 'Bottle', oz: 12, icon: (
+      <svg viewBox="0 0 28 40" width={20} height={30} fill="none">
+        <rect x="10" y="2" width="8" height="6" rx="1.5" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.3"/>
+        <path d="M6 10 Q4 14 4 18 L4 34 Q4 38 14 38 Q24 38 24 34 L24 18 Q24 14 22 10 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+      </svg>
+    )},
+    { label: '16 oz', sub: 'Large',  oz: 16, icon: (
+      <svg viewBox="0 0 32 40" width={24} height={32} fill="none">
+        <path d="M4 4 L6 36 H26 L28 4 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+        <line x1="4" y1="4" x2="28" y2="4" stroke={WATER_BLUE} strokeWidth="1.4"/>
+        <line x1="6" y1="20" x2="26" y2="20" stroke={WATER_BLUE} strokeWidth="0.8" strokeDasharray="2 2" opacity="0.5"/>
+      </svg>
+    )},
+    { label: '24 oz', sub: 'Bottle', oz: 24, icon: (
+      <svg viewBox="0 0 28 46" width={20} height={34} fill="none">
+        <rect x="10" y="2" width="8" height="5" rx="1.5" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.3"/>
+        <path d="M6 9 Q4 13 4 18 L4 38 Q4 44 14 44 Q24 44 24 38 L24 18 Q24 13 22 9 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+        <line x1="5" y1="26" x2="23" y2="26" stroke={WATER_BLUE} strokeWidth="0.8" strokeDasharray="2 2" opacity="0.5"/>
+      </svg>
+    )},
   ]
 
   const anim = (d=0) => ({
@@ -230,7 +257,7 @@ export default function WaterTracker() {
               <p style={{ color:'var(--text-primary)', fontSize:34, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>
                 {count} <span style={{ fontSize:14, color:'var(--text-muted)', fontWeight:400 }}>/ {WATER_GOAL} glasses</span>
               </p>
-              <p style={{ color: goalMet ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
+              <p style={{ color: goalMet ? WATER_BLUE : 'rgba(255,255,255,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
                 {goalMet ? '✓ Goal reached — well done.' : `${remaining} glass${remaining !== 1 ? 'es' : ''} remaining`}
               </p>
             </div>
@@ -270,11 +297,14 @@ export default function WaterTracker() {
           <div style={anim(200)}>
             <SectionHead title="Quick Add" />
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-              {quickSizes.map(({ label, sub, oz }) => (
+              {quickSizes.map(({ label, sub, oz, icon }) => (
                 <button key={oz} onClick={() => handleAddGlass(oz)} className="ax-quick"
-                  style={{ padding:'16px', borderRadius:12, background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', cursor:'pointer', textAlign:'left', transition:'all 0.18s' }}>
-                  <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{label}</p>
-                  <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                  style={{ padding:'16px', borderRadius:12, background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', cursor:'pointer', textAlign:'left', transition:'all 0.18s', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div>
+                    <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{label}</p>
+                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                  </div>
+                  <div style={{ opacity:0.85 }}>{icon}</div>
                 </button>
               ))}
             </div>

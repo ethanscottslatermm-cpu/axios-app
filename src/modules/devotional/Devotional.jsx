@@ -333,11 +333,11 @@ export default function Devotional() {
           </p>
 
           {/* Scripture card */}
-          <div style={{ position:'relative', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:16, padding:'24px 20px', overflow:'hidden', ...anim(100) }}>
+          <div style={{ position:'relative', background:'var(--bg-card)', border:'1px solid var(--border)', borderLeft:'3px solid rgba(185,28,28,0.45)', boxShadow:'var(--card-shadow)', borderRadius:16, padding:'24px 20px', overflow:'hidden', ...anim(100) }}>
             {/* Decorative cross */}
             <div style={{ position:'absolute', top:16, right:16, color:'rgba(255,255,255,0.04)', pointerEvents:'none' }}>{Ico.cross(48)}</div>
 
-            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:16 }}>
+            <p style={{ color:'rgba(185,28,28,0.6)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:16, fontWeight:600 }}>
               {verseLoading ? 'Loading…' : verse?.reference}
             </p>
 
@@ -352,7 +352,7 @@ export default function Devotional() {
             )}
 
             <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <p style={{ color:'rgba(255,255,255,0.2)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.12em' }}>KJV · DAILY VERSE</p>
+              <p style={{ color:'rgba(185,28,28,0.75)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.14em', fontWeight:600 }}>KJV · DAILY VERSE</p>
             </div>
           </div>
 

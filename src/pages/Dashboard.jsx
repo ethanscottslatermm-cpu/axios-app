@@ -303,11 +303,11 @@ export default function Dashboard() {
             <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" />
             <div style={{ display:'flex', flexWrap:'wrap', gap:10, marginBottom:12 }}>
               {Array.from({ length: WATER_GOAL }).map((_,i) => (
-                <div key={i} style={{ width:30, height:30, borderRadius:'50%', background: i < waterCount ? '#fff' : 'rgba(255,255,255,0.06)', border:`1px solid ${i < waterCount ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'}`, boxShadow: i < waterCount ? '0 0 8px rgba(255,255,255,0.4)' : 'none', transition:'all 0.3s' }} />
+                <div key={i} style={{ width:30, height:30, borderRadius:'50%', background: i < waterCount ? 'rgba(56,189,248,0.25)' : 'rgba(255,255,255,0.06)', border:`1px solid ${i < waterCount ? 'rgba(56,189,248,0.55)' : 'rgba(255,255,255,0.1)'}`, boxShadow: i < waterCount ? '0 0 8px rgba(56,189,248,0.4)' : 'none', transition:'all 0.3s' }} />
               ))}
             </div>
-            <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
-              {waterCount >= WATER_GOAL ? 'Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
+            <p style={{ color: waterCount >= WATER_GOAL ? '#38bdf8' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
+              {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
             </p>
             <GlowBar pct={waterPct} />
           </Card>
