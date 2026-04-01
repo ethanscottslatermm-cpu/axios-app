@@ -110,18 +110,18 @@ export function BottomNav() {
     }}>
       {items.map(({ label, path, icon, color }) => {
         const active = loc.pathname === path
-        const activeColor = color
         return (
           <button key={path} onClick={() => navigate(path)} style={{
             display:'flex', flexDirection:'column', alignItems:'center', gap:4,
             background:'none', border:'none', cursor:'pointer',
-            color: active ? activeColor : 'rgba(255,255,255,0.28)',
-            transition:'color 0.2s', minWidth:52, padding:'2px 0',
+            opacity: active ? 1 : 0.45,
+            transition:'opacity 0.2s',
+            minWidth:52, padding:'2px 0',
           }}>
-            <div style={{ filter: active ? `drop-shadow(0 0 5px ${activeColor}99)` : 'none', transition:'filter 0.2s' }}>
+            <div style={{ color, filter: active ? `drop-shadow(0 0 6px ${color}bb)` : 'none', transition:'filter 0.2s' }}>
               {icon(22)}
             </div>
-            <span style={{ fontSize:9, letterSpacing:'0.08em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400 }}>{label}</span>
+            <span style={{ color, fontSize:9, letterSpacing:'0.08em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400 }}>{label}</span>
           </button>
         )
       })}
