@@ -313,10 +313,18 @@ export default function Dashboard() {
           {/* Water */}
           <Card style={anim(340)}>
             <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" color={MODULE_COLORS.water} />
-            <div style={{ display:'flex', flexWrap:'wrap', gap:10, marginBottom:12 }}>
-              {Array.from({ length: WATER_GOAL }).map((_,i) => (
-                <div key={i} style={{ width:30, height:30, borderRadius:'50%', background: i < waterCount ? 'rgba(56,189,248,0.25)' : 'rgba(255,255,255,0.06)', border:`1px solid ${i < waterCount ? 'rgba(56,189,248,0.55)' : 'rgba(255,255,255,0.1)'}`, boxShadow: i < waterCount ? '0 0 8px rgba(56,189,248,0.4)' : 'none', transition:'all 0.3s' }} />
-              ))}
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
+              {Array.from({ length: WATER_GOAL }).map((_,i) => {
+                const full = i < waterCount
+                return (
+                  <svg key={i} width={26} height={26} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ transition:'all 0.3s', filter: full ? '0 0 6px rgba(56,189,248,0.5)' : 'none' }}>
+                    <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(56,189,248,0.7)' : 'rgba(255,255,255,0.04)'} stroke="none"/>
+                    <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#38bdf8' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
+                    <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#38bdf8' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
+                    <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#38bdf8' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
+                  </svg>
+                )
+              })}
             </div>
             <p style={{ color: waterCount >= WATER_GOAL ? '#38bdf8' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
               {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}

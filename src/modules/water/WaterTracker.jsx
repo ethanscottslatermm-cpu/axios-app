@@ -88,7 +88,12 @@ function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
         color: filled ? WATER_BLUE : 'rgba(255,255,255,0.2)',
       }}
     >
-      {Ico.drop(filled ? 18 : 16)}
+      <svg width={filled ? 22 : 20} height={filled ? 22 : 20} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={filled ? 'rgba(56,189,248,0.75)' : 'transparent'} stroke="none"/>
+        <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke="currentColor" strokeWidth="1.5"/>
+        <line x1="5" y1="3" x2="19" y2="3" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M19 8 C21.5 8 21.5 13 19 13" stroke="currentColor" strokeWidth="1.5"/>
+      </svg>
     </button>
   )
 }
