@@ -246,7 +246,10 @@ export default function WaterTracker() {
             </button>
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
-              <h1 style={{ color:'#38bdf8', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Water Intake</h1>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <h1 style={{ color:'#38bdf8', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Water Intake</h1>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M9 2h6"/><path d="M7.5 5h9l.5 2V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V7l.5-2z"/><path d="M7.5 11h9"/></svg>
+              </div>
             </div>
           </div>
 

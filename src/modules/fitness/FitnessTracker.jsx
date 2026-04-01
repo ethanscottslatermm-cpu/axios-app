@@ -491,7 +491,10 @@ export default function FitnessTracker() {
             </button>
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
-              <h1 style={{ color:'#3b82f6', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Fitness</h1>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <h1 style={{ color:'#3b82f6', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Fitness</h1>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M6.5 6.5h11M6.5 17.5h11M3 9.5h18M3 14.5h18"/></svg>
+              </div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={() => setShowWeight(true)} className="ax-wt-btn"
