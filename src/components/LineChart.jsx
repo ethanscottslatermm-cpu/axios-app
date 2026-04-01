@@ -1,13 +1,24 @@
 // Reusable SVG line chart — theme-aware, no dependencies
 
+function trendColor(data) {
+  if (data.length < 2) return 'var(--glow-bar)'
+  const first = data[0].value
+  const last  = data[data.length - 1].value
+  const delta = ((last - first) / (Math.abs(first) || 1)) * 100
+  if (delta >  3) return '#4ade80'  // green — increasing
+  if (delta < -3) return '#f87171'  // red   — decreasing
+  return '#fbbf24'                   // yellow — stagnant
+}
+
 export default function LineChart({
   data = [],          // [{ label, value }]
   height = 80,
-  color = 'var(--glow-bar)',
+  color,
   showDots = true,
   showLabels = true,
   fillOpacity = 0.12,
 }) {
+  if (!color) color = trendColor(data)
   if (data.length < 2) {
     return (
       <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
