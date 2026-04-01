@@ -40,6 +40,15 @@ const Ico = {
   finance:  (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
 }
 
+const MODULE_COLORS = {
+  food:       '#86efac', // lettuce green
+  water:      '#38bdf8', // sky blue
+  prayer:     'rgba(255,255,255,0.5)',
+  devotional: '#f87171', // red
+  fitness:    '#3b82f6', // dark blue
+  finance:    '#4ade80', // money green
+}
+
 const modules = [
   { key:'food',       label:'Food Journal', path:'/food',       icon: Ico.food },
   { key:'water',      label:'Water',        path:'/water',      icon: Ico.water },
@@ -246,25 +255,26 @@ export default function Dashboard() {
             <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} />
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {modules.map(({ key, label, path, icon }, i) => {
-                const done = loggedModules[key]
+                const done  = loggedModules[key]
+                const color = MODULE_COLORS[key] || 'rgba(255,255,255,0.5)'
                 return (
                   <button key={key} onClick={() => navigate(path)} className="ax-pill"
                     style={{
                       display:'flex', alignItems:'center', justifyContent:'space-between',
                       padding:'13px 14px', borderRadius:11,
-                      border:`1px solid ${done ? 'rgba(255,255,255,0.13)' : 'rgba(255,255,255,0.06)'}`,
-                      background: done ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
+                      border:`1px solid ${done ? `${color}30` : 'rgba(255,255,255,0.06)'}`,
+                      background: done ? `${color}0d` : 'rgba(255,255,255,0.02)',
                       cursor:'pointer', textAlign:'left', width:'100%',
                       opacity: visible ? 1 : 0,
                       transform: visible ? 'translateX(0)' : 'translateX(-8px)',
                       transition: `opacity 0.4s ease ${200 + i*45}ms, transform 0.4s ease ${200 + i*45}ms, background 0.2s, border-color 0.2s`,
                     }}>
                     <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                      <div style={{ width:7, height:7, borderRadius:'50%', background: done ? '#fff' : 'rgba(255,255,255,0.15)', boxShadow: done ? '0 0 7px rgba(255,255,255,0.7)' : 'none', flexShrink:0 }} />
-                      <div style={{ color: done ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.22)' }}>{icon(15)}</div>
+                      <div style={{ width:7, height:7, borderRadius:'50%', background: done ? color : 'rgba(255,255,255,0.15)', boxShadow: done ? `0 0 7px ${color}99` : 'none', flexShrink:0 }} />
+                      <div style={{ color: done ? color : 'rgba(255,255,255,0.22)' }}>{icon(15)}</div>
                       <div>
-                        <p style={{ color: done ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.38)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>{label}</p>
-                        <p style={{ color: done ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.18)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
+                        <p style={{ color: done ? color : 'rgba(255,255,255,0.38)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>{label}</p>
+                        <p style={{ color: done ? `${color}88` : 'rgba(255,255,255,0.18)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
                       </div>
                     </div>
                     <div style={{ color:'rgba(255,255,255,0.2)' }}>{Ico.chevron()}</div>
