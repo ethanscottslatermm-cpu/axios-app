@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
-const INACTIVITY_MS = 3 * 60 * 1000 // 3 minutes
+const INACTIVITY_MS = 5 * 60 * 1000 // 5 minutes
 
 export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null)
@@ -27,32 +27,6 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  // Lock when app is backgrounded / swiped away (works for installed PWA on iOS)
-  useEffect(() => {
-    let hiddenAt = null
-
-    const handleVisibility = () => {
-      if (document.visibilityState === 'hidden') {
-        hiddenAt = Date.now()
-      } else if (document.visibilityState === 'visible' && user) {
-        // Lock if app was hidden for more than 15 seconds
-        if (hiddenAt && (Date.now() - hiddenAt) > 15000) {
-          setLocked(true)
-        }
-        hiddenAt = null
-      }
-    }
-
-    // pagehide catches full close in browser
-    const handleClose = () => { if (user) setLocked(true) }
-
-    document.addEventListener('visibilitychange', handleVisibility)
-    window.addEventListener('pagehide', handleClose)
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibility)
-      window.removeEventListener('pagehide', handleClose)
-    }
-  }, [user])
 
   // Auto-lock after 3 minutes of inactivity
   useEffect(() => {
