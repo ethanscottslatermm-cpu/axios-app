@@ -43,7 +43,7 @@ const Ico = {
 const MODULE_COLORS = {
   food:       '#86efac', // lettuce green
   water:      '#38bdf8', // sky blue
-  prayer:     'rgba(255,255,255,0.5)',
+  prayer:     '#fb923c', // orange
   devotional: '#f87171', // red
   fitness:    '#3b82f6', // dark blue
   finance:    '#4ade80', // money green
@@ -58,10 +58,10 @@ const modules = [
   { key:'finance',    label:'Finance',      path:'/finance',    icon: Ico.finance },
 ]
 
-function GlowBar({ pct, h = 3 }) {
+function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(255,255,255,0.55)' }) {
   return (
     <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${pct}%`, background:'var(--btn-bg)', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(255,255,255,0.55)' }} />
+      <div style={{ height:'100%', width:`${pct}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:`0 0 8px ${glow}` }} />
     </div>
   )
 }
@@ -74,14 +74,15 @@ function Card({ children, style={} }) {
   )
 }
 
-function SectionHead({ title, action, actionLabel }) {
+function SectionHead({ title, action, actionLabel, color }) {
+  const c = color || 'rgba(255,255,255,0.8)'
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
-        <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        <div style={{ width:2, height:14, background:`linear-gradient(to bottom,${c},${c}22)`, borderRadius:2, boxShadow:`0 0 6px ${c}88` }} />
+        <p style={{ color: color || 'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {action && <button onClick={action} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</button>}
+      {action && <button onClick={action} style={{ background:'none', border:'none', cursor:'pointer', color: color ? `${color}99` : 'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</button>}
     </div>
   )
 }
@@ -286,7 +287,7 @@ export default function Dashboard() {
 
           {/* Food */}
           <Card style={anim(280)}>
-            <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" />
+            <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" color={MODULE_COLORS.food} />
             {recentFood.length === 0
               ? <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'14px 0' }}>Nothing logged yet today.</p>
               : recentFood.map((e, i) => (
@@ -302,7 +303,7 @@ export default function Dashboard() {
                 <p style={{ color:'var(--text-primary)', fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
               </div>
               <div style={{ flex:1 }}>
-                <GlowBar pct={calPct} h={4} />
+                <GlowBar pct={calPct} h={4} color={MODULE_COLORS.food} glow="rgba(134,239,172,0.5)" />
                 <p style={{ color:'var(--text-muted)', fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
               </div>
             </div>
@@ -310,7 +311,7 @@ export default function Dashboard() {
 
           {/* Water */}
           <Card style={anim(340)}>
-            <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" />
+            <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" color={MODULE_COLORS.water} />
             <div style={{ display:'flex', flexWrap:'wrap', gap:10, marginBottom:12 }}>
               {Array.from({ length: WATER_GOAL }).map((_,i) => (
                 <div key={i} style={{ width:30, height:30, borderRadius:'50%', background: i < waterCount ? 'rgba(56,189,248,0.25)' : 'rgba(255,255,255,0.06)', border:`1px solid ${i < waterCount ? 'rgba(56,189,248,0.55)' : 'rgba(255,255,255,0.1)'}`, boxShadow: i < waterCount ? '0 0 8px rgba(56,189,248,0.4)' : 'none', transition:'all 0.3s' }} />
@@ -319,25 +320,25 @@ export default function Dashboard() {
             <p style={{ color: waterCount >= WATER_GOAL ? '#38bdf8' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
               {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
             </p>
-            <GlowBar pct={waterPct} />
+            <GlowBar pct={waterPct} color={MODULE_COLORS.water} glow="rgba(56,189,248,0.5)" />
           </Card>
 
           {/* Prayer */}
           <Card style={anim(400)}>
-            <SectionHead title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" />
+            <SectionHead title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} />
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
               {[{ label:'Today', value: todayPrayers, sub:'logged' },{ label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
-                <div key={label} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'13px 14px' }}>
+                <div key={label} style={{ background:'var(--stat-bg)', border:`1px solid ${MODULE_COLORS.prayer}22`, boxShadow:'var(--card-shadow)', borderRadius:10, padding:'13px 14px' }}>
                   <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
-                  <p style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
+                  <p style={{ color:MODULE_COLORS.prayer, fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
                   <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
                 </div>
               ))}
             </div>
             <button onClick={() => navigate('/prayer')}
-              style={{ width:'100%', padding:'11px', borderRadius:8, background:'transparent', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.4)', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.3)';e.currentTarget.style.color='rgba(255,255,255,0.7)'}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.1)';e.currentTarget.style.color='rgba(255,255,255,0.4)'}}
+              style={{ width:'100%', padding:'11px', borderRadius:8, background:'transparent', border:`1px solid ${MODULE_COLORS.prayer}44`, color:`${MODULE_COLORS.prayer}99`, fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor=MODULE_COLORS.prayer;e.currentTarget.style.color=MODULE_COLORS.prayer}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor=`${MODULE_COLORS.prayer}44`;e.currentTarget.style.color=`${MODULE_COLORS.prayer}99`}}
             >
               + Log a prayer
             </button>

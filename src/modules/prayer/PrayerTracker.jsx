@@ -315,7 +315,7 @@ export default function PrayerTracker() {
             </button>
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
-              <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Prayer</h1>
+              <h1 style={{ color:'#fb923c', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Prayer</h1>
             </div>
             <button onClick={() => setShowAdd(true)} className="ax-add-btn"
               style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 16px', borderRadius:9, background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s', flexShrink:0 }}>
