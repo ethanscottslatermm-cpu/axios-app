@@ -271,11 +271,11 @@ export default function Dashboard() {
                       transition: `opacity 0.4s ease ${200 + i*45}ms, transform 0.4s ease ${200 + i*45}ms, background 0.2s, border-color 0.2s`,
                     }}>
                     <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                      <div style={{ width:7, height:7, borderRadius:'50%', background: done ? color : 'rgba(255,255,255,0.15)', boxShadow: done ? `0 0 7px ${color}99` : 'none', flexShrink:0 }} />
-                      <div style={{ color: done ? color : 'rgba(255,255,255,0.22)' }}>{icon(15)}</div>
+                      <div style={{ width:7, height:7, borderRadius:'50%', background: done ? color : `${color}55`, boxShadow: done ? `0 0 7px ${color}99` : 'none', flexShrink:0 }} />
+                      <div style={{ color: done ? color : `${color}66` }}>{icon(15)}</div>
                       <div>
-                        <p style={{ color: done ? color : 'rgba(255,255,255,0.38)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>{label}</p>
-                        <p style={{ color: done ? `${color}88` : 'rgba(255,255,255,0.18)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
+                        <p style={{ color: done ? color : `${color}cc`, fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>{label}</p>
+                        <p style={{ color: done ? `${color}88` : `${color}55`, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
                       </div>
                     </div>
                     <div style={{ color:'rgba(255,255,255,0.2)' }}>{Ico.chevron()}</div>
