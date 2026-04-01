@@ -8,6 +8,14 @@ const DISPLAY_NAMES = {
   'GC=F':    'GOLD',
 }
 
+const NAME_COLORS = {
+  '^DJI':    '#60a5fa', // blue
+  '^GSPC':   '#a78bfa', // purple
+  '^IXIC':   '#38bdf8', // sky blue
+  'BTC-USD': '#fb923c', // orange
+  'GC=F':    '#fbbf24', // gold
+}
+
 function fmt(price, symbol) {
   if (!price && price !== 0) return '—'
   if (symbol === 'BTC-USD') return price.toLocaleString('en-US', { maximumFractionDigits: 0 })
@@ -96,7 +104,7 @@ export default function StockTicker() {
               fontFamily: 'Helvetica Neue, sans-serif',
               borderRight: '1px solid rgba(255,255,255,0.07)',
             }}>
-              <span style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700, fontSize: 9 }}>
+              <span style={{ color: NAME_COLORS[q.symbol] || 'rgba(255,255,255,0.4)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700, fontSize: 9 }}>
                 {name}
               </span>
               {hasData ? (
