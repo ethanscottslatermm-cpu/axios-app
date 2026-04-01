@@ -247,7 +247,7 @@ export default function Login() {
           position: 'relative', zIndex: 10,
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           width: '100%', maxWidth: '420px',
-          padding: '4rem 1.25rem 2rem',
+          padding: '2.5rem 1.25rem 2rem',
           margin: '0 auto',
         }}>
 
