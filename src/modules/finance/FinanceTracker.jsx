@@ -8,9 +8,8 @@ import { getLinkToken, exchangeToken, fetchBalances, fetchTransactions } from '.
 import { getQuote, getMarketNews, searchSymbol } from '../../lib/finnhub'
 import { BottomNav } from '../../pages/Dashboard'
 import BillsTab from './BillsTab'
+import { useWatchlist } from '../../hooks/useWatchlist'
 
-// ── Default watchlist ──────────────────────────────────────────────────────────
-const DEFAULT_SYMBOLS = ['DIA', 'SPY', 'QQQ', 'AAPL', 'TSLA']
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function fmt(n)    { return n == null ? '—' : Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
@@ -134,7 +133,7 @@ function NewsCard({ item }) {
 
 export default function FinanceTracker() {
   const [visible,     setVisible]     = useState(false)
-  const [watchlist,   setWatchlist]   = useState(DEFAULT_SYMBOLS)
+  const { watchlist, custom, addSymbol: addSym, removeSymbol: removeSym, DEFAULT_SYMBOLS } = useWatchlist()
   const [news,        setNews]        = useState([])
   const [newsLoading, setNewsLoading] = useState(true)
   const [showSearch,  setShowSearch]  = useState(false)
@@ -269,13 +268,12 @@ export default function FinanceTracker() {
   const { open: openPlaid, ready: plaidReady } = usePlaidLink({ token: linkToken, onSuccess: onPlaidSuccess })
 
   const addSymbol = (symbol) => {
-    if (!watchlist.includes(symbol)) setWatchlist(w => [...w, symbol])
+    addSym.mutate(symbol)
     setShowSearch(false); setQuery(''); setResults([])
   }
 
   const removeSymbol = (symbol) => {
-    if (DEFAULT_SYMBOLS.includes(symbol)) return
-    setWatchlist(w => w.filter(s => s !== symbol))
+    removeSym.mutate(symbol)
   }
 
   const refresh = () => setLastRefresh(Date.now())
@@ -343,7 +341,7 @@ export default function FinanceTracker() {
 
             {/* Watchlist */}
             <div style={{ marginBottom:20 }}>
-              <SectionHead title="Watchlist" sub={`${watchlist.filter(s => !['DIA','SPY','QQQ'].includes(s)).length} stocks`} />
+              <SectionHead title="Watchlist" sub={`${custom.length} stocks`} />
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                 {watchlist.filter(s => !['DIA','SPY','QQQ'].includes(s)).map(s => (
                   <QuoteCard key={s} symbol={s} onRemove={removeSymbol} canRemove={!DEFAULT_SYMBOLS.includes(s)} />

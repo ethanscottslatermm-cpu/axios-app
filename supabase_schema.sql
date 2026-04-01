@@ -126,3 +126,18 @@ alter table devotionals enable row level security;
 create policy "Users manage own devotionals"
   on devotionals for all using (auth.uid() = user_id);
 create index idx_devotionals_user_date on devotionals(user_id, date desc);
+
+-- ─────────────────────────────────────────
+-- STOCK WATCHLIST
+-- ─────────────────────────────────────────
+create table stock_watchlist (
+  id         uuid primary key default uuid_generate_v4(),
+  user_id    uuid references auth.users(id) on delete cascade not null,
+  symbol     text not null,
+  added_at   timestamptz default now(),
+  unique (user_id, symbol)
+);
+alter table stock_watchlist enable row level security;
+create policy "Users manage own watchlist"
+  on stock_watchlist for all using (auth.uid() = user_id);
+create index idx_stock_watchlist_user on stock_watchlist(user_id, added_at asc);
