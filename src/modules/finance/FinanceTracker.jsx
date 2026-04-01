@@ -315,9 +315,9 @@ export default function FinanceTracker() {
         <div style={{ ...anim(40), display:'flex', gap:8, marginBottom:20 }}>
           {[['markets','Markets'],['bank','Bank'],['bills','Bills'],['news','News']].map(([key, label]) => (
             <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
-              flex:1, padding:'10px', borderRadius:10, border:'1px solid var(--border)',
-              background: activeTab===key ? 'rgba(255,255,255,0.08)' : 'transparent',
-              color: activeTab===key ? 'var(--text-primary)' : 'var(--text-muted)',
+              flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(74,222,128,0.5)' : 'var(--border)'}`,
+              background: activeTab===key ? 'rgba(74,222,128,0.12)' : 'transparent',
+              color: activeTab===key ? '#4ade80' : 'var(--text-muted)',
               fontSize:12, fontWeight: activeTab===key ? 700 : 400,
               fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
               letterSpacing:'0.08em', textTransform:'uppercase',

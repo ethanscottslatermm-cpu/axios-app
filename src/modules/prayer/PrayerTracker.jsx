@@ -105,7 +105,7 @@ function AddPrayerSheet({ onSave, onClose, todayStr }) {
           <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
             {CATEGORIES.map(c => (
               <button key={c} onClick={() => setCategory(c)}
-                style={{ padding:'7px 13px', borderRadius:99, border:`1px solid ${category===c ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.09)'}`, background: category===c ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.03)', color: category===c ? '#fff' : 'rgba(255,255,255,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: category===c ? 700 : 400, cursor:'pointer', transition:'all 0.18s', boxShadow: category===c ? '0 0 10px rgba(255,255,255,0.08)' : 'none' }}>
+                style={{ padding:'7px 13px', borderRadius:99, border:`1px solid ${category===c ? 'rgba(251,146,60,0.5)' : 'rgba(255,255,255,0.09)'}`, background: category===c ? 'rgba(251,146,60,0.15)' : 'rgba(255,255,255,0.03)', color: category===c ? '#fb923c' : 'rgba(255,255,255,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: category===c ? 700 : 400, cursor:'pointer', transition:'all 0.18s', boxShadow: category===c ? '0 0 10px rgba(251,146,60,0.2)' : 'none' }}>
                 {c}
               </button>
             ))}
@@ -142,9 +142,9 @@ function AddPrayerSheet({ onSave, onClose, todayStr }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:8 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s,box-shadow 0.2s' }}
-          onMouseEnter={e => { if(!saving){ e.currentTarget.style.background='rgba(255,255,255,0.88)'; e.currentTarget.style.boxShadow='0 0 22px rgba(255,255,255,0.2)' }}}
-          onMouseLeave={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='none' }}
+          style={{ width:'100%', padding:'15px', background:'rgba(251,146,60,0.15)', color:'#fb923c', border:'1px solid rgba(251,146,60,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(251,146,60,0.1)' }}
+          onMouseEnter={e => { if(!saving){ e.currentTarget.style.background='rgba(251,146,60,0.25)'; e.currentTarget.style.boxShadow='0 0 22px rgba(251,146,60,0.25)' }}}
+          onMouseLeave={e => { e.currentTarget.style.background='rgba(251,146,60,0.15)'; e.currentTarget.style.boxShadow='0 0 14px rgba(251,146,60,0.1)' }}
         >
           {saving ? 'Saving…' : <>{Ico.check()} Log Prayer</>}
         </button>
@@ -193,7 +193,7 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible, todayS
             </span>
           )}
           {prayer.answered && (
-            <span style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 9px', borderRadius:99, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)', color:'rgba(255,255,255,0.7)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', boxShadow:'0 0 8px rgba(255,255,255,0.08)' }}>
+            <span style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 9px', borderRadius:99, background:'rgba(251,146,60,0.15)', border:'1px solid rgba(251,146,60,0.4)', color:'#fb923c', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', boxShadow:'0 0 8px rgba(251,146,60,0.15)' }}>
               {Ico.check(11)} Answered
             </span>
           )}
@@ -228,7 +228,7 @@ function PrayerCard({ prayer, onToggleAnswered, onDelete, delay, visible, todayS
       {/* Actions */}
       <div style={{ display:'flex', gap:8, paddingTop:12, borderTop:'1px solid rgba(255,255,255,0.06)' }}>
         <button onClick={() => onToggleAnswered(prayer.id, prayer.answered)}
-          style={{ flex:1, padding:'9px 12px', borderRadius:9, background: prayer.answered ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)', border:`1px solid ${prayer.answered ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.09)'}`, color: prayer.answered ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
+          style={{ flex:1, padding:'9px 12px', borderRadius:9, background: prayer.answered ? 'rgba(251,146,60,0.15)' : 'rgba(255,255,255,0.04)', border:`1px solid ${prayer.answered ? 'rgba(251,146,60,0.4)' : 'rgba(255,255,255,0.09)'}`, color: prayer.answered ? '#fb923c' : 'rgba(255,255,255,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
           {prayer.answered ? <>{Ico.check(12)} Answered</> : 'Mark Answered'}
         </button>
         <button onClick={handleDelete}
@@ -351,7 +351,7 @@ export default function PrayerTracker() {
               const active = filter === f
               return (
                 <button key={f} onClick={() => setFilter(f)} className="ax-filter-tab"
-                  style={{ padding:'8px 14px', borderRadius:99, border:`1px solid ${active ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.08)'}`, background: active ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)', color: active ? '#fff' : 'rgba(255,255,255,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0 }}>
+                  style={{ padding:'8px 14px', borderRadius:99, border:`1px solid ${active ? 'rgba(251,146,60,0.5)' : 'rgba(255,255,255,0.08)'}`, background: active ? 'rgba(251,146,60,0.12)' : 'rgba(255,255,255,0.03)', color: active ? '#fb923c' : 'rgba(255,255,255,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0 }}>
                   {f}
                 </button>
               )
@@ -365,7 +365,7 @@ export default function PrayerTracker() {
                 const active = catFilter === c
                 return (
                   <button key={c} onClick={() => setCatFilter(c)} className="ax-filter-tab"
-                    style={{ padding:'6px 12px', borderRadius:99, border:`1px solid ${active ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.06)'}`, background: active ? 'rgba(255,255,255,0.08)' : 'transparent', color: active ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 600 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0, letterSpacing:'0.06em' }}>
+                    style={{ padding:'6px 12px', borderRadius:99, border:`1px solid ${active ? 'rgba(251,146,60,0.4)' : 'rgba(255,255,255,0.06)'}`, background: active ? 'rgba(251,146,60,0.1)' : 'transparent', color: active ? '#fb923c' : 'rgba(255,255,255,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 600 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0, letterSpacing:'0.06em' }}>
                     {c}
                   </button>
                 )

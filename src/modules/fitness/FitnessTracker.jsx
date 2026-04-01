@@ -39,7 +39,7 @@ function formatDate(ds) {
 function GlowBar({ pct, h=3 }) {
   return (
     <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'var(--btn-bg)', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(255,255,255,0.5)' }} />
+      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'#3b82f6', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(59,130,246,0.5)' }} />
     </div>
   )
 }
@@ -131,7 +131,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
               <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                 {WORKOUT_TYPES.map(t => (
                   <button key={t} onClick={() => setWorkout(w=>({...w,type:t}))}
-                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.09)'}`, background: workout.type===t ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.03)', color: workout.type===t ? '#fff' : 'rgba(255,255,255,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
+                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(59,130,246,0.5)' : 'rgba(255,255,255,0.09)'}`, background: workout.type===t ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)', color: workout.type===t ? '#3b82f6' : 'rgba(255,255,255,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
                     {t}
                   </button>
                 ))}
@@ -141,7 +141,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
             <InputField label="Duration (minutes)" value={workout.duration} onChange={v => setWorkout(w=>({...w,duration:v}))} type="number" placeholder="45" />
 
             <button onClick={() => setStep('exercises')}
-              style={{ width:'100%', padding:'14px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', marginTop:8, transition:'background 0.2s' }}>
+              style={{ width:'100%', padding:'14px', background:'rgba(59,130,246,0.15)', color:'#3b82f6', border:'1px solid rgba(59,130,246,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', marginTop:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(59,130,246,0.1)' }}>
               Next → Add Exercises
             </button>
           </>
@@ -205,7 +205,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
                 ← Back
               </button>
               <button onClick={handleSave} disabled={saving}
-                style={{ flex:2, padding:'13px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'background 0.2s' }}>
+                style={{ flex:2, padding:'13px', background:'rgba(59,130,246,0.15)', color:'#3b82f6', border:'1px solid rgba(59,130,246,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'all 0.2s', boxShadow:'0 0 14px rgba(59,130,246,0.1)' }}>
                 {saving ? 'Saving…' : <>{Ico.check()} Save Workout</>}
               </button>
             </div>
@@ -270,7 +270,7 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'background 0.2s' }}>
+          style={{ width:'100%', padding:'15px', background:'rgba(59,130,246,0.15)', color:'#3b82f6', border:'1px solid rgba(59,130,246,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'all 0.2s', boxShadow:'0 0 14px rgba(59,130,246,0.1)' }}>
           {saving ? 'Saving…' : <>{Ico.check()} Log Weight</>}
         </button>
       </div>
@@ -532,7 +532,7 @@ export default function FitnessTracker() {
           <div style={{ display:'flex', gap:8, ...anim(80) }}>
             {[['workouts','Workouts'],['weight','Weight Log']].map(([key,label]) => (
               <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
-                style={{ flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.08)'}`, background: activeTab===key ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)', color: activeTab===key ? '#fff' : 'rgba(255,255,255,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight: activeTab===key ? 700 : 400, cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em' }}>
+                style={{ flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(59,130,246,0.5)' : 'rgba(255,255,255,0.08)'}`, background: activeTab===key ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)', color: activeTab===key ? '#3b82f6' : 'rgba(255,255,255,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight: activeTab===key ? 700 : 400, cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em' }}>
                 {label}
               </button>
             ))}

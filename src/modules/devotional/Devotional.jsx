@@ -124,9 +124,9 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:8 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving?'not-allowed':'pointer', opacity: saving?0.6:1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s' }}
-          onMouseEnter={e=>{if(!saving){e.currentTarget.style.background='rgba(255,255,255,0.88)'}}}
-          onMouseLeave={e=>{e.currentTarget.style.background='#fff'}}>
+          style={{ width:'100%', padding:'15px', background:'rgba(248,113,113,0.15)', color:'#f87171', border:'1px solid rgba(248,113,113,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving?'not-allowed':'pointer', opacity: saving?0.6:1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(248,113,113,0.1)' }}
+          onMouseEnter={e=>{if(!saving){e.currentTarget.style.background='rgba(248,113,113,0.25)';e.currentTarget.style.boxShadow='0 0 22px rgba(248,113,113,0.25)'}}}
+          onMouseLeave={e=>{e.currentTarget.style.background='rgba(248,113,113,0.15)';e.currentTarget.style.boxShadow='0 0 14px rgba(248,113,113,0.1)'}}>
           {saving ? 'Saving…' : <>{Ico.check()} Save Journal</>}
         </button>
       </div>
@@ -368,7 +368,7 @@ export default function Devotional() {
                   Reflect on today's scripture.<br/>Write what it means to you.
                 </p>
                 <button onClick={() => setShowJournal(true)} className="ax-journal-btn"
-                  style={{ padding:'13px 28px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:7 }}>
+                  style={{ padding:'13px 28px', background:'rgba(248,113,113,0.15)', color:'#f87171', border:'1px solid rgba(248,113,113,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:7, boxShadow:'0 0 14px rgba(248,113,113,0.1)' }}>
                   {Ico.edit()} Write Reflection
                 </button>
               </div>

@@ -139,7 +139,7 @@ function CustomOzSheet({ onSave, onClose }) {
             Cancel
           </button>
           <button onClick={handleSave} disabled={saving || !oz}
-            style={{ flex:2, padding:'13px', background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving || !oz ? 'not-allowed' : 'pointer', opacity: saving || !oz ? 0.5 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}>
+            style={{ flex:2, padding:'13px', background:'rgba(56,189,248,0.15)', color:'#38bdf8', border:'1px solid rgba(56,189,248,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving || !oz ? 'not-allowed' : 'pointer', opacity: saving || !oz ? 0.5 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, boxShadow:'0 0 14px rgba(56,189,248,0.12)' }}>
             {Ico.check()} Log It
           </button>
         </div>
