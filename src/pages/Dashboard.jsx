@@ -237,17 +237,17 @@ export default function Dashboard() {
           {/* 2×2 Stat Grid */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(60) }}>
             {[
-              { label:'Calories', value: calories.toLocaleString(), sub:`of ${CALORIE_GOAL.toLocaleString()} goal`, pct: calPct },
-              { label:'Water',    value:`${waterCount} / ${WATER_GOAL}`, sub:'glasses today', pct: waterPct },
-              { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null },
-              { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100) },
-            ].map(({ label, value, sub, pct }) => (
-              <div key={label} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
-                <div style={{ position:'absolute', top:0, right:0, width:50, height:50, background:'radial-gradient(circle at top right,rgba(255,255,255,0.05),transparent 70%)', pointerEvents:'none' }} />
-                <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
-                <p style={{ color:'var(--text-primary)', fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
+              { label:'Calories', value: calories.toLocaleString(), sub:`of ${CALORIE_GOAL.toLocaleString()} goal`, pct: calPct,  color:'#fb923c' },
+              { label:'Water',    value:`${waterCount} / ${WATER_GOAL}`, sub:'glasses today', pct: waterPct,                     color:'#38bdf8' },
+              { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null, color:'#a78bfa' },
+              { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100),        color:'#fbbf24' },
+            ].map(({ label, value, sub, pct, color }) => (
+              <div key={label} style={{ background:'var(--bg-card)', border:`1px solid ${color}33`, boxShadow:`var(--card-shadow), 0 0 12px ${color}11`, borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
+                <div style={{ position:'absolute', top:0, right:0, width:50, height:50, background:`radial-gradient(circle at top right,${color}18,transparent 70%)`, pointerEvents:'none' }} />
+                <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
+                <p style={{ color, fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
                 <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginBottom: pct != null ? 10 : 0 }}>{sub}</p>
-                {pct != null && <GlowBar pct={pct} />}
+                {pct != null && <GlowBar pct={pct} color={color} glow={`${color}66`} />}
               </div>
             ))}
           </div>
