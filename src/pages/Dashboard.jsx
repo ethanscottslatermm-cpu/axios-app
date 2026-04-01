@@ -294,18 +294,18 @@ export default function Dashboard() {
               : recentFood.map((e, i) => (
                 <div key={e.id} className="ax-log-row" style={{ display:'flex', justifyContent:'space-between', padding:'10px 6px', borderBottom: i < recentFood.length-1 ? '1px solid rgba(255,255,255,0.05)' : 'none', transition:'background 0.15s' }}>
                   <span style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.food_name}</span>
-                  <span style={{ color:'rgba(255,255,255,0.35)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.calories} cal</span>
+                  <span style={{ color:`${MODULE_COLORS.food}88`, fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.calories} cal</span>
                 </div>
               ))
             }
             <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', gap:14 }}>
               <div>
-                <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
-                <p style={{ color:'var(--text-primary)', fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
+                <p style={{ color:`${MODULE_COLORS.food}88`, fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
+                <p style={{ color:MODULE_COLORS.food, fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
               </div>
               <div style={{ flex:1 }}>
                 <GlowBar pct={calPct} h={4} color={MODULE_COLORS.food} glow="rgba(134,239,172,0.5)" />
-                <p style={{ color:'var(--text-muted)', fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
+                <p style={{ color:`${MODULE_COLORS.food}99`, fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
               </div>
             </div>
           </Card>
