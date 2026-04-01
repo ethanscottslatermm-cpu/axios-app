@@ -30,7 +30,7 @@ const Ico = {
   food:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>,
   water:    (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 2h6"/><path d="M7.5 5h9l.5 2V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V7l.5-2z"/><path d="M7.5 11h9"/></svg>,
   weight:   (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/></svg>,
-  prayer:   (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>,
+  prayer:   (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c0 0-7-3-7-9V8l3-5h1l1 4"/><path d="M12 22c0 0 7-3 7-9V8l-3-5h-1l-1 4"/><line x1="12" y1="3" x2="12" y2="22"/></svg>,
   book:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
   fitness:  (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11M3 9.5h18M3 14.5h18"/></svg>,
   settings: (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
@@ -91,14 +91,14 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',      path:'/dashboard',  icon: Ico.home },
-    { label:'Food',      path:'/food',       icon: Ico.food },
-    { label:'Water',     path:'/water',      icon: Ico.water },
-    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness },
-    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer },
-    { label:'Devotion',  path:'/devotional', icon: Ico.book },
-    { label:'Finance',   path:'/finance',    icon: Ico.finance },
-    { label:'Settings',  path:'/settings',   icon: Ico.settings },
+    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#ffffff' },
+    { label:'Food',      path:'/food',       icon: Ico.food,    color: '#86efac' },
+    { label:'Water',     path:'/water',      icon: Ico.water,   color: '#38bdf8' },
+    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#3b82f6' },
+    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#fb923c' },
+    { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#f87171' },
+    { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#4ade80' },
+    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#ffffff' },
   ]
   return (
     <nav style={{
@@ -108,16 +108,17 @@ export function BottomNav() {
       display:'flex', alignItems:'center', justifyContent:'space-around',
       padding:'10px 0 max(12px,env(safe-area-inset-bottom))',
     }}>
-      {items.map(({ label, path, icon }) => {
+      {items.map(({ label, path, icon, color }) => {
         const active = loc.pathname === path
+        const activeColor = color
         return (
           <button key={path} onClick={() => navigate(path)} style={{
             display:'flex', flexDirection:'column', alignItems:'center', gap:4,
             background:'none', border:'none', cursor:'pointer',
-            color: active ? '#fff' : 'rgba(255,255,255,0.28)',
+            color: active ? activeColor : 'rgba(255,255,255,0.28)',
             transition:'color 0.2s', minWidth:52, padding:'2px 0',
           }}>
-            <div style={{ filter: active ? 'drop-shadow(0 0 5px rgba(255,255,255,0.7))' : 'none', transition:'filter 0.2s' }}>
+            <div style={{ filter: active ? `drop-shadow(0 0 5px ${activeColor}99)` : 'none', transition:'filter 0.2s' }}>
               {icon(22)}
             </div>
             <span style={{ fontSize:9, letterSpacing:'0.08em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400 }}>{label}</span>
