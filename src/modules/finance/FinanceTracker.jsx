@@ -302,7 +302,7 @@ export default function FinanceTracker() {
           <div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
               <h1 style={{ color:'#4ade80', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
-              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 10v4M18 10v4"/></svg>
             </div>
             <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
           </div>
