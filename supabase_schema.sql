@@ -141,3 +141,9 @@ alter table stock_watchlist enable row level security;
 create policy "Users manage own watchlist"
   on stock_watchlist for all using (auth.uid() = user_id);
 create index idx_stock_watchlist_user on stock_watchlist(user_id, added_at asc);
+
+-- ─────────────────────────────────────────
+-- ADD last_login TO PROFILES
+-- Run this if profiles table already exists
+-- ─────────────────────────────────────────
+alter table profiles add column if not exists last_login timestamptz;

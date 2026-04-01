@@ -124,9 +124,14 @@ function UserCard({ user, isSelf, onAction, expanded, onToggle }) {
             )}
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
           <p style={{ color: 'var(--text-faint)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif' }}>
-            {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) : '—'}
+            {user.last_login
+              ? `Last: ${new Date(user.last_login).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })}`
+              : 'Never logged in'}
+          </p>
+          <p style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: 'Helvetica Neue,sans-serif', opacity: 0.6 }}>
+            Joined {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) : '—'}
           </p>
           {!isSelf && (
             <div style={{ color: 'var(--text-faint)', transform: expanded ? 'rotate(90deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
@@ -219,7 +224,7 @@ export default function Admin() {
     setLoading(true)
     const { data } = await supabase
       .from('profiles')
-      .select('id, name, role, status, suspended_until, created_at')
+      .select('id, name, role, status, suspended_until, created_at, last_login')
       .order('created_at', { ascending: false })
     setUsers(data || [])
     setLoading(false)

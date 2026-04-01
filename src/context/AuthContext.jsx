@@ -75,6 +75,9 @@ export function AuthProvider({ children }) {
       }
     }
 
+    // Record login timestamp
+    await supabase.from('profiles').update({ last_login: new Date().toISOString() }).eq('id', data.user.id)
+
     setLocked(false) // freshly signed in — no lock needed
     return data
   }
