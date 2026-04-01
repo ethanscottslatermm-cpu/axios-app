@@ -317,7 +317,7 @@ export default function PrayerTracker() {
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <h1 style={{ color:'#fb923c', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Prayer</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#fb923c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#fb923c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M12 22 C8.5 22 5.5 19.5 5.5 16 L5.5 10 C5.5 8.5 7 8 8 9 L10.5 11.5"/><path d="M10 11 L9 4.5 C8.8 3 11 2.5 11.5 4.5 L12 9"/><path d="M12 22 C15.5 22 18.5 19.5 18.5 16 L18.5 10 C18.5 8.5 17 8 16 9 L13.5 11.5"/><path d="M14 11 L15 4.5 C15.2 3 13 2.5 12.5 4.5 L12 9"/><line x1="12" y1="9" x2="12" y2="22"/></svg>
               </div>
             </div>
             <button onClick={() => setShowAdd(true)} className="ax-add-btn"
