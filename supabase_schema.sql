@@ -147,3 +147,19 @@ create index idx_stock_watchlist_user on stock_watchlist(user_id, added_at asc);
 -- Run this if profiles table already exists
 -- ─────────────────────────────────────────
 alter table profiles add column if not exists last_login timestamptz;
+
+-- ─────────────────────────────────────────
+-- APP SETTINGS (maintenance mode etc.)
+-- ─────────────────────────────────────────
+create table app_settings (
+  key   text primary key,
+  value text not null default 'false'
+);
+insert into app_settings (key, value) values ('app_offline', 'false');
+alter table app_settings enable row level security;
+create policy "Anyone can read app_settings"
+  on app_settings for select using (true);
+create policy "Only admins can modify app_settings"
+  on app_settings for all using (
+    exists (select 1 from profiles where id = auth.uid() and role = 'admin')
+  );

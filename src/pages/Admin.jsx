@@ -212,7 +212,22 @@ export default function Admin() {
   const [filter,    setFilter]    = useState('All')
   const [expanded,  setExpanded]  = useState(null)
   const [visible,   setVisible]   = useState(false)
-  const [confirm,   setConfirm]   = useState(null) // { id, action, payload }
+  const [confirm,   setConfirm]   = useState(null)
+  const [appOffline,setAppOffline] = useState(false)
+  const [togglingOffline, setTogglingOffline] = useState(false)
+
+  useEffect(() => {
+    supabase.from('app_settings').select('value').eq('key', 'app_offline').single()
+      .then(({ data }) => setAppOffline(data?.value === 'true'))
+  }, [])
+
+  const toggleAppOffline = async () => {
+    setTogglingOffline(true)
+    const next = !appOffline
+    await supabase.from('app_settings').upsert({ key: 'app_offline', value: String(next) }, { onConflict: 'key' })
+    setAppOffline(next)
+    setTogglingOffline(false)
+  }
 
   useEffect(() => {
     loadUsers()
@@ -299,6 +314,30 @@ export default function Admin() {
       </div>
 
       <div style={{ maxWidth: 520, margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        {/* App Power Off */}
+        <div style={{ ...anim(0), background: appOffline ? 'rgba(248,113,113,0.08)' : 'var(--bg-card)', border: `1px solid ${appOffline ? 'rgba(248,113,113,0.35)' : 'var(--border)'}`, borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: appOffline ? '0 0 20px rgba(248,113,113,0.12)' : 'var(--card-shadow)' }}>
+          <div>
+            <p style={{ color: appOffline ? '#f87171' : 'var(--text-primary)', fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 3 }}>
+              {appOffline ? '⚠ App Offline' : 'App Power'}
+            </p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>
+              {appOffline ? 'Users see maintenance screen' : 'All users have access'}
+            </p>
+          </div>
+          <button onClick={toggleAppOffline} disabled={togglingOffline} style={{
+            width: 52, height: 30, borderRadius: 99, cursor: 'pointer', border: 'none', transition: 'all 0.25s',
+            background: appOffline ? '#f87171' : 'rgba(255,255,255,0.12)',
+            position: 'relative', flexShrink: 0,
+          }}>
+            <div style={{
+              position: 'absolute', top: 3, left: appOffline ? 25 : 3,
+              width: 24, height: 24, borderRadius: '50%',
+              background: appOffline ? '#fff' : 'rgba(255,255,255,0.5)',
+              transition: 'left 0.25s',
+            }} />
+          </button>
+        </div>
 
         {/* Stat cards */}
         <div style={{ ...anim(0), display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>

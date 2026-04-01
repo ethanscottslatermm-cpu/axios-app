@@ -1,22 +1,41 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import MaintenanceScreen from './MaintenanceScreen'
 
-/**
- * Redirects to login if the user is not authenticated.
- * Shows a blank screen while Supabase is restoring the session
- * (this is what causes the crash on hard refresh — the session
- * isn't loaded yet, so it incorrectly redirects to login).
- */
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
+  const [appOffline,    setAppOffline]    = useState(false)
+  const [settingLoaded, setSettingLoaded] = useState(false)
+  const [userRole,      setUserRole]      = useState(null)
 
-  // Wait for Supabase to restore session before making a decision
-  if (loading) {
+  useEffect(() => {
+    if (!user) { setSettingLoaded(true); return }
+
+    const checkStatus = async () => {
+      const [settingRes, profileRes] = await Promise.all([
+        supabase.from('app_settings').select('value').eq('key', 'app_offline').single(),
+        supabase.from('profiles').select('role').eq('id', user.id).single(),
+      ])
+      setAppOffline(settingRes.data?.value === 'true')
+      setUserRole(profileRes.data?.role || 'user')
+      setSettingLoaded(true)
+    }
+
+    checkStatus()
+  }, [user])
+
+  if (loading || !settingLoaded) {
     return <div style={{ minHeight:'100vh', background:'#080808' }} />
   }
 
   if (!user) {
     return <Navigate to="/" replace />
+  }
+
+  if (appOffline && userRole !== 'admin') {
+    return <MaintenanceScreen />
   }
 
   return children
