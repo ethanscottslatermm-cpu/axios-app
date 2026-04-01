@@ -91,14 +91,14 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#ffffff' },
+    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#fbbf24' },
     { label:'Food',      path:'/food',       icon: Ico.food,    color: '#86efac' },
     { label:'Water',     path:'/water',      icon: Ico.water,   color: '#38bdf8' },
     { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#3b82f6' },
     { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#fb923c' },
     { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#f87171' },
     { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#4ade80' },
-    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#ffffff' },
+    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#94a3b8' },
   ]
   return (
     <nav style={{
