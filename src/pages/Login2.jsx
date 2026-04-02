@@ -141,7 +141,7 @@ export default function Login2() {
         {/* Form — positioned at ~45% down the screen */}
         <div style={{
           position: 'absolute', zIndex: 10,
-          top: '45%',
+          top: '57%',
           left: 0, right: 0,
           padding: '0 1.5rem',
           maxWidth: '420px',
