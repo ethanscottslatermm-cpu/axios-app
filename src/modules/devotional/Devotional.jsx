@@ -176,6 +176,220 @@ function PastEntry({ entry, delay, visible }) {
   )
 }
 
+// ── Bible Reader ──────────────────────────────────────────────────────────────
+const BOOKS = [
+  // Old Testament
+  { name:'Genesis',        slug:'genesis',        chapters:50,  t:'OT' },
+  { name:'Exodus',         slug:'exodus',         chapters:40,  t:'OT' },
+  { name:'Leviticus',      slug:'leviticus',      chapters:27,  t:'OT' },
+  { name:'Numbers',        slug:'numbers',        chapters:36,  t:'OT' },
+  { name:'Deuteronomy',    slug:'deuteronomy',    chapters:34,  t:'OT' },
+  { name:'Joshua',         slug:'joshua',         chapters:24,  t:'OT' },
+  { name:'Judges',         slug:'judges',         chapters:21,  t:'OT' },
+  { name:'Ruth',           slug:'ruth',           chapters:4,   t:'OT' },
+  { name:'1 Samuel',       slug:'1+samuel',       chapters:31,  t:'OT' },
+  { name:'2 Samuel',       slug:'2+samuel',       chapters:24,  t:'OT' },
+  { name:'1 Kings',        slug:'1+kings',        chapters:22,  t:'OT' },
+  { name:'2 Kings',        slug:'2+kings',        chapters:25,  t:'OT' },
+  { name:'1 Chronicles',   slug:'1+chronicles',   chapters:29,  t:'OT' },
+  { name:'2 Chronicles',   slug:'2+chronicles',   chapters:36,  t:'OT' },
+  { name:'Ezra',           slug:'ezra',           chapters:10,  t:'OT' },
+  { name:'Nehemiah',       slug:'nehemiah',       chapters:13,  t:'OT' },
+  { name:'Esther',         slug:'esther',         chapters:10,  t:'OT' },
+  { name:'Job',            slug:'job',            chapters:42,  t:'OT' },
+  { name:'Psalms',         slug:'psalms',         chapters:150, t:'OT' },
+  { name:'Proverbs',       slug:'proverbs',       chapters:31,  t:'OT' },
+  { name:'Ecclesiastes',   slug:'ecclesiastes',   chapters:12,  t:'OT' },
+  { name:'Song of Solomon',slug:'song+of+solomon',chapters:8,   t:'OT' },
+  { name:'Isaiah',         slug:'isaiah',         chapters:66,  t:'OT' },
+  { name:'Jeremiah',       slug:'jeremiah',       chapters:52,  t:'OT' },
+  { name:'Lamentations',   slug:'lamentations',   chapters:5,   t:'OT' },
+  { name:'Ezekiel',        slug:'ezekiel',        chapters:48,  t:'OT' },
+  { name:'Daniel',         slug:'daniel',         chapters:12,  t:'OT' },
+  { name:'Hosea',          slug:'hosea',          chapters:14,  t:'OT' },
+  { name:'Joel',           slug:'joel',           chapters:3,   t:'OT' },
+  { name:'Amos',           slug:'amos',           chapters:9,   t:'OT' },
+  { name:'Obadiah',        slug:'obadiah',        chapters:1,   t:'OT' },
+  { name:'Jonah',          slug:'jonah',          chapters:4,   t:'OT' },
+  { name:'Micah',          slug:'micah',          chapters:7,   t:'OT' },
+  { name:'Nahum',          slug:'nahum',          chapters:3,   t:'OT' },
+  { name:'Habakkuk',       slug:'habakkuk',       chapters:3,   t:'OT' },
+  { name:'Zephaniah',      slug:'zephaniah',      chapters:3,   t:'OT' },
+  { name:'Haggai',         slug:'haggai',         chapters:2,   t:'OT' },
+  { name:'Zechariah',      slug:'zechariah',      chapters:14,  t:'OT' },
+  { name:'Malachi',        slug:'malachi',        chapters:4,   t:'OT' },
+  // New Testament
+  { name:'Matthew',        slug:'matthew',        chapters:28,  t:'NT' },
+  { name:'Mark',           slug:'mark',           chapters:16,  t:'NT' },
+  { name:'Luke',           slug:'luke',           chapters:24,  t:'NT' },
+  { name:'John',           slug:'john',           chapters:21,  t:'NT' },
+  { name:'Acts',           slug:'acts',           chapters:28,  t:'NT' },
+  { name:'Romans',         slug:'romans',         chapters:16,  t:'NT' },
+  { name:'1 Corinthians',  slug:'1+corinthians',  chapters:16,  t:'NT' },
+  { name:'2 Corinthians',  slug:'2+corinthians',  chapters:13,  t:'NT' },
+  { name:'Galatians',      slug:'galatians',      chapters:6,   t:'NT' },
+  { name:'Ephesians',      slug:'ephesians',      chapters:6,   t:'NT' },
+  { name:'Philippians',    slug:'philippians',    chapters:4,   t:'NT' },
+  { name:'Colossians',     slug:'colossians',     chapters:4,   t:'NT' },
+  { name:'1 Thessalonians',slug:'1+thessalonians',chapters:5,   t:'NT' },
+  { name:'2 Thessalonians',slug:'2+thessalonians',chapters:3,   t:'NT' },
+  { name:'1 Timothy',      slug:'1+timothy',      chapters:6,   t:'NT' },
+  { name:'2 Timothy',      slug:'2+timothy',      chapters:4,   t:'NT' },
+  { name:'Titus',          slug:'titus',          chapters:3,   t:'NT' },
+  { name:'Philemon',       slug:'philemon',       chapters:1,   t:'NT' },
+  { name:'Hebrews',        slug:'hebrews',        chapters:13,  t:'NT' },
+  { name:'James',          slug:'james',          chapters:5,   t:'NT' },
+  { name:'1 Peter',        slug:'1+peter',        chapters:5,   t:'NT' },
+  { name:'2 Peter',        slug:'2+peter',        chapters:3,   t:'NT' },
+  { name:'1 John',         slug:'1+john',         chapters:5,   t:'NT' },
+  { name:'2 John',         slug:'2+john',         chapters:1,   t:'NT' },
+  { name:'3 John',         slug:'3+john',         chapters:1,   t:'NT' },
+  { name:'Jude',           slug:'jude',           chapters:1,   t:'NT' },
+  { name:'Revelation',     slug:'revelation',     chapters:22,  t:'NT' },
+]
+
+function BibleReader({ onClose }) {
+  const [testament,    setTestament]    = useState('NT')
+  const [book,         setBook]         = useState(BOOKS.find(b => b.slug === 'john'))
+  const [chapter,      setChapter]      = useState(1)
+  const [verses,       setVerses]       = useState([])
+  const [loading,      setLoading]      = useState(false)
+  const [view,         setView]         = useState('read') // 'books' | 'chapters' | 'read'
+  const verseListRef = useState(null)
+
+  const visibleBooks = BOOKS.filter(b => b.t === testament)
+
+  useEffect(() => {
+    if (view !== 'read') return
+    setLoading(true)
+    setVerses([])
+    fetch(`https://bible-api.com/${book.slug}+${chapter}?translation=kjv`)
+      .then(r => r.json())
+      .then(data => {
+        setVerses(data.verses || [])
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [book, chapter, view])
+
+  const goBack = () => {
+    if (view === 'read') setView('chapters')
+    else if (view === 'chapters') setView('books')
+    else onClose()
+  }
+
+  const prevChapter = () => { if (chapter > 1) setChapter(c => c - 1) }
+  const nextChapter = () => { if (chapter < book.chapters) setChapter(c => c + 1) }
+
+  const headerTitle = view === 'books'
+    ? 'Select Book'
+    : view === 'chapters'
+    ? book.name
+    : `${book.name} ${chapter}`
+
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--bg-primary)', display:'flex', flexDirection:'column', animation:'slideUp 0.28s ease both' }}>
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+
+      {/* Header */}
+      <div style={{ position:'sticky', top:0, zIndex:10, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px', flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <button onClick={goBack} className="ax-back"
+            style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', flexShrink:0 }}>
+            {Ico.back()}
+          </button>
+          <div style={{ flex:1 }}>
+            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>KJV BIBLE</p>
+            <h2 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:18, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>{headerTitle}</h2>
+          </div>
+          {view === 'read' && (
+            <button onClick={() => setView('books')}
+              style={{ padding:'7px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em' }}>
+              Change
+            </button>
+          )}
+        </div>
+
+        {/* OT / NT toggle — only on book picker */}
+        {view === 'books' && (
+          <div style={{ display:'flex', gap:8, marginTop:12 }}>
+            {['OT','NT'].map(t => (
+              <button key={t} onClick={() => setTestament(t)}
+                style={{ flex:1, padding:'9px', borderRadius:9, background: testament===t ? 'rgba(248,113,113,0.15)' : 'var(--stat-bg)', border: testament===t ? '1px solid rgba(248,113,113,0.4)' : '1px solid var(--border)', color: testament===t ? '#f87171' : 'var(--text-muted)', cursor:'pointer', fontSize:11, fontWeight:700, letterSpacing:'0.14em', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.18s' }}>
+                {t === 'OT' ? 'Old Testament' : 'New Testament'}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div style={{ flex:1, overflowY:'auto', padding:'16px' }}>
+
+        {/* Book list */}
+        {view === 'books' && (
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+            {visibleBooks.map(b => (
+              <button key={b.slug} onClick={() => { setBook(b); setChapter(1); setView('chapters') }}
+                style={{ padding:'12px 14px', borderRadius:11, background: book.slug===b.slug ? 'rgba(248,113,113,0.12)' : 'var(--bg-card)', border: book.slug===b.slug ? '1px solid rgba(248,113,113,0.35)' : '1px solid var(--border)', color: book.slug===b.slug ? '#f87171' : 'var(--text-secondary)', cursor:'pointer', textAlign:'left', fontFamily:'Helvetica Neue,sans-serif', fontSize:13, fontWeight: book.slug===b.slug ? 700 : 400, transition:'all 0.15s' }}>
+                {b.name}
+                <span style={{ display:'block', fontSize:10, color:'var(--text-muted)', marginTop:2 }}>{b.chapters} ch</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Chapter grid */}
+        {view === 'chapters' && (
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:8 }}>
+            {Array.from({ length: book.chapters }, (_, i) => i + 1).map(ch => (
+              <button key={ch} onClick={() => { setChapter(ch); setView('read') }}
+                style={{ padding:'14px 0', borderRadius:10, background: chapter===ch ? 'rgba(248,113,113,0.15)' : 'var(--bg-card)', border: chapter===ch ? '1px solid rgba(248,113,113,0.4)' : '1px solid var(--border)', color: chapter===ch ? '#f87171' : 'var(--text-secondary)', cursor:'pointer', fontSize:14, fontWeight: chapter===ch ? 800 : 400, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.15s' }}>
+                {ch}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Verse reading view */}
+        {view === 'read' && (
+          <div style={{ maxWidth:640, margin:'0 auto' }}>
+            {loading ? (
+              <div style={{ paddingTop:60, textAlign:'center' }}>
+                <p style={{ color:'rgba(255,255,255,0.2)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Loading chapter…</p>
+              </div>
+            ) : (
+              <div style={{ paddingBottom:24 }}>
+                {verses.map(v => (
+                  <div key={v.verse} style={{ display:'flex', gap:10, marginBottom:14 }}>
+                    <span style={{ color:'rgba(185,28,28,0.55)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, minWidth:20, paddingTop:3, flexShrink:0 }}>{v.verse}</span>
+                    <p style={{ color:'rgba(255,255,255,0.82)', fontSize:17, fontFamily:"'EB Garamond',serif", lineHeight:1.85, letterSpacing:'0.01em' }}>{v.text.trim()}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Chapter prev/next footer */}
+      {view === 'read' && (
+        <div style={{ flexShrink:0, borderTop:'1px solid var(--border)', background:'var(--header-bg)', backdropFilter:'blur(18px)', padding:'12px 16px', display:'flex', alignItems:'center', gap:10 }}>
+          <button onClick={prevChapter} disabled={chapter <= 1}
+            style={{ flex:1, padding:'12px', borderRadius:10, background:'var(--stat-bg)', border:'1px solid var(--border)', color: chapter<=1 ? 'rgba(255,255,255,0.15)' : 'var(--text-secondary)', cursor: chapter<=1 ? 'default' : 'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', transition:'all 0.15s' }}>
+            ← Prev
+          </button>
+          <span style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', whiteSpace:'nowrap' }}>{chapter} / {book.chapters}</span>
+          <button onClick={nextChapter} disabled={chapter >= book.chapters}
+            style={{ flex:1, padding:'12px', borderRadius:10, background:'var(--stat-bg)', border:'1px solid var(--border)', color: chapter>=book.chapters ? 'rgba(255,255,255,0.15)' : 'var(--text-secondary)', cursor: chapter>=book.chapters ? 'default' : 'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', transition:'all 0.15s' }}>
+            Next →
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function Devotional() {
   const todayStr = useToday()
@@ -190,6 +404,7 @@ export default function Devotional() {
   const [today,       setToday]       = useState(null)   // today's devotional entry from DB
   const [history,     setHistory]     = useState([])
   const [showJournal, setShowJournal] = useState(false)
+  const [showBible,   setShowBible]   = useState(false)
   const [loadingDB,   setLoadingDB]   = useState(true)
   const [streak,      setStreak]      = useState(0)
 
@@ -357,6 +572,10 @@ export default function Devotional() {
 
             <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <p style={{ color:'rgba(185,28,28,0.75)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.14em', fontWeight:600 }}>KJV · DAILY VERSE</p>
+              <button onClick={() => setShowBible(true)}
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:8, background:'rgba(248,113,113,0.1)', border:'1px solid rgba(248,113,113,0.3)', color:'#f87171', cursor:'pointer', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
+                {Ico.book(12)} Read Bible
+              </button>
             </div>
           </div>
 
@@ -434,6 +653,8 @@ export default function Devotional() {
           onClose={() => setShowJournal(false)}
         />
       )}
+
+      {showBible && <BibleReader onClose={() => setShowBible(false)} />}
 
       <BottomNav />
     </>
