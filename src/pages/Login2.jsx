@@ -201,6 +201,21 @@ export default function Login2() {
 
           </form>
         </div>
+
+        {/* Bottom-right credit */}
+        <p style={{
+          position: 'fixed', bottom: '1.2rem', right: '1.2rem',
+          zIndex: 10,
+          color: 'rgba(255,255,255,0.28)',
+          fontSize: '0.48rem',
+          letterSpacing: '0.12em',
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          textTransform: 'uppercase',
+          margin: 0,
+        }}>
+          Powered by Monarch-Elite ©
+        </p>
+
       </div>
     </>
   )
