@@ -168,19 +168,19 @@ export default function Login2() {
         {/* Absolute black base — eliminates any theme/body bleed */}
         <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: '#000' }} />
 
-        {/* Aristotle bust — full screen, top-anchored to show face */}
+        {/* Aristotle bust — cropped image (face only, no embedded UI) */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 0,
           backgroundImage: `url('/aristotle-bg.jpg')`,
           backgroundSize: 'cover',
-          backgroundPosition: '50% 15%',
+          backgroundPosition: '50% top',
           backgroundRepeat: 'no-repeat',
         }} />
 
-        {/* Darkening overlay — bottom heavy so UI area is darker */}
+        {/* Heavy bottom blackout — fully opaque by 70% so no image edge bleeds into form area */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.30) 40%, rgba(0,0,0,0.72) 65%, rgba(0,0,0,0.90) 100%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.28) 32%, rgba(0,0,0,0.82) 58%, rgba(0,0,0,1.00) 72%)',
         }} />
 
         {/* Subtle top fade */}
