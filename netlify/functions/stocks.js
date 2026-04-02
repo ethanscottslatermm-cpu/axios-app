@@ -1,4 +1,4 @@
-const KEY = process.env.FINNHUB_KEY
+const KEY = process.env.FINNHUB_KEY || process.env.VITE_FINNHUB_KEY
 
 // Finnhub symbols — indices use ^ prefix, crypto uses exchange:pair format
 const SYMBOLS = [
