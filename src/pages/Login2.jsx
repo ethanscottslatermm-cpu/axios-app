@@ -11,6 +11,14 @@ const styles = `
     0%,100% { box-shadow: none; border-color: transparent; }
     50%     { box-shadow: none; border-color: transparent; }
   }
+  @keyframes l2-placeholderPulse {
+    0%,100% { opacity: 0.28; }
+    50%     { opacity: 0.55; }
+  }
+  @keyframes l2-iconPulse {
+    0%,100% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.15)); opacity: 0.30; }
+    50%     { filter: drop-shadow(0 0 6px rgba(255,255,255,0.55)); opacity: 0.60; }
+  }
   @keyframes l2-btnGlow {
     0%,100% { box-shadow: 0 0 12px rgba(226,226,228,0.22), 0 0 28px rgba(226,226,228,0.09); }
     50%     { box-shadow: 0 0 24px rgba(226,226,228,0.50), 0 0 56px rgba(226,226,228,0.20), 0 0 90px rgba(226,226,228,0.07); }
@@ -22,33 +30,35 @@ const styles = `
   .l2-input {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(226,226,228,0.42);
-    border-radius: 2px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
     color: rgba(255,255,255,0.9);
     padding: 13px 14px;
     font-size: 1rem;
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
     outline: none;
     -webkit-appearance: none;
-    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+    transition: border-color 0.25s, box-shadow 0.25s;
     caret-color: white;
     box-shadow: none;
-    animation: none;
   }
   .l2-input:focus {
-    border-color: transparent;
-    box-shadow: none;
-    animation: none;
     background: transparent;
-    border-left: 1px solid transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.55);
+    box-shadow: 0 2px 12px rgba(255,255,255,0.18), 0 1px 4px rgba(255,255,255,0.10);
   }
   .l2-input-icon { padding-left: 36px; }
   .l2-input::placeholder {
-    color: rgba(226,226,228,0.22);
+    color: rgba(226,226,228,0.30);
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     letter-spacing: 0.08em;
     font-size: 0.85rem;
+    animation: l2-placeholderPulse 3s ease-in-out infinite;
+  }
+  .l2-lock-icon {
+    animation: l2-iconPulse 3s ease-in-out infinite;
   }
   .l2-enter-btn {
     width: 100%;
@@ -154,7 +164,7 @@ export default function Login2() {
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', color: 'rgba(255,255,255,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Email</label>
               <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.22)', pointerEvents: 'none' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
                 </svg>
@@ -165,7 +175,7 @@ export default function Login2() {
             <div style={{ marginBottom: '1.5rem' }}>
               <label style={{ display: 'block', color: 'rgba(255,255,255,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Password</label>
               <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.22)', pointerEvents: 'none' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
