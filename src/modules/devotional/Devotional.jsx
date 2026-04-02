@@ -30,9 +30,10 @@ const VERSE_REFS = [
 ]
 
 function getDailyRef() {
-  const start = new Date(new Date().getFullYear(), 0, 0)
-  const diff  = new Date() - start
-  const day   = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const now   = new Date()
+  const start = Date.UTC(now.getFullYear(), 0, 0)
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+  const day   = Math.round((today - start) / (1000 * 60 * 60 * 24))
   return VERSE_REFS[day % VERSE_REFS.length]
 }
 
