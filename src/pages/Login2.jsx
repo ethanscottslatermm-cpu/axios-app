@@ -50,6 +50,14 @@ const styles = `
     box-shadow: 0 2px 12px rgba(255,255,255,0.18), 0 1px 4px rgba(255,255,255,0.10);
   }
   .l2-input-icon { padding-left: 36px; }
+  .l2-input:-webkit-autofill,
+  .l2-input:-webkit-autofill:hover,
+  .l2-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgba(0,0,0,0.88) inset !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.9) !important;
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: white;
+  }
   .l2-input::placeholder {
     color: rgba(255,255,255,1.0);
     font-family: "Helvetica Neue", Helvetica, sans-serif;
@@ -62,7 +70,9 @@ const styles = `
     animation: l2-iconPulse 3s ease-in-out infinite;
   }
   .l2-enter-btn {
-    width: 100%;
+    width: auto;
+    display: block;
+    margin: 0 auto;
     background: transparent;
     color: rgba(255,255,255,0.25);
     border: none;
@@ -221,14 +231,15 @@ export default function Login2() {
         <p style={{
           position: 'fixed', bottom: '1.2rem', right: '1.2rem',
           zIndex: 10,
-          color: 'rgba(255,255,255,0.28)',
-          fontSize: '0.48rem',
-          letterSpacing: '0.12em',
+          color: 'rgba(194,148,56,0.82)',
+          fontSize: '0.46rem',
+          letterSpacing: '0.14em',
           fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
           textTransform: 'uppercase',
+          textShadow: '0 0 8px rgba(194,148,56,0.55), 0 0 18px rgba(194,148,56,0.25)',
           margin: 0,
         }}>
-          Powered by Monarch-Elite ©
+          Monarch-Elite ©
         </p>
 
       </div>
