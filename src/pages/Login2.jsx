@@ -12,12 +12,12 @@ const styles = `
     50%     { box-shadow: none; border-color: transparent; }
   }
   @keyframes l2-placeholderPulse {
-    0%,100% { opacity: 0.40; }
-    50%     { opacity: 0.90; }
+    0%,100% { opacity: 0.45; text-shadow: 0 0 8px rgba(255,255,255,0.20); }
+    50%     { opacity: 1.0;  text-shadow: 0 0 14px rgba(255,255,255,0.60), 0 0 30px rgba(255,255,255,0.20); }
   }
   @keyframes l2-iconPulse {
-    0%,100% { filter: drop-shadow(0 0 3px rgba(255,255,255,0.40)); opacity: 0.45; }
-    50%     { filter: drop-shadow(0 0 8px rgba(255,255,255,0.90)); opacity: 1.0; }
+    0%,100% { filter: drop-shadow(0 0 3px rgba(226,226,228,0.25)); opacity: 0.50; }
+    50%     { filter: drop-shadow(0 0 10px rgba(226,226,228,0.80)); opacity: 1.0; }
   }
   @keyframes l2-btnGlow {
     0%,100% { box-shadow: 0 0 12px rgba(226,226,228,0.22), 0 0 28px rgba(226,226,228,0.09); }
@@ -51,20 +51,21 @@ const styles = `
   }
   .l2-input-icon { padding-left: 36px; }
   .l2-input::placeholder {
-    color: rgba(255,255,255,0.90);
+    color: rgba(255,255,255,1.0);
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     letter-spacing: 0.08em;
     font-size: 0.85rem;
     animation: l2-placeholderPulse 3s ease-in-out infinite;
+    text-transform: uppercase;
   }
   .l2-lock-icon {
     animation: l2-iconPulse 3s ease-in-out infinite;
   }
   .l2-enter-btn {
     width: 100%;
-    background: rgba(0,0,0,0.6);
-    color: rgba(255,255,255,0.92);
-    border: 1px solid #E2E2E4;
+    background: transparent;
+    color: rgba(255,255,255,0.25);
+    border: none;
     border-radius: 2px;
     padding: 14px;
     font-size: 0.72rem;
@@ -73,15 +74,18 @@ const styles = `
     text-transform: uppercase;
     cursor: pointer;
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
-    transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
+    transition: color 0.4s, text-shadow 0.4s;
     -webkit-appearance: none;
+    text-shadow: none;
+  }
+  .l2-enter-btn.l2-btn-active {
+    color: rgba(255,255,255,0.92);
     text-shadow: 0 0 14px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.2);
+    animation: l2-btnGlow 3s ease-in-out infinite, l2-btnShine 4s ease-in-out infinite;
     background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.07) 50%, transparent 65%);
     background-size: 300% 100%;
-    animation: l2-btnGlow 3s ease-in-out infinite, l2-btnShine 4s ease-in-out infinite;
   }
-  .l2-enter-btn:hover  { transform: translateY(-1px); border-color: #E2E2E4; box-shadow: 0 0 28px rgba(226,226,228,0.42), 0 0 60px rgba(226,226,228,0.18); }
-  .l2-enter-btn:active { transform: translateY(0); box-shadow: none; }
+  .l2-enter-btn:active { transform: translateY(0); }
   .l2-enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 `
 
@@ -167,7 +171,13 @@ export default function Login2() {
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
                 </svg>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" autoComplete="off" required className="l2-input l2-input-icon" />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
+                {email.includes('@') && email.includes('.') && (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.75)', filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.6))', pointerEvents: 'none' }}>
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                )}
               </div>
             </div>
 
@@ -177,7 +187,7 @@ export default function Login2() {
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" autoComplete="current-password" required className="l2-input l2-input-icon" />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
               </div>
             </div>
 
@@ -198,14 +208,11 @@ export default function Login2() {
                 </button>
               </div>
             ) : (
-              <button type="submit" disabled={loading} className="l2-enter-btn">
-                {loading ? 'Entering...' : 'Enter'}
+              <button type="submit" disabled={loading} className={`l2-enter-btn${password.length > 0 ? ' l2-btn-active' : ''}`}>
+                {loading ? 'Entering...' : 'Secure Access'}
               </button>
             )}
 
-            <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 14px rgba(255,255,255,0.65), 0 0 35px rgba(255,255,255,0.25)' }}>
-              Secure Access
-            </p>
 
           </form>
         </div>
