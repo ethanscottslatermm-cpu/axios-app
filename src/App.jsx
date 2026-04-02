@@ -38,8 +38,8 @@ export default function App() {
             <AppLock>
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/login2" element={<Login2 />} />
+                <Route path="/" element={<Login2 />} />
+                <Route path="/login2" element={<Login />} />
                 <Route path="/onboarding" element={
                   <ProtectedRoute><Onboarding /></ProtectedRoute>
                 } />
