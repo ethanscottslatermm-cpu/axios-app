@@ -138,14 +138,12 @@ export default function Login2() {
           background: 'linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
         }} />
 
-        {/* Form — anchored to bottom, sits below the nose */}
+        {/* Form — positioned at ~45% down the screen */}
         <div style={{
-          position: 'relative', zIndex: 10,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          padding: '0 1.5rem 2.5rem',
+          position: 'absolute', zIndex: 10,
+          top: '45%',
+          left: 0, right: 0,
+          padding: '0 1.5rem',
           maxWidth: '420px',
           margin: '0 auto',
           width: '100%',
