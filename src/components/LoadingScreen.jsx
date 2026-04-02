@@ -1,262 +1,210 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const MESSAGES = [
-  'Initializing secure session...',
-  'Loading your settings...',
-  'Updating your information...',
-  'Securely logging you in...',
-  'Thank you for your patience.',
+  'Welcome to AXIOS',
+  'Logging in securely',
+  'Loading your settings',
+  'Initializing',
 ]
 
-const CODE_CHARS = [
-  '0x4F', '0xFF', '0x2A', '0x91', '0xB3', '0x7E',
-  'null', 'true', 'void', 'sync', 'auth', 'init',
-  'const', '=>', '{}', '[]', '&&', '||',
-  '1010', '0011', '1101', '0110', '1001', '0101',
-  'SHA', 'AES', 'JWT', 'RSA', 'SSL', 'TLS',
-  '...', ':::', '===', '!==', '>>>', '<<<',
-]
+const CHAR_SPEED  = 55
+const HOLD        = 900
+const ERASE_SPEED = 30
+const PAUSE       = 400
 
 export default function LoadingScreen({ onComplete }) {
-  const canvasRef   = useRef(null)
-  const [msgIndex,  setMsgIndex]  = useState(0)
-  const [displayed, setDisplayed] = useState('')
-  const [progress,  setProgress]  = useState(0)
-  const [fadeOut,   setFadeOut]   = useState(false)
+  const [text,       setText]       = useState('')
+  const [showCursor, setShowCursor] = useState(true)
+  const [fadeOut,    setFadeOut]    = useState(false)
 
-  // — Code rain canvas —
+  // Typewriter — type → hold → erase → pause → repeat
   useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx    = canvas.getContext('2d')
-    let raf
+    let cancelled = false
 
-    const resize = () => {
-      canvas.width  = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    const cols    = Math.floor(window.innerWidth / 20)
-    const drops   = Array(cols).fill(1)
-    const speeds  = Array(cols).fill(0).map(() => 0.3 + Math.random() * 0.7)
-    const offsets = Array(cols).fill(0).map(() => Math.random() * window.innerHeight)
-
-    const draw = () => {
-      ctx.fillStyle = 'rgba(0,0,0,0.06)'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      drops.forEach((y, i) => {
-        const char = CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]
-        const alpha = 0.08 + Math.random() * 0.14
-        ctx.fillStyle = `rgba(226,226,228,${alpha})`
-        ctx.font = `${10 + Math.floor(Math.random() * 4)}px 'Courier New', monospace`
-        ctx.fillText(char, i * 20, drops[i] * 20)
-
-        if (drops[i] * 20 > canvas.height && Math.random() > 0.975) drops[i] = 0
-        drops[i] += speeds[i]
-      })
-
-      raf = requestAnimationFrame(draw)
+    const type = (msg, i, done) => {
+      if (cancelled) return
+      setText(msg.slice(0, i))
+      if (i <= msg.length) setTimeout(() => type(msg, i + 1, done), CHAR_SPEED)
+      else setTimeout(done, HOLD)
     }
 
-    draw()
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('resize', resize)
+    const erase = (msg, i, done) => {
+      if (cancelled) return
+      setText(msg.slice(0, i))
+      if (i >= 0) setTimeout(() => erase(msg, i - 1, done), ERASE_SPEED)
+      else setTimeout(done, PAUSE)
     }
+
+    let idx = 0
+    const run = () => {
+      if (cancelled) return
+      const msg = MESSAGES[idx % MESSAGES.length]
+      idx++
+      type(msg, 0, () => erase(msg, msg.length, run))
+    }
+    run()
+
+    return () => { cancelled = true }
   }, [])
 
-  // — Typewriter for current message —
+  // Cursor blink
   useEffect(() => {
-    setDisplayed('')
-    const msg = MESSAGES[msgIndex]
-    let i = 0
-    const interval = setInterval(() => {
-      setDisplayed(msg.slice(0, i + 1))
-      i++
-      if (i >= msg.length) clearInterval(interval)
-    }, 38)
-    return () => clearInterval(interval)
-  }, [msgIndex])
+    const id = setInterval(() => setShowCursor(c => !c), 500)
+    return () => clearInterval(id)
+  }, [])
 
-  // — Message cycling + progress —
+  // Fixed duration → fade → complete
   useEffect(() => {
-    const totalDuration = 4800
-    const msgInterval   = totalDuration / MESSAGES.length
-
-    // Progress bar
-    const progInterval = setInterval(() => {
-      setProgress(p => {
-        const next = p + (100 / (totalDuration / 40))
-        return next >= 100 ? 100 : next
-      })
-    }, 40)
-
-    // Cycle messages
-    const timers = MESSAGES.map((_, i) =>
-      setTimeout(() => setMsgIndex(i), i * msgInterval)
-    )
-
-    // Fade out then complete
-    const fadeTimer    = setTimeout(() => setFadeOut(true), totalDuration)
-    const doneTimer    = setTimeout(() => onComplete?.(), totalDuration + 600)
-
-    return () => {
-      clearInterval(progInterval)
-      timers.forEach(clearTimeout)
-      clearTimeout(fadeTimer)
-      clearTimeout(doneTimer)
-    }
+    const TOTAL = 4800
+    const t1 = setTimeout(() => setFadeOut(true), TOTAL)
+    const t2 = setTimeout(() => onComplete?.(), TOTAL + 600)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 100,
-      background: '#080808',
+      background: '#060608',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
+      overflow: 'hidden',
       opacity: fadeOut ? 0 : 1,
       transition: 'opacity 0.6s ease',
     }}>
-
-      {/* Code rain canvas */}
-      <canvas ref={canvasRef} style={{
-        position: 'absolute', inset: 0, zIndex: 0,
-        pointerEvents: 'none',
-      }} />
-
-      {/* Center vignette — keeps content readable */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 1,
-        background: 'radial-gradient(ellipse at center, rgba(8,8,8,0.85) 0%, rgba(8,8,8,0.4) 55%, transparent 100%)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* Content */}
-      <div style={{
-        position: 'relative', zIndex: 2,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', gap: '2rem',
-        width: '100%', maxWidth: '420px',
-        padding: '0 2rem',
-      }}>
-
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <svg width="32" height="27" viewBox="0 0 46 38" fill="none">
-            <polygon points="0,36 16,2 22,14 9,36"  fill="white"/>
-            <polygon points="13,36 26,8 32,22 20,36" fill="white" opacity="0.62"/>
-            <polygon points="20,36 30,18 34,28 22,36" fill="white" opacity="0.32"/>
-          </svg>
-          <div style={{ width: '1px', height: '32px', background: 'linear-gradient(to bottom, transparent, #E2E2E4 30%, #E2E2E4 70%, transparent)', boxShadow: '0 0 8px rgba(226,226,228,0.5)' }} />
-          <span style={{
-            color: 'white', fontWeight: 900,
-            fontSize: '1.8rem', letterSpacing: '0.22em',
-            fontFamily: '"The Seasons", serif', lineHeight: 1,
-            textShadow: '0 0 30px rgba(226,226,228,0.25)',
-          }}>AXIOS</span>
-        </div>
-
-        {/* Status message */}
-        <div style={{
-          width: '100%',
-          background: 'rgba(226,226,228,0.03)',
-          border: '1px solid rgba(226,226,228,0.12)',
-          borderRadius: '3px',
-          padding: '1rem 1.25rem',
-        }}>
-          {/* Terminal header */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '6px',
-            marginBottom: '10px', paddingBottom: '8px',
-            borderBottom: '1px solid rgba(226,226,228,0.08)',
-          }}>
-            {[1,2,3].map(i => (
-              <div key={i} style={{
-                width: '6px', height: '6px', borderRadius: '50%',
-                background: `rgba(226,226,228,${0.1 + i * 0.07})`,
-              }} />
-            ))}
-            <span style={{
-              marginLeft: '6px', color: 'rgba(226,226,228,0.3)',
-              fontSize: '0.55rem', letterSpacing: '0.2em',
-              fontFamily: '"Courier New", monospace', textTransform: 'uppercase',
-            }}>AXIOS.SYS</span>
-          </div>
-
-          {/* Message line */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{
-              color: 'rgba(226,226,228,0.4)',
-              fontSize: '0.65rem', fontFamily: '"Courier New", monospace',
-            }}>{'>'}</span>
-            <span style={{
-              color: 'rgba(226,226,228,0.85)',
-              fontSize: '0.72rem', fontFamily: '"Courier New", monospace',
-              letterSpacing: '0.04em', minHeight: '1.1rem',
-            }}>
-              {displayed}
-              <span style={{
-                display: 'inline-block', width: '7px', height: '13px',
-                background: 'rgba(226,226,228,0.7)',
-                marginLeft: '2px', verticalAlign: 'middle',
-                animation: 'blink 0.8s step-end infinite',
-              }} />
-            </span>
-          </div>
-
-          {/* Log lines — decorative */}
-          <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-            {Array(3).fill(0).map((_, i) => (
-              <div key={i} style={{
-                height: '1px',
-                background: `rgba(226,226,228,${0.04 - i * 0.01})`,
-                width: `${85 - i * 15}%`,
-              }} />
-            ))}
-          </div>
-        </div>
-
-        {/* Progress bar */}
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <div style={{
-            width: '100%', height: '1px',
-            background: 'rgba(226,226,228,0.08)',
-            borderRadius: '1px', overflow: 'hidden',
-          }}>
-            <div style={{
-              height: '100%', width: `${progress}%`,
-              background: 'linear-gradient(to right, rgba(226,226,228,0.4), rgba(226,226,228,0.9))',
-              boxShadow: '0 0 8px rgba(226,226,228,0.6)',
-              transition: 'width 0.04s linear',
-              borderRadius: '1px',
-            }} />
-          </div>
-          <div style={{
-            display: 'flex', justifyContent: 'space-between',
-            color: 'rgba(226,226,228,0.25)', fontSize: '0.52rem',
-            fontFamily: '"Courier New", monospace', letterSpacing: '0.1em',
-          }}>
-            <span>SECURE BOOT</span>
-            <span>{Math.round(progress)}%</span>
-          </div>
-        </div>
-
-      </div>
-
       <style>{`
         @font-face {
           font-family: 'The Seasons';
           src: url('/the-seasons-regular.ttf') format('truetype');
-          font-weight: normal;
-          font-style: normal;
         }
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0; }
+        @keyframes ax-orb-drift {
+          0%   { opacity:0; transform:translate(0,0) scale(1); }
+          15%  { opacity:1; }
+          50%  { transform:translate(18px,22px) scale(1.08); }
+          85%  { opacity:1; }
+          100% { opacity:0; transform:translate(-8px,40px) scale(0.95); }
+        }
+        @keyframes ax-rise {
+          0%   { transform:translateY(0) translateX(0) scale(1); opacity:0; }
+          10%  { opacity:1; }
+          60%  { transform:translateY(-55vh) translateX(15px) scale(1.6); opacity:0.45; }
+          100% { transform:translateY(-110vh) translateX(-10px) scale(2.2); opacity:0; }
+        }
+        @keyframes ax-scan {
+          0%   { top:0%; opacity:0; }
+          5%   { opacity:1; }
+          95%  { opacity:1; }
+          100% { top:100%; opacity:0; }
+        }
+        @keyframes ax-bar {
+          0%   { transform:translateX(-200%); }
+          100% { transform:translateX(500%); }
         }
       `}</style>
+
+      {/* ── Orbs ── */}
+      <div style={{ position:'absolute', inset:0, overflow:'hidden', pointerEvents:'none' }}>
+        {[
+          { w:320, h:320, top:'-12%',  left:'-12%', bg:'rgba(180,180,210,0.18)', dur:'9s',  delay:'0s'  },
+          { w:240, h:240, bottom:'3%', right:'-8%', bg:'rgba(140,140,175,0.15)', dur:'11s', delay:'-4s' },
+          { w:190, h:190, top:'50%',   left:'58%',  bg:'rgba(200,200,230,0.12)', dur:'13s', delay:'-7s' },
+        ].map((o, i) => (
+          <div key={i} style={{
+            position:'absolute', borderRadius:'50%',
+            width:o.w, height:o.h,
+            background:`radial-gradient(circle,${o.bg} 0%,transparent 70%)`,
+            filter:'blur(38px)',
+            top: o.top, left: o.left, bottom: o.bottom, right: o.right,
+            animation:`ax-orb-drift ${o.dur} linear infinite`,
+            animationDelay: o.delay,
+          }}/>
+        ))}
+      </div>
+
+      {/* ── Smoke ── */}
+      <div style={{ position:'absolute', inset:0, overflow:'hidden', pointerEvents:'none' }}>
+        {[
+          { w:80,  l:'15%', dur:'7s',  delay:'0s'    },
+          { w:60,  l:'45%', dur:'9s',  delay:'-2s'   },
+          { w:100, l:'70%', dur:'11s', delay:'-5s'   },
+          { w:50,  l:'30%', dur:'8s',  delay:'-3.5s' },
+          { w:75,  l:'80%', dur:'10s', delay:'-1s'   },
+        ].map((s, i) => (
+          <div key={i} style={{
+            position:'absolute', borderRadius:'50%',
+            width:s.w, height:s.w,
+            background:'rgba(200,200,220,0.05)',
+            filter:'blur(12px)',
+            left:s.l, bottom:'-8%',
+            animation:`ax-rise ${s.dur} linear infinite`,
+            animationDelay: s.delay,
+          }}/>
+        ))}
+      </div>
+
+      {/* ── Scanline ── */}
+      <div style={{
+        position:'absolute', width:'100%', height:'1px', top:0,
+        background:'linear-gradient(90deg,transparent 0%,rgba(220,220,255,0.1) 30%,rgba(255,255,255,0.2) 50%,rgba(220,220,255,0.1) 70%,transparent 100%)',
+        animation:'ax-scan 5s ease-in-out infinite',
+        pointerEvents:'none',
+      }}/>
+
+      {/* ── Content ── */}
+      <div style={{
+        position:'relative', zIndex:2,
+        display:'flex', flexDirection:'column',
+        alignItems:'center', gap:'1.5rem',
+      }}>
+        {/* Logo */}
+        <svg viewBox="0 0 380 70" xmlns="http://www.w3.org/2000/svg"
+          style={{ width:260, height:'auto', overflow:'visible' }}>
+          <defs>
+            <linearGradient id="ax-load-sg" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stopColor="#3a3a42"/>
+              <stop offset="42%"  stopColor="#8a8a96"/>
+              <stop offset="50%"  stopColor="#ffffff"/>
+              <stop offset="58%"  stopColor="#8a8a96"/>
+              <stop offset="100%" stopColor="#3a3a42"/>
+              <animate attributeName="x1" from="-380" to="380"  dur="2.8s" repeatCount="indefinite"/>
+              <animate attributeName="x2" from="0"    to="760"  dur="2.8s" repeatCount="indefinite"/>
+            </linearGradient>
+          </defs>
+          <polygon points="10,62 45,4 80,62"   fill="none" stroke="url(#ax-load-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+          <polygon points="22,62 45,20 68,62"  fill="none" stroke="url(#ax-load-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+          <text x="100" y="52" fontFamily="Georgia,'Times New Roman',serif" fontSize="42" fontWeight="700" letterSpacing="5" fill="url(#ax-load-sg)">AXIOS</text>
+          <polygon points="300,62 335,4 370,62"  fill="none" stroke="url(#ax-load-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+          <polygon points="312,62 335,20 358,62" fill="none" stroke="url(#ax-load-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+        </svg>
+
+        {/* Shimmer bar */}
+        <div style={{ width:100, height:1, background:'rgba(200,200,220,0.08)', borderRadius:1, overflow:'hidden' }}>
+          <div style={{
+            height:'100%', width:'40%',
+            background:'linear-gradient(90deg,transparent,rgba(220,220,240,0.9),transparent)',
+            animation:'ax-bar 2.4s ease-in-out infinite',
+          }}/>
+        </div>
+
+        {/* Typewriter */}
+        <div style={{ width:220, height:20, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <span style={{
+            fontFamily:'"Courier New",monospace',
+            fontSize:9, letterSpacing:'1.8px',
+            textTransform:'uppercase',
+            color:'rgba(210,210,230,0.75)',
+            whiteSpace:'nowrap',
+          }}>
+            {text}
+            <span style={{
+              display:'inline-block', width:1, height:11,
+              background:'rgba(210,210,230,0.6)',
+              marginLeft:2, verticalAlign:'middle',
+              opacity: showCursor ? 1 : 0,
+              transition:'opacity 0.1s',
+            }}/>
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
