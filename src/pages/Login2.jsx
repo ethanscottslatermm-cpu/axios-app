@@ -151,10 +151,6 @@ export default function Login2() {
         }}>
           <form onSubmit={handleSubmit}>
 
-            <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 12px rgba(255,255,255,0.6), 0 0 30px rgba(255,255,255,0.25)' }}>
-              Secure Access
-            </p>
-
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', color: 'rgba(255,255,255,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Email</label>
               <div style={{ position: 'relative' }}>
@@ -162,7 +158,7 @@ export default function Login2() {
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
                 </svg>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email" autoComplete="off" required className="l2-input l2-input-icon" />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" autoComplete="off" required className="l2-input l2-input-icon" />
               </div>
             </div>
 
@@ -173,7 +169,7 @@ export default function Login2() {
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="password" autoComplete="current-password" required className="l2-input l2-input-icon" />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" autoComplete="current-password" required className="l2-input l2-input-icon" />
               </div>
             </div>
 
@@ -200,7 +196,7 @@ export default function Login2() {
             )}
 
             <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 14px rgba(255,255,255,0.65), 0 0 35px rgba(255,255,255,0.25)' }}>
-              Authorized personnel only
+              Secure Access
             </p>
 
           </form>
