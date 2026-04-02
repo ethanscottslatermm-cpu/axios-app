@@ -110,6 +110,16 @@ export default function Login2() {
   const [offerFaceId, setOfferFaceId]       = useState(false)
   const [registeringFaceId, setRegisteringFaceId] = useState(false)
 
+  // Force body to black so theme bleed can't show through
+  useEffect(() => {
+    const prev = document.body.style.getPropertyValue('background')
+    const prevPriority = document.body.style.getPropertyPriority('background')
+    document.body.style.setProperty('background', '#000000', 'important')
+    return () => {
+      document.body.style.setProperty('background', prev, prevPriority || '')
+    }
+  }, [])
+
   useEffect(() => {
     const cycle = () => {
       setPhase('out')
@@ -153,7 +163,10 @@ export default function Login2() {
     <>
       <style>{styles}</style>
 
-      <div style={{ minHeight: '100dvh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'fixed', inset: 0, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflowY: 'auto' }}>
+
+        {/* Absolute black base — eliminates any theme/body bleed */}
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: '#000' }} />
 
         {/* Aristotle bust — full screen, top-anchored to show face */}
         <div style={{
