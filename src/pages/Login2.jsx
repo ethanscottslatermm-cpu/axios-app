@@ -168,7 +168,7 @@ export default function Login2() {
         {/* Absolute black base — eliminates any theme/body bleed */}
         <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: '#000' }} />
 
-        {/* Aristotle bust — cropped image (face only, no embedded UI) */}
+        {/* Aristotle bust — full image, face anchored to top */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 0,
           backgroundImage: `url('/aristotle-bg.jpg')`,
@@ -177,10 +177,10 @@ export default function Login2() {
           backgroundRepeat: 'no-repeat',
         }} />
 
-        {/* Heavy bottom blackout — fully opaque by 70% so no image edge bleeds into form area */}
+        {/* Blackout overlay — goes fully opaque at 42% so image's baked-in UI is never visible */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.28) 32%, rgba(0,0,0,0.82) 58%, rgba(0,0,0,1.00) 72%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 28%, rgba(0,0,0,0.92) 40%, rgba(0,0,0,1.00) 42%)',
         }} />
 
         {/* Subtle top fade */}
@@ -228,40 +228,9 @@ export default function Login2() {
             </div>
 
             {/* I AM WORTHY */}
-            <p style={{ color: 'rgba(195,195,197,0.45)', fontSize: '0.54rem', letterSpacing: '0.44em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: '0 0 4px 0' }}>
+            <p style={{ color: 'rgba(195,195,197,0.45)', fontSize: '0.54rem', letterSpacing: '0.44em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
               I Am Worthy
             </p>
-
-            {/* EST. 1989 */}
-            <p style={{ color: 'rgba(195,195,197,0.30)', fontSize: '0.52rem', letterSpacing: '0.32em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
-              Est. 1989
-            </p>
-          </div>
-
-          {/* Animated italic word */}
-          <div style={{ textAlign: 'center', marginBottom: '0.4rem', height: '2.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            <p
-              key={wordIndex}
-              className={phase === 'in' ? 'l2-word-in' : 'l2-word-out'}
-              style={{
-                color: 'rgba(190,190,192,0.58)',
-                fontSize: 'clamp(1.05rem, 4.2vw, 1.28rem)',
-                fontFamily: '"EB Garamond", Georgia, serif',
-                fontStyle: 'italic',
-                letterSpacing: '0.05em',
-                margin: 0,
-                textShadow: '0 1px 10px rgba(0,0,0,0.85)',
-              }}
-            >
-              {WORDS[wordIndex]}
-            </p>
-          </div>
-
-          {/* Ornamental divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.6rem' }}>
-            <span style={{ color: 'rgba(170,170,172,0.30)', fontSize: '0.55rem' }}>—</span>
-            <div style={{ width: '18px', height: '1px', background: 'rgba(170,170,172,0.28)' }} />
-            <span style={{ color: 'rgba(170,170,172,0.30)', fontSize: '0.55rem' }}>—</span>
           </div>
 
           {/* ── Form ── */}
@@ -327,28 +296,36 @@ export default function Login2() {
             )}
 
             {/* AUTHORIZED PERSONNEL ONLY */}
-            <p style={{ fontSize: '0.52rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', letterSpacing: '0.28em', color: 'rgba(170,170,172,0.38)', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
+            <p style={{ fontSize: '0.52rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', marginBottom: '1.2rem', letterSpacing: '0.28em', color: 'rgba(170,170,172,0.38)', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
               Authorized personnel only
             </p>
+
+            {/* Animated word — below Authorized Personnel Only */}
+            <div style={{ textAlign: 'center', height: '1.6rem', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              <p
+                key={`footer-${wordIndex}`}
+                className={phase === 'in' ? 'l2-word-in' : 'l2-word-out'}
+                style={{
+                  color: 'rgba(160,160,162,0.28)',
+                  fontSize: 'clamp(0.70rem, 2.8vw, 0.80rem)',
+                  fontFamily: '"EB Garamond", Georgia, serif',
+                  fontStyle: 'italic',
+                  letterSpacing: '0.06em',
+                  margin: 0,
+                }}
+              >
+                {WORDS[wordIndex]}
+              </p>
+            </div>
 
           </form>
 
           {/* "AXIOS" — I AM WORTHY footer */}
-          <p style={{ color: 'rgba(150,150,152,0.22)', fontSize: '0.50rem', letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: '1.8rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
+          <p style={{ color: 'rgba(150,150,152,0.18)', fontSize: '0.50rem', letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: '1.4rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
             "Axios" — I am worthy
           </p>
 
         </div>
-
-        {/* Bottom-left EST 1989 */}
-        <p style={{ position: 'fixed', bottom: '1.4rem', left: '1.4rem', color: 'rgba(150,150,152,0.20)', fontSize: '0.50rem', letterSpacing: '0.20em', textTransform: 'uppercase', fontStyle: 'italic', zIndex: 10, fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
-          Est 1989
-        </p>
-
-        {/* Bottom-right sparkle */}
-        <svg style={{ position: 'fixed', bottom: '1.2rem', right: '1.4rem', zIndex: 10, opacity: 0.22 }} width="18" height="18" viewBox="0 0 24 24" fill="white">
-          <path d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"/>
-        </svg>
 
       </div>
     </>
