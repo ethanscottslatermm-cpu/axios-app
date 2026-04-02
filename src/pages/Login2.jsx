@@ -8,8 +8,8 @@ const BG = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCA
 
 const styles = `
   @keyframes l2-borderGlow {
-    0%,100% { box-shadow: 0 0 14px rgba(226,226,228,0.18), 0 0 36px rgba(226,226,228,0.07), inset 0 0 16px rgba(226,226,228,0.04); border-color: rgba(226,226,228,0.32); }
-    50%     { box-shadow: 0 0 28px rgba(226,226,228,0.42), 0 0 70px rgba(226,226,228,0.14), inset 0 0 28px rgba(226,226,228,0.07); border-color: rgba(226,226,228,0.65); }
+    0%,100% { box-shadow: none; border-color: transparent; }
+    50%     { box-shadow: none; border-color: transparent; }
   }
   @keyframes l2-btnGlow {
     0%,100% { box-shadow: 0 0 12px rgba(226,226,228,0.22), 0 0 28px rgba(226,226,228,0.09); }
@@ -33,15 +33,15 @@ const styles = `
     -webkit-appearance: none;
     transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
     caret-color: white;
-    box-shadow: 0 0 10px rgba(226,226,228,0.13), inset 0 1px 3px rgba(0,0,0,0.4);
-    animation: l2-borderGlow 3.5s ease-in-out infinite;
+    box-shadow: none;
+    animation: none;
   }
   .l2-input:focus {
-    border-color: rgba(226,226,228,0.85);
-    box-shadow: 0 0 0 1px rgba(226,226,228,0.13), 0 0 20px rgba(226,226,228,0.22), 0 0 40px rgba(226,226,228,0.09), inset 0 1px 3px rgba(0,0,0,0.4);
+    border-color: transparent;
+    box-shadow: none;
     animation: none;
-    background: rgba(226,226,228,0.04);
-    border-left: 1px solid #E2E2E4;
+    background: transparent;
+    border-left: 1px solid transparent;
   }
   .l2-input-icon { padding-left: 36px; }
   .l2-input::placeholder {
