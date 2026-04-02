@@ -2,9 +2,9 @@ const KEY = process.env.FINNHUB_KEY
 
 // Finnhub symbols — indices use ^ prefix, crypto uses exchange:pair format
 const SYMBOLS = [
-  { id: '^DJI',    name: 'DOW',     fh: '^DJI'             },
-  { id: '^GSPC',   name: 'S&P 500', fh: '^GSPC'            },
-  { id: '^IXIC',   name: 'NASDAQ',  fh: '^IXIC'            },
+  { id: '^DJI',    name: 'DOW',     fh: 'DIA'              },
+  { id: '^GSPC',   name: 'S&P 500', fh: 'SPY'              },
+  { id: '^IXIC',   name: 'NASDAQ',  fh: 'QQQ'              },
   { id: 'BTC-USD', name: 'BTC',     fh: 'BINANCE:BTCUSDT'  },
   { id: 'GC=F',    name: 'GOLD',    fh: 'GLD'              },
 ]
