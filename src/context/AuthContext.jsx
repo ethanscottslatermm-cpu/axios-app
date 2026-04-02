@@ -75,12 +75,24 @@ export function AuthProvider({ children }) {
       }
     }
 
-    // Record login timestamp
-    await supabase.from('profiles').update({ last_login: new Date().toISOString() }).eq('id', data.user.id)
+    // Record login timestamp + history
+    const now    = new Date().toISOString()
+    const device = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+    await supabase.from('profiles').update({ last_login: now }).eq('id', data.user.id)
+    await supabase.from('login_history').insert({ user_id: data.user.id, logged_in_at: now, device })
 
     setLocked(false) // freshly signed in — no lock needed
     return data
   }
+
+  // Heartbeat — keeps last_seen fresh every 5 minutes while the app is open
+  useEffect(() => {
+    if (!user) return
+    const bump = () => supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', user.id)
+    bump()
+    const id = setInterval(bump, 5 * 60 * 1000)
+    return () => clearInterval(id)
+  }, [user?.id])
 
   const signOut = async () => {
     await supabase.auth.signOut()

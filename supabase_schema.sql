@@ -146,7 +146,62 @@ create index idx_stock_watchlist_user on stock_watchlist(user_id, added_at asc);
 -- ADD last_login TO PROFILES
 -- Run this if profiles table already exists
 -- ─────────────────────────────────────────
-alter table profiles add column if not exists last_login timestamptz;
+alter table profiles add column if not exists last_login  timestamptz;
+alter table profiles add column if not exists last_seen   timestamptz;
+
+-- ─────────────────────────────────────────
+-- LOGIN HISTORY
+-- ─────────────────────────────────────────
+create table login_history (
+  id           uuid primary key default uuid_generate_v4(),
+  user_id      uuid references auth.users(id) on delete cascade not null,
+  logged_in_at timestamptz default now(),
+  device       text
+);
+alter table login_history enable row level security;
+create policy "Users can insert own login history"
+  on login_history for insert with check (auth.uid() = user_id);
+create policy "Admins can read all login history"
+  on login_history for select using (
+    exists (select 1 from profiles where id = auth.uid() and role = 'admin')
+  );
+create index idx_login_history_user on login_history(user_id, logged_in_at desc);
+
+-- ─────────────────────────────────────────
+-- VERSE POOL (editable from Admin)
+-- ─────────────────────────────────────────
+create table verse_pool (
+  id         uuid primary key default uuid_generate_v4(),
+  reference  text not null unique,
+  sort_order integer default 0,
+  active     boolean default true,
+  created_at timestamptz default now()
+);
+alter table verse_pool enable row level security;
+create policy "Authenticated users can read verse pool"
+  on verse_pool for select using (auth.uid() is not null);
+create policy "Admins can manage verse pool"
+  on verse_pool for all using (
+    exists (select 1 from profiles where id = auth.uid() and role = 'admin')
+  );
+-- Seed with default verses (same as hardcoded fallback)
+insert into verse_pool (reference, sort_order) values
+  ('john/3/16',           0),  ('psalms/23/1',          1),
+  ('philippians/4/13',    2),  ('romans/8/28',          3),
+  ('jeremiah/29/11',      4),  ('proverbs/3/5',         5),
+  ('isaiah/40/31',        6),  ('matthew/6/33',         7),
+  ('joshua/1/9',          8),  ('romans/12/2',          9),
+  ('psalms/46/1',         10), ('john/14/6',            11),
+  ('galatians/5/22',      12), ('ephesians/2/8',        13),
+  ('hebrews/11/1',        14), ('matthew/11/28',        15),
+  ('romans/8/38',         16), ('psalms/119/105',       17),
+  ('john/16/33',          18), ('philippians/4/6',      19),
+  ('1corinthians/13/4',   20), ('james/1/2',            21),
+  ('romans/5/8',          22), ('psalms/27/1',          23),
+  ('isaiah/41/10',        24), ('john/15/13',           25),
+  ('matthew/5/16',        26), ('romans/10/9',          27),
+  ('1john/4/19',          28), ('proverbs/31/25',       29)
+on conflict (reference) do nothing;
 
 -- ─────────────────────────────────────────
 -- APP SETTINGS (maintenance mode etc.)
@@ -155,7 +210,9 @@ create table app_settings (
   key   text primary key,
   value text not null default 'false'
 );
-insert into app_settings (key, value) values ('app_offline', 'false');
+insert into app_settings (key, value) values ('app_offline', 'false') on conflict (key) do nothing;
+insert into app_settings (key, value) values ('app_version', '1.0.0') on conflict (key) do nothing;
+insert into app_settings (key, value) values ('release_notes', '') on conflict (key) do nothing;
 alter table app_settings enable row level security;
 create policy "Anyone can read app_settings"
   on app_settings for select using (true);

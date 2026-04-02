@@ -213,8 +213,17 @@ export default function Admin() {
   const [expanded,  setExpanded]  = useState(null)
   const [visible,   setVisible]   = useState(false)
   const [confirm,   setConfirm]   = useState(null)
-  const [appOffline,setAppOffline] = useState(false)
+  const [appOffline,    setAppOffline]    = useState(false)
   const [togglingOffline, setTogglingOffline] = useState(false)
+  const [activeTab,     setActiveTab]     = useState('users')
+  const [loginHistory,  setLoginHistory]  = useState([])
+  const [histLoading,   setHistLoading]   = useState(false)
+  const [verses,        setVerses]        = useState([])
+  const [newVerseRef,   setNewVerseRef]   = useState('')
+  const [verseSaving,   setVerseSaving]   = useState(false)
+  const [appVersion,    setAppVersion]    = useState('')
+  const [releaseNotes,  setReleaseNotes]  = useState('')
+  const [notesSaving,   setNotesSaving]   = useState(false)
 
   useEffect(() => {
     supabase.from('app_settings').select('value').eq('key', 'app_offline').single()
@@ -239,7 +248,7 @@ export default function Admin() {
     setLoading(true)
     const { data } = await supabase
       .from('profiles')
-      .select('id, name, role, status, suspended_until, created_at, last_login')
+      .select('id, name, role, status, suspended_until, created_at, last_login, last_seen')
       .order('created_at', { ascending: false })
     setUsers(data || [])
     setLoading(false)
@@ -274,6 +283,56 @@ export default function Admin() {
     loadUsers()
   }
 
+  // Activity tab — load login history
+  useEffect(() => {
+    if (activeTab !== 'activity') return
+    setHistLoading(true)
+    supabase.from('login_history')
+      .select('*').order('logged_in_at', { ascending: false }).limit(150)
+      .then(({ data }) => { setLoginHistory(data || []); setHistLoading(false) })
+  }, [activeTab])
+
+  // Content tab — load verses + release notes
+  useEffect(() => {
+    if (activeTab !== 'content') return
+    supabase.from('verse_pool').select('*').order('sort_order')
+      .then(({ data }) => setVerses(data || []))
+    supabase.from('app_settings').select('key,value').in('key', ['app_version','release_notes'])
+      .then(({ data }) => {
+        const m = Object.fromEntries((data || []).map(r => [r.key, r.value]))
+        setAppVersion(m.app_version || '')
+        setReleaseNotes(m.release_notes || '')
+      })
+  }, [activeTab])
+
+  const addVerse = async () => {
+    if (!newVerseRef.trim()) return
+    setVerseSaving(true)
+    const maxOrder = verses.length ? Math.max(...verses.map(v => v.sort_order)) : -1
+    await supabase.from('verse_pool').insert({ reference: newVerseRef.trim(), sort_order: maxOrder + 1 })
+    setNewVerseRef('')
+    const { data } = await supabase.from('verse_pool').select('*').order('sort_order')
+    setVerses(data || [])
+    setVerseSaving(false)
+  }
+
+  const toggleVerse = async (id, active) => {
+    await supabase.from('verse_pool').update({ active: !active }).eq('id', id)
+    setVerses(v => v.map(x => x.id === id ? { ...x, active: !active } : x))
+  }
+
+  const deleteVerse = async (id) => {
+    await supabase.from('verse_pool').delete().eq('id', id)
+    setVerses(v => v.filter(x => x.id !== id))
+  }
+
+  const saveNotes = async () => {
+    setNotesSaving(true)
+    await supabase.from('app_settings').upsert({ key: 'app_version', value: appVersion }, { onConflict: 'key' })
+    await supabase.from('app_settings').upsert({ key: 'release_notes', value: releaseNotes }, { onConflict: 'key' })
+    setNotesSaving(false)
+  }
+
   const filtered = users.filter(u => {
     if (filter === 'All')       return true
     if (filter === 'Active')    return u.status === 'active' || !u.status
@@ -299,21 +358,37 @@ export default function Admin() {
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', WebkitFontSmoothing: 'antialiased', paddingBottom: 40 }}>
 
       {/* Header */}
-      <div style={{ position: 'sticky', zIndex:50, top: 0, zIndex: 50, background: 'var(--header-bg)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid var(--border)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
-        <button onClick={() => navigate('/dashboard')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', boxShadow:'var(--card-shadow)', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0 }}>
-          {Ico.back()}
-        </button>
-        <div style={{ flex: 1 }}>
-          <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 2 }}>AXIOS</p>
-          <h1 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 18, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '-0.01em' }}>Admin</h1>
+      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--header-bg)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
+          <button onClick={() => navigate('/dashboard')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', boxShadow:'var(--card-shadow)', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0 }}>
+            {Ico.back()}
+          </button>
+          <div style={{ flex: 1 }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 2 }}>AXIOS</p>
+            <h1 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 18, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '-0.01em' }}>Admin</h1>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)' }}>
+            {Ico.users()}
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>{counts.total}</p>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)' }}>
-          {Ico.users()}
-          <p style={{ color: 'var(--text-muted)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>{counts.total}</p>
+        <div style={{ display: 'flex', padding: '0 12px 10px', gap: 6 }}>
+          {[{ id:'users', label:'Users' }, { id:'activity', label:'Activity' }, { id:'content', label:'Content' }].map(t => (
+            <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+              flex: 1, padding: '8px 4px', borderRadius: 9, border: '1px solid var(--border)', cursor: 'pointer',
+              background: activeTab === t.id ? 'rgba(255,255,255,0.08)' : 'transparent',
+              color: activeTab === t.id ? 'var(--text-primary)' : 'var(--text-muted)',
+              fontSize: 11, fontWeight: activeTab === t.id ? 700 : 400,
+              fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.06em', transition: 'all 0.15s',
+            }}>{t.label}</button>
+          ))}
         </div>
       </div>
 
       <div style={{ maxWidth: 520, margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        {/* ── Users Tab ── */}
+        {activeTab === 'users' && (<>
 
         {/* App Power Off */}
         <div style={{ ...anim(0), background: appOffline ? 'rgba(248,113,113,0.08)' : 'var(--bg-card)', border: `1px solid ${appOffline ? 'rgba(248,113,113,0.35)' : 'var(--border)'}`, borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: appOffline ? '0 0 20px rgba(248,113,113,0.12)' : 'var(--card-shadow)' }}>
@@ -395,6 +470,120 @@ export default function Admin() {
             ))
           )}
         </div>
+
+        </>)}
+
+        {/* ── Activity Tab ── */}
+        {activeTab === 'activity' && (<>
+
+          {/* Online Now */}
+          <div style={anim(0)}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, fontWeight: 700 }}>Online Now</p>
+            {(() => {
+              const cutoff = new Date(Date.now() - 15 * 60 * 1000)
+              const online = users.filter(u => u.last_seen && new Date(u.last_seen) > cutoff)
+              return online.length === 0 ? (
+                <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif' }}>No users active in the last 15 min.</p>
+              ) : (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {online.map(u => (
+                    <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '7px 12px', borderRadius: 99, background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.25)' }}>
+                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 6px #4ade80' }} />
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>{u.name || 'Unnamed'}</span>
+                    </div>
+                  ))}
+                </div>
+              )
+            })()}
+          </div>
+
+          {/* Login History */}
+          <div style={anim(60)}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, fontWeight: 700 }}>Login History</p>
+            {histLoading ? (
+              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '24px 0' }}>Loading…</p>
+            ) : loginHistory.length === 0 ? (
+              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '24px 0' }}>No login history yet.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {loginHistory.map(entry => {
+                  const u   = users.find(x => x.id === entry.user_id)
+                  const dt  = new Date(entry.logged_in_at)
+                  const online = u?.last_seen && new Date(u.last_seen) > new Date(Date.now() - 15 * 60 * 1000)
+                  return (
+                    <div key={entry.id} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 11, padding: '11px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <Avatar name={u?.name || '?'} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <p style={{ color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u?.name || 'Unknown'}</p>
+                          {online && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 5px #4ade80', flexShrink: 0 }} />}
+                        </div>
+                        <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>
+                          {dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })} · {dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                        </p>
+                      </div>
+                      <span style={{ color: 'var(--text-muted)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.1em', background: 'var(--stat-bg)', padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border)', flexShrink: 0 }}>
+                        {entry.device || 'web'}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </>)}
+
+        {/* ── Content Tab ── */}
+        {activeTab === 'content' && (<>
+
+          {/* Verse Pool */}
+          <div style={anim(0)}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6, fontWeight: 700 }}>Daily Verse Pool</p>
+            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
+              Format: <span style={{ fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)' }}>book/chapter/verse</span> — e.g. <span style={{ fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)' }}>john/3/16</span>
+            </p>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+              <input value={newVerseRef} onChange={e => setNewVerseRef(e.target.value)} onKeyDown={e => e.key === 'Enter' && addVerse()} placeholder="john/3/16"
+                style={{ flex: 1, padding: '10px 12px', borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 13, fontFamily: 'monospace', outline: 'none' }} />
+              <button onClick={addVerse} disabled={verseSaving || !newVerseRef.trim()}
+                style={{ padding: '10px 16px', borderRadius: 9, background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.35)', color: '#f87171', fontSize: 12, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em', opacity: verseSaving || !newVerseRef.trim() ? 0.5 : 1 }}>
+                Add
+              </button>
+            </div>
+            {verses.length === 0 ? (
+              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '20px 0' }}>No verses — run the schema to seed defaults.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {verses.map(v => (
+                  <div key={v.id} style={{ background: 'var(--bg-card)', border: `1px solid ${v.active ? 'var(--border)' : 'rgba(255,255,255,0.04)'}`, borderRadius: 10, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8, opacity: v.active ? 1 : 0.45 }}>
+                    <p style={{ flex: 1, color: v.active ? 'var(--text-primary)' : 'var(--text-muted)', fontSize: 12, fontFamily: 'monospace' }}>{v.reference}</p>
+                    <button onClick={() => toggleVerse(v.id, v.active)}
+                      style={{ padding: '4px 9px', borderRadius: 6, background: v.active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.06)', border: `1px solid ${v.active ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.1)'}`, color: v.active ? '#4ade80' : 'var(--text-muted)', fontSize: 10, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em' }}>
+                      {v.active ? 'ON' : 'OFF'}
+                    </button>
+                    <button onClick={() => deleteVerse(v.id)}
+                      style={{ padding: '4px 9px', borderRadius: 6, background: 'transparent', border: '1px solid rgba(248,113,113,0.2)', color: 'rgba(248,113,113,0.6)', fontSize: 13, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Release Notes */}
+          <div style={{ ...anim(80), background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '18px 16px' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 14, fontWeight: 700 }}>App Version & Release Notes</p>
+            <input value={appVersion} onChange={e => setAppVersion(e.target.value)} placeholder="1.0.0"
+              style={{ width: '100%', padding: '10px 12px', borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', outline: 'none', marginBottom: 10 }} />
+            <textarea value={releaseNotes} onChange={e => setReleaseNotes(e.target.value)} placeholder="What's new in this version…" rows={5}
+              style={{ width: '100%', padding: '10px 12px', borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', outline: 'none', resize: 'vertical', lineHeight: 1.6, marginBottom: 12 }} />
+            <button onClick={saveNotes} disabled={notesSaving}
+              style={{ width: '100%', padding: '11px', borderRadius: 9, background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.35)', color: '#f87171', fontSize: 12, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.12em', opacity: notesSaving ? 0.6 : 1 }}>
+              {notesSaving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </>)}
 
         <p style={{ color: 'var(--text-faint)', fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', marginTop: 8 }}>
           AXIOS ADMIN · RESTRICTED

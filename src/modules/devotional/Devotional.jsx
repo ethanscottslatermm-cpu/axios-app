@@ -29,12 +29,12 @@ const VERSE_REFS = [
   'john/15/13','matthew/5/16','romans/10/9','1john/4/19','proverbs/31/25',
 ]
 
-function getDailyRef() {
+function getDailyRefFromPool(pool) {
   const now   = new Date()
   const start = Date.UTC(now.getFullYear(), 0, 0)
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
   const day   = Math.round((today - start) / (1000 * 60 * 60 * 24))
-  return VERSE_REFS[day % VERSE_REFS.length]
+  return pool[day % pool.length]
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -408,20 +408,26 @@ export default function Devotional() {
   const [loadingDB,   setLoadingDB]   = useState(true)
   const [streak,      setStreak]      = useState(0)
 
-  // Fetch verse from bible-api.com
+  // Fetch verse — pool comes from DB, falls back to hardcoded VERSE_REFS
   useEffect(() => {
-    const ref = getDailyRef()
-    setVerseRef(ref)
-    fetch(`https://bible-api.com/${ref}`)
-      .then(r => r.json())
-      .then(data => {
+    const load = async () => {
+      let pool = VERSE_REFS
+      try {
+        const { data } = await supabase.from('verse_pool').select('reference').eq('active', true).order('sort_order')
+        if (data?.length) pool = data.map(v => v.reference)
+      } catch {}
+      const ref = getDailyRefFromPool(pool)
+      setVerseRef(ref)
+      try {
+        const r    = await fetch(`https://bible-api.com/${ref}`)
+        const data = await r.json()
         setVerse({ text: data.text?.trim(), reference: data.reference })
-        setVerseLoading(false)
-      })
-      .catch(() => {
+      } catch {
         setVerse({ text: 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.', reference: 'Jeremiah 29:11' })
-        setVerseLoading(false)
-      })
+      }
+      setVerseLoading(false)
+    }
+    load()
   }, [])
 
   // Load today's entry + history from Supabase
