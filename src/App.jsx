@@ -6,6 +6,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import OnboardingRoute from './components/OnboardingRoute'
 import Login      from './pages/Login'
+import Login2     from './pages/Login2'
 import Dashboard  from './pages/Dashboard'
 import Settings   from './pages/Settings'
 import Onboarding from './pages/Onboarding'
@@ -38,6 +39,7 @@ export default function App() {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Login />} />
+                <Route path="/login2" element={<Login2 />} />
                 <Route path="/onboarding" element={
                   <ProtectedRoute><Onboarding /></ProtectedRoute>
                 } />
