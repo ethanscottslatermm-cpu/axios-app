@@ -12,12 +12,12 @@ const styles = `
     50%     { box-shadow: none; border-color: transparent; }
   }
   @keyframes l2-placeholderPulse {
-    0%,100% { opacity: 0.28; }
-    50%     { opacity: 0.55; }
+    0%,100% { opacity: 0.40; }
+    50%     { opacity: 0.90; }
   }
   @keyframes l2-iconPulse {
-    0%,100% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.15)); opacity: 0.30; }
-    50%     { filter: drop-shadow(0 0 6px rgba(255,255,255,0.55)); opacity: 0.60; }
+    0%,100% { filter: drop-shadow(0 0 3px rgba(255,255,255,0.40)); opacity: 0.45; }
+    50%     { filter: drop-shadow(0 0 8px rgba(255,255,255,0.90)); opacity: 1.0; }
   }
   @keyframes l2-btnGlow {
     0%,100% { box-shadow: 0 0 12px rgba(226,226,228,0.22), 0 0 28px rgba(226,226,228,0.09); }
@@ -51,7 +51,7 @@ const styles = `
   }
   .l2-input-icon { padding-left: 36px; }
   .l2-input::placeholder {
-    color: rgba(226,226,228,0.30);
+    color: rgba(255,255,255,0.90);
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     letter-spacing: 0.08em;
     font-size: 0.85rem;
@@ -162,7 +162,6 @@ export default function Login2() {
           <form onSubmit={handleSubmit}>
 
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', color: 'rgba(255,255,255,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Email</label>
               <div style={{ position: 'relative' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -173,7 +172,6 @@ export default function Login2() {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', color: 'rgba(255,255,255,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Password</label>
               <div style={{ position: 'relative' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
