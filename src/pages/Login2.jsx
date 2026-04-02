@@ -146,18 +146,18 @@ export default function Login2() {
           backgroundRepeat: 'no-repeat',
         }} />
 
-        {/* Bottom fade so form reads cleanly over the bust */}
+        {/* Bottom fade — starts higher to frame the full form zone */}
         <div style={{
-          position: 'fixed', bottom: 0, left: 0, right: 0, height: '55%', zIndex: 1,
-          background: 'linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+          position: 'fixed', bottom: 0, left: 0, right: 0, height: '65%', zIndex: 1,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.60) 50%, rgba(0,0,0,0) 100%)',
         }} />
 
-        {/* Form — positioned at ~45% down the screen */}
+        {/* Form — starts at beard line, elements breathe with luxury spacing */}
         <div style={{
           position: 'absolute', zIndex: 10,
-          top: '57%',
+          top: '52%',
           left: 0, right: 0,
-          padding: '0 1.5rem',
+          padding: '0 2rem',
           maxWidth: '420px',
           margin: '0 auto',
           width: '100%',
@@ -165,7 +165,7 @@ export default function Login2() {
         }}>
           <form onSubmit={handleSubmit}>
 
-            <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '2.2rem' }}>
               <div style={{ position: 'relative' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -181,7 +181,7 @@ export default function Login2() {
               </div>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ marginBottom: '3.5rem' }}>
               <div style={{ position: 'relative' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
