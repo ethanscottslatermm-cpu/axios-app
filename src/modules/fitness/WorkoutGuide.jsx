@@ -1,316 +1,489 @@
 import { useState } from 'react'
 
-// ─── Exercise Database ────────────────────────────────────────────────────────
-// Each entry has: name, equipment, sets, desc, videoSearch (opens YouTube)
+// ─── Muscle Database ─────────────────────────────────────────────────────────
 const DB = {
+  // ── Front ──
   chest: {
-    label: 'Chest', color: '#ef4444',
-    men: [
-      { name:'Bench Press',      eq:'Barbell',     sets:'4×8-10',  desc:'Primary compound lift for chest mass. Control the descent, touch lower chest, drive up.',             yt:'bench press proper form tutorial' },
-      { name:'Push-Up',          eq:'Bodyweight',  sets:'3×15-20', desc:'Classic full-chest move. Elevate feet for upper chest emphasis. Keep core rigid throughout.',          yt:'push up proper form tutorial' },
-      { name:'Incline DB Press', eq:'Dumbbells',   sets:'3×10-12', desc:'Upper chest and front delt focus at 30-45°. Don\'t let elbows flare past 75°.',                       yt:'incline dumbbell press form tutorial' },
-      { name:'Cable Flyes',      eq:'Cable',       sets:'3×12-15', desc:'Isolation for the chest stretch and squeeze. Slight elbow bend throughout. Squeeze at centre.',       yt:'cable fly chest isolation tutorial' },
-    ],
-    women: [
-      { name:'Push-Up',          eq:'Bodyweight',  sets:'3×12',    desc:'Builds chest, shoulders and triceps. Start from knees if needed, progress to full form.',             yt:'push up proper form tutorial women' },
-      { name:'DB Chest Press',   eq:'Dumbbells',   sets:'3×15',    desc:'Controlled pressing movement for upper body strength and chest definition.',                          yt:'dumbbell chest press form tutorial' },
-      { name:'Pec Deck Flyes',   eq:'Machine',     sets:'3×15',    desc:'Machine-guided isolation for a safe, controlled chest squeeze at full range of motion.',              yt:'pec deck fly machine tutorial' },
-      { name:'Incline Push-Up',  eq:'Bodyweight',  sets:'3×15',    desc:'Reduce load by elevating hands on a bench. Great stepping stone toward full push-ups.',              yt:'incline push up tutorial form' },
+    label: 'Chest', scientific: 'Pectoralis Major & Pectoralis Minor',
+    color: '#e24b4a', intensity: 4,
+    desc: 'Primary horizontal pushing muscle. Controls arm adduction and internal rotation across the chest. The pectoralis minor lies beneath, stabilising the scapula and assisting shoulder-blade protraction.',
+    exercises: [
+      { name: 'Barbell Bench Press',    eq: 'Barbell',    sets: '4 × 6–8',     yt: 'barbell bench press form tutorial' },
+      { name: 'Incline Dumbbell Press', eq: 'Dumbbells',  sets: '3 × 10–12',   yt: 'incline dumbbell press form tutorial' },
+      { name: 'Cable Chest Fly',        eq: 'Cable',      sets: '3 × 12–15',   yt: 'cable fly chest isolation tutorial' },
+      { name: 'Push-Up',                eq: 'Bodyweight', sets: '3 × failure',  yt: 'push up proper form tutorial' },
     ],
   },
   shoulders: {
-    label: 'Shoulders', color: '#f59e0b',
-    men: [
-      { name:'Overhead Press',   eq:'Barbell',     sets:'4×8-10',  desc:'King of shoulder development. Builds all three heads and overall pressing strength.',                 yt:'overhead press form tutorial barbell' },
-      { name:'Lateral Raise',    eq:'Dumbbells',   sets:'4×15',    desc:'Essential for shoulder width. Raise to shoulder height with slight elbow bend. No swinging.',        yt:'lateral raise proper form tutorial' },
-      { name:'Face Pull',        eq:'Cable',       sets:'3×20',    desc:'Rear delts + rotator cuff health. One of the most important shoulder exercises for longevity.',       yt:'face pull cable rear delt tutorial' },
-      { name:'Arnold Press',     eq:'Dumbbells',   sets:'3×10-12', desc:'Rotating press targeting all three delt heads through a longer ROM than standard press.',             yt:'arnold press dumbbell tutorial form' },
-    ],
-    women: [
-      { name:'DB Shoulder Press',eq:'Dumbbells',   sets:'3×12-15', desc:'Balanced shoulder development. Great for sculpting defined shoulder caps.',                          yt:'dumbbell shoulder press form tutorial' },
-      { name:'Lateral Raise',    eq:'Dumbbells',   sets:'3×15-20', desc:'Defines the side delt for a rounded look. Keep controlled with lighter weight.',                     yt:'lateral raise proper form tutorial' },
-      { name:'Front Raise',      eq:'Dumbbells',   sets:'3×15',    desc:'Targets the front deltoid. Alternate arms or raise together with light weight.',                     yt:'front raise dumbbell shoulder tutorial' },
-      { name:'Band Pull-Apart',  eq:'Band',        sets:'3×20',    desc:'Rear delt and upper back. Excellent for posture and shoulder health. Pull band to chest level.',     yt:'band pull apart rear delt tutorial' },
+    label: 'Shoulders', scientific: 'Deltoid — Anterior · Lateral · Posterior',
+    color: '#f59e0b', intensity: 3,
+    desc: 'Three-headed deltoid controlling all planes of arm elevation. The anterior head presses; the lateral head builds width; the posterior head and rotator cuff sustain joint health under heavy load.',
+    exercises: [
+      { name: 'Overhead Press', eq: 'Barbell',   sets: '4 × 8',   yt: 'overhead press form tutorial barbell' },
+      { name: 'Lateral Raise',  eq: 'Dumbbells', sets: '4 × 15',  yt: 'lateral raise proper form tutorial' },
+      { name: 'Face Pull',      eq: 'Cable',     sets: '3 × 20',  yt: 'face pull cable rear delt tutorial' },
+      { name: 'Arnold Press',   eq: 'Dumbbells', sets: '3 × 10',  yt: 'arnold press dumbbell tutorial form' },
     ],
   },
   biceps: {
-    label: 'Biceps', color: '#22c55e',
-    men: [
-      { name:'Barbell Curl',     eq:'Barbell',     sets:'4×8-10',  desc:'Best overall mass builder. Full ROM, supinate at top, don\'t swing the torso.',                      yt:'barbell curl form bicep tutorial' },
-      { name:'Hammer Curl',      eq:'Dumbbells',   sets:'3×12',    desc:'Neutral grip targets brachialis for thicker, fuller arms. Great complement to standard curls.',      yt:'hammer curl form tutorial dumbbell' },
-      { name:'Incline DB Curl',  eq:'Dumbbells',   sets:'3×12',    desc:'Greater stretch on the long head. Sit on incline bench, let arms hang behind torso fully.',          yt:'incline dumbbell curl bicep tutorial' },
-      { name:'Concentration Curl',eq:'Dumbbell',   sets:'3×12',    desc:'Brace elbow on inner thigh for strict isolation and peak contraction.',                              yt:'concentration curl bicep isolation form' },
+    label: 'Biceps', scientific: 'Biceps Brachii (Long & Short Head) & Brachialis',
+    color: '#10b981', intensity: 2,
+    desc: 'Controls elbow flexion and forearm supination. Full stretch at the bottom of each rep drives hypertrophy. The brachialis beneath adds overall arm thickness and improves peak height.',
+    exercises: [
+      { name: 'Barbell Curl',        eq: 'Barbell',   sets: '4 × 10',  yt: 'barbell curl form bicep tutorial' },
+      { name: 'Incline DB Curl',     eq: 'Dumbbells', sets: '3 × 12',  yt: 'incline dumbbell curl bicep tutorial' },
+      { name: 'Hammer Curl',         eq: 'Dumbbells', sets: '3 × 12',  yt: 'hammer curl form tutorial dumbbell' },
+      { name: 'Cable Concentration', eq: 'Cable',     sets: '3 × 15',  yt: 'concentration curl bicep isolation form' },
     ],
-    women: [
-      { name:'DB Bicep Curl',    eq:'Dumbbells',   sets:'3×15',    desc:'Core arm-toning exercise. Slow down the lowering phase for maximum benefit.',                        yt:'dumbbell bicep curl form tutorial' },
-      { name:'Hammer Curl',      eq:'Dumbbells',   sets:'3×15',    desc:'Targets forearm and brachialis for overall arm definition and functional strength.',                  yt:'hammer curl form tutorial dumbbell' },
-      { name:'Cable Curl',       eq:'Cable',       sets:'3×15',    desc:'Constant tension throughout the movement for a great pump and muscle definition.',                   yt:'cable bicep curl form tutorial' },
-      { name:'Band Curl',        eq:'Band',        sets:'3×20',    desc:'Home-friendly option. Stand on band and curl up maintaining tension at the top.',                    yt:'resistance band bicep curl tutorial' },
+  },
+  forearms: {
+    label: 'Forearms', scientific: 'Brachioradialis · Flexor Carpi Radialis · Extensor Carpi Group',
+    color: '#6ee7b7', intensity: 2,
+    desc: 'Grip strength and wrist stability — critical for every pulling and carrying movement. Often neglected, but forearm resilience directly limits every curl, row, and deadlift you ever pull.',
+    exercises: [
+      { name: "Farmer's Carry", eq: 'Dumbbells',   sets: '3 × 40 m',  yt: 'farmers carry grip forearm tutorial' },
+      { name: 'Wrist Curl',     eq: 'Barbell',     sets: '3 × 20',    yt: 'wrist curl forearm exercise tutorial' },
+      { name: 'Reverse Curl',   eq: 'Barbell',     sets: '3 × 12',    yt: 'reverse curl forearm brachioradialis tutorial' },
+      { name: 'Dead Hang',      eq: 'Pull-up Bar', sets: '3 × 45 s',  yt: 'dead hang grip strength tutorial' },
     ],
   },
   core: {
-    label: 'Core', color: '#3b82f6',
-    men: [
-      { name:'Hanging Leg Raise',eq:'Pull-up Bar', sets:'4×12-15', desc:'Advanced lower-ab builder. Keep legs together and avoid swinging. Slow controlled movement.',        yt:'hanging leg raise core form tutorial' },
-      { name:'Ab Wheel Rollout', eq:'Ab Wheel',    sets:'3×10',    desc:'Elite full-core movement. Start from knees, progress to standing. Keep lower back neutral.',         yt:'ab wheel rollout form tutorial core' },
-      { name:'Plank',            eq:'Bodyweight',  sets:'3×60s',   desc:'Full core stabilisation. Straight line from head to heels. Hips neither sagging nor raised.',       yt:'plank proper form technique core' },
-      { name:'Cable Crunch',     eq:'Cable',       sets:'3×15-20', desc:'Weighted ab builder. Kneel facing cable, flex your spine to crunch — don\'t just hip-flex.',        yt:'cable crunch abs form tutorial' },
-    ],
-    women: [
-      { name:'Plank',            eq:'Bodyweight',  sets:'3×30-45s',desc:'Full core stabilisation. Build from 30s to 60s over time. Quality over duration.',                  yt:'plank proper form technique core' },
-      { name:'Dead Bug',         eq:'Bodyweight',  sets:'3×10/side',desc:'Low-back-safe core exercise. Lower back pressed flat throughout. Opposite arm and leg.',            yt:'dead bug core exercise tutorial form' },
-      { name:'Bicycle Crunch',   eq:'Bodyweight',  sets:'3×20',    desc:'Hits abs and obliques simultaneously. Slow is better — resist the urge to speed up.',               yt:'bicycle crunch abs form tutorial' },
-      { name:'Leg Raise',        eq:'Bodyweight',  sets:'3×15',    desc:'Lower ab focus. Keep legs straight. Lower slowly to avoid hip flexor compensation.',                yt:'leg raise lower abs tutorial form' },
+    label: 'Core', scientific: 'Rectus Abdominis & Transverse Abdominis',
+    color: '#8b5cf6', intensity: 3,
+    desc: 'Rectus abdominis flexes the spine and creates the visible "six-pack". The deep transverse abdominis compresses the abdomen like a natural weightlifting belt — essential protection under every heavy compound lift.',
+    exercises: [
+      { name: 'Hanging Leg Raise', eq: 'Pull-up Bar', sets: '4 × 12',   yt: 'hanging leg raise core form tutorial' },
+      { name: 'Cable Crunch',      eq: 'Cable',       sets: '3 × 15',   yt: 'cable crunch abs form tutorial' },
+      { name: 'Ab Wheel Rollout',  eq: 'Ab Wheel',    sets: '3 × 10',   yt: 'ab wheel rollout form tutorial core' },
+      { name: 'Plank',             eq: 'Bodyweight',  sets: '3 × 60 s', yt: 'plank proper form technique core' },
     ],
   },
   obliques: {
-    label: 'Obliques', color: '#8b5cf6',
-    men: [
-      { name:'Russian Twist',    eq:'Weight',      sets:'3×20',    desc:'Seated rotation. Add a plate for resistance. Keep chest up and feet off the floor.',                 yt:'russian twist obliques form tutorial' },
-      { name:'Side Plank',       eq:'Bodyweight',  sets:'3×45s',   desc:'Lateral core stability. Stack feet or stagger for easier modification. Progress to dips.',          yt:'side plank form tutorial obliques' },
-      { name:'Woodchopper',      eq:'Cable/Band',  sets:'3×12/side',desc:'Rotational power that works obliques through full twisting range of motion.',                      yt:'cable woodchopper obliques tutorial' },
-      { name:'Pallof Press',     eq:'Cable/Band',  sets:'3×12/side',desc:'Anti-rotation core stability. Press away from anchor and resist the pull back.',                   yt:'pallof press core anti rotation tutorial' },
-    ],
-    women: [
-      { name:'Side Plank',       eq:'Bodyweight',  sets:'3×30s',   desc:'Great oblique and hip stability. Modify from knees or progress to full extended form.',             yt:'side plank form tutorial obliques' },
-      { name:'Bicycle Crunch',   eq:'Bodyweight',  sets:'3×20',    desc:'Rotation hits obliques hard. Slow, controlled reps for best engagement.',                           yt:'bicycle crunch abs obliques tutorial' },
-      { name:'Standing Side Crunch',eq:'DB',       sets:'3×15/side',desc:'Stand hip-width apart, dip sideways reaching hand toward knee. Squeeze oblique.',                 yt:'standing oblique crunch tutorial form' },
-      { name:'Russian Twist',    eq:'Bodyweight',  sets:'3×20',    desc:'Seated rotation for waist definition. Keep feet off floor for extra challenge.',                    yt:'russian twist obliques form tutorial' },
+    label: 'Obliques', scientific: 'External Obliques & Internal Obliques',
+    color: '#ec4899', intensity: 2,
+    desc: 'Control trunk rotation and lateral flexion — the source of rotational power and the V-taper silhouette. Anti-rotation exercises build the stiffest, most force-resistant core structure.',
+    exercises: [
+      { name: 'Russian Twist',  eq: 'Plate/DB',   sets: '3 × 20',        yt: 'russian twist obliques form tutorial' },
+      { name: 'Side Plank',     eq: 'Bodyweight', sets: '3 × 45 s/side', yt: 'side plank form tutorial obliques' },
+      { name: 'Cable Woodchop', eq: 'Cable',      sets: '3 × 12/side',   yt: 'cable woodchopper obliques tutorial' },
+      { name: 'Pallof Press',   eq: 'Cable/Band', sets: '3 × 12/side',   yt: 'pallof press core anti rotation tutorial' },
     ],
   },
   quads: {
-    label: 'Quads', color: '#06b6d4',
-    men: [
-      { name:'Back Squat',       eq:'Barbell',     sets:'4×6-8',   desc:'King of lower body. Chest up, sit into the squat, knees track over toes. Full depth.',              yt:'back squat form proper technique tutorial' },
-      { name:'Leg Press',        eq:'Machine',     sets:'4×10-12', desc:'High-load quad builder. Narrow stance for outer quad, wide for inner thigh activation.',             yt:'leg press form proper technique tutorial' },
-      { name:'Bulgarian Split Squat',eq:'DB',      sets:'3×10/leg',desc:'Unilateral quad and glute developer. Rear foot elevated, front foot forward. Control descent.',     yt:'bulgarian split squat form tutorial' },
-      { name:'Leg Extension',    eq:'Machine',     sets:'3×15',    desc:'Quad isolation. Full extension at top, slow lowering for maximum eccentric benefit.',               yt:'leg extension machine proper form tutorial' },
-    ],
-    women: [
-      { name:'Goblet Squat',     eq:'KB/DB',       sets:'3×15',    desc:'Beginner-friendly squat. Hold weight at chest, sit deep, keep tall chest throughout.',              yt:'goblet squat form tutorial proper' },
-      { name:'Leg Press',        eq:'Machine',     sets:'3×15',    desc:'Controlled quad and glute builder. Higher foot placement adds more glute activation.',              yt:'leg press form proper technique tutorial' },
-      { name:'Walking Lunges',   eq:'DB',          sets:'3×12/leg',desc:'Dynamic movement for quads, glutes and balance. Keep front knee stacked over ankle.',              yt:'walking lunge form tutorial proper' },
-      { name:'Sumo Squat',       eq:'Dumbbell',    sets:'3×15',    desc:'Wide stance targets inner thigh and glutes. Hold DB between legs, squat deep.',                    yt:'sumo squat form tutorial dumbbell' },
+    label: 'Quads', scientific: 'Quadriceps Femoris — Vastus Lateralis · Medialis · Intermedius · Rectus Femoris',
+    color: '#22d3ee', intensity: 5,
+    desc: "Four muscles extending the knee — the body's single largest muscle group. The engine of squatting, jumping, and sprinting. The vastus medialis 'teardrop' is critical for kneecap tracking and stability.",
+    exercises: [
+      { name: 'Back Squat',            eq: 'Barbell',   sets: '4 × 5–6',    yt: 'back squat form proper technique tutorial' },
+      { name: 'Leg Press',             eq: 'Machine',   sets: '4 × 12',     yt: 'leg press form proper technique tutorial' },
+      { name: 'Bulgarian Split Squat', eq: 'Dumbbells', sets: '3 × 10/leg', yt: 'bulgarian split squat form tutorial' },
+      { name: 'Leg Extension',         eq: 'Machine',   sets: '3 × 15',     yt: 'leg extension machine proper form tutorial' },
     ],
   },
   calves: {
-    label: 'Calves', color: '#f97316',
-    men: [
-      { name:'Standing Calf Raise',eq:'Machine',   sets:'4×15-20', desc:'Primary calf mass builder. All the way up, all the way down. Full ROM is everything here.',         yt:'standing calf raise form tutorial' },
-      { name:'Seated Calf Raise', eq:'Machine',    sets:'3×15-20', desc:'Isolates the soleus (deeper calf muscle). Essential for balanced lower leg development.',           yt:'seated calf raise form tutorial machine' },
-      { name:'Single-leg Calf Raise',eq:'BW',      sets:'3×15/leg',desc:'Progressive overload via single leg. Use wall for balance, full ROM essential.',                   yt:'single leg calf raise form tutorial' },
-      { name:'Jump Rope',        eq:'Jump Rope',   sets:'3×2min',  desc:'Explosive calf conditioning with cardiovascular benefit. Ankles stay stiff, bounce on toes.',       yt:'jump rope calf workout tutorial' },
-    ],
-    women: [
-      { name:'Standing Calf Raise',eq:'BW/Machine',sets:'3×20',    desc:'Full ROM calf toning. Use a step for greater stretch at the bottom of each rep.',                  yt:'standing calf raise form tutorial' },
-      { name:'Seated Calf Raise', eq:'Machine',    sets:'3×20',    desc:'Soleus-focused for balanced calf development and improved ankle stability.',                        yt:'seated calf raise form tutorial machine' },
-      { name:'Jump Rope',        eq:'Jump Rope',   sets:'3×1-2min',desc:'Cardio and calf conditioning combined. Excellent for toning and calorie burn.',                    yt:'jump rope tutorial beginners calves' },
+    label: 'Calves', scientific: 'Gastrocnemius (Medial & Lateral Head) & Soleus',
+    color: '#fbbf24', intensity: 3,
+    desc: 'Gastrocnemius provides the visible shape and explosive plantarflexion power. The soleus lies beneath and dominates endurance work. Both demand full range of motion — heel completely below the platform.',
+    exercises: [
+      { name: 'Standing Calf Raise', eq: 'Machine',    sets: '5 × 20',     yt: 'standing calf raise form tutorial' },
+      { name: 'Seated Calf Raise',   eq: 'Machine',    sets: '4 × 20',     yt: 'seated calf raise form tutorial machine' },
+      { name: 'Single-Leg Raise',    eq: 'Bodyweight', sets: '3 × 15/leg', yt: 'single leg calf raise tutorial form' },
+      { name: 'Jump Rope',           eq: 'Jump Rope',  sets: '3 × 2 min',  yt: 'jump rope calf workout tutorial' },
     ],
   },
+  // ── Back ──
   traps: {
-    label: 'Traps', color: '#ec4899',
-    men: [
-      { name:'Barbell Shrug',    eq:'Barbell',     sets:'4×10-12', desc:'Primary trap mass builder. Hold at top for a count. Don\'t roll the shoulders.',                    yt:'barbell shrug traps form tutorial' },
-      { name:'DB Shrug',         eq:'Dumbbells',   sets:'3×12-15', desc:'Greater ROM than barbell. Squeeze at top, lower slowly through full range.',                        yt:'dumbbell shrug traps form tutorial' },
-      { name:'Face Pull',        eq:'Cable',       sets:'3×20',    desc:'Traps + rear delts + rotator cuff in one movement. Critical for upper back health.',                yt:'face pull cable rear delt traps tutorial' },
-      { name:'Rack Pull',        eq:'Barbell',     sets:'3×6-8',   desc:'Partial deadlift from knee height allows heavy loading for upper trap thickness.',                  yt:'rack pull trap deadlift form tutorial' },
-    ],
-    women: [
-      { name:'DB Shrug',         eq:'Dumbbells',   sets:'3×15',    desc:'Upper trap development. Squeeze at top, full range of motion on the way down.',                    yt:'dumbbell shrug traps form tutorial' },
-      { name:'Face Pull',        eq:'Band/Cable',  sets:'3×20',    desc:'Rear delt and trap health. Critical for posture correction and shoulder stability.',               yt:'face pull cable rear delt traps tutorial' },
-      { name:'Upright Row',      eq:'Dumbbells',   sets:'3×15',    desc:'Compound upper-body pull hitting traps and shoulders simultaneously.',                              yt:'upright row form tutorial dumbbell' },
+    label: 'Traps', scientific: 'Trapezius — Upper · Middle · Lower Fibres',
+    color: '#f59e0b', intensity: 3,
+    desc: 'Upper fibres elevate and upwardly rotate the scapula; middle fibres retract it; lower fibres depress it. All three need balanced work to prevent the rounded-shoulder posture that plagues desk workers.',
+    exercises: [
+      { name: 'Barbell Shrug',   eq: 'Barbell',   sets: '4 × 12',   yt: 'barbell shrug traps form tutorial' },
+      { name: 'Face Pull',       eq: 'Cable',     sets: '4 × 20',   yt: 'face pull cable rear delt tutorial' },
+      { name: 'Rack Pull',       eq: 'Barbell',   sets: '3 × 6',    yt: 'rack pull trap activation tutorial' },
+      { name: "Farmer's Carry",  eq: 'Dumbbells', sets: '3 × 40 m', yt: 'farmers carry trap workout tutorial' },
     ],
   },
   lats: {
-    label: 'Lats', color: '#14b8a6',
-    men: [
-      { name:'Pull-Up',          eq:'Bar',         sets:'4×max',   desc:'Best lat mass builder. Dead hang start. Drive elbows toward hips as you pull up.',                  yt:'pull up proper form lat engagement tutorial' },
-      { name:'Lat Pulldown',     eq:'Cable',       sets:'4×10-12', desc:'Pull-up substitute with controlled load. Wide grip, lean back slightly, pull to upper chest.',     yt:'lat pulldown form proper technique tutorial' },
-      { name:'Bent-Over Row',    eq:'Barbell',     sets:'4×8-10',  desc:'Compound pull for lat and mid-back thickness. Hinge to 45°, pull bar to lower chest.',             yt:'bent over row form proper technique tutorial' },
-      { name:'Seated Cable Row', eq:'Cable',       sets:'3×12',    desc:'Mid-back and lat builder. Neutral grip, pull to navel, squeeze shoulder blades together.',         yt:'seated cable row form tutorial lat' },
-    ],
-    women: [
-      { name:'Assisted Pull-Up', eq:'Machine/Band',sets:'3×8-10',  desc:'Build toward full pull-ups with controlled assistance. Maintain proper form throughout.',          yt:'assisted pull up lat tutorial form' },
-      { name:'Lat Pulldown',     eq:'Cable',       sets:'3×12-15', desc:'Excellent back width builder. Pull bar to upper chest, focus on feeling the lat.',                 yt:'lat pulldown form proper technique tutorial' },
-      { name:'Single-arm DB Row',eq:'Dumbbell',    sets:'3×12/side',desc:'Unilateral back builder. Support on bench, pull elbow past hip, squeeze the lat hard.',          yt:'single arm dumbbell row form tutorial' },
-      { name:'Band Row',         eq:'Band',        sets:'3×15',    desc:'Home-friendly lat builder. Anchor band at waist height, row to sides, squeeze back.',             yt:'resistance band row back tutorial form' },
+    label: 'Lats', scientific: 'Latissimus Dorsi',
+    color: '#3b82f6', intensity: 4,
+    desc: "The widest muscle in the body — the architect of the V-taper silhouette. Pulls the arm down and back into extension and adduction. A full stretch at the top of every rep is non-negotiable for width.",
+    exercises: [
+      { name: 'Pull-Up',           eq: 'Bodyweight', sets: '4 × failure',  yt: 'pull up lat form tutorial' },
+      { name: 'Barbell Row',       eq: 'Barbell',    sets: '4 × 8',        yt: 'barbell row back form tutorial' },
+      { name: 'Lat Pulldown',      eq: 'Cable',      sets: '3 × 12',       yt: 'lat pulldown proper form tutorial' },
+      { name: 'Single-Arm DB Row', eq: 'Dumbbell',   sets: '3 × 12/side',  yt: 'single arm dumbbell row tutorial' },
     ],
   },
   triceps: {
-    label: 'Triceps', color: '#a855f7',
-    men: [
-      { name:'Close-Grip Bench', eq:'Barbell',     sets:'4×8-10',  desc:'Compound tricep mass builder. Shoulder-width grip, elbows in, lower to lower chest.',              yt:'close grip bench press triceps tutorial' },
-      { name:'Tricep Pushdown',  eq:'Cable',       sets:'3×12-15', desc:'Classic isolation. Keep elbows fixed at sides, fully extend, squeeze hard at bottom.',             yt:'tricep pushdown cable form tutorial' },
-      { name:'Skull Crusher',    eq:'EZ Bar',      sets:'3×10-12', desc:'Long head developer. Lower bar to forehead, keep upper arms perfectly vertical.',                  yt:'skull crusher triceps ez bar form tutorial' },
-      { name:'Overhead Ext',     eq:'Dumbbell',    sets:'3×12',    desc:'Stretches the long head maximally. Hold DB overhead with both hands, lower behind head.',          yt:'overhead tricep extension dumbbell form' },
-    ],
-    women: [
-      { name:'Tricep Dip',       eq:'Bench',       sets:'3×12-15', desc:'Excellent arm-toning exercise. Bend elbows to 90°, push back up. Hips close to bench.',           yt:'tricep dip bench form tutorial' },
-      { name:'Overhead Ext',     eq:'Dumbbell',    sets:'3×15',    desc:'Tones the back of arms. Keep upper arms close to head, full extension at top.',                    yt:'overhead tricep extension dumbbell form' },
-      { name:'Pushdown',         eq:'Cable/Band',  sets:'3×15-20', desc:'Constant tension isolation. Keep elbows pinned at sides throughout the full range.',               yt:'tricep pushdown cable band form tutorial' },
-      { name:'Diamond Push-Up',  eq:'Bodyweight',  sets:'3×10-12', desc:'Challenging bodyweight tricep move. Diamond hand position, elbows close to body.',                 yt:'diamond push up triceps form tutorial' },
+    label: 'Triceps', scientific: 'Triceps Brachii — Long Head · Lateral Head · Medial Head',
+    color: '#a78bfa', intensity: 2,
+    desc: 'Three-headed muscle making up roughly ⅔ of total upper-arm mass. The long head requires overhead position for full stretch. The lateral head creates the horseshoe shape visible when the arm is extended.',
+    exercises: [
+      { name: 'Close-Grip Bench',   eq: 'Barbell',  sets: '4 × 8',   yt: 'close grip bench press tricep form' },
+      { name: 'Skull Crusher',      eq: 'Barbell',  sets: '3 × 10',  yt: 'skull crusher tricep form tutorial' },
+      { name: 'Tricep Pushdown',    eq: 'Cable',    sets: '3 × 15',  yt: 'tricep pushdown cable form tutorial' },
+      { name: 'Overhead Extension', eq: 'Dumbbell', sets: '3 × 12',  yt: 'overhead tricep extension form tutorial' },
     ],
   },
   lower_back: {
-    label: 'Lower Back', color: '#f43f5e',
-    men: [
-      { name:'Deadlift',         eq:'Barbell',     sets:'4×5',     desc:'King of all lifts. Neutral spine is non-negotiable. Drive through floor, hips and shoulders together.', yt:'conventional deadlift form tutorial' },
-      { name:'Good Morning',     eq:'Barbell',     sets:'3×10-12', desc:'Hip hinge for lower back and hamstrings. Light weight only — perfect form is everything.',         yt:'good morning barbell lower back form' },
-      { name:'Back Extension',   eq:'Machine',     sets:'3×15',    desc:'Spinal erector isolation. Control both phases equally. Add plate for extra load.',                  yt:'back extension hyperextension form tutorial' },
-      { name:'Superman Hold',    eq:'Bodyweight',  sets:'3×10',    desc:'Posterior chain activation. Raise arms and legs simultaneously, hold 2 seconds at top.',           yt:'superman exercise lower back form tutorial' },
-    ],
-    women: [
-      { name:'Romanian Deadlift',eq:'DB',          sets:'3×12',    desc:'Hip hinge for lower back and glutes. Push hips back, slight knee bend, neutral spine.',            yt:'romanian deadlift form tutorial women' },
-      { name:'Back Extension',   eq:'Machine',     sets:'3×15',    desc:'Erector spinae focus. Great for lower back health and posture improvement over time.',             yt:'back extension hyperextension form tutorial' },
-      { name:'Bird Dog',         eq:'Bodyweight',  sets:'3×10/side',desc:'Lower back and glute stability. On all fours, extend opposite arm and leg. Hold 2 seconds.',     yt:'bird dog exercise form tutorial core lower back' },
-      { name:'Glute Bridge',     eq:'BW/Barbell',  sets:'3×15',    desc:'Posterior chain activation. Squeeze glutes hard at top, engage lower back and hamstrings.',       yt:'glute bridge form tutorial lower back glutes' },
+    label: 'Lower Back', scientific: 'Erector Spinae (Iliocostalis · Longissimus · Spinalis) & Multifidus',
+    color: '#f97316', intensity: 3,
+    desc: "The erector spinae group extends the spine under load — the safety cable of every deadlift and squat. The deep multifidus provides segmental stability. The single most important injury-prevention target in strength training.",
+    exercises: [
+      { name: 'Conventional Deadlift', eq: 'Barbell', sets: '4 × 5',   yt: 'conventional deadlift form tutorial' },
+      { name: 'Romanian Deadlift',     eq: 'Barbell', sets: '3 × 10',  yt: 'romanian deadlift form tutorial' },
+      { name: 'Back Extension',        eq: 'Machine', sets: '3 × 15',  yt: 'back extension hyperextension tutorial' },
+      { name: 'Good Morning',          eq: 'Barbell', sets: '3 × 10',  yt: 'good morning exercise lower back tutorial' },
     ],
   },
   glutes: {
-    label: 'Glutes', color: '#d946ef',
-    men: [
-      { name:'Hip Thrust',       eq:'Barbell',     sets:'4×8-10',  desc:'Best glute-specific exercise. Shoulders on bench, barbell across hips, full extension at top.',    yt:'barbell hip thrust glute form tutorial' },
-      { name:'Romanian Deadlift',eq:'Barbell',     sets:'4×8-10',  desc:'Dual glute and hamstring developer. Hip hinge with neutral spine and deep stretch.',               yt:'romanian deadlift form tutorial glutes' },
-      { name:'Squat',            eq:'Barbell',     sets:'4×6-8',   desc:'Deeper squats hit glutes harder. Control the descent. Drive knees out at the bottom.',             yt:'back squat glutes form proper technique' },
-      { name:'Cable Kickback',   eq:'Cable',       sets:'3×15/leg',desc:'Glute isolation. Ankle cuff attached, kick leg back, squeeze glute hard at full extension.',       yt:'cable kickback glute isolation form tutorial' },
-    ],
-    women: [
-      { name:'Hip Thrust',       eq:'BW/Barbell',  sets:'4×15',    desc:'#1 glute builder. Drive through heels, full hip extension, squeeze at top every rep.',             yt:'hip thrust glute form tutorial women' },
-      { name:'Glute Bridge',     eq:'BW/Band',     sets:'3×20',    desc:'Floor-based hip thrust. Feet flat, drive hips up hard. Add resistance band above knees.',          yt:'glute bridge form tutorial women' },
-      { name:'Sumo Deadlift',    eq:'DB/Barbell',  sets:'3×12',    desc:'Wide stance deadlift prioritising glutes and inner thighs. Sit back and push floor away.',         yt:'sumo deadlift form glutes tutorial women' },
-      { name:'Donkey Kick',      eq:'BW/Band',     sets:'3×15/leg',desc:'On all fours, kick heel to ceiling and squeeze glute hard at the top.',                           yt:'donkey kick glute exercise form tutorial' },
+    label: 'Glutes', scientific: 'Gluteus Maximus · Gluteus Medius · Gluteus Minimus',
+    color: '#f43f5e', intensity: 4,
+    desc: "Gluteus maximus is the body's largest muscle and the primary driver of hip extension and power output. Medius and minimus control hip abduction and stabilise the pelvis on every single-leg step, squat, and sprint.",
+    exercises: [
+      { name: 'Hip Thrust',        eq: 'Barbell',    sets: '4 × 10',      yt: 'hip thrust barbell glute form tutorial' },
+      { name: 'Romanian Deadlift', eq: 'Barbell',    sets: '4 × 10',      yt: 'romanian deadlift glute hamstring tutorial' },
+      { name: 'Glute Bridge',      eq: 'Bodyweight', sets: '3 × 20',      yt: 'glute bridge form tutorial bodyweight' },
+      { name: 'Cable Kickback',    eq: 'Cable',      sets: '3 × 15/side', yt: 'cable kickback glute isolation tutorial' },
     ],
   },
   hamstrings: {
-    label: 'Hamstrings', color: '#84cc16',
-    men: [
-      { name:'Romanian Deadlift',eq:'Barbell',     sets:'4×8-10',  desc:'Best hamstring builder. Hip hinge with slight knee bend, feel the stretch, drive hips forward.',   yt:'romanian deadlift hamstrings form tutorial' },
-      { name:'Lying Leg Curl',   eq:'Machine',     sets:'3×12',    desc:'Hamstring isolation. Full ROM, control the eccentric lowering phase above all else.',              yt:'lying leg curl hamstring machine form tutorial' },
-      { name:'Nordic Curl',      eq:'Partner',     sets:'3×5-8',   desc:'Advanced eccentric exercise. Exceptional hamstring strength and injury prevention.',               yt:'nordic curl hamstring form tutorial' },
-      { name:'Good Morning',     eq:'Barbell',     sets:'3×10',    desc:'Hip hinge that heavily loads the hamstrings. Keep a proud chest and neutral spine.',               yt:'good morning exercise hamstrings form' },
-    ],
-    women: [
-      { name:'Romanian Deadlift',eq:'Dumbbells',   sets:'3×12-15', desc:'Essential hamstring and glute exercise. Neutral spine, feel the stretch in hamstrings.',           yt:'romanian deadlift hamstrings form women' },
-      { name:'Lying Leg Curl',   eq:'Machine',     sets:'3×15',    desc:'Hamstring isolation machine. Great for toning the back of the thigh.',                             yt:'lying leg curl hamstring machine form tutorial' },
-      { name:'Single-leg DL',    eq:'Dumbbell',    sets:'3×10/leg',desc:'Balance and hamstring strength combined. Hinge at hip, lower DB toward floor, return tall.',       yt:'single leg deadlift form tutorial women' },
-      { name:'Ball Leg Curl',    eq:'Stability Ball',sets:'3×12',  desc:'Functional hamstring move. Lie on back, feet on ball, curl ball toward glutes.',                  yt:'stability ball leg curl hamstrings form' },
+    label: 'Hamstrings', scientific: 'Biceps Femoris · Semitendinosus · Semimembranosus',
+    color: '#84cc16', intensity: 3,
+    desc: 'Three muscles spanning the back of the thigh — knee flexors and hip extensors in one. Direct antagonists to the quads. Eccentric-focused training (Nordic curls) is the single best intervention against hamstring strains.',
+    exercises: [
+      { name: 'Romanian Deadlift', eq: 'Barbell',    sets: '4 × 10', yt: 'romanian deadlift hamstring form tutorial' },
+      { name: 'Lying Leg Curl',    eq: 'Machine',    sets: '3 × 12', yt: 'lying leg curl hamstring machine tutorial' },
+      { name: 'Nordic Curl',       eq: 'Bodyweight', sets: '3 × 6',  yt: 'nordic hamstring curl tutorial form' },
+      { name: 'Good Morning',      eq: 'Barbell',    sets: '3 × 10', yt: 'good morning hamstring tutorial form' },
     ],
   },
 }
 
-// ─── SVG Muscle Zone Data ─────────────────────────────────────────────────────
-// zones: array of ellipse definitions {cx, cy, rx, ry}
-// label: where to render the text label
-const FRONT = [
-  { id:'shoulders',  zones:[{cx:40,cy:52,rx:15,ry:10},{cx:120,cy:52,rx:15,ry:10}], lx:138, ly:55, anchor:'start' },
-  { id:'chest',      zones:[{cx:80,cy:71,rx:26,ry:21}],                             lx:116, ly:68, anchor:'start' },
-  { id:'biceps',     zones:[{cx:26,cy:70,rx:8,ry:16},{cx:134,cy:70,rx:8,ry:16}],   lx: 10, ly:67, anchor:'start' },
-  { id:'core',       zones:[{cx:80,cy:115,rx:23,ry:20}],                            lx: 10, ly:112,anchor:'start' },
-  { id:'obliques',   zones:[{cx:49,cy:110,rx:10,ry:19},{cx:111,cy:110,rx:10,ry:19}],lx:128,ly:108,anchor:'start' },
-  { id:'quads',      zones:[{cx:61,cy:196,rx:22,ry:28},{cx:99,cy:196,rx:22,ry:28}], lx:130,ly:193,anchor:'start' },
-  { id:'calves',     zones:[{cx:61,cy:260,rx:14,ry:22},{cx:99,cy:260,rx:14,ry:22}], lx: 10,ly:258,anchor:'start' },
+const FRONT_ZONES = ['chest','shoulders','biceps','forearms','core','obliques','quads','calves']
+const BACK_ZONES  = ['traps','lats','triceps','lower_back','glutes','hamstrings','calves']
+
+// Zone SVG shape data
+const FRONT_ZONE_SHAPES = {
+  chest:     [
+    { d:'M82 96 Q100 90 120 92 Q100 98 84 110 Q76 120 76 140 Q76 154 86 160 Q102 166 120 163 Q102 156 88 148 Q80 140 80 126 Z' },
+    { d:'M158 96 Q140 90 120 92 Q140 98 156 110 Q164 120 164 140 Q164 154 154 160 Q138 166 120 163 Q138 156 152 148 Q160 140 160 126 Z' },
+  ],
+  shoulders: [
+    { e:true, cx:66,  cy:108, rx:20, ry:18 },
+    { e:true, cx:174, cy:108, rx:20, ry:18 },
+  ],
+  biceps:    [
+    { e:true, cx:52,  cy:136, rx:11, ry:22 },
+    { e:true, cx:188, cy:136, rx:11, ry:22 },
+  ],
+  forearms:  [
+    { e:true, cx:48,  cy:196, rx:10, ry:22 },
+    { e:true, cx:192, cy:196, rx:10, ry:22 },
+  ],
+  core:      [
+    { r:true, x:103, y:152, w:15, h:13, rx:4 },
+    { r:true, x:122, y:152, w:15, h:13, rx:4 },
+    { r:true, x:103, y:169, w:15, h:13, rx:4 },
+    { r:true, x:122, y:169, w:15, h:13, rx:4 },
+    { r:true, x:105, y:186, w:13, h:11, rx:4 },
+    { r:true, x:122, y:186, w:13, h:11, rx:4 },
+  ],
+  obliques:  [
+    { d:'M78 148 Q74 165 74 182 Q74 198 78 210 Q86 214 96 208 Q100 196 100 180 Q98 164 90 150 Z' },
+    { d:'M162 148 Q166 165 166 182 Q166 198 162 210 Q154 214 144 208 Q140 196 140 180 Q142 164 150 150 Z' },
+  ],
+  quads:     [
+    { e:true, cx:78,  cy:300, rx:22, ry:44 },
+    { e:true, cx:162, cy:300, rx:22, ry:44 },
+  ],
+  calves:    [
+    { e:true, cx:73,  cy:406, rx:15, ry:30 },
+    { e:true, cx:167, cy:406, rx:15, ry:30 },
+  ],
+}
+
+const BACK_ZONE_SHAPES = {
+  traps:      [
+    { d:'M82 84 Q96 76 110 70 L120 72 L130 70 Q144 76 158 84 Q142 90 120 91 Q98 90 82 84 Z' },
+  ],
+  lats:       [
+    { d:'M64 104 Q54 120 52 144 Q50 166 56 182 Q64 194 74 200 Q78 204 76 212 L72 212 Q64 200 58 182 Q52 160 54 136 Q56 114 64 104 Z' },
+    { d:'M176 104 Q186 120 188 144 Q190 166 184 182 Q176 194 166 200 Q162 204 164 212 L168 212 Q176 200 182 182 Q188 160 186 136 Q184 114 176 104 Z' },
+  ],
+  triceps:   [
+    { e:true, cx:50,  cy:132, rx:11, ry:24 },
+    { e:true, cx:190, cy:132, rx:11, ry:24 },
+  ],
+  lower_back:[
+    { d:'M100 168 Q110 164 120 166 Q130 164 140 168 Q145 184 140 202 Q130 208 120 208 Q110 208 100 202 Q95 184 100 168 Z' },
+  ],
+  glutes:    [
+    { d:'M70 212 Q60 226 58 246 Q58 260 70 266 Q84 270 96 262 Q104 250 102 236 Q100 220 96 212 Z' },
+    { d:'M170 212 Q180 226 182 246 Q182 260 170 266 Q156 270 144 262 Q136 250 138 236 Q140 220 144 212 Z' },
+  ],
+  hamstrings:[
+    { e:true, cx:78,  cy:308, rx:22, ry:42 },
+    { e:true, cx:162, cy:308, rx:22, ry:42 },
+  ],
+  calves:    [
+    { e:true, cx:73,  cy:414, rx:16, ry:32 },
+    { e:true, cx:167, cy:414, rx:16, ry:32 },
+  ],
+}
+
+const FRONT_LABELS = [
+  { id:'shoulders', x:2,   y:104, a:'start' },
+  { id:'biceps',    x:2,   y:130, a:'start' },
+  { id:'forearms',  x:2,   y:192, a:'start' },
+  { id:'core',      x:2,   y:174, a:'start' },
+  { id:'chest',     x:238, y:104, a:'end'   },
+  { id:'obliques',  x:238, y:182, a:'end'   },
+  { id:'quads',     x:238, y:296, a:'end'   },
+  { id:'calves',    x:2,   y:408, a:'start' },
 ]
 
-const BACK = [
-  { id:'traps',      zones:[{cx:80,cy:53,rx:24,ry:13}],                             lx:116, ly:52, anchor:'start' },
-  { id:'lats',       zones:[{cx:45,cy:88,rx:16,ry:27},{cx:115,cy:88,rx:16,ry:27}], lx:138, ly:86, anchor:'start' },
-  { id:'triceps',    zones:[{cx:26,cy:72,rx:8,ry:17},{cx:134,cy:72,rx:8,ry:17}],   lx:  8, ly:70, anchor:'start' },
-  { id:'lower_back', zones:[{cx:80,cy:128,rx:23,ry:16}],                            lx:  8, ly:126,anchor:'start' },
-  { id:'glutes',     zones:[{cx:58,cy:163,rx:22,ry:18},{cx:102,cy:163,rx:22,ry:18}],lx:130,ly:161,anchor:'start' },
-  { id:'hamstrings', zones:[{cx:61,cy:203,rx:22,ry:27},{cx:99,cy:203,rx:22,ry:27}], lx:  8,ly:201,anchor:'start' },
-  { id:'calves',     zones:[{cx:61,cy:261,rx:14,ry:22},{cx:99,cy:261,rx:14,ry:22}], lx:130,ly:259,anchor:'start' },
+const BACK_LABELS = [
+  { id:'traps',      x:238, y:86,  a:'end'   },
+  { id:'lats',       x:238, y:148, a:'end'   },
+  { id:'triceps',    x:2,   y:128, a:'start' },
+  { id:'lower_back', x:2,   y:184, a:'start' },
+  { id:'glutes',     x:238, y:244, a:'end'   },
+  { id:'hamstrings', x:2,   y:304, a:'start' },
+  { id:'calves',     x:238, y:412, a:'end'   },
 ]
 
-// ─── Body Silhouette SVG Paths ────────────────────────────────────────────────
-// Male front silhouette assembled from basic shapes
-function BodyShape({ gender, view }) {
-  const isMale = gender === 'male'
-  const fill   = 'rgba(255,255,255,0.07)'
-  const stroke = 'rgba(255,255,255,0.18)'
-  const sw     = 0.8
-
-  // shoulder/hip widths differ by gender
-  const sw2 = isMale ? 140 : 130  // shoulder outer x
-  const sw1 = isMale ? 20  : 30   // shoulder outer x (left)
-  const hw  = isMale ? 56  : 50   // hip rect x
-  const hw2 = isMale ? 104 : 110  // hip rect end x (width = hw2-hw)
-
+// ─── Base Body SVGs ───────────────────────────────────────────────────────────
+function FrontBase() {
   return (
-    <g>
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
+      <defs>
+        <radialGradient id="fg-rg1" cx="50%" cy="35%" r="60%">
+          <stop offset="0%"   stopColor="#2c2640"/>
+          <stop offset="100%" stopColor="#16121e"/>
+        </radialGradient>
+        <radialGradient id="fg-rg2" cx="50%" cy="30%" r="65%">
+          <stop offset="0%"   stopColor="#242034"/>
+          <stop offset="100%" stopColor="#100e18"/>
+        </radialGradient>
+      </defs>
       {/* Head */}
-      <circle cx="80" cy="17" r="13" fill={fill} stroke={stroke} strokeWidth={sw}/>
+      <ellipse cx="120" cy="36" rx="25" ry="30" fill="url(#fg-rg1)" stroke="#2a243c" strokeWidth="1.5"/>
+      <path d="M98 50 Q120 62 142 50" fill="none" stroke="#221e30" strokeWidth="1"/>
+      <path d="M96 40 Q102 44 100 50" fill="none" stroke="#221e30" strokeWidth="0.8"/>
+      <path d="M144 40 Q138 44 140 50" fill="none" stroke="#221e30" strokeWidth="0.8"/>
       {/* Neck */}
-      <rect x="74" y="28" width="12" height="10" rx="3" fill={fill} stroke={stroke} strokeWidth={sw}/>
-      {/* Upper torso */}
-      <path d={`M72,37 L88,37 L${sw2-10},47 L${sw2},58 L${sw2},102 L${sw1},102 L${sw1},58 L${sw1+10},47 Z`} fill={fill} stroke={stroke} strokeWidth={sw}/>
-      {/* Abs */}
-      <rect x="53" y="102" width="54" height="44" rx="7" fill={fill} stroke={stroke} strokeWidth={sw}/>
-      {/* Hips */}
-      <rect x={hw} y="147" width={hw2-hw} height="18" rx="7" fill={fill} stroke={stroke} strokeWidth={sw}/>
-      {/* Left upper arm */}
-      <rect x="18" y="44" width="16" height="54" rx="7" fill={fill} stroke={stroke} strokeWidth={sw} transform="rotate(-7,26,71)"/>
-      {/* Right upper arm */}
-      <rect x="126" y="44" width="16" height="54" rx="7" fill={fill} stroke={stroke} strokeWidth={sw} transform="rotate(7,134,71)"/>
-      {/* Left forearm */}
-      <rect x="12" y="98" width="13" height="50" rx="6" fill={fill} stroke={stroke} strokeWidth={sw} transform="rotate(-9,18,123)"/>
-      {/* Right forearm */}
-      <rect x="135" y="98" width="13" height="50" rx="6" fill={fill} stroke={stroke} strokeWidth={sw} transform="rotate(9,142,123)"/>
-      {/* Left thigh */}
-      <rect x="51" y="165" width="25" height="68" rx="9" fill={fill} stroke={stroke} strokeWidth={sw}/>
-      {/* Right thigh */}
-      <rect x="84" y="165" width="25" height="68" rx="9" fill={fill} stroke={stroke} strokeWidth={sw}/>
-      {/* Left lower leg */}
-      <rect x="53" y="236" width="21" height="56" rx="7" fill={fill} stroke={stroke} strokeWidth={sw}/>
-      {/* Right lower leg */}
-      <rect x="86" y="236" width="21" height="56" rx="7" fill={fill} stroke={stroke} strokeWidth={sw}/>
+      <path d="M109 62 Q106 70 106 80 L134 80 Q134 70 131 62 Z" fill="#1a1626" stroke="#24203a" strokeWidth="1"/>
+      <path d="M112 63 Q108 72 108 78" fill="none" stroke="#20183a" strokeWidth="1.5"/>
+      <path d="M128 63 Q132 72 132 78" fill="none" stroke="#20183a" strokeWidth="1.5"/>
+      {/* Upper traps */}
+      <path d="M82 84 Q100 78 120 80 Q140 78 158 84 Q162 90 158 96 Q140 92 120 93 Q100 92 82 96 Q78 90 82 84 Z" fill="#1a1628" stroke="#22203a" strokeWidth="1"/>
+      {/* Torso */}
+      <path d="M80 94 Q64 104 60 132 Q56 160 58 186 Q60 206 70 212 L170 212 Q180 206 182 186 Q184 160 180 132 Q176 104 160 94 Q142 88 120 89 Q98 88 80 94 Z" fill="url(#fg-rg2)" stroke="#20183a" strokeWidth="1.5"/>
+      <line x1="120" y1="96" x2="120" y2="148" stroke="#181428" strokeWidth="1.5"/>
+      <path d="M84 144 Q102 158 120 155 Q138 158 156 144" fill="none" stroke="#1c1830" strokeWidth="1.5"/>
+      <path d="M84 120 Q100 116 118 118" fill="none" stroke="#1e1a2e" strokeWidth="1"/>
+      <path d="M156 120 Q140 116 122 118" fill="none" stroke="#1e1a2e" strokeWidth="1"/>
+      <path d="M72 150 Q78 155 76 162" fill="none" stroke="#1c1a2e" strokeWidth="1.2"/>
+      <path d="M72 162 Q78 167 76 174" fill="none" stroke="#1c1a2e" strokeWidth="1.2"/>
+      <path d="M168 150 Q162 155 164 162" fill="none" stroke="#1c1a2e" strokeWidth="1.2"/>
+      <path d="M168 162 Q162 167 164 174" fill="none" stroke="#1c1a2e" strokeWidth="1.2"/>
+      <line x1="120" y1="152" x2="120" y2="210" stroke="#14122a" strokeWidth="1.8"/>
+      <path d="M100 162 Q110 159 120 160 Q130 159 140 162" fill="none" stroke="#1a1830" strokeWidth="1.2"/>
+      <path d="M100 176 Q110 173 120 174 Q130 173 140 176" fill="none" stroke="#1a1830" strokeWidth="1.2"/>
+      <path d="M102 190 Q110 188 120 189 Q130 188 138 190" fill="none" stroke="#1a1830" strokeWidth="1.2"/>
+      <rect x="101" y="153" width="17" height="12" rx="3" fill="#181428" opacity="0.4"/>
+      <rect x="122" y="153" width="17" height="12" rx="3" fill="#181428" opacity="0.4"/>
+      <rect x="101" y="168" width="17" height="12" rx="3" fill="#181428" opacity="0.35"/>
+      <rect x="122" y="168" width="17" height="12" rx="3" fill="#181428" opacity="0.35"/>
+      {/* Pelvis */}
+      <path d="M70 212 Q64 228 66 246 Q74 256 120 258 Q166 256 174 246 Q176 228 170 212 Z" fill="#161422" stroke="#201e38" strokeWidth="1"/>
+      <path d="M72 222 Q90 216 120 218 Q150 216 168 222" fill="none" stroke="#1e1c30" strokeWidth="1"/>
+      {/* Clavicles */}
+      <path d="M108 90 Q94 88 82 94" fill="none" stroke="#26223a" strokeWidth="1.5"/>
+      <path d="M132 90 Q146 88 158 94" fill="none" stroke="#26223a" strokeWidth="1.5"/>
+      {/* Left arm */}
+      <path d="M62 98 Q52 108 48 130 Q46 148 50 162 Q56 168 66 164 Q74 150 76 128 Q78 110 72 100 Z" fill="#1e1a2c" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M54 120 Q50 140 52 158" fill="none" stroke="#181426" strokeWidth="1"/>
+      <path d="M68 118 Q72 138 70 160" fill="none" stroke="#181426" strokeWidth="1"/>
+      <path d="M50 164 Q42 178 40 208 Q39 222 46 226 Q54 228 62 224 Q68 210 70 192 Q70 176 66 164 Z" fill="#1a1828" stroke="#201e38" strokeWidth="1.2"/>
+      <path d="M48 172 Q44 190 46 210" fill="none" stroke="#161428" strokeWidth="1"/>
+      <path d="M44 226 Q40 238 42 248 Q46 252 54 250 Q60 246 62 238 Q62 230 58 226 Z" fill="#14122a" stroke="#1c1a34" strokeWidth="1"/>
+      {/* Right arm */}
+      <path d="M178 98 Q188 108 192 130 Q194 148 190 162 Q184 168 174 164 Q166 150 164 128 Q162 110 168 100 Z" fill="#1e1a2c" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M186 120 Q190 140 188 158" fill="none" stroke="#181426" strokeWidth="1"/>
+      <path d="M172 118 Q168 138 170 160" fill="none" stroke="#181426" strokeWidth="1"/>
+      <path d="M190 164 Q198 178 200 208 Q201 222 194 226 Q186 228 178 224 Q172 210 170 192 Q170 176 174 164 Z" fill="#1a1828" stroke="#201e38" strokeWidth="1.2"/>
+      <path d="M192 172 Q196 190 194 210" fill="none" stroke="#161428" strokeWidth="1"/>
+      <path d="M196 226 Q200 238 198 248 Q194 252 186 250 Q180 246 178 238 Q178 230 182 226 Z" fill="#14122a" stroke="#1c1a34" strokeWidth="1"/>
+      {/* Left leg */}
+      <path d="M70 256 Q58 272 54 308 Q52 332 56 348 Q62 356 78 356 Q94 356 102 348 Q106 334 106 308 Q106 272 102 256 Z" fill="#1c1a2a" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M62 276 Q66 308 64 338" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M90 272 Q92 304 90 336" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M72 342 Q78 352 84 354 Q90 352 92 344 Q90 336 84 334 Q78 334 74 338 Z" fill="#181628" stroke="#1e1c30" strokeWidth="1"/>
+      {/* Right leg */}
+      <path d="M170 256 Q182 272 186 308 Q188 332 184 348 Q178 356 162 356 Q146 356 138 348 Q134 334 134 308 Q134 272 138 256 Z" fill="#1c1a2a" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M178 276 Q174 308 176 338" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M150 272 Q148 304 150 336" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M168 342 Q162 352 156 354 Q150 352 148 344 Q150 336 156 334 Q162 334 166 338 Z" fill="#181628" stroke="#1e1c30" strokeWidth="1"/>
+      {/* Knees */}
+      <path d="M56 350 Q52 362 54 374 Q58 380 78 380 Q98 380 102 374 Q104 362 100 350 Z" fill="#161424" stroke="#201e38" strokeWidth="1.2"/>
+      <ellipse cx="79" cy="364" rx="16" ry="9" fill="none" stroke="#1c1a2e" strokeWidth="1"/>
+      <path d="M140 350 Q144 362 142 374 Q146 380 162 380 Q178 380 182 374 Q186 362 184 350 Z" fill="#161424" stroke="#201e38" strokeWidth="1.2"/>
+      <ellipse cx="161" cy="364" rx="16" ry="9" fill="none" stroke="#1c1a2e" strokeWidth="1"/>
+      {/* Shins + calves */}
+      <path d="M56 376 Q50 396 50 424 Q51 440 60 444 Q70 448 80 446 Q90 444 94 438 Q98 424 96 406 Q94 390 92 376 Z" fill="#181626" stroke="#1e1c34" strokeWidth="1.2"/>
+      <line x1="75" y1="378" x2="73" y2="438" stroke="#121028" strokeWidth="1.5"/>
+      <path d="M54 390 Q48 408 50 424" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M66 382 Q60 400 62 418" fill="none" stroke="#14122a" strokeWidth="1"/>
+      <path d="M184 376 Q190 396 190 424 Q189 440 180 444 Q170 448 160 446 Q150 444 146 438 Q142 424 144 406 Q146 390 148 376 Z" fill="#181626" stroke="#1e1c34" strokeWidth="1.2"/>
+      <line x1="165" y1="378" x2="167" y2="438" stroke="#121028" strokeWidth="1.5"/>
+      <path d="M186 390 Q192 408 190 424" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M174 382 Q180 400 178 418" fill="none" stroke="#14122a" strokeWidth="1"/>
       {/* Feet */}
-      <ellipse cx="63" cy="294" rx="14" ry="5" fill={fill} stroke={stroke} strokeWidth={sw}/>
-      <ellipse cx="97" cy="294" rx="14" ry="5" fill={fill} stroke={stroke} strokeWidth={sw}/>
-    </g>
+      <path d="M50 440 Q44 450 44 458 Q48 464 62 466 Q76 466 82 460 Q86 454 84 444 Q78 440 68 440 Z" fill="#12102a" stroke="#1a1832" strokeWidth="1"/>
+      <path d="M190 440 Q196 450 196 458 Q192 464 178 466 Q164 466 158 460 Q154 454 156 444 Q162 440 172 440 Z" fill="#12102a" stroke="#1a1832" strokeWidth="1"/>
+    </svg>
   )
 }
 
-// ─── Anatomy Diagram ──────────────────────────────────────────────────────────
-function AnatomyDiagram({ gender, view, selected, onSelect }) {
-  const muscles   = view === 'front' ? FRONT : BACK
-  const isMale    = gender === 'male'
+function BackBase() {
+  return (
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
+      <defs>
+        <radialGradient id="bg-rg1" cx="50%" cy="35%" r="60%">
+          <stop offset="0%"   stopColor="#2c2640"/>
+          <stop offset="100%" stopColor="#16121e"/>
+        </radialGradient>
+        <radialGradient id="bg-rg2" cx="50%" cy="30%" r="65%">
+          <stop offset="0%"   stopColor="#242034"/>
+          <stop offset="100%" stopColor="#100e18"/>
+        </radialGradient>
+      </defs>
+      {/* Head (back) */}
+      <ellipse cx="120" cy="36" rx="25" ry="30" fill="url(#bg-rg1)" stroke="#2a243c" strokeWidth="1.5"/>
+      <path d="M98 28 Q120 20 142 28" fill="none" stroke="#221e30" strokeWidth="0.8"/>
+      {/* Neck */}
+      <path d="M109 62 Q106 70 106 80 L134 80 Q134 70 131 62 Z" fill="#1a1626" stroke="#24203a" strokeWidth="1"/>
+      {/* Upper trapezius */}
+      <path d="M82 84 Q96 76 110 70 L120 72 L130 70 Q144 76 158 84 Q142 90 120 91 Q98 90 82 84 Z" fill="#1c1a2e" stroke="#22203a" strokeWidth="1"/>
+      {/* Torso (back outer) */}
+      <path d="M80 94 Q64 104 60 132 Q56 160 58 186 Q60 206 70 212 L170 212 Q180 206 182 186 Q184 160 180 132 Q176 104 160 94 Q142 88 120 89 Q98 88 80 94 Z" fill="url(#bg-rg2)" stroke="#20183a" strokeWidth="1.5"/>
+      {/* Spine */}
+      <line x1="120" y1="80" x2="120" y2="210" stroke="#12102a" strokeWidth="1.8"/>
+      {/* Erector spinae */}
+      <path d="M113 92 Q112 132 112 172 Q112 192 113 210" fill="none" stroke="#181428" strokeWidth="1.2"/>
+      <path d="M127 92 Q128 132 128 172 Q128 192 127 210" fill="none" stroke="#181428" strokeWidth="1.2"/>
+      {/* Rhomboids */}
+      <path d="M110 98 Q100 108 96 122 Q102 118 120 120 Q138 118 144 122 Q140 108 130 98 Z" fill="none" stroke="#1e1a2e" strokeWidth="1"/>
+      {/* Infraspinatus / teres major */}
+      <path d="M84 106 Q90 118 88 136" fill="none" stroke="#1c1a2e" strokeWidth="1"/>
+      <path d="M156 106 Q150 118 152 136" fill="none" stroke="#1c1a2e" strokeWidth="1"/>
+      {/* Lat grooves */}
+      <path d="M68 112 Q62 132 60 150 Q60 168 64 182 Q68 192 76 198" fill="none" stroke="#181426" strokeWidth="1.2"/>
+      <path d="M172 112 Q178 132 180 150 Q180 168 176 182 Q172 192 164 198" fill="none" stroke="#181426" strokeWidth="1.2"/>
+      {/* Scapula edges */}
+      <path d="M86 96 Q96 100 106 106" fill="none" stroke="#26223a" strokeWidth="1.2"/>
+      <path d="M154 96 Q144 100 134 106" fill="none" stroke="#26223a" strokeWidth="1.2"/>
+      {/* Iliac crest */}
+      <path d="M72 210 Q90 204 120 206 Q150 204 168 210" fill="none" stroke="#1e1c30" strokeWidth="1"/>
+      {/* Left arm (back — tricep side) */}
+      <path d="M62 98 Q52 108 48 130 Q46 148 50 162 Q56 168 66 164 Q74 150 76 128 Q78 110 72 100 Z" fill="#1e1a2c" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M56 108 Q52 130 54 154" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M66 106 Q68 128 66 156" fill="none" stroke="#14122a" strokeWidth="1"/>
+      <path d="M50 164 Q42 178 40 208 Q39 222 46 226 Q54 228 62 224 Q68 210 70 192 Q70 176 66 164 Z" fill="#1a1828" stroke="#201e38" strokeWidth="1.2"/>
+      <path d="M46 170 Q42 190 44 210" fill="none" stroke="#161428" strokeWidth="1"/>
+      <path d="M44 226 Q40 238 42 248 Q46 252 54 250 Q60 246 62 238 Q62 230 58 226 Z" fill="#14122a" stroke="#1c1a34" strokeWidth="1"/>
+      {/* Right arm (back) */}
+      <path d="M178 98 Q188 108 192 130 Q194 148 190 162 Q184 168 174 164 Q166 150 164 128 Q162 110 168 100 Z" fill="#1e1a2c" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M184 108 Q188 130 186 154" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M174 106 Q172 128 174 156" fill="none" stroke="#14122a" strokeWidth="1"/>
+      <path d="M190 164 Q198 178 200 208 Q201 222 194 226 Q186 228 178 224 Q172 210 170 192 Q170 176 174 164 Z" fill="#1a1828" stroke="#201e38" strokeWidth="1.2"/>
+      <path d="M194 170 Q198 190 196 210" fill="none" stroke="#161428" strokeWidth="1"/>
+      <path d="M196 226 Q200 238 198 248 Q194 252 186 250 Q180 246 178 238 Q178 230 182 226 Z" fill="#14122a" stroke="#1c1a34" strokeWidth="1"/>
+      {/* Glutes */}
+      <path d="M70 212 Q60 226 58 246 Q58 260 70 266 Q84 270 96 262 Q104 252 102 236 Q100 220 96 212 Z" fill="#1c1a2a" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M170 212 Q180 226 182 246 Q182 260 170 266 Q156 270 144 262 Q136 252 138 236 Q140 220 144 212 Z" fill="#1c1a2a" stroke="#221e38" strokeWidth="1.5"/>
+      <line x1="120" y1="212" x2="120" y2="268" stroke="#12102a" strokeWidth="1"/>
+      <path d="M72 256 Q90 262 120 264 Q150 262 168 256" fill="none" stroke="#1e1c30" strokeWidth="1"/>
+      {/* Hamstrings */}
+      <path d="M70 264 Q58 278 54 314 Q52 336 56 352 Q62 358 78 358 Q94 358 102 352 Q106 336 106 314 Q106 278 102 264 Z" fill="#1c1a2a" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M62 278 Q60 310 62 342" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M88 276 Q90 308 88 340" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M170 264 Q182 278 186 314 Q188 336 184 352 Q178 358 162 358 Q146 358 138 352 Q134 336 134 314 Q134 278 138 264 Z" fill="#1c1a2a" stroke="#221e38" strokeWidth="1.5"/>
+      <path d="M178 278 Q180 310 178 342" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      <path d="M152 276 Q150 308 152 340" fill="none" stroke="#14122a" strokeWidth="1.2"/>
+      {/* Knees (back) */}
+      <path d="M56 354 Q52 366 54 378 Q58 384 78 384 Q98 384 102 378 Q104 366 100 354 Z" fill="#161424" stroke="#201e38" strokeWidth="1.2"/>
+      <path d="M140 354 Q144 366 142 378 Q146 384 162 384 Q178 384 182 378 Q186 366 184 354 Z" fill="#161424" stroke="#201e38" strokeWidth="1.2"/>
+      {/* Calves (back — gastrocnemius heads prominent) */}
+      <path d="M56 380 Q50 398 50 426 Q51 442 60 446 Q70 450 80 448 Q90 446 94 440 Q98 426 96 408 Q94 392 92 380 Z" fill="#181626" stroke="#1e1c34" strokeWidth="1.2"/>
+      <path d="M62 388 Q58 410 60 430" fill="none" stroke="#14122a" strokeWidth="1.5"/>
+      <path d="M76 384 Q72 406 74 426" fill="none" stroke="#14122a" strokeWidth="1"/>
+      <path d="M184 380 Q190 398 190 426 Q189 442 180 446 Q170 450 160 448 Q150 446 146 440 Q142 426 144 408 Q146 392 148 380 Z" fill="#181626" stroke="#1e1c34" strokeWidth="1.2"/>
+      <path d="M178 388 Q182 410 180 430" fill="none" stroke="#14122a" strokeWidth="1.5"/>
+      <path d="M164 384 Q168 406 166 426" fill="none" stroke="#14122a" strokeWidth="1"/>
+      {/* Feet */}
+      <path d="M50 442 Q44 452 44 460 Q48 466 62 468 Q76 468 82 462 Q86 456 84 446 Q78 442 68 442 Z" fill="#12102a" stroke="#1a1832" strokeWidth="1"/>
+      <path d="M190 442 Q196 452 196 460 Q192 466 178 468 Q164 468 158 462 Q154 456 156 446 Q162 442 172 442 Z" fill="#12102a" stroke="#1a1832" strokeWidth="1"/>
+    </svg>
+  )
+}
+
+// ─── Zone + Label Overlay ─────────────────────────────────────────────────────
+function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
+  const shapes = view === 'front' ? FRONT_ZONE_SHAPES : BACK_ZONE_SHAPES
+  const labels = view === 'front' ? FRONT_LABELS : BACK_LABELS
+  const zones  = view === 'front' ? FRONT_ZONES : BACK_ZONES
+
+  const opacity = (id) => {
+    if (!selected && !hovered) return 0.32
+    if (id === selected) return 0.88
+    if (id === hovered)  return 0.62
+    return 0.07
+  }
+  const sw = (id) => (id === selected ? 2 : id === hovered ? 1.5 : 0.8)
+
+  const renderShape = (s, color, op, strokeW) => {
+    if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.18s' }}/>
+    if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.18s' }}/>
+    return <path d={s.d} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.18s' }}/>
+  }
 
   return (
-    <svg
-      viewBox="0 0 160 305"
-      style={{ width:'100%', maxWidth:230, display:'block', margin:'0 auto', overflow:'visible' }}
-    >
-      <BodyShape gender={gender} view={view} />
-
-      {muscles.map(m => {
-        const data  = DB[m.id]
-        const color = data?.color || '#3b82f6'
-        const sel   = selected === m.id
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
+      {zones.map(id => {
+        const data   = DB[id]
+        const color  = data?.color || '#3b82f6'
+        const op     = opacity(id)
+        const strokeW = sw(id)
         return (
-          <g key={m.id} onClick={() => onSelect(sel ? null : m.id)} style={{ cursor:'pointer' }}>
-            {m.zones.map((z, i) => (
-              <ellipse
-                key={i}
-                cx={z.cx} cy={z.cy} rx={z.rx} ry={z.ry}
-                fill={sel ? `${color}55` : `${color}1a`}
-                stroke={sel ? color : `${color}55`}
-                strokeWidth={sel ? 1.5 : 0.8}
-                style={{ transition:'all 0.18s' }}
-              />
+          <g key={id}
+            onClick={() => onSelect(selected === id ? null : id)}
+            onMouseEnter={() => onHover(id)}
+            onMouseLeave={() => onHover(null)}
+            style={{ cursor:'pointer' }}>
+            {(shapes[id] || []).map((s, i) => (
+              <g key={i}>{renderShape(s, color, op, strokeW)}</g>
             ))}
-            {/* Label */}
-            <text
-              x={m.lx} y={m.ly}
-              fill={sel ? color : 'rgba(255,255,255,0.32)'}
-              fontSize="6.5"
-              fontFamily="Helvetica Neue,Arial,sans-serif"
-              fontWeight={sel ? '700' : '500'}
-              textAnchor="start"
-              style={{ pointerEvents:'none', transition:'fill 0.18s', letterSpacing:'0.04em' }}
-            >
-              {data?.label || m.id}
-            </text>
           </g>
+        )
+      })}
+      {/* Labels */}
+      {labels.map(l => {
+        const data  = DB[l.id]
+        const color = data?.color || '#3b82f6'
+        const sel   = selected === l.id || hovered === l.id
+        return (
+          <text key={l.id} x={l.x} y={l.y}
+            fill={sel ? color : 'rgba(255,255,255,0.28)'}
+            fontSize="7.5"
+            fontFamily="Helvetica Neue,Arial,sans-serif"
+            fontWeight={sel ? '700' : '400'}
+            textAnchor={l.a}
+            style={{ pointerEvents:'none', transition:'fill 0.18s', letterSpacing:'0.04em' }}>
+            {DB[l.id]?.label || l.id}
+          </text>
         )
       })}
     </svg>
@@ -323,73 +496,50 @@ function ExerciseCard({ ex }) {
   return (
     <div style={{
       background:'var(--bg-card)', border:'1px solid var(--border)',
-      borderRadius:12, padding:'14px 14px 12px', display:'flex', flexDirection:'column', gap:8,
+      borderRadius:12, padding:'13px 14px 11px',
+      display:'flex', flexDirection:'column', gap:7,
     }}>
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:10 }}>
         <div style={{ flex:1 }}>
-          <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{ex.name}</p>
+          <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{ex.name}</p>
           <div style={{ display:'flex', gap:6 }}>
-            <span style={{ color:'rgba(255,255,255,0.35)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', background:'rgba(255,255,255,0.06)', padding:'2px 7px', borderRadius:5 }}>{ex.eq}</span>
+            <span style={{ color:'rgba(255,255,255,0.32)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', background:'rgba(255,255,255,0.06)', padding:'2px 7px', borderRadius:5 }}>{ex.eq}</span>
             <span style={{ color:'#3b82f6', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, background:'rgba(59,130,246,0.1)', padding:'2px 7px', borderRadius:5 }}>{ex.sets}</span>
           </div>
         </div>
-        <a
-          href={ytUrl} target="_blank" rel="noopener noreferrer"
+        <a href={ytUrl} target="_blank" rel="noopener noreferrer"
           style={{
             display:'flex', alignItems:'center', gap:5, flexShrink:0,
             padding:'7px 11px', borderRadius:8,
             background:'rgba(239,68,68,0.12)', border:'1px solid rgba(239,68,68,0.3)',
             color:'#ef4444', fontSize:10, fontWeight:700,
             fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em',
-            textDecoration:'none', transition:'all 0.15s',
+            textDecoration:'none',
           }}
-          onClick={e => e.stopPropagation()}
-        >
-          <svg width={12} height={12} viewBox="0 0 24 24" fill="#ef4444"><path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/><polygon fill="white" points="10,8.5 16,12 10,15.5"/></svg>
+          onClick={e => e.stopPropagation()}>
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="#ef4444">
+            <path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/>
+            <polygon fill="white" points="10,8.5 16,12 10,15.5"/>
+          </svg>
           Watch
         </a>
       </div>
-      <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6 }}>{ex.desc}</p>
-    </div>
-  )
-}
-
-// ─── Muscle Chips (quick-select row) ─────────────────────────────────────────
-function MuscleChips({ muscles, selected, onSelect }) {
-  return (
-    <div style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:2 }}>
-      {muscles.map(m => {
-        const d   = DB[m.id]
-        const sel = selected === m.id
-        return (
-          <button key={m.id} onClick={() => onSelect(sel ? null : m.id)} style={{
-            flexShrink:0, padding:'6px 12px', borderRadius:99,
-            background: sel ? `${d?.color}22` : 'var(--stat-bg)',
-            border: `1px solid ${sel ? d?.color+'66' : 'var(--border)'}`,
-            color: sel ? d?.color : 'var(--text-muted)',
-            fontSize:11, fontWeight: sel ? 700 : 400,
-            fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
-            letterSpacing:'0.04em', transition:'all 0.15s',
-            whiteSpace:'nowrap',
-          }}>{d?.label || m.id}</button>
-        )
-      })}
     </div>
   )
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function WorkoutGuide({ onClose }) {
-  const [gender,   setGender]   = useState('male')     // 'male' | 'female'
-  const [view,     setView]     = useState('front')    // 'front' | 'back'
+  const [view,     setView]     = useState('front')
   const [selected, setSelected] = useState(null)
-  const [visible,  setVisible]  = useState(true)
+  const [hovered,  setHovered]  = useState(null)
 
-  const muscles     = view === 'front' ? FRONT : BACK
-  const selectedDB  = selected ? DB[selected] : null
-  const exercises   = selectedDB ? selectedDB[gender === 'male' ? 'men' : 'women'] : []
+  const zones      = view === 'front' ? FRONT_ZONES : BACK_ZONES
+  const selectedDB = selected ? DB[selected] : null
+  const accent     = '#3b82f6'
 
-  const accentColor = '#3b82f6'
+  const handleViewChange = (v) => { setView(v); setSelected(null); setHovered(null) }
+  const handleSelect = (id) => { setSelected(id); setHovered(null) }
 
   return (
     <div style={{
@@ -399,13 +549,9 @@ export default function WorkoutGuide({ onClose }) {
       animation:'slideUp 0.28s ease both',
       WebkitFontSmoothing:'antialiased',
     }}>
-      <style>{`
-        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-        .ax-guide-chip:hover{opacity:0.85!important;}
-        .ax-watch-btn:hover{background:rgba(239,68,68,0.22)!important;}
-      `}</style>
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
 
-      {/* ── Header ── */}
+      {/* Header */}
       <div style={{
         flexShrink:0, position:'sticky', top:0, zIndex:10,
         background:'var(--header-bg)', backdropFilter:'blur(18px)',
@@ -419,91 +565,127 @@ export default function WorkoutGuide({ onClose }) {
             background:'var(--stat-bg)', border:'1px solid var(--border)',
             color:'var(--text-secondary)', cursor:'pointer', flexShrink:0,
           }}>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
           </button>
           <div style={{ flex:1 }}>
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>AXIOS FITNESS</p>
-            <h2 style={{ color:accentColor, fontWeight:900, fontSize:18, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Workout Guide</h2>
+            <h2 style={{ color:accent, fontWeight:900, fontSize:18, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Workout Guide</h2>
           </div>
         </div>
-
-        {/* Gender + View toggles */}
-        <div style={{ display:'flex', gap:8 }}>
-          {/* Gender */}
-          <div style={{ display:'flex', background:'var(--stat-bg)', borderRadius:9, border:'1px solid var(--border)', padding:2, gap:2, flex:1 }}>
-            {[['male','Men'],['female','Women']].map(([g, label]) => (
-              <button key={g} onClick={() => { setGender(g); setSelected(null) }} style={{
-                flex:1, padding:'7px', borderRadius:7,
-                background: gender===g ? accentColor : 'transparent',
-                color: gender===g ? '#fff' : 'var(--text-muted)',
-                border:'none', cursor:'pointer', fontSize:11, fontWeight:700,
-                fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.15s',
-              }}>{label}</button>
-            ))}
-          </div>
-          {/* Front / Back */}
-          <div style={{ display:'flex', background:'var(--stat-bg)', borderRadius:9, border:'1px solid var(--border)', padding:2, gap:2, flex:1 }}>
-            {[['front','Front'],['back','Back']].map(([v, label]) => (
-              <button key={v} onClick={() => { setView(v); setSelected(null) }} style={{
-                flex:1, padding:'7px', borderRadius:7,
-                background: view===v ? 'rgba(255,255,255,0.1)' : 'transparent',
-                color: view===v ? 'var(--text-primary)' : 'var(--text-muted)',
-                border:'none', cursor:'pointer', fontSize:11, fontWeight: view===v ? 700 : 400,
-                fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.15s',
-              }}>{label}</button>
-            ))}
-          </div>
+        {/* Front / Back toggle */}
+        <div style={{ display:'flex', background:'var(--stat-bg)', borderRadius:9, border:'1px solid var(--border)', padding:2, gap:2 }}>
+          {[['front','Front'],['back','Back']].map(([v, lbl]) => (
+            <button key={v} onClick={() => handleViewChange(v)} style={{
+              flex:1, padding:'7px', borderRadius:7,
+              background: view===v ? 'rgba(255,255,255,0.1)' : 'transparent',
+              color: view===v ? 'var(--text-primary)' : 'var(--text-muted)',
+              border:'none', cursor:'pointer', fontSize:11,
+              fontWeight: view===v ? 700 : 400,
+              fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.15s',
+            }}>{lbl}</button>
+          ))}
         </div>
       </div>
 
-      {/* ── Scrollable Body ── */}
+      {/* Scrollable body */}
       <div style={{ flex:1, overflowY:'auto', padding:'16px' }}>
 
-        {/* Anatomy Diagram */}
-        <div style={{ position:'relative', marginBottom:14 }}>
-          <AnatomyDiagram
-            gender={gender}
+        {/* Anatomy diagram */}
+        <div style={{ position:'relative', width:240, height:500, margin:'0 auto 14px' }}>
+          {view === 'front' ? <FrontBase/> : <BackBase/>}
+          <ZoneOverlay
             view={view}
             selected={selected}
-            onSelect={setSelected}
+            hovered={hovered}
+            onSelect={handleSelect}
+            onHover={setHovered}
           />
-          {!selected && (
-            <p style={{
-              textAlign:'center', color:'rgba(255,255,255,0.2)', fontSize:11,
-              fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginTop:8,
-            }}>Tap a muscle group to see exercises</p>
-          )}
         </div>
 
-        {/* Quick-select chips */}
-        <MuscleChips muscles={muscles} selected={selected} onSelect={setSelected} />
+        {!selected && (
+          <p style={{ textAlign:'center', color:'rgba(255,255,255,0.2)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:14 }}>
+            Tap a muscle group to see exercises
+          </p>
+        )}
 
-        {/* Exercise panel */}
+        {/* Chip bar */}
+        <div style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:4, marginBottom:16 }}>
+          {zones.map(id => {
+            const d   = DB[id]
+            const sel = selected === id
+            return (
+              <button key={id} onClick={() => handleSelect(sel ? null : id)} style={{
+                flexShrink:0, padding:'6px 12px', borderRadius:99,
+                background: sel ? `${d?.color}22` : 'var(--stat-bg)',
+                border: `1px solid ${sel ? d?.color+'66' : 'var(--border)'}`,
+                color: sel ? d?.color : 'var(--text-muted)',
+                fontSize:11, fontWeight: sel ? 700 : 400,
+                fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
+                letterSpacing:'0.04em', transition:'all 0.15s',
+                whiteSpace:'nowrap',
+              }}>{d?.label || id}</button>
+            )
+          })}
+        </div>
+
+        {/* Detail panel */}
         {selected && selectedDB && (
-          <div style={{ marginTop:16 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
-              <div style={{ width:3, height:16, background:selectedDB.color, borderRadius:2, boxShadow:`0 0 8px ${selectedDB.color}` }} />
+          <div style={{ animation:'fadeUp 0.22s ease both' }}>
+            <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+
+            {/* Muscle header */}
+            <div style={{
+              background:'var(--bg-card)', border:`1px solid ${selectedDB.color}33`,
+              borderRadius:14, padding:'14px 16px', marginBottom:12,
+            }}>
+              <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+                <div style={{ width:10, height:10, borderRadius:'50%', background:selectedDB.color, boxShadow:`0 0 10px ${selectedDB.color}` }}/>
+                <p style={{ color:selectedDB.color, fontSize:15, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>{selectedDB.label}</p>
+              </div>
+              <p style={{ color:'rgba(255,255,255,0.38)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', fontStyle:'italic', marginBottom:10 }}>
+                {selectedDB.scientific}
+              </p>
+              {/* Intensity */}
+              <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:10 }}>
+                <span style={{ color:'rgba(255,255,255,0.28)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Intensity</span>
+                {[1,2,3,4,5].map(i => (
+                  <div key={i} style={{
+                    width:7, height:7, borderRadius:'50%',
+                    background: i <= selectedDB.intensity ? selectedDB.color : 'rgba(255,255,255,0.08)',
+                    boxShadow: i <= selectedDB.intensity ? `0 0 6px ${selectedDB.color}88` : 'none',
+                  }}/>
+                ))}
+              </div>
+              <p style={{ color:'rgba(255,255,255,0.52)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.65 }}>{selectedDB.desc}</p>
+            </div>
+
+            {/* Exercise list */}
+            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
+              <div style={{ width:3, height:14, background:selectedDB.color, borderRadius:2, boxShadow:`0 0 8px ${selectedDB.color}` }}/>
               <p style={{ color:selectedDB.color, fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>
-                {selectedDB.label} · {gender === 'male' ? "Men's" : "Women's"} Exercises
+                Exercises
               </p>
             </div>
-            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              {exercises.map((ex, i) => <ExerciseCard key={i} ex={ex} />)}
+            <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
+              {selectedDB.exercises.map((ex, i) => <ExerciseCard key={i} ex={ex}/>)}
             </div>
           </div>
         )}
 
-        {/* Empty state if nothing selected */}
         {!selected && (
-          <div style={{ marginTop:20, textAlign:'center', padding:'20px 0' }}>
-            <svg width={40} height={40} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block', margin:'0 auto 12px' }}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <p style={{ color:'rgba(255,255,255,0.18)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6 }}>
+          <div style={{ textAlign:'center', padding:'24px 0' }}>
+            <svg width={36} height={36} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block', margin:'0 auto 10px' }}>
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <p style={{ color:'rgba(255,255,255,0.15)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6 }}>
               Select a muscle group<br/>from the diagram or chips above
             </p>
           </div>
         )}
 
-        <div style={{ height:24 }} />
+        <div style={{ height:24 }}/>
       </div>
     </div>
   )
