@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // ─── Muscle Database ─────────────────────────────────────────────────────────
 const DB = {
@@ -12,6 +12,10 @@ const DB = {
       { name: 'Incline Dumbbell Press', eq: 'Dumbbells',  sets: '3 × 10–12',   yt: 'incline dumbbell press form tutorial' },
       { name: 'Cable Chest Fly',        eq: 'Cable',      sets: '3 × 12–15',   yt: 'cable fly chest isolation tutorial' },
       { name: 'Push-Up',                eq: 'Bodyweight', sets: '3 × failure',  yt: 'push up proper form tutorial' },
+      { name: 'Weighted Dip',           eq: 'Bodyweight', sets: '4 × 8–10',    yt: 'weighted dip chest form tutorial' },
+      { name: 'Decline Bench Press',    eq: 'Barbell',    sets: '3 × 10',      yt: 'decline bench press form tutorial' },
+      { name: 'DB Pullover',            eq: 'Dumbbell',   sets: '3 × 12',      yt: 'dumbbell pullover chest tutorial' },
+      { name: 'Pec Deck Machine',       eq: 'Machine',    sets: '3 × 15',      yt: 'pec deck fly machine tutorial' },
     ],
   },
   shoulders: {
@@ -19,10 +23,14 @@ const DB = {
     color: '#f59e0b', intensity: 3,
     desc: 'Three-headed deltoid controlling all planes of arm elevation. The anterior head presses; the lateral head builds width; the posterior head and rotator cuff sustain joint health under heavy load.',
     exercises: [
-      { name: 'Overhead Press', eq: 'Barbell',   sets: '4 × 8',   yt: 'overhead press form tutorial barbell' },
-      { name: 'Lateral Raise',  eq: 'Dumbbells', sets: '4 × 15',  yt: 'lateral raise proper form tutorial' },
-      { name: 'Face Pull',      eq: 'Cable',     sets: '3 × 20',  yt: 'face pull cable rear delt tutorial' },
-      { name: 'Arnold Press',   eq: 'Dumbbells', sets: '3 × 10',  yt: 'arnold press dumbbell tutorial form' },
+      { name: 'Overhead Press',       eq: 'Barbell',   sets: '4 × 8',   yt: 'overhead press form tutorial barbell' },
+      { name: 'Lateral Raise',        eq: 'Dumbbells', sets: '4 × 15',  yt: 'lateral raise proper form tutorial' },
+      { name: 'Face Pull',            eq: 'Cable',     sets: '3 × 20',  yt: 'face pull cable rear delt tutorial' },
+      { name: 'Arnold Press',         eq: 'Dumbbells', sets: '3 × 10',  yt: 'arnold press dumbbell tutorial form' },
+      { name: 'Cable Lateral Raise',  eq: 'Cable',     sets: '4 × 15',  yt: 'cable lateral raise shoulder tutorial' },
+      { name: 'DB Front Raise',       eq: 'Dumbbells', sets: '3 × 12',  yt: 'front raise dumbbell shoulder tutorial' },
+      { name: 'Rear Delt Fly',        eq: 'Dumbbells', sets: '3 × 15',  yt: 'rear delt fly tutorial form' },
+      { name: 'Upright Row',          eq: 'Barbell',   sets: '3 × 12',  yt: 'upright row shoulder form tutorial' },
     ],
   },
   biceps: {
@@ -34,6 +42,10 @@ const DB = {
       { name: 'Incline DB Curl',     eq: 'Dumbbells', sets: '3 × 12',  yt: 'incline dumbbell curl bicep tutorial' },
       { name: 'Hammer Curl',         eq: 'Dumbbells', sets: '3 × 12',  yt: 'hammer curl form tutorial dumbbell' },
       { name: 'Cable Concentration', eq: 'Cable',     sets: '3 × 15',  yt: 'concentration curl bicep isolation form' },
+      { name: 'Preacher Curl',       eq: 'Machine',   sets: '3 × 12',  yt: 'preacher curl bicep form tutorial' },
+      { name: 'Zottman Curl',        eq: 'Dumbbells', sets: '3 × 10',  yt: 'zottman curl tutorial form' },
+      { name: 'Spider Curl',         eq: 'Barbell',   sets: '3 × 12',  yt: 'spider curl bicep tutorial form' },
+      { name: 'Cable Drag Curl',     eq: 'Cable',     sets: '3 × 12',  yt: 'cable drag curl bicep tutorial' },
     ],
   },
   forearms: {
@@ -41,10 +53,14 @@ const DB = {
     color: '#6ee7b7', intensity: 2,
     desc: 'Grip strength and wrist stability — critical for every pulling and carrying movement. Often neglected, but forearm resilience directly limits every curl, row, and deadlift you ever pull.',
     exercises: [
-      { name: "Farmer's Carry", eq: 'Dumbbells',   sets: '3 × 40 m',  yt: 'farmers carry grip forearm tutorial' },
-      { name: 'Wrist Curl',     eq: 'Barbell',     sets: '3 × 20',    yt: 'wrist curl forearm exercise tutorial' },
-      { name: 'Reverse Curl',   eq: 'Barbell',     sets: '3 × 12',    yt: 'reverse curl forearm brachioradialis tutorial' },
-      { name: 'Dead Hang',      eq: 'Pull-up Bar', sets: '3 × 45 s',  yt: 'dead hang grip strength tutorial' },
+      { name: "Farmer's Carry",  eq: 'Dumbbells',   sets: '3 × 40 m',  yt: 'farmers carry grip forearm tutorial' },
+      { name: 'Wrist Curl',      eq: 'Barbell',     sets: '3 × 20',    yt: 'wrist curl forearm exercise tutorial' },
+      { name: 'Reverse Curl',    eq: 'Barbell',     sets: '3 × 12',    yt: 'reverse curl forearm brachioradialis tutorial' },
+      { name: 'Dead Hang',       eq: 'Pull-up Bar', sets: '3 × 45 s',  yt: 'dead hang grip strength tutorial' },
+      { name: 'Wrist Roller',    eq: 'Wrist Roller',sets: '3 × 2 min', yt: 'wrist roller forearm tutorial' },
+      { name: 'Plate Pinch',     eq: 'Weight Plate',sets: '3 × 30 s',  yt: 'plate pinch grip strength tutorial' },
+      { name: 'Towel Pull-Up',   eq: 'Pull-up Bar', sets: '3 × 6',     yt: 'towel pull up grip forearm tutorial' },
+      { name: 'Reverse Wrist Curl', eq: 'Barbell',  sets: '3 × 20',    yt: 'reverse wrist curl extensor forearm tutorial' },
     ],
   },
   core: {
@@ -56,6 +72,10 @@ const DB = {
       { name: 'Cable Crunch',      eq: 'Cable',       sets: '3 × 15',   yt: 'cable crunch abs form tutorial' },
       { name: 'Ab Wheel Rollout',  eq: 'Ab Wheel',    sets: '3 × 10',   yt: 'ab wheel rollout form tutorial core' },
       { name: 'Plank',             eq: 'Bodyweight',  sets: '3 × 60 s', yt: 'plank proper form technique core' },
+      { name: 'Dragon Flag',       eq: 'Bodyweight',  sets: '3 × 6',    yt: 'dragon flag core tutorial form' },
+      { name: 'Dead Bug',          eq: 'Bodyweight',  sets: '3 × 10/side', yt: 'dead bug core exercise tutorial form' },
+      { name: 'L-Sit Hold',        eq: 'Parallel Bars', sets: '3 × 20 s', yt: 'l sit hold core tutorial form' },
+      { name: 'Hollow Body Hold',  eq: 'Bodyweight',  sets: '3 × 30 s', yt: 'hollow body hold core tutorial' },
     ],
   },
   obliques: {
@@ -63,10 +83,14 @@ const DB = {
     color: '#ec4899', intensity: 2,
     desc: 'Control trunk rotation and lateral flexion — the source of rotational power and the V-taper silhouette. Anti-rotation exercises build the stiffest, most force-resistant core structure.',
     exercises: [
-      { name: 'Russian Twist',  eq: 'Plate/DB',   sets: '3 × 20',        yt: 'russian twist obliques form tutorial' },
-      { name: 'Side Plank',     eq: 'Bodyweight', sets: '3 × 45 s/side', yt: 'side plank form tutorial obliques' },
-      { name: 'Cable Woodchop', eq: 'Cable',      sets: '3 × 12/side',   yt: 'cable woodchopper obliques tutorial' },
-      { name: 'Pallof Press',   eq: 'Cable/Band', sets: '3 × 12/side',   yt: 'pallof press core anti rotation tutorial' },
+      { name: 'Russian Twist',      eq: 'Plate/DB',   sets: '3 × 20',        yt: 'russian twist obliques form tutorial' },
+      { name: 'Side Plank',         eq: 'Bodyweight', sets: '3 × 45 s/side', yt: 'side plank form tutorial obliques' },
+      { name: 'Cable Woodchop',     eq: 'Cable',      sets: '3 × 12/side',   yt: 'cable woodchopper obliques tutorial' },
+      { name: 'Pallof Press',       eq: 'Cable/Band', sets: '3 × 12/side',   yt: 'pallof press core anti rotation tutorial' },
+      { name: 'Copenhagen Plank',   eq: 'Bodyweight', sets: '3 × 30 s/side', yt: 'copenhagen plank oblique tutorial' },
+      { name: 'Landmine Rotation',  eq: 'Barbell',    sets: '3 × 10/side',   yt: 'landmine rotation obliques tutorial' },
+      { name: 'Windmill',           eq: 'Kettlebell', sets: '3 × 8/side',    yt: 'kettlebell windmill oblique tutorial' },
+      { name: 'Bicycle Crunch',     eq: 'Bodyweight', sets: '3 × 20',        yt: 'bicycle crunch abs obliques tutorial' },
     ],
   },
   quads: {
@@ -78,6 +102,10 @@ const DB = {
       { name: 'Leg Press',             eq: 'Machine',   sets: '4 × 12',     yt: 'leg press form proper technique tutorial' },
       { name: 'Bulgarian Split Squat', eq: 'Dumbbells', sets: '3 × 10/leg', yt: 'bulgarian split squat form tutorial' },
       { name: 'Leg Extension',         eq: 'Machine',   sets: '3 × 15',     yt: 'leg extension machine proper form tutorial' },
+      { name: 'Hack Squat',            eq: 'Machine',   sets: '4 × 10',     yt: 'hack squat machine form tutorial' },
+      { name: 'Goblet Squat',          eq: 'Kettlebell',sets: '3 × 15',     yt: 'goblet squat form tutorial proper' },
+      { name: 'Walking Lunge',         eq: 'Dumbbells', sets: '3 × 12/leg', yt: 'walking lunge form tutorial proper' },
+      { name: 'Front Squat',           eq: 'Barbell',   sets: '4 × 6',      yt: 'front squat form proper technique tutorial' },
     ],
   },
   calves: {
@@ -85,10 +113,14 @@ const DB = {
     color: '#fbbf24', intensity: 3,
     desc: 'Gastrocnemius provides the visible shape and explosive plantarflexion power. The soleus lies beneath and dominates endurance work. Both demand full range of motion — heel completely below the platform.',
     exercises: [
-      { name: 'Standing Calf Raise', eq: 'Machine',    sets: '5 × 20',     yt: 'standing calf raise form tutorial' },
-      { name: 'Seated Calf Raise',   eq: 'Machine',    sets: '4 × 20',     yt: 'seated calf raise form tutorial machine' },
-      { name: 'Single-Leg Raise',    eq: 'Bodyweight', sets: '3 × 15/leg', yt: 'single leg calf raise tutorial form' },
-      { name: 'Jump Rope',           eq: 'Jump Rope',  sets: '3 × 2 min',  yt: 'jump rope calf workout tutorial' },
+      { name: 'Standing Calf Raise',   eq: 'Machine',    sets: '5 × 20',     yt: 'standing calf raise form tutorial' },
+      { name: 'Seated Calf Raise',     eq: 'Machine',    sets: '4 × 20',     yt: 'seated calf raise form tutorial machine' },
+      { name: 'Single-Leg Raise',      eq: 'Bodyweight', sets: '3 × 15/leg', yt: 'single leg calf raise tutorial form' },
+      { name: 'Jump Rope',             eq: 'Jump Rope',  sets: '3 × 2 min',  yt: 'jump rope calf workout tutorial' },
+      { name: 'Leg Press Calf Raise',  eq: 'Machine',    sets: '4 × 20',     yt: 'leg press calf raise tutorial form' },
+      { name: 'Box Jump',              eq: 'Bodyweight', sets: '4 × 8',      yt: 'box jump explosive calf tutorial' },
+      { name: 'Donkey Calf Raise',     eq: 'Machine',    sets: '4 × 20',     yt: 'donkey calf raise machine tutorial' },
+      { name: 'Calf Raise On Stairs',  eq: 'Bodyweight', sets: '3 × 20/leg', yt: 'stair calf raise tutorial bodyweight' },
     ],
   },
   // ── Back ──
@@ -97,10 +129,14 @@ const DB = {
     color: '#f59e0b', intensity: 3,
     desc: 'Upper fibres elevate and upwardly rotate the scapula; middle fibres retract it; lower fibres depress it. All three need balanced work to prevent the rounded-shoulder posture that plagues desk workers.',
     exercises: [
-      { name: 'Barbell Shrug',   eq: 'Barbell',   sets: '4 × 12',   yt: 'barbell shrug traps form tutorial' },
-      { name: 'Face Pull',       eq: 'Cable',     sets: '4 × 20',   yt: 'face pull cable rear delt tutorial' },
-      { name: 'Rack Pull',       eq: 'Barbell',   sets: '3 × 6',    yt: 'rack pull trap activation tutorial' },
-      { name: "Farmer's Carry",  eq: 'Dumbbells', sets: '3 × 40 m', yt: 'farmers carry trap workout tutorial' },
+      { name: 'Barbell Shrug',       eq: 'Barbell',   sets: '4 × 12',   yt: 'barbell shrug traps form tutorial' },
+      { name: 'Face Pull',           eq: 'Cable',     sets: '4 × 20',   yt: 'face pull cable rear delt tutorial' },
+      { name: 'Rack Pull',           eq: 'Barbell',   sets: '3 × 6',    yt: 'rack pull trap activation tutorial' },
+      { name: "Farmer's Carry",      eq: 'Dumbbells', sets: '3 × 40 m', yt: 'farmers carry trap workout tutorial' },
+      { name: 'DB Shrug',            eq: 'Dumbbells', sets: '4 × 15',   yt: 'dumbbell shrug trap form tutorial' },
+      { name: 'Upright Row',         eq: 'Barbell',   sets: '3 × 12',   yt: 'upright row trap shoulder tutorial' },
+      { name: 'Cable Shrug',         eq: 'Cable',     sets: '3 × 15',   yt: 'cable shrug trap tutorial form' },
+      { name: 'Snatch-Grip Shrug',   eq: 'Barbell',   sets: '3 × 10',   yt: 'snatch grip shrug upper trap tutorial' },
     ],
   },
   lats: {
@@ -108,10 +144,14 @@ const DB = {
     color: '#3b82f6', intensity: 4,
     desc: "The widest muscle in the body — the architect of the V-taper silhouette. Pulls the arm down and back into extension and adduction. A full stretch at the top of every rep is non-negotiable for width.",
     exercises: [
-      { name: 'Pull-Up',           eq: 'Bodyweight', sets: '4 × failure',  yt: 'pull up lat form tutorial' },
-      { name: 'Barbell Row',       eq: 'Barbell',    sets: '4 × 8',        yt: 'barbell row back form tutorial' },
-      { name: 'Lat Pulldown',      eq: 'Cable',      sets: '3 × 12',       yt: 'lat pulldown proper form tutorial' },
-      { name: 'Single-Arm DB Row', eq: 'Dumbbell',   sets: '3 × 12/side',  yt: 'single arm dumbbell row tutorial' },
+      { name: 'Pull-Up',                eq: 'Bodyweight', sets: '4 × failure',  yt: 'pull up lat form tutorial' },
+      { name: 'Barbell Row',            eq: 'Barbell',    sets: '4 × 8',        yt: 'barbell row back form tutorial' },
+      { name: 'Lat Pulldown',           eq: 'Cable',      sets: '3 × 12',       yt: 'lat pulldown proper form tutorial' },
+      { name: 'Single-Arm DB Row',      eq: 'Dumbbell',   sets: '3 × 12/side',  yt: 'single arm dumbbell row tutorial' },
+      { name: 'Straight-Arm Pulldown',  eq: 'Cable',      sets: '3 × 15',       yt: 'straight arm pulldown lat isolation tutorial' },
+      { name: 'T-Bar Row',              eq: 'Barbell',    sets: '4 × 10',       yt: 't bar row back form tutorial' },
+      { name: 'Chest-Supported Row',    eq: 'Dumbbells',  sets: '3 × 12',       yt: 'chest supported row back tutorial' },
+      { name: 'Meadows Row',            eq: 'Barbell',    sets: '3 × 10/side',  yt: 'meadows row lat back tutorial' },
     ],
   },
   triceps: {
@@ -119,10 +159,14 @@ const DB = {
     color: '#a78bfa', intensity: 2,
     desc: 'Three-headed muscle making up roughly ⅔ of total upper-arm mass. The long head requires overhead position for full stretch. The lateral head creates the horseshoe shape visible when the arm is extended.',
     exercises: [
-      { name: 'Close-Grip Bench',   eq: 'Barbell',  sets: '4 × 8',   yt: 'close grip bench press tricep form' },
-      { name: 'Skull Crusher',      eq: 'Barbell',  sets: '3 × 10',  yt: 'skull crusher tricep form tutorial' },
-      { name: 'Tricep Pushdown',    eq: 'Cable',    sets: '3 × 15',  yt: 'tricep pushdown cable form tutorial' },
-      { name: 'Overhead Extension', eq: 'Dumbbell', sets: '3 × 12',  yt: 'overhead tricep extension form tutorial' },
+      { name: 'Close-Grip Bench',   eq: 'Barbell',    sets: '4 × 8',   yt: 'close grip bench press tricep form' },
+      { name: 'Skull Crusher',      eq: 'Barbell',    sets: '3 × 10',  yt: 'skull crusher tricep form tutorial' },
+      { name: 'Tricep Pushdown',    eq: 'Cable',      sets: '3 × 15',  yt: 'tricep pushdown cable form tutorial' },
+      { name: 'Overhead Extension', eq: 'Dumbbell',   sets: '3 × 12',  yt: 'overhead tricep extension form tutorial' },
+      { name: 'Tricep Dip',         eq: 'Bodyweight', sets: '4 × 10',  yt: 'tricep dip bodyweight form tutorial' },
+      { name: 'Diamond Push-Up',    eq: 'Bodyweight', sets: '3 × 15',  yt: 'diamond push up tricep tutorial' },
+      { name: 'JM Press',           eq: 'Barbell',    sets: '3 × 10',  yt: 'jm press tricep tutorial form' },
+      { name: 'Rope Pushdown',      eq: 'Cable',      sets: '3 × 15',  yt: 'rope tricep pushdown cable tutorial' },
     ],
   },
   lower_back: {
@@ -130,10 +174,14 @@ const DB = {
     color: '#f97316', intensity: 3,
     desc: "The erector spinae group extends the spine under load — the safety cable of every deadlift and squat. The deep multifidus provides segmental stability. The single most important injury-prevention target in strength training.",
     exercises: [
-      { name: 'Conventional Deadlift', eq: 'Barbell', sets: '4 × 5',   yt: 'conventional deadlift form tutorial' },
-      { name: 'Romanian Deadlift',     eq: 'Barbell', sets: '3 × 10',  yt: 'romanian deadlift form tutorial' },
-      { name: 'Back Extension',        eq: 'Machine', sets: '3 × 15',  yt: 'back extension hyperextension tutorial' },
-      { name: 'Good Morning',          eq: 'Barbell', sets: '3 × 10',  yt: 'good morning exercise lower back tutorial' },
+      { name: 'Conventional Deadlift', eq: 'Barbell',    sets: '4 × 5',   yt: 'conventional deadlift form tutorial' },
+      { name: 'Romanian Deadlift',     eq: 'Barbell',    sets: '3 × 10',  yt: 'romanian deadlift form tutorial' },
+      { name: 'Back Extension',        eq: 'Machine',    sets: '3 × 15',  yt: 'back extension hyperextension tutorial' },
+      { name: 'Good Morning',          eq: 'Barbell',    sets: '3 × 10',  yt: 'good morning exercise lower back tutorial' },
+      { name: 'Reverse Hyper',         eq: 'Machine',    sets: '3 × 15',  yt: 'reverse hyperextension lower back tutorial' },
+      { name: 'Bird Dog',              eq: 'Bodyweight', sets: '3 × 10/side', yt: 'bird dog lower back core tutorial' },
+      { name: 'Jefferson Curl',        eq: 'Barbell',    sets: '3 × 8',   yt: 'jefferson curl lower back mobility tutorial' },
+      { name: 'Suitcase Deadlift',     eq: 'Dumbbell',   sets: '3 × 8/side', yt: 'suitcase deadlift lower back core tutorial' },
     ],
   },
   glutes: {
@@ -141,10 +189,14 @@ const DB = {
     color: '#f43f5e', intensity: 4,
     desc: "Gluteus maximus is the body's largest muscle and the primary driver of hip extension and power output. Medius and minimus control hip abduction and stabilise the pelvis on every single-leg step, squat, and sprint.",
     exercises: [
-      { name: 'Hip Thrust',        eq: 'Barbell',    sets: '4 × 10',      yt: 'hip thrust barbell glute form tutorial' },
-      { name: 'Romanian Deadlift', eq: 'Barbell',    sets: '4 × 10',      yt: 'romanian deadlift glute hamstring tutorial' },
-      { name: 'Glute Bridge',      eq: 'Bodyweight', sets: '3 × 20',      yt: 'glute bridge form tutorial bodyweight' },
-      { name: 'Cable Kickback',    eq: 'Cable',      sets: '3 × 15/side', yt: 'cable kickback glute isolation tutorial' },
+      { name: 'Hip Thrust',           eq: 'Barbell',    sets: '4 × 10',      yt: 'hip thrust barbell glute form tutorial' },
+      { name: 'Romanian Deadlift',    eq: 'Barbell',    sets: '4 × 10',      yt: 'romanian deadlift glute hamstring tutorial' },
+      { name: 'Glute Bridge',         eq: 'Bodyweight', sets: '3 × 20',      yt: 'glute bridge form tutorial bodyweight' },
+      { name: 'Cable Kickback',       eq: 'Cable',      sets: '3 × 15/side', yt: 'cable kickback glute isolation tutorial' },
+      { name: 'Sumo Deadlift',        eq: 'Barbell',    sets: '4 × 6',       yt: 'sumo deadlift glute form tutorial' },
+      { name: 'Step-Up',              eq: 'Dumbbells',  sets: '3 × 12/leg',  yt: 'step up glute leg exercise tutorial' },
+      { name: 'Bulgarian Split Squat',eq: 'Dumbbells',  sets: '3 × 10/leg',  yt: 'bulgarian split squat glute tutorial' },
+      { name: 'Clamshell',            eq: 'Band',       sets: '3 × 20/side', yt: 'clamshell glute medius band tutorial' },
     ],
   },
   hamstrings: {
@@ -152,10 +204,14 @@ const DB = {
     color: '#84cc16', intensity: 3,
     desc: 'Three muscles spanning the back of the thigh — knee flexors and hip extensors in one. Direct antagonists to the quads. Eccentric-focused training (Nordic curls) is the single best intervention against hamstring strains.',
     exercises: [
-      { name: 'Romanian Deadlift', eq: 'Barbell',    sets: '4 × 10', yt: 'romanian deadlift hamstring form tutorial' },
-      { name: 'Lying Leg Curl',    eq: 'Machine',    sets: '3 × 12', yt: 'lying leg curl hamstring machine tutorial' },
-      { name: 'Nordic Curl',       eq: 'Bodyweight', sets: '3 × 6',  yt: 'nordic hamstring curl tutorial form' },
-      { name: 'Good Morning',      eq: 'Barbell',    sets: '3 × 10', yt: 'good morning hamstring tutorial form' },
+      { name: 'Romanian Deadlift',   eq: 'Barbell',    sets: '4 × 10', yt: 'romanian deadlift hamstring form tutorial' },
+      { name: 'Lying Leg Curl',      eq: 'Machine',    sets: '3 × 12', yt: 'lying leg curl hamstring machine tutorial' },
+      { name: 'Nordic Curl',         eq: 'Bodyweight', sets: '3 × 6',  yt: 'nordic hamstring curl tutorial form' },
+      { name: 'Good Morning',        eq: 'Barbell',    sets: '3 × 10', yt: 'good morning hamstring tutorial form' },
+      { name: 'Seated Leg Curl',     eq: 'Machine',    sets: '3 × 12', yt: 'seated leg curl hamstring machine tutorial' },
+      { name: 'Stiff-Leg Deadlift',  eq: 'Barbell',    sets: '3 × 10', yt: 'stiff leg deadlift hamstring tutorial' },
+      { name: 'Glute-Ham Raise',     eq: 'Machine',    sets: '3 × 8',  yt: 'glute ham raise hamstring tutorial' },
+      { name: 'Single-Leg Deadlift', eq: 'Dumbbell',   sets: '3 × 8/side', yt: 'single leg deadlift hamstring balance tutorial' },
     ],
   },
 }
@@ -528,18 +584,42 @@ function ExerciseCard({ ex }) {
   )
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function pickFour(pool) {
+  const arr = [...pool]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr.slice(0, 4)
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function WorkoutGuide({ onClose }) {
-  const [view,     setView]     = useState('front')
-  const [selected, setSelected] = useState(null)
-  const [hovered,  setHovered]  = useState(null)
+  const [view,           setView]           = useState('front')
+  const [selected,       setSelected]       = useState(null)
+  const [hovered,        setHovered]        = useState(null)
+  const [shownExercises, setShownExercises] = useState([])
+  const [spinning,       setSpinning]       = useState(false)
 
   const zones      = view === 'front' ? FRONT_ZONES : BACK_ZONES
   const selectedDB = selected ? DB[selected] : null
   const accent     = '#3b82f6'
 
+  useEffect(() => {
+    if (selected && DB[selected]) setShownExercises(pickFour(DB[selected].exercises))
+    else setShownExercises([])
+  }, [selected])
+
   const handleViewChange = (v) => { setView(v); setSelected(null); setHovered(null) }
   const handleSelect = (id) => { setSelected(id); setHovered(null) }
+
+  const handleRefresh = () => {
+    if (!selected || !DB[selected]) return
+    setSpinning(true)
+    setShownExercises(pickFour(DB[selected].exercises))
+    setTimeout(() => setSpinning(false), 460)
+  }
 
   return (
     <div style={{
@@ -664,12 +744,28 @@ export default function WorkoutGuide({ onClose }) {
             {/* Exercise list */}
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
               <div style={{ width:3, height:14, background:selectedDB.color, borderRadius:2, boxShadow:`0 0 8px ${selectedDB.color}` }}/>
-              <p style={{ color:selectedDB.color, fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>
+              <p style={{ color:selectedDB.color, fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, flex:1 }}>
                 Exercises
               </p>
+              <button onClick={handleRefresh} style={{
+                display:'flex', alignItems:'center', gap:5,
+                padding:'5px 10px', borderRadius:8,
+                background:`${selectedDB.color}18`, border:`1px solid ${selectedDB.color}44`,
+                color:selectedDB.color, fontSize:10, fontWeight:700,
+                fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
+                letterSpacing:'0.08em',
+              }}>
+                <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  style={{ transform: spinning ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.46s ease' }}>
+                  <polyline points="1 4 1 10 7 10"/>
+                  <polyline points="23 20 23 14 17 14"/>
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                </svg>
+                Shuffle
+              </button>
             </div>
             <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
-              {selectedDB.exercises.map((ex, i) => <ExerciseCard key={i} ex={ex}/>)}
+              {shownExercises.map((ex, i) => <ExerciseCard key={`${ex.name}-${i}`} ex={ex}/>)}
             </div>
           </div>
         )}
