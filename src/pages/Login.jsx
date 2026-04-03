@@ -152,6 +152,25 @@ const styles = `
   .enter-btn:hover  { transform: translateY(-1px); border-color: #d0d0dc; box-shadow: 0 0 28px rgba(200,200,220,0.42), 0 0 60px rgba(200,200,220,0.18); }
   .enter-btn:active { transform: translateY(0); box-shadow: none; }
   .enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  @keyframes secureGlow {
+    0%, 100% {
+      text-shadow: 0 0 12px rgba(255,255,255,0.55), 0 0 28px rgba(255,255,255,0.25), 0 0 56px rgba(255,255,255,0.08);
+      opacity: 0.72;
+    }
+    50% {
+      text-shadow: 0 0 22px rgba(255,255,255,1), 0 0 50px rgba(255,255,255,0.65), 0 0 100px rgba(255,255,255,0.28);
+      opacity: 1;
+    }
+  }
+  @keyframes secureReveal {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes lineBreath {
+    0%, 100% { opacity: 0.3; transform: scaleX(0.7); }
+    50%       { opacity: 0.9; transform: scaleX(1); }
+  }
 `
 
 export default function Login() {
@@ -166,6 +185,7 @@ export default function Login() {
   const [offerFaceId, setOfferFaceId] = useState(false)
   const [registeringFaceId, setRegisteringFaceId] = useState(false)
   const [phase, setPhase] = useState('in')
+  const [open,  setOpen]  = useState(false)
 
   useEffect(() => {
     const cycle = () => {
@@ -307,157 +327,145 @@ export default function Login() {
           animation:'loginAurora 8s ease-in-out infinite',
         }}/>
 
-        {/* Content */}
-        <div style={{
-          position: 'relative', zIndex: 10,
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          width: '100%', maxWidth: '420px',
-          padding: '2rem 1.25rem',
-          margin: '0 auto',
-        }}>
-
-          {/* Brand */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem', position: 'relative' }}>
-            {/* Gold logo glow */}
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '280px', height: '130px', background: 'radial-gradient(ellipse at center, rgba(200,200,220,0.14) 0%, rgba(200,200,220,0.06) 50%, transparent 72%)', borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-              <svg width="38" height="32" viewBox="0 0 46 38" fill="none">
-                <polygon points="0,36 16,2 22,14 9,36" fill="white"/>
-                <polygon points="13,36 26,8 32,22 20,36" fill="white" opacity="0.62"/>
-                <polygon points="20,36 30,18 34,28 22,36" fill="white" opacity="0.32"/>
-              </svg>
-              <div style={{ width: '1px', height: '38px', background: 'linear-gradient(to bottom, transparent, #d0d0dc 30%, #d0d0dc 70%, transparent)', boxShadow: '0 0 8px rgba(200,200,220,0.55)' }} />
-              <span style={{
-                color: 'white', fontWeight: 900,
-                fontSize: 'clamp(1.8rem, 8vw, 2.8rem)',
-                letterSpacing: '0.2em', textTransform: 'uppercase',
-                lineHeight: 1, fontFamily: '"The Seasons", serif',
-                textShadow: `-1px -1px 1px rgba(212,212,232,0.18),
-                              1px  1px 2px rgba(0,0,0,0.9),
-                             -2px -2px 4px rgba(212,212,232,0.07),
-                              2px  2px 6px rgba(0,0,0,0.7),
-                              0 0 40px rgba(212,212,232,0.08)`,
-              }}>AXIOS</span>
-            </div>
-            <p style={{ color: 'rgba(200,200,220,0.70)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
-              I Am Worthy
-            </p>
-          </div>
-
-          {/* Animated word */}
-          <div style={{ textAlign: 'center', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-            <p style={{ color: 'rgba(200,200,220,0.55)', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
-              Est. 1989
-            </p>
-            <div style={{ overflow: 'hidden', height: '2.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <p
-                key={wordIndex}
-                className={phase === 'in' ? 'word-in' : 'word-out'}
-                style={{
-                  color: 'rgba(212,212,232,0.88)',
-                  fontSize: 'clamp(1.1rem, 4.5vw, 1.35rem)',
-                  fontFamily: '"EB Garamond", Georgia, serif',
-                  fontStyle: 'italic',
-                  letterSpacing: '0.09em',
-                  margin: 0,
-                  textShadow: '0 2px 20px rgba(200,200,220,0.28), 0 0 40px rgba(200,200,220,0.10)',
-                }}
-              >
-                {WORDS[wordIndex]}
-              </p>
-            </div>
-            {/* Progress dots */}
-            <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
-              {WORDS.map((_, i) => (
-                <div key={i} style={{
-                  width: i === wordIndex ? '16px' : '4px',
-                  height: '2px',
-                  borderRadius: '1px',
-                  background: i === wordIndex ? 'rgba(212,212,232,0.7)' : 'rgba(212,212,232,0.2)',
-                  transition: 'all 0.5s ease',
-                }} />
-              ))}
-            </div>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="login-card" style={{
-            width: '100%',
-            padding: 'clamp(1.25rem, 5vw, 2rem)',
-          }}>
-            <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(212,212,232,0.9)', textShadow: '0 0 12px rgba(212,212,232,0.6), 0 0 30px rgba(212,212,232,0.25), 0 0 60px rgba(212,212,232,0.1)' }}>
+        {/* Closed — SECURE ACCESS only */}
+        {!open && (
+          <div
+            onClick={() => setOpen(true)}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 10,
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'flex-end',
+              paddingBottom: '28vh',
+              cursor: 'pointer',
+              WebkitTapHighlightColor: 'transparent',
+              userSelect: 'none',
+            }}
+          >
+            <p style={{
+              color: '#fff',
+              fontSize: 'clamp(0.62rem, 2.6vw, 0.78rem)',
+              letterSpacing: '0.65em',
+              textTransform: 'uppercase',
+              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+              fontWeight: 300,
+              margin: 0,
+              animation: 'secureGlow 2.8s ease-in-out infinite',
+            }}>
               Secure Access
             </p>
+            <div style={{
+              width: 28, height: 1,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
+              marginTop: 14,
+              animation: 'lineBreath 2.8s ease-in-out infinite',
+              animationDelay: '0.35s',
+            }} />
+          </div>
+        )}
 
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', color: 'rgba(212,212,232,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Email</label>
-              <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.22)', pointerEvents: 'none' }}>
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+        {/* Open — full form */}
+        {open && (
+          <div style={{
+            position: 'relative', zIndex: 10,
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            width: '100%', maxWidth: '420px',
+            padding: '2rem 1.25rem',
+            margin: '0 auto',
+            animation: 'secureReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards',
+          }}>
+
+            {/* Brand */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '280px', height: '130px', background: 'radial-gradient(ellipse at center, rgba(200,200,220,0.14) 0%, rgba(200,200,220,0.06) 50%, transparent 72%)', borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                <svg width="38" height="32" viewBox="0 0 46 38" fill="none">
+                  <polygon points="0,36 16,2 22,14 9,36" fill="white"/>
+                  <polygon points="13,36 26,8 32,22 20,36" fill="white" opacity="0.62"/>
+                  <polygon points="20,36 30,18 34,28 22,36" fill="white" opacity="0.32"/>
                 </svg>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="email"
-                  autoComplete="off"
-                  required
-                  className="login-input login-input-icon"
-                />
+                <div style={{ width: '1px', height: '38px', background: 'linear-gradient(to bottom, transparent, #d0d0dc 30%, #d0d0dc 70%, transparent)', boxShadow: '0 0 8px rgba(200,200,220,0.55)' }} />
+                <span style={{
+                  color: 'white', fontWeight: 900,
+                  fontSize: 'clamp(1.8rem, 8vw, 2.8rem)',
+                  letterSpacing: '0.2em', textTransform: 'uppercase',
+                  lineHeight: 1, fontFamily: '"The Seasons", serif',
+                  textShadow: `-1px -1px 1px rgba(212,212,232,0.18), 1px 1px 2px rgba(0,0,0,0.9), 0 0 40px rgba(212,212,232,0.08)`,
+                }}>AXIOS</span>
+              </div>
+              <p style={{ color: 'rgba(200,200,220,0.70)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
+                I Am Worthy
+              </p>
+            </div>
+
+            {/* Animated word */}
+            <div style={{ textAlign: 'center', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+              <p style={{ color: 'rgba(200,200,220,0.55)', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>Est. 1989</p>
+              <div style={{ overflow: 'hidden', height: '2.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <p key={wordIndex} className={phase === 'in' ? 'word-in' : 'word-out'} style={{ color: 'rgba(212,212,232,0.88)', fontSize: 'clamp(1.1rem, 4.5vw, 1.35rem)', fontFamily: '"EB Garamond", Georgia, serif', fontStyle: 'italic', letterSpacing: '0.09em', margin: 0, textShadow: '0 2px 20px rgba(200,200,220,0.28)' }}>
+                  {WORDS[wordIndex]}
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
+                {WORDS.map((_, i) => (
+                  <div key={i} style={{ width: i === wordIndex ? '16px' : '4px', height: '2px', borderRadius: '1px', background: i === wordIndex ? 'rgba(212,212,232,0.7)' : 'rgba(212,212,232,0.2)', transition: 'all 0.5s ease' }} />
+                ))}
               </div>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', color: 'rgba(212,212,232,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Password</label>
-              <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.22)', pointerEvents: 'none' }}>
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="password"
-                  autoComplete="current-password"
-                  required
-                  className="login-input login-input-icon"
-                />
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="login-card" style={{ width: '100%', padding: 'clamp(1.25rem, 5vw, 2rem)' }}>
+              <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(212,212,232,0.9)', textShadow: '0 0 12px rgba(212,212,232,0.6), 0 0 30px rgba(212,212,232,0.25)' }}>
+                Secure Access
+              </p>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', color: 'rgba(212,212,232,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Email</label>
+                <div style={{ position: 'relative' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.22)', pointerEvents: 'none' }}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+                  </svg>
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email" autoComplete="off" required className="login-input login-input-icon" />
+                </div>
               </div>
-            </div>
 
-            {error && (
-              <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>
-            )}
-
-            {offerFaceId ? (
-              <div style={{ textAlign:'center' }}>
-                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:'0.75rem', fontFamily:'"Helvetica Neue",sans-serif', marginBottom:'1.2rem', lineHeight:1.5 }}>Enable Face ID for faster sign-in?</p>
-                <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId}
-                  style={{ width:'100%', padding:'13px', borderRadius:8, border:'none', background:'#fff', color:'#000', fontSize:'0.75rem', fontWeight:700, fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer', marginBottom:10 }}>
-                  {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
-                </button>
-                <button type="button" onClick={() => setShowLoader(true)}
-                  style={{ width:'100%', padding:'11px', borderRadius:8, border:'1px solid rgba(212,212,232,0.15)', background:'transparent', color:'rgba(212,212,232,0.45)', fontSize:'0.7rem', fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.12em', textTransform:'uppercase', cursor:'pointer' }}>
-                  Skip for now
-                </button>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', color: 'rgba(212,212,232,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Password</label>
+                <div style={{ position: 'relative' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.22)', pointerEvents: 'none' }}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="password" autoComplete="current-password" required className="login-input login-input-icon" />
+                </div>
               </div>
-            ) : (
-            <button type="submit" disabled={loading} className="enter-btn">
-              {loading ? 'Entering...' : 'Enter'}
-            </button>
-            )}
 
-            <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(212,212,232,0.9)', textShadow: '0 0 14px rgba(212,212,232,0.65), 0 0 35px rgba(212,212,232,0.25), 0 0 70px rgba(212,212,232,0.1)' }}>
-              Authorized personnel only
+              {error && <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>}
+
+              {offerFaceId ? (
+                <div style={{ textAlign:'center' }}>
+                  <p style={{ color:'rgba(212,212,232,0.7)', fontSize:'0.75rem', fontFamily:'"Helvetica Neue",sans-serif', marginBottom:'1.2rem', lineHeight:1.5 }}>Enable Face ID for faster sign-in?</p>
+                  <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId} style={{ width:'100%', padding:'13px', borderRadius:8, border:'none', background:'#fff', color:'#000', fontSize:'0.75rem', fontWeight:700, fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer', marginBottom:10 }}>
+                    {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
+                  </button>
+                  <button type="button" onClick={() => setShowLoader(true)} style={{ width:'100%', padding:'11px', borderRadius:8, border:'1px solid rgba(212,212,232,0.15)', background:'transparent', color:'rgba(212,212,232,0.45)', fontSize:'0.7rem', fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.12em', textTransform:'uppercase', cursor:'pointer' }}>
+                    Skip for now
+                  </button>
+                </div>
+              ) : (
+                <button type="submit" disabled={loading} className="enter-btn">
+                  {loading ? 'Entering...' : 'Enter'}
+                </button>
+              )}
+
+              <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(212,212,232,0.9)', textShadow: '0 0 14px rgba(212,212,232,0.65), 0 0 35px rgba(212,212,232,0.25)' }}>
+                Authorized personnel only
+              </p>
+            </form>
+
+            <p style={{ color: 'rgba(212,212,232,0.15)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '1.5rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
+              "Axios" — I am worthy
             </p>
-          </form>
-
-          <p style={{ color: 'rgba(212,212,232,0.15)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '1.5rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
-            "Axios" — I am worthy
-          </p>
-        </div>
+          </div>
+        )}
 
         <p style={{
           position: 'fixed', bottom: '1.5rem', left: '1.5rem',
