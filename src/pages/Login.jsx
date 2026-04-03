@@ -72,6 +72,22 @@ const styles = `
     50%     { box-shadow: 0 0 24px rgba(226,226,228,0.50), 0 0 56px rgba(226,226,228,0.20), 0 0 90px rgba(226,226,228,0.07); }
   }
 
+  @keyframes loginRipple {
+    0%   { transform: translate(-50%, -50%) scale(0.04); opacity: 0.28; }
+    60%  { opacity: 0.08; }
+    100% { transform: translate(-50%, -50%) scale(1);    opacity: 0;    }
+  }
+  @keyframes loginParticle {
+    0%   { opacity: 0;   transform: translateY(0px) scale(1);   }
+    18%  { opacity: 0.9; }
+    82%  { opacity: 0.4; }
+    100% { opacity: 0;   transform: translateY(-42vh) scale(0.4); }
+  }
+  @keyframes loginAurora {
+    0%,100% { opacity: 0.04; transform: scaleX(1)   skewY(-2deg); }
+    50%     { opacity: 0.11; transform: scaleX(1.08) skewY(-4deg); }
+  }
+
   .word-in  { animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
   .word-out { animation: fadeOutUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
 
@@ -240,6 +256,56 @@ export default function Login() {
           animation: 'scanLine 12s linear infinite',
           pointerEvents: 'none',
         }} />
+
+        {/* Ripple rings — emanate from hero centre */}
+        <div style={{ position:'fixed', inset:0, zIndex:3, pointerEvents:'none', overflow:'hidden' }}>
+          {[0, 1.4, 2.8, 4.2, 5.6].map((delay, i) => (
+            <div key={i} style={{
+              position:'absolute',
+              top:'38%', left:'50%',
+              width:'130vw', height:'130vw',
+              borderRadius:'50%',
+              border:`1px solid rgba(255,255,255,${0.13 - i * 0.015})`,
+              animation:`loginRipple 7s ease-out infinite`,
+              animationDelay:`-${delay}s`,
+            }}/>
+          ))}
+        </div>
+
+        {/* Floating particles */}
+        <div style={{ position:'fixed', inset:0, zIndex:3, pointerEvents:'none', overflow:'hidden' }}>
+          {[
+            { l:'8%',  bot:'12%', dur:'9s',  delay:'0s',   s:2.5 },
+            { l:'18%', bot:'22%', dur:'12s', delay:'-3s',  s:1.5 },
+            { l:'32%', bot:'8%',  dur:'10s', delay:'-6s',  s:2   },
+            { l:'45%', bot:'18%', dur:'14s', delay:'-1.5s',s:1.5 },
+            { l:'58%', bot:'6%',  dur:'11s', delay:'-8s',  s:2   },
+            { l:'68%', bot:'25%', dur:'9s',  delay:'-4.5s',s:1.5 },
+            { l:'78%', bot:'14%', dur:'13s', delay:'-2s',  s:2.5 },
+            { l:'88%', bot:'20%', dur:'10s', delay:'-7s',  s:1.5 },
+            { l:'24%', bot:'35%', dur:'16s', delay:'-5s',  s:1   },
+            { l:'72%', bot:'38%', dur:'15s', delay:'-9s',  s:1   },
+          ].map((p, i) => (
+            <div key={i} style={{
+              position:'absolute',
+              left:p.l, bottom:p.bot,
+              width:p.s, height:p.s,
+              borderRadius:'50%',
+              background:'rgba(255,255,255,0.75)',
+              boxShadow:`0 0 ${p.s * 3}px rgba(255,255,255,0.5)`,
+              animation:`loginParticle ${p.dur} ease-in-out infinite`,
+              animationDelay: p.delay,
+            }}/>
+          ))}
+        </div>
+
+        {/* Aurora band — slow horizontal light sweep */}
+        <div style={{
+          position:'fixed', left:'-10%', right:'-10%', top:'25%', height:'18%',
+          zIndex:3, pointerEvents:'none',
+          background:'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.05) 60%, transparent 100%)',
+          animation:'loginAurora 8s ease-in-out infinite',
+        }}/>
 
         {/* Content */}
         <div style={{
