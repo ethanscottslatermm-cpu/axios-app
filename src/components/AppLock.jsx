@@ -203,7 +203,7 @@ export default function AppLock({ children }) {
           </p>
 
           {error && (
-            <p style={{ color:'#f87171', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:10 }}>
+            <p style={{ color:'#c4a0a0', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:10 }}>
               {error}
             </p>
           )}

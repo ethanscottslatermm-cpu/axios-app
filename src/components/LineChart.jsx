@@ -5,9 +5,9 @@ function trendColor(data) {
   const first = data[0].value
   const last  = data[data.length - 1].value
   const delta = ((last - first) / (Math.abs(first) || 1)) * 100
-  if (delta >  3) return '#4ade80'  // green — increasing
-  if (delta < -3) return '#f87171'  // red   — decreasing
-  return '#fbbf24'                   // yellow — stagnant
+  if (delta >  3) return '#9ab89a'  // green — increasing
+  if (delta < -3) return '#c4a0a0'  // red   — decreasing
+  return '#c4b490'                   // yellow — stagnant
 }
 
 export default function LineChart({

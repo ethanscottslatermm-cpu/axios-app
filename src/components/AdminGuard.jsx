@@ -116,7 +116,7 @@ export default function AdminGuard({ children }) {
       </p>
 
       {error && (
-        <p style={{ color: '#f87171', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', marginBottom: 20 }}>
+        <p style={{ color: '#c4a0a0', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', marginBottom: 20 }}>
           {error}
         </p>
       )}

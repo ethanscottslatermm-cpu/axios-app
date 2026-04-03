@@ -324,7 +324,7 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
           <div style={{ display:'flex', gap:8 }}>
             {MEAL_TYPES.map(m => (
               <button key={m} onClick={() => set('meal_type', m)}
-                style={{ flex:1, padding:'9px 4px', borderRadius:9, border:`1px solid ${form.meal_type===m ? 'rgba(134,239,172,0.5)' : 'rgba(255,255,255,0.08)'}`, background: form.meal_type===m ? 'rgba(134,239,172,0.12)' : 'rgba(255,255,255,0.03)', color: form.meal_type===m ? '#86efac' : 'rgba(255,255,255,0.35)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight: form.meal_type===m ? 700 : 400, cursor:'pointer', transition:'all 0.18s', textAlign:'center', letterSpacing:'0.04em' }}>
+                style={{ flex:1, padding:'9px 4px', borderRadius:9, border:`1px solid ${form.meal_type===m ? 'rgba(200,212,200,0.5)' : 'rgba(255,255,255,0.08)'}`, background: form.meal_type===m ? 'rgba(200,212,200,0.12)' : 'rgba(255,255,255,0.03)', color: form.meal_type===m ? '#c8d4c8' : 'rgba(255,255,255,0.35)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight: form.meal_type===m ? 700 : 400, cursor:'pointer', transition:'all 0.18s', textAlign:'center', letterSpacing:'0.04em' }}>
                 {m}
               </button>
             ))}
@@ -389,9 +389,9 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:10 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'rgba(134,239,172,0.15)', color:'#86efac', border:'1px solid rgba(134,239,172,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:16, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(134,239,172,0.1)' }}
-          onMouseEnter={e => { if (!saving) { e.currentTarget.style.background='rgba(134,239,172,0.25)'; e.currentTarget.style.boxShadow='0 0 22px rgba(134,239,172,0.25)' }}}
-          onMouseLeave={e => { e.currentTarget.style.background='rgba(134,239,172,0.15)'; e.currentTarget.style.boxShadow='0 0 14px rgba(134,239,172,0.1)' }}
+          style={{ width:'100%', padding:'15px', background:'rgba(200,212,200,0.15)', color:'#c8d4c8', border:'1px solid rgba(200,212,200,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, marginTop:16, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(200,212,200,0.1)' }}
+          onMouseEnter={e => { if (!saving) { e.currentTarget.style.background='rgba(200,212,200,0.25)'; e.currentTarget.style.boxShadow='0 0 22px rgba(200,212,200,0.25)' }}}
+          onMouseLeave={e => { e.currentTarget.style.background='rgba(200,212,200,0.15)'; e.currentTarget.style.boxShadow='0 0 14px rgba(200,212,200,0.1)' }}
         >
           {saving ? 'Saving…' : <>{Ico.check()} Add to Log</>}
         </button>
@@ -534,8 +534,8 @@ export default function FoodJournal() {
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#86efac', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Food Journal</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+                <h1 style={{ color:'#c8d4c8', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Food Journal</h1>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#c8d4c8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
               </div>
             </div>
             {/* Action buttons */}
@@ -586,10 +586,10 @@ export default function FoodJournal() {
               const count = m === 'All' ? allLogs.length : (mealGroups[m]?.length || 0)
               return (
                 <button key={m} onClick={() => setActiveMeal(m)} className="ax-meal-tab"
-                  style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:99, border:`1px solid ${active ? 'rgba(134,239,172,0.5)' : 'rgba(255,255,255,0.08)'}`, background: active ? 'rgba(134,239,172,0.12)' : 'rgba(255,255,255,0.03)', color: active ? '#86efac' : 'rgba(255,255,255,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0 }}>
-                  {m !== 'All' && <span style={{ color: active ? 'rgba(134,239,172,0.7)' : 'rgba(255,255,255,0.2)' }}>{MEAL_ICONS[m](12)}</span>}
+                  style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:99, border:`1px solid ${active ? 'rgba(200,212,200,0.5)' : 'rgba(255,255,255,0.08)'}`, background: active ? 'rgba(200,212,200,0.12)' : 'rgba(255,255,255,0.03)', color: active ? '#c8d4c8' : 'rgba(255,255,255,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0 }}>
+                  {m !== 'All' && <span style={{ color: active ? 'rgba(200,212,200,0.7)' : 'rgba(255,255,255,0.2)' }}>{MEAL_ICONS[m](12)}</span>}
                   {m}
-                  {count > 0 && <span style={{ background: active ? 'rgba(134,239,172,0.2)' : 'rgba(255,255,255,0.07)', borderRadius:99, padding:'1px 6px', fontSize:10 }}>{count}</span>}
+                  {count > 0 && <span style={{ background: active ? 'rgba(200,212,200,0.2)' : 'rgba(255,255,255,0.07)', borderRadius:99, padding:'1px 6px', fontSize:10 }}>{count}</span>}
                 </button>
               )
             })}

@@ -22,12 +22,12 @@ const Ico = {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-const WATER_BLUE = '#38bdf8'
+const WATER_BLUE = '#9ab4cc'
 
 function GlowBar({ pct, h=5 }) {
   const full  = pct >= 100
   const color = full ? WATER_BLUE : 'var(--btn-bg)'
-  const glow  = full ? 'rgba(56,189,248,0.55)' : 'rgba(255,255,255,0.5)'
+  const glow  = full ? 'rgba(154,180,204,0.55)' : 'rgba(255,255,255,0.5)'
   return (
     <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
       <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1), background 0.5s', boxShadow:`0 0 10px ${glow}` }} />
@@ -76,20 +76,20 @@ function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
         width: '100%',
         aspectRatio: '1',
         borderRadius: 12,
-        border: `1px solid ${filled ? 'rgba(56,189,248,0.5)' : 'rgba(255,255,255,0.09)'}`,
-        background: filled ? 'rgba(56,189,248,0.22)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${filled ? 'rgba(154,180,204,0.5)' : 'rgba(255,255,255,0.09)'}`,
+        background: filled ? 'rgba(154,180,204,0.22)' : 'rgba(255,255,255,0.04)',
         cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         transition: 'background 0.25s, border-color 0.25s, transform 0.15s, box-shadow 0.25s',
         transform: pressed ? 'scale(0.92)' : visible ? 'scale(1)' : 'scale(0.85)',
         opacity: visible ? 1 : 0,
-        boxShadow: filled ? '0 0 14px rgba(56,189,248,0.3)' : 'none',
+        boxShadow: filled ? '0 0 14px rgba(154,180,204,0.3)' : 'none',
         transitionDelay: `${animDelay}ms`,
         color: filled ? WATER_BLUE : 'rgba(255,255,255,0.2)',
       }}
     >
       <svg width={filled ? 22 : 20} height={filled ? 22 : 20} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={filled ? 'rgba(56,189,248,0.75)' : 'transparent'} stroke="none"/>
+        <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={filled ? 'rgba(154,180,204,0.75)' : 'transparent'} stroke="none"/>
         <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke="currentColor" strokeWidth="1.5"/>
         <line x1="5" y1="3" x2="19" y2="3" stroke="currentColor" strokeWidth="1.5"/>
         <path d="M19 8 C21.5 8 21.5 13 19 13" stroke="currentColor" strokeWidth="1.5"/>
@@ -139,7 +139,7 @@ function CustomOzSheet({ onSave, onClose }) {
             Cancel
           </button>
           <button onClick={handleSave} disabled={saving || !oz}
-            style={{ flex:2, padding:'13px', background:'rgba(56,189,248,0.15)', color:'#38bdf8', border:'1px solid rgba(56,189,248,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving || !oz ? 'not-allowed' : 'pointer', opacity: saving || !oz ? 0.5 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, boxShadow:'0 0 14px rgba(56,189,248,0.12)' }}>
+            style={{ flex:2, padding:'13px', background:'rgba(154,180,204,0.15)', color:'#9ab4cc', border:'1px solid rgba(154,180,204,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving || !oz ? 'not-allowed' : 'pointer', opacity: saving || !oz ? 0.5 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, boxShadow:'0 0 14px rgba(154,180,204,0.12)' }}>
             {Ico.check()} Log It
           </button>
         </div>
@@ -184,27 +184,27 @@ export default function WaterTracker() {
   const quickSizes = [
     { label: '8 oz',  sub: 'Glass',  oz: 8,  icon: (
       <svg viewBox="0 0 28 36" width={22} height={28} fill="none">
-        <path d="M5 4 L7 32 H21 L23 4 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+        <path d="M5 4 L7 32 H21 L23 4 Z" fill="rgba(154,180,204,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
         <line x1="5" y1="4" x2="23" y2="4" stroke={WATER_BLUE} strokeWidth="1.4"/>
       </svg>
     )},
     { label: '12 oz', sub: 'Bottle', oz: 12, icon: (
       <svg viewBox="0 0 28 40" width={20} height={30} fill="none">
-        <rect x="10" y="2" width="8" height="6" rx="1.5" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.3"/>
-        <path d="M6 10 Q4 14 4 18 L4 34 Q4 38 14 38 Q24 38 24 34 L24 18 Q24 14 22 10 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+        <rect x="10" y="2" width="8" height="6" rx="1.5" fill="rgba(154,180,204,0.18)" stroke={WATER_BLUE} strokeWidth="1.3"/>
+        <path d="M6 10 Q4 14 4 18 L4 34 Q4 38 14 38 Q24 38 24 34 L24 18 Q24 14 22 10 Z" fill="rgba(154,180,204,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
       </svg>
     )},
     { label: '16 oz', sub: 'Large',  oz: 16, icon: (
       <svg viewBox="0 0 32 40" width={24} height={32} fill="none">
-        <path d="M4 4 L6 36 H26 L28 4 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+        <path d="M4 4 L6 36 H26 L28 4 Z" fill="rgba(154,180,204,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
         <line x1="4" y1="4" x2="28" y2="4" stroke={WATER_BLUE} strokeWidth="1.4"/>
         <line x1="6" y1="20" x2="26" y2="20" stroke={WATER_BLUE} strokeWidth="0.8" strokeDasharray="2 2" opacity="0.5"/>
       </svg>
     )},
     { label: '24 oz', sub: 'Bottle', oz: 24, icon: (
       <svg viewBox="0 0 28 46" width={20} height={34} fill="none">
-        <rect x="10" y="2" width="8" height="5" rx="1.5" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.3"/>
-        <path d="M6 9 Q4 13 4 18 L4 38 Q4 44 14 44 Q24 44 24 38 L24 18 Q24 13 22 9 Z" fill="rgba(56,189,248,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
+        <rect x="10" y="2" width="8" height="5" rx="1.5" fill="rgba(154,180,204,0.18)" stroke={WATER_BLUE} strokeWidth="1.3"/>
+        <path d="M6 9 Q4 13 4 18 L4 38 Q4 44 14 44 Q24 44 24 38 L24 18 Q24 13 22 9 Z" fill="rgba(154,180,204,0.18)" stroke={WATER_BLUE} strokeWidth="1.4" strokeLinejoin="round"/>
         <line x1="5" y1="26" x2="23" y2="26" stroke={WATER_BLUE} strokeWidth="0.8" strokeDasharray="2 2" opacity="0.5"/>
       </svg>
     )},
@@ -252,8 +252,8 @@ export default function WaterTracker() {
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#38bdf8', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Water Intake</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M9 2h6"/><path d="M7.5 5h9l.5 2V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V7l.5-2z"/><path d="M7.5 11h9"/></svg>
+                <h1 style={{ color:'#9ab4cc', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Water Intake</h1>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9ab4cc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M9 2h6"/><path d="M7.5 5h9l.5 2V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V7l.5-2z"/><path d="M7.5 11h9"/></svg>
               </div>
             </div>
           </div>

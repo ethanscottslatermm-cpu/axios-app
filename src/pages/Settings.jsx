@@ -281,7 +281,7 @@ export default function Settings() {
 
           {/* Profile */}
           <Card style={anim(60)}>
-            <SectionLabel color="#fbbf24">Profile</SectionLabel>
+            <SectionLabel color="#d8d8e8">Profile</SectionLabel>
             <Field label="Display Name" value={profile.name} onChange={v=>set('name',v)} icon={Ico.user} placeholder="Ethan" />
             <Field label="Email" value={user?.email||''} onChange={()=>{}} icon={Ico.mail} disabled />
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
@@ -292,7 +292,7 @@ export default function Settings() {
 
           {/* Body */}
           <Card style={anim(120)}>
-            <SectionLabel color="#a78bfa">Body Stats</SectionLabel>
+            <SectionLabel color="#b8b8cc">Body Stats</SectionLabel>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <Field label="Height (ft)" value={profile.height_ft} onChange={v=>set('height_ft',v)} icon={Ico.scale} type="number" placeholder="5" />
               <Field label="Height (in)" value={profile.height_in} onChange={v=>set('height_in',v)} type="number" placeholder="11" />
@@ -303,14 +303,14 @@ export default function Settings() {
 
           {/* Goals */}
           <Card style={anim(180)}>
-            <SectionLabel color="#3b82f6">Goals & Activity</SectionLabel>
+            <SectionLabel color="#b4bccc">Goals & Activity</SectionLabel>
             <SelectField label="Primary Goal" value={profile.primary_goal} onChange={v=>set('primary_goal',v)} options={['Lose weight','Build muscle','Maintain weight','Improve endurance','Overall wellness']} />
             <SelectField label="Activity Level" value={profile.activity_level} onChange={v=>set('activity_level',v)} options={['Sedentary','Lightly active','Moderately active','Very active','Athlete']} />
           </Card>
 
           {/* Daily Targets */}
           <Card style={anim(240)}>
-            <SectionLabel color="#38bdf8">Daily Targets</SectionLabel>
+            <SectionLabel color="#9ab4cc">Daily Targets</SectionLabel>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <Field label="Calorie Goal" value={profile.calorie_goal} onChange={v=>set('calorie_goal',v)} icon={Ico.flame} type="number" placeholder="2200" />
               <Field label="Water Goal (glasses)" value={profile.water_goal} onChange={v=>set('water_goal',v)} icon={Ico.drop} type="number" placeholder="8" />
@@ -319,13 +319,13 @@ export default function Settings() {
 
           {/* Spiritual */}
           <Card style={anim(300)}>
-            <SectionLabel color="#f87171">Spiritual Preferences</SectionLabel>
+            <SectionLabel color="#a8b4c0">Spiritual Preferences</SectionLabel>
             <SelectField label="Faith Focus" value={profile.faith_focus} onChange={v=>set('faith_focus',v)} options={['Christian','Non-denominational','Spiritual but not religious','Other','Prefer not to say']} />
           </Card>
 
           {/* Theme */}
           <Card style={anim(330)}>
-            <SectionLabel color="#94a3b8">App Theme</SectionLabel>
+            <SectionLabel color="#7a7a8a">App Theme</SectionLabel>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               {Object.entries(THEMES).filter(([key]) => ['axios','ash','midnight'].includes(key)).map(([key, t]) => {
                 const active = themeKey === key
@@ -418,7 +418,7 @@ export default function Settings() {
 
           {/* Account */}
           <Card style={anim(420)}>
-            <SectionLabel color="#94a3b8">Account</SectionLabel>
+            <SectionLabel color="#7a7a8a">Account</SectionLabel>
             <div style={{ padding:'8px 0 16px', borderBottom:'1px solid rgba(255,255,255,0.06)', marginBottom:16 }}>
               <p style={{ color:'rgba(255,255,255,0.4)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Signed in as</p>
               <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>{user?.email}</p>

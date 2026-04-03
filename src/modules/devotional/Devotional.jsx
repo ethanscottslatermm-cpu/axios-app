@@ -125,9 +125,9 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:8 }}>{error}</p>}
 
         <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'rgba(248,113,113,0.15)', color:'#f87171', border:'1px solid rgba(248,113,113,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving?'not-allowed':'pointer', opacity: saving?0.6:1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(248,113,113,0.1)' }}
-          onMouseEnter={e=>{if(!saving){e.currentTarget.style.background='rgba(248,113,113,0.25)';e.currentTarget.style.boxShadow='0 0 22px rgba(248,113,113,0.25)'}}}
-          onMouseLeave={e=>{e.currentTarget.style.background='rgba(248,113,113,0.15)';e.currentTarget.style.boxShadow='0 0 14px rgba(248,113,113,0.1)'}}>
+          style={{ width:'100%', padding:'15px', background:'rgba(168,180,192,0.15)', color:'#a8b4c0', border:'1px solid rgba(168,180,192,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving?'not-allowed':'pointer', opacity: saving?0.6:1, marginTop:18, display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(168,180,192,0.1)' }}
+          onMouseEnter={e=>{if(!saving){e.currentTarget.style.background='rgba(168,180,192,0.25)';e.currentTarget.style.boxShadow='0 0 22px rgba(168,180,192,0.25)'}}}
+          onMouseLeave={e=>{e.currentTarget.style.background='rgba(168,180,192,0.15)';e.currentTarget.style.boxShadow='0 0 14px rgba(168,180,192,0.1)'}}>
           {saving ? 'Saving…' : <>{Ico.check()} Save Journal</>}
         </button>
       </div>
@@ -315,7 +315,7 @@ function BibleReader({ onClose }) {
           <div style={{ display:'flex', gap:8, marginTop:12 }}>
             {['OT','NT'].map(t => (
               <button key={t} onClick={() => setTestament(t)}
-                style={{ flex:1, padding:'9px', borderRadius:9, background: testament===t ? 'rgba(248,113,113,0.15)' : 'var(--stat-bg)', border: testament===t ? '1px solid rgba(248,113,113,0.4)' : '1px solid var(--border)', color: testament===t ? '#f87171' : 'var(--text-muted)', cursor:'pointer', fontSize:11, fontWeight:700, letterSpacing:'0.14em', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.18s' }}>
+                style={{ flex:1, padding:'9px', borderRadius:9, background: testament===t ? 'rgba(168,180,192,0.15)' : 'var(--stat-bg)', border: testament===t ? '1px solid rgba(168,180,192,0.4)' : '1px solid var(--border)', color: testament===t ? '#a8b4c0' : 'var(--text-muted)', cursor:'pointer', fontSize:11, fontWeight:700, letterSpacing:'0.14em', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.18s' }}>
                 {t === 'OT' ? 'Old Testament' : 'New Testament'}
               </button>
             ))}
@@ -331,7 +331,7 @@ function BibleReader({ onClose }) {
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
             {visibleBooks.map(b => (
               <button key={b.slug} onClick={() => { setBook(b); setChapter(1); setView('chapters') }}
-                style={{ padding:'12px 14px', borderRadius:11, background: book.slug===b.slug ? 'rgba(248,113,113,0.12)' : 'var(--bg-card)', border: book.slug===b.slug ? '1px solid rgba(248,113,113,0.35)' : '1px solid var(--border)', color: book.slug===b.slug ? '#f87171' : 'var(--text-secondary)', cursor:'pointer', textAlign:'left', fontFamily:'Helvetica Neue,sans-serif', fontSize:13, fontWeight: book.slug===b.slug ? 700 : 400, transition:'all 0.15s' }}>
+                style={{ padding:'12px 14px', borderRadius:11, background: book.slug===b.slug ? 'rgba(168,180,192,0.12)' : 'var(--bg-card)', border: book.slug===b.slug ? '1px solid rgba(168,180,192,0.35)' : '1px solid var(--border)', color: book.slug===b.slug ? '#a8b4c0' : 'var(--text-secondary)', cursor:'pointer', textAlign:'left', fontFamily:'Helvetica Neue,sans-serif', fontSize:13, fontWeight: book.slug===b.slug ? 700 : 400, transition:'all 0.15s' }}>
                 {b.name}
                 <span style={{ display:'block', fontSize:10, color:'var(--text-muted)', marginTop:2 }}>{b.chapters} ch</span>
               </button>
@@ -344,7 +344,7 @@ function BibleReader({ onClose }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:8 }}>
             {Array.from({ length: book.chapters }, (_, i) => i + 1).map(ch => (
               <button key={ch} onClick={() => { setChapter(ch); setView('read') }}
-                style={{ padding:'14px 0', borderRadius:10, background: chapter===ch ? 'rgba(248,113,113,0.15)' : 'var(--bg-card)', border: chapter===ch ? '1px solid rgba(248,113,113,0.4)' : '1px solid var(--border)', color: chapter===ch ? '#f87171' : 'var(--text-secondary)', cursor:'pointer', fontSize:14, fontWeight: chapter===ch ? 800 : 400, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.15s' }}>
+                style={{ padding:'14px 0', borderRadius:10, background: chapter===ch ? 'rgba(168,180,192,0.15)' : 'var(--bg-card)', border: chapter===ch ? '1px solid rgba(168,180,192,0.4)' : '1px solid var(--border)', color: chapter===ch ? '#a8b4c0' : 'var(--text-secondary)', cursor:'pointer', fontSize:14, fontWeight: chapter===ch ? 800 : 400, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.15s' }}>
                 {ch}
               </button>
             ))}
@@ -522,8 +522,8 @@ export default function Devotional() {
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#f87171', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Daily Devotional</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <h1 style={{ color:'#a8b4c0', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Daily Devotional</h1>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#a8b4c0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
               </div>
             </div>
             {today && (
@@ -579,7 +579,7 @@ export default function Devotional() {
             <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <p style={{ color:'rgba(185,28,28,0.75)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.14em', fontWeight:600 }}>KJV · DAILY VERSE</p>
               <button onClick={() => setShowBible(true)}
-                style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:8, background:'rgba(248,113,113,0.1)', border:'1px solid rgba(248,113,113,0.3)', color:'#f87171', cursor:'pointer', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:8, background:'rgba(168,180,192,0.1)', border:'1px solid rgba(168,180,192,0.3)', color:'#a8b4c0', cursor:'pointer', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
                 {Ico.book(12)} Read Bible
               </button>
             </div>
@@ -594,7 +594,7 @@ export default function Devotional() {
                   Reflect on today's scripture.<br/>Write what it means to you.
                 </p>
                 <button onClick={() => setShowJournal(true)} className="ax-journal-btn"
-                  style={{ padding:'13px 28px', background:'rgba(248,113,113,0.15)', color:'#f87171', border:'1px solid rgba(248,113,113,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:7, boxShadow:'0 0 14px rgba(248,113,113,0.1)' }}>
+                  style={{ padding:'13px 28px', background:'rgba(168,180,192,0.15)', color:'#a8b4c0', border:'1px solid rgba(168,180,192,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:7, boxShadow:'0 0 14px rgba(168,180,192,0.1)' }}>
                   {Ico.edit()} Write Reflection
                 </button>
               </div>

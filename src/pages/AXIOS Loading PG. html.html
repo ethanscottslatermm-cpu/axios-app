@@ -1,0 +1,200 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+  }
+  .phone {
+    border-radius: 48px;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    width: 220px;
+    height: 440px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #060608;
+  }
+
+  /* animated bg canvas */
+  .bg-canvas {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  /* slow drifting orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(38px);
+    opacity: 0;
+    animation: orb-drift linear infinite;
+  }
+  .orb1 {
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, rgba(180,180,210,0.22) 0%, transparent 70%);
+    top: -40px; left: -30px;
+    animation-duration: 9s;
+    animation-delay: 0s;
+  }
+  .orb2 {
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(140,140,175,0.18) 0%, transparent 70%);
+    bottom: 20px; right: -20px;
+    animation-duration: 11s;
+    animation-delay: -4s;
+  }
+  .orb3 {
+    width: 90px; height: 90px;
+    background: radial-gradient(circle, rgba(200,200,230,0.15) 0%, transparent 70%);
+    top: 50%; left: 60%;
+    animation-duration: 13s;
+    animation-delay: -7s;
+  }
+  @keyframes orb-drift {
+    0%   { opacity: 0; transform: translate(0px, 0px) scale(1); }
+    15%  { opacity: 1; }
+    50%  { transform: translate(18px, 22px) scale(1.08); }
+    85%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-8px, 40px) scale(0.95); }
+  }
+
+  /* rising smoke particles */
+  .smoke-wrap {
+    position: absolute;
+    inset: 0;
+  }
+  .smoke {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(200,200,220,0.06);
+    filter: blur(12px);
+    animation: rise linear infinite;
+  }
+  .s1 { width:50px; height:50px; left:15%; bottom:-60px; animation-duration:7s; animation-delay:0s; }
+  .s2 { width:35px; height:35px; left:45%; bottom:-60px; animation-duration:9s; animation-delay:-2s; }
+  .s3 { width:60px; height:60px; left:70%; bottom:-60px; animation-duration:11s; animation-delay:-5s; }
+  .s4 { width:28px; height:28px; left:30%; bottom:-60px; animation-duration:8s; animation-delay:-3.5s; }
+  .s5 { width:44px; height:44px; left:80%; bottom:-60px; animation-duration:10s; animation-delay:-1s; }
+
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    10%  { opacity: 1; }
+    60%  { transform: translateY(-260px) translateX(15px) scale(1.6); opacity: 0.5; }
+    100% { transform: translateY(-480px) translateX(-10px) scale(2.2); opacity: 0; }
+  }
+
+  /* scan line sweep */
+  .scanline {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(220,220,255,0.12) 30%, rgba(255,255,255,0.25) 50%, rgba(220,220,255,0.12) 70%, transparent 100%);
+    animation: scan 5s ease-in-out infinite;
+    top: 0;
+  }
+  @keyframes scan {
+    0%   { top: 0%; opacity: 0; }
+    5%   { opacity: 1; }
+    95%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* foreground content */
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .wordmark {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 10px;
+    color: transparent;
+    background: linear-gradient(
+      105deg,
+      #5a5a62 0%,
+      #9b9baa 18%,
+      #d0d0dc 32%,
+      #f0f0f6 42%,
+      #ffffff 50%,
+      #f0f0f6 58%,
+      #d0d0dc 68%,
+      #9b9baa 82%,
+      #5a5a62 100%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: plat-shimmer 3s ease-in-out infinite;
+    font-family: Georgia, serif;
+    text-indent: 10px;
+  }
+  .tagline {
+    font-size: 9px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(180,180,195,0.45);
+    font-family: Georgia, serif;
+    margin-top: 10px;
+    text-indent: 5px;
+  }
+  .bar-wrap {
+    width: 100px;
+    height: 1px;
+    background: rgba(200,200,220,0.08);
+    border-radius: 1px;
+    margin-top: 28px;
+    overflow: hidden;
+  }
+  .bar {
+    height: 100%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(220,220,240,0.9), transparent);
+    animation: bar-slide 2.4s ease-in-out infinite;
+  }
+  @keyframes plat-shimmer {
+    0%   { background-position: 250% 0; }
+    100% { background-position: -250% 0; }
+  }
+  @keyframes bar-slide {
+    0%   { transform: translateX(-200%); }
+    100% { transform: translateX(500%); }
+  }
+</style>
+
+<div class="stage">
+  <div class="phone">
+
+    <div class="bg-canvas">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+      <div class="smoke-wrap">
+        <div class="smoke s1"></div>
+        <div class="smoke s2"></div>
+        <div class="smoke s3"></div>
+        <div class="smoke s4"></div>
+        <div class="smoke s5"></div>
+      </div>
+      <div class="scanline"></div>
+    </div>
+
+    <div class="content">
+      <div class="wordmark">AXIOS</div>
+      <div class="tagline">I am worthy</div>
+      <div class="bar-wrap">
+        <div class="bar"></div>
+      </div>
+    </div>
+
+  </div>
+</div>

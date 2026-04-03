@@ -6,10 +6,10 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
 const STATUS_COLORS = {
-  active:    { bg: 'rgba(74,222,128,0.12)',  text: '#4ade80',  label: 'Active'    },
-  suspended: { bg: 'rgba(251,191,36,0.12)',  text: '#fbbf24',  label: 'Suspended' },
+  active:    { bg: 'rgba(154,184,154,0.12)',  text: '#9ab89a',  label: 'Active'    },
+  suspended: { bg: 'rgba(196,180,144,0.12)',  text: '#c4b490',  label: 'Suspended' },
   inactive:  { bg: 'rgba(156,163,175,0.12)', text: '#9ca3af',  label: 'Inactive'  },
-  deleted:   { bg: 'rgba(248,113,113,0.12)', text: '#f87171',  label: 'Deleted'   },
+  deleted:   { bg: 'rgba(196,160,160,0.12)', text: '#c4a0a0',  label: 'Deleted'   },
 }
 
 const Ico = {
@@ -64,7 +64,7 @@ function SuspendPicker({ onConfirm, onCancel }) {
       <span style={{ color: 'var(--text-muted)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>days</span>
       <button onClick={() => onConfirm(parseInt(days) || 1)} style={{
         padding: '7px 14px', borderRadius: 8, border: 'none',
-        background: '#fbbf24', color: '#000',
+        background: '#c4b490', color: '#000',
         fontSize: 12, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
       }}>Confirm</button>
       <button onClick={onCancel} style={{
@@ -153,8 +153,8 @@ function UserCard({ user, isSelf, onAction, expanded, onToggle }) {
                 <button onClick={() => onAction(user.id, 'activate')} style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   padding: '8px 14px', borderRadius: 9,
-                  border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)',
-                  color: '#4ade80', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
+                  border: '1px solid rgba(154,184,154,0.3)', background: 'rgba(154,184,154,0.08)',
+                  color: '#9ab89a', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
                 }}>
                   {Ico.check()} Reactivate
                 </button>
@@ -165,8 +165,8 @@ function UserCard({ user, isSelf, onAction, expanded, onToggle }) {
                 <button onClick={() => setShowSuspend(true)} style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   padding: '8px 14px', borderRadius: 9,
-                  border: '1px solid rgba(251,191,36,0.3)', background: 'rgba(251,191,36,0.08)',
-                  color: '#fbbf24', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
+                  border: '1px solid rgba(196,180,144,0.3)', background: 'rgba(196,180,144,0.08)',
+                  color: '#c4b490', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
                 }}>
                   {Ico.pause()} Suspend
                 </button>
@@ -188,8 +188,8 @@ function UserCard({ user, isSelf, onAction, expanded, onToggle }) {
               <button onClick={() => onAction(user.id, 'delete')} style={{
                 display: 'flex', alignItems: 'center', gap: 6,
                 padding: '8px 14px', borderRadius: 9,
-                border: '1px solid rgba(248,113,113,0.3)', background: 'rgba(248,113,113,0.08)',
-                color: '#f87171', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
+                border: '1px solid rgba(196,160,160,0.3)', background: 'rgba(196,160,160,0.08)',
+                color: '#c4a0a0', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
                 marginLeft: 'auto',
               }}>
                 {Ico.trash()} Delete
@@ -391,9 +391,9 @@ export default function Admin() {
         {activeTab === 'users' && (<>
 
         {/* App Power Off */}
-        <div style={{ ...anim(0), background: appOffline ? 'rgba(248,113,113,0.08)' : 'var(--bg-card)', border: `1px solid ${appOffline ? 'rgba(248,113,113,0.35)' : 'var(--border)'}`, borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: appOffline ? '0 0 20px rgba(248,113,113,0.12)' : 'var(--card-shadow)' }}>
+        <div style={{ ...anim(0), background: appOffline ? 'rgba(196,160,160,0.08)' : 'var(--bg-card)', border: `1px solid ${appOffline ? 'rgba(196,160,160,0.35)' : 'var(--border)'}`, borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: appOffline ? '0 0 20px rgba(196,160,160,0.12)' : 'var(--card-shadow)' }}>
           <div>
-            <p style={{ color: appOffline ? '#f87171' : 'var(--text-primary)', fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 3 }}>
+            <p style={{ color: appOffline ? '#c4a0a0' : 'var(--text-primary)', fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 3 }}>
               {appOffline ? '⚠ App Offline' : 'App Power'}
             </p>
             <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>
@@ -402,7 +402,7 @@ export default function Admin() {
           </div>
           <button onClick={toggleAppOffline} disabled={togglingOffline} style={{
             width: 52, height: 30, borderRadius: 99, cursor: 'pointer', border: 'none', transition: 'all 0.25s',
-            background: appOffline ? '#f87171' : 'rgba(255,255,255,0.12)',
+            background: appOffline ? '#c4a0a0' : 'rgba(255,255,255,0.12)',
             position: 'relative', flexShrink: 0,
           }}>
             <div style={{
@@ -417,8 +417,8 @@ export default function Admin() {
         {/* Stat cards */}
         <div style={{ ...anim(0), display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
           {[
-            { label: 'Active',    value: counts.active,    color: '#4ade80' },
-            { label: 'Suspended', value: counts.suspended, color: '#fbbf24' },
+            { label: 'Active',    value: counts.active,    color: '#9ab89a' },
+            { label: 'Suspended', value: counts.suspended, color: '#c4b490' },
             { label: 'Inactive',  value: counts.inactive,  color: '#9ca3af' },
           ].map(s => (
             <div key={s.label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
@@ -445,9 +445,9 @@ export default function Admin() {
 
         {/* Delete confirm banner */}
         {confirm?.action === 'delete' && (
-          <div style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <p style={{ color: '#f87171', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>Tap Delete again to confirm removal.</p>
-            <button onClick={() => setConfirm(null)} style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
+          <div style={{ background: 'rgba(196,160,160,0.1)', border: '1px solid rgba(196,160,160,0.3)', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <p style={{ color: '#c4a0a0', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>Tap Delete again to confirm removal.</p>
+            <button onClick={() => setConfirm(null)} style={{ background: 'none', border: 'none', color: '#c4a0a0', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
           </div>
         )}
 
@@ -487,8 +487,8 @@ export default function Admin() {
               ) : (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {online.map(u => (
-                    <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '7px 12px', borderRadius: 99, background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.25)' }}>
-                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 6px #4ade80' }} />
+                    <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '7px 12px', borderRadius: 99, background: 'rgba(154,184,154,0.08)', border: '1px solid rgba(154,184,154,0.25)' }}>
+                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#9ab89a', boxShadow: '0 0 6px #9ab89a' }} />
                       <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>{u.name || 'Unnamed'}</span>
                     </div>
                   ))}
@@ -516,7 +516,7 @@ export default function Admin() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                           <p style={{ color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u?.name || 'Unknown'}</p>
-                          {online && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 5px #4ade80', flexShrink: 0 }} />}
+                          {online && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#9ab89a', boxShadow: '0 0 5px #9ab89a', flexShrink: 0 }} />}
                         </div>
                         <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>
                           {dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })} · {dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
@@ -546,7 +546,7 @@ export default function Admin() {
               <input value={newVerseRef} onChange={e => setNewVerseRef(e.target.value)} onKeyDown={e => e.key === 'Enter' && addVerse()} placeholder="john/3/16"
                 style={{ flex: 1, padding: '10px 12px', borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 13, fontFamily: 'monospace', outline: 'none' }} />
               <button onClick={addVerse} disabled={verseSaving || !newVerseRef.trim()}
-                style={{ padding: '10px 16px', borderRadius: 9, background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.35)', color: '#f87171', fontSize: 12, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em', opacity: verseSaving || !newVerseRef.trim() ? 0.5 : 1 }}>
+                style={{ padding: '10px 16px', borderRadius: 9, background: 'rgba(196,160,160,0.15)', border: '1px solid rgba(196,160,160,0.35)', color: '#c4a0a0', fontSize: 12, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em', opacity: verseSaving || !newVerseRef.trim() ? 0.5 : 1 }}>
                 Add
               </button>
             </div>
@@ -558,11 +558,11 @@ export default function Admin() {
                   <div key={v.id} style={{ background: 'var(--bg-card)', border: `1px solid ${v.active ? 'var(--border)' : 'rgba(255,255,255,0.04)'}`, borderRadius: 10, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8, opacity: v.active ? 1 : 0.45 }}>
                     <p style={{ flex: 1, color: v.active ? 'var(--text-primary)' : 'var(--text-muted)', fontSize: 12, fontFamily: 'monospace' }}>{v.reference}</p>
                     <button onClick={() => toggleVerse(v.id, v.active)}
-                      style={{ padding: '4px 9px', borderRadius: 6, background: v.active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.06)', border: `1px solid ${v.active ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.1)'}`, color: v.active ? '#4ade80' : 'var(--text-muted)', fontSize: 10, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em' }}>
+                      style={{ padding: '4px 9px', borderRadius: 6, background: v.active ? 'rgba(154,184,154,0.1)' : 'rgba(255,255,255,0.06)', border: `1px solid ${v.active ? 'rgba(154,184,154,0.3)' : 'rgba(255,255,255,0.1)'}`, color: v.active ? '#9ab89a' : 'var(--text-muted)', fontSize: 10, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em' }}>
                       {v.active ? 'ON' : 'OFF'}
                     </button>
                     <button onClick={() => deleteVerse(v.id)}
-                      style={{ padding: '4px 9px', borderRadius: 6, background: 'transparent', border: '1px solid rgba(248,113,113,0.2)', color: 'rgba(248,113,113,0.6)', fontSize: 13, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
+                      style={{ padding: '4px 9px', borderRadius: 6, background: 'transparent', border: '1px solid rgba(196,160,160,0.2)', color: 'rgba(196,160,160,0.6)', fontSize: 13, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
                       ×
                     </button>
                   </div>
@@ -579,7 +579,7 @@ export default function Admin() {
             <textarea value={releaseNotes} onChange={e => setReleaseNotes(e.target.value)} placeholder="What's new in this version…" rows={5}
               style={{ width: '100%', padding: '10px 12px', borderRadius: 9, background: 'var(--stat-bg)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', outline: 'none', resize: 'vertical', lineHeight: 1.6, marginBottom: 12 }} />
             <button onClick={saveNotes} disabled={notesSaving}
-              style={{ width: '100%', padding: '11px', borderRadius: 9, background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.35)', color: '#f87171', fontSize: 12, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.12em', opacity: notesSaving ? 0.6 : 1 }}>
+              style={{ width: '100%', padding: '11px', borderRadius: 9, background: 'rgba(196,160,160,0.15)', border: '1px solid rgba(196,160,160,0.35)', color: '#c4a0a0', fontSize: 12, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.12em', opacity: notesSaving ? 0.6 : 1 }}>
               {notesSaving ? 'Saving…' : 'Save'}
             </button>
           </div>

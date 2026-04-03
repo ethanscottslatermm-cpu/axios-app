@@ -41,12 +41,12 @@ const Ico = {
 }
 
 const MODULE_COLORS = {
-  food:       '#86efac', // lettuce green
-  water:      '#38bdf8', // sky blue
-  prayer:     '#fb923c', // orange
-  devotional: '#f87171', // red
-  fitness:    '#3b82f6', // dark blue
-  finance:    '#4ade80', // money green
+  food:       '#c8d4c8', // lettuce green
+  water:      '#9ab4cc', // sky blue
+  prayer:     '#b8b0c8', // orange
+  devotional: '#a8b4c0', // red
+  fitness:    '#b4bccc', // dark blue
+  finance:    '#b4c4b0', // money green
 }
 
 const modules = [
@@ -91,20 +91,20 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#fbbf24' },
-    { label:'Food',      path:'/food',       icon: Ico.food,    color: '#86efac' },
-    { label:'Water',     path:'/water',      icon: Ico.water,   color: '#38bdf8' },
-    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#3b82f6' },
-    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#fb923c' },
-    { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#f87171' },
-    { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#4ade80' },
-    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#94a3b8' },
+    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#d8d8e8' },
+    { label:'Food',      path:'/food',       icon: Ico.food,    color: '#c8d4c8' },
+    { label:'Water',     path:'/water',      icon: Ico.water,   color: '#9ab4cc' },
+    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#b4bccc' },
+    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#b8b0c8' },
+    { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#a8b4c0' },
+    { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#b4c4b0' },
+    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#7a7a8a' },
   ]
   return (
     <nav style={{
       position:'fixed', bottom:0, left:0, right:0, zIndex:100,
-      background:'rgba(8,8,8,0.96)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
-      borderTop:'1px solid rgba(255,255,255,0.08)',
+      background:'var(--header-bg)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
+      borderTop:'1px solid var(--border)',
       display:'flex', alignItems:'center', justifyContent:'space-around',
       padding:'10px 0 max(12px,env(safe-area-inset-bottom))',
     }}>
@@ -237,10 +237,10 @@ export default function Dashboard() {
           {/* 2×2 Stat Grid */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(60) }}>
             {[
-              { label:'Calories', value: calories.toLocaleString(), sub:`of ${CALORIE_GOAL.toLocaleString()} goal`, pct: calPct,  color:'#fb923c' },
-              { label:'Water',    value:`${waterCount} / ${WATER_GOAL}`, sub:'glasses today', pct: waterPct,                     color:'#38bdf8' },
-              { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null, color:'#a78bfa' },
-              { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100),        color:'#fbbf24' },
+              { label:'Calories', value: calories.toLocaleString(), sub:`of ${CALORIE_GOAL.toLocaleString()} goal`, pct: calPct,  color:'#b8b0c8' },
+              { label:'Water',    value:`${waterCount} / ${WATER_GOAL}`, sub:'glasses today', pct: waterPct,                     color:'#9ab4cc' },
+              { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null, color:'#b8b8cc' },
+              { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100),        color:'#d8d8e8' },
             ].map(({ label, value, sub, pct, color }) => (
               <div key={label} style={{ background:'var(--bg-card)', border:`1px solid ${color}33`, boxShadow:`var(--card-shadow), 0 0 12px ${color}11`, borderRadius:14, padding:'14px', position:'relative', overflow:'hidden' }}>
                 <div style={{ position:'absolute', top:0, right:0, width:50, height:50, background:`radial-gradient(circle at top right,${color}18,transparent 70%)`, pointerEvents:'none' }} />
@@ -304,7 +304,7 @@ export default function Dashboard() {
                 <p style={{ color:MODULE_COLORS.food, fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
               </div>
               <div style={{ flex:1 }}>
-                <GlowBar pct={calPct} h={4} color={MODULE_COLORS.food} glow="rgba(134,239,172,0.5)" />
+                <GlowBar pct={calPct} h={4} color={MODULE_COLORS.food} glow="rgba(200,212,200,0.5)" />
                 <p style={{ color:`${MODULE_COLORS.food}99`, fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
               </div>
             </div>
@@ -317,19 +317,19 @@ export default function Dashboard() {
               {Array.from({ length: WATER_GOAL }).map((_,i) => {
                 const full = i < waterCount
                 return (
-                  <svg key={i} width={26} height={26} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ transition:'all 0.3s', filter: full ? '0 0 6px rgba(56,189,248,0.5)' : 'none' }}>
-                    <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(56,189,248,0.7)' : 'rgba(255,255,255,0.04)'} stroke="none"/>
-                    <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#38bdf8' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
-                    <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#38bdf8' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
-                    <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#38bdf8' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
+                  <svg key={i} width={26} height={26} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ transition:'all 0.3s', filter: full ? '0 0 6px rgba(154,180,204,0.5)' : 'none' }}>
+                    <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(154,180,204,0.7)' : 'rgba(255,255,255,0.04)'} stroke="none"/>
+                    <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#9ab4cc' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
+                    <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#9ab4cc' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
+                    <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#9ab4cc' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
                   </svg>
                 )
               })}
             </div>
-            <p style={{ color: waterCount >= WATER_GOAL ? '#38bdf8' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
+            <p style={{ color: waterCount >= WATER_GOAL ? '#9ab4cc' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
               {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
             </p>
-            <GlowBar pct={waterPct} color={MODULE_COLORS.water} glow="rgba(56,189,248,0.5)" />
+            <GlowBar pct={waterPct} color={MODULE_COLORS.water} glow="rgba(154,180,204,0.5)" />
           </Card>
 
           {/* Prayer */}

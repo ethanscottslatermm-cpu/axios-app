@@ -110,7 +110,7 @@ const DB = {
   },
   calves: {
     label: 'Calves', scientific: 'Gastrocnemius (Medial & Lateral Head) & Soleus',
-    color: '#fbbf24', intensity: 3,
+    color: '#d8d8e8', intensity: 3,
     desc: 'Gastrocnemius provides the visible shape and explosive plantarflexion power. The soleus lies beneath and dominates endurance work. Both demand full range of motion — heel completely below the platform.',
     exercises: [
       { name: 'Standing Calf Raise',   eq: 'Machine',    sets: '5 × 20',     yt: 'standing calf raise form tutorial' },
@@ -141,7 +141,7 @@ const DB = {
   },
   lats: {
     label: 'Lats', scientific: 'Latissimus Dorsi',
-    color: '#3b82f6', intensity: 4,
+    color: '#b4bccc', intensity: 4,
     desc: "The widest muscle in the body — the architect of the V-taper silhouette. Pulls the arm down and back into extension and adduction. A full stretch at the top of every rep is non-negotiable for width.",
     exercises: [
       { name: 'Pull-Up',                eq: 'Bodyweight', sets: '4 × failure',  yt: 'pull up lat form tutorial' },
@@ -156,7 +156,7 @@ const DB = {
   },
   triceps: {
     label: 'Triceps', scientific: 'Triceps Brachii — Long Head · Lateral Head · Medial Head',
-    color: '#a78bfa', intensity: 2,
+    color: '#b8b8cc', intensity: 2,
     desc: 'Three-headed muscle making up roughly ⅔ of total upper-arm mass. The long head requires overhead position for full stretch. The lateral head creates the horseshoe shape visible when the arm is extended.',
     exercises: [
       { name: 'Close-Grip Bench',   eq: 'Barbell',    sets: '4 × 8',   yt: 'close grip bench press tricep form' },
@@ -510,7 +510,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
       {zones.map(id => {
         const data   = DB[id]
-        const color  = data?.color || '#3b82f6'
+        const color  = data?.color || '#b4bccc'
         const op     = opacity(id)
         const strokeW = sw(id)
         return (
@@ -528,7 +528,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
       {/* Labels */}
       {labels.map(l => {
         const data  = DB[l.id]
-        const color = data?.color || '#3b82f6'
+        const color = data?.color || '#b4bccc'
         const sel   = selected === l.id || hovered === l.id
         return (
           <text key={l.id} x={l.x} y={l.y}
@@ -560,7 +560,7 @@ function ExerciseCard({ ex }) {
           <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{ex.name}</p>
           <div style={{ display:'flex', gap:6 }}>
             <span style={{ color:'rgba(255,255,255,0.32)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', background:'rgba(255,255,255,0.06)', padding:'2px 7px', borderRadius:5 }}>{ex.eq}</span>
-            <span style={{ color:'#3b82f6', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, background:'rgba(59,130,246,0.1)', padding:'2px 7px', borderRadius:5 }}>{ex.sets}</span>
+            <span style={{ color:'#b4bccc', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, background:'rgba(180,188,204,0.1)', padding:'2px 7px', borderRadius:5 }}>{ex.sets}</span>
           </div>
         </div>
         <a href={ytUrl} target="_blank" rel="noopener noreferrer"
@@ -604,7 +604,7 @@ export default function WorkoutGuide({ onClose }) {
 
   const zones      = view === 'front' ? FRONT_ZONES : BACK_ZONES
   const selectedDB = selected ? DB[selected] : null
-  const accent     = '#3b82f6'
+  const accent     = '#b4bccc'
 
   useEffect(() => {
     if (selected && DB[selected]) setShownExercises(pickFour(DB[selected].exercises))
