@@ -499,11 +499,6 @@ export default function FitnessTracker() {
               </div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => setShowGuide(true)} className="ax-wt-btn"
-                style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'rgba(180,188,204,0.1)', border:'1px solid rgba(180,188,204,0.35)', color:'#b4bccc', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, transition:'all 0.2s' }}>
-                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
-                Guide
-              </button>
               <button onClick={() => setShowWeight(true)} className="ax-wt-btn"
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, transition:'all 0.2s' }}>
                 {Ico.scale(14)} Weight
@@ -537,12 +532,33 @@ export default function FitnessTracker() {
 
           {/* Tab switcher */}
           <div style={{ display:'flex', gap:8, ...anim(80) }}>
-            {[['workouts','Workouts'],['weight','Weight Log']].map(([key,label]) => (
-              <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
-                style={{ flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(180,188,204,0.5)' : 'rgba(212,212,232,0.08)'}`, background: activeTab===key ? 'rgba(180,188,204,0.15)' : 'rgba(212,212,232,0.03)', color: activeTab===key ? '#b4bccc' : 'rgba(212,212,232,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight: activeTab===key ? 700 : 400, cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em' }}>
-                {label}
-              </button>
-            ))}
+            {[['guide','Exercise Guide'],['workouts','Workouts'],['weight','Weight Log']].map(([key,label]) => {
+              const isGuide  = key === 'guide'
+              const isActive = activeTab === key
+              return (
+                <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
+                  style={{
+                    flex: isGuide ? 1.4 : 1,
+                    padding:'10px',
+                    borderRadius:10,
+                    border: isActive
+                      ? `1px solid ${isGuide ? 'rgba(180,188,204,0.65)' : 'rgba(180,188,204,0.5)'}`
+                      : `1px solid ${isGuide ? 'rgba(180,188,204,0.3)' : 'rgba(212,212,232,0.08)'}`,
+                    background: isActive
+                      ? (isGuide ? 'rgba(180,188,204,0.18)' : 'rgba(180,188,204,0.15)')
+                      : (isGuide ? 'rgba(180,188,204,0.06)' : 'rgba(212,212,232,0.03)'),
+                    color: isActive
+                      ? (isGuide ? '#d4d4e8' : '#b4bccc')
+                      : (isGuide ? 'rgba(180,188,204,0.7)' : 'rgba(212,212,232,0.35)'),
+                    boxShadow: isActive && isGuide ? '0 0 12px rgba(180,188,204,0.15)' : 'none',
+                    fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
+                    fontWeight: isActive ? 700 : (isGuide ? 600 : 400),
+                    cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
+                  }}>
+                  {label}
+                </button>
+              )
+            })}
           </div>
 
           {/* ── Workouts Tab ── */}
@@ -643,6 +659,13 @@ export default function FitnessTracker() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* ── Guide Tab ── */}
+          {activeTab === 'guide' && (
+            <div style={anim(80)}>
+              <WorkoutGuide inline onClose={() => setActiveTab('workouts')} />
             </div>
           )}
 

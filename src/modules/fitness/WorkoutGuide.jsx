@@ -595,7 +595,7 @@ function pickFour(pool) {
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function WorkoutGuide({ onClose }) {
+export default function WorkoutGuide({ onClose, inline = false }) {
   const [view,           setView]           = useState('front')
   const [selected,       setSelected]       = useState(null)
   const [hovered,        setHovered]        = useState(null)
@@ -623,32 +623,33 @@ export default function WorkoutGuide({ onClose }) {
 
   return (
     <div style={{
-      position:'fixed', inset:0, zIndex:200,
+      ...(inline ? {} : { position:'fixed', inset:0, zIndex:200, animation:'slideUp 0.28s ease both' }),
       background:'var(--bg-primary)',
       display:'flex', flexDirection:'column',
-      animation:'slideUp 0.28s ease both',
       WebkitFontSmoothing:'antialiased',
     }}>
-      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+      {!inline && <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>}
 
       {/* Header */}
       <div style={{
-        flexShrink:0, position:'sticky', top:0, zIndex:10,
+        flexShrink:0, position: inline ? 'relative' : 'sticky', top:0, zIndex:10,
         background:'var(--header-bg)', backdropFilter:'blur(18px)',
         WebkitBackdropFilter:'blur(18px)',
         borderBottom:'1px solid var(--border)', padding:'12px 16px',
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:10 }}>
-          <button onClick={onClose} style={{
-            display:'flex', alignItems:'center', justifyContent:'center',
-            width:34, height:34, borderRadius:9,
-            background:'var(--stat-bg)', border:'1px solid var(--border)',
-            color:'var(--text-secondary)', cursor:'pointer', flexShrink:0,
-          }}>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 5l-7 7 7 7"/>
-            </svg>
-          </button>
+          {!inline && (
+            <button onClick={onClose} style={{
+              display:'flex', alignItems:'center', justifyContent:'center',
+              width:34, height:34, borderRadius:9,
+              background:'var(--stat-bg)', border:'1px solid var(--border)',
+              color:'var(--text-secondary)', cursor:'pointer', flexShrink:0,
+            }}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+              </svg>
+            </button>
+          )}
           <div style={{ flex:1 }}>
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>AXIOS FITNESS</p>
             <h2 style={{ color:accent, fontWeight:900, fontSize:18, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Workout Guide</h2>
