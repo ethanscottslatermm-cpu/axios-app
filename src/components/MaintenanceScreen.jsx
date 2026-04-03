@@ -2,7 +2,7 @@ export default function MaintenanceScreen() {
   return (
     <div style={{
       minHeight: '100dvh',
-      background: '#080808',
+      background: 'var(--bg-primary)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',

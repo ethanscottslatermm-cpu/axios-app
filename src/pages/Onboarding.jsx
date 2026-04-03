@@ -157,7 +157,7 @@ export default function Onboarding() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@1&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
-        body{background:#080808;}
+        body{background:var(--bg-primary);}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
         input::placeholder{color:rgba(255,255,255,0.2);}
         input:focus{outline:none;}

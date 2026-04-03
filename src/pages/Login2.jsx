@@ -23,12 +23,12 @@ const styles = `
     50%     { opacity: 1.0;  text-shadow: 0 0 14px rgba(255,255,255,0.60), 0 0 30px rgba(255,255,255,0.20); }
   }
   @keyframes l2-iconPulse {
-    0%,100% { filter: drop-shadow(0 0 3px rgba(226,226,228,0.25)); opacity: 0.50; }
-    50%     { filter: drop-shadow(0 0 10px rgba(226,226,228,0.80)); opacity: 1.0; }
+    0%,100% { filter: drop-shadow(0 0 3px rgba(200,200,220,0.25)); opacity: 0.50; }
+    50%     { filter: drop-shadow(0 0 10px rgba(200,200,220,0.80)); opacity: 1.0; }
   }
   @keyframes l2-btnGlow {
-    0%,100% { box-shadow: 0 0 12px rgba(226,226,228,0.22), 0 0 28px rgba(226,226,228,0.09); }
-    50%     { box-shadow: 0 0 24px rgba(226,226,228,0.50), 0 0 56px rgba(226,226,228,0.20), 0 0 90px rgba(226,226,228,0.07); }
+    0%,100% { box-shadow: 0 0 12px rgba(200,200,220,0.22), 0 0 28px rgba(200,200,220,0.09); }
+    50%     { box-shadow: 0 0 24px rgba(200,200,220,0.50), 0 0 56px rgba(200,200,220,0.20), 0 0 90px rgba(200,200,220,0.07); }
   }
   @keyframes l2-btnShine {
     0%   { background-position: -300% center; }

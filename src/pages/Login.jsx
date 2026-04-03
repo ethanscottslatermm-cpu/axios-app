@@ -34,8 +34,8 @@ const styles = `
     100% { transform: translateY(100vh); }
   }
   @keyframes borderGlow {
-    0%,100% { box-shadow: 0 0 14px rgba(226,226,228,0.18), 0 0 36px rgba(226,226,228,0.07), inset 0 0 16px rgba(226,226,228,0.04); border-color: rgba(226,226,228,0.32); }
-    50%     { box-shadow: 0 0 28px rgba(226,226,228,0.42), 0 0 70px rgba(226,226,228,0.14), inset 0 0 28px rgba(226,226,228,0.07); border-color: rgba(226,226,228,0.65); }
+    0%,100% { box-shadow: 0 0 14px rgba(200,200,220,0.18), 0 0 36px rgba(200,200,220,0.07), inset 0 0 16px rgba(200,200,220,0.04); border-color: rgba(200,200,220,0.32); }
+    50%     { box-shadow: 0 0 28px rgba(200,200,220,0.42), 0 0 70px rgba(200,200,220,0.14), inset 0 0 28px rgba(200,200,220,0.07); border-color: rgba(200,200,220,0.65); }
   }
   @keyframes inputPulse {
     0%,100% { box-shadow: 0 0 0px rgba(255,255,255,0); }
@@ -68,8 +68,8 @@ const styles = `
     50%      { transform: scale(1.04); opacity: 0.9; }
   }
   @keyframes btnGoldGlow {
-    0%,100% { box-shadow: 0 0 12px rgba(226,226,228,0.22), 0 0 28px rgba(226,226,228,0.09); }
-    50%     { box-shadow: 0 0 24px rgba(226,226,228,0.50), 0 0 56px rgba(226,226,228,0.20), 0 0 90px rgba(226,226,228,0.07); }
+    0%,100% { box-shadow: 0 0 12px rgba(200,200,220,0.22), 0 0 28px rgba(200,200,220,0.09); }
+    50%     { box-shadow: 0 0 24px rgba(200,200,220,0.50), 0 0 56px rgba(200,200,220,0.20), 0 0 90px rgba(200,200,220,0.07); }
   }
 
   @keyframes loginRipple {
@@ -99,7 +99,7 @@ const styles = `
     width: 100%;
     box-sizing: border-box;
     background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(226,226,228,0.42);
+    border: 1px solid rgba(200,200,220,0.42);
     border-radius: 2px;
     color: rgba(255,255,255,0.9);
     padding: 13px 14px;
@@ -109,21 +109,21 @@ const styles = `
     -webkit-appearance: none;
     transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
     caret-color: white;
-    box-shadow: 0 0 10px rgba(226,226,228,0.13), inset 0 1px 3px rgba(0,0,0,0.4);
+    box-shadow: 0 0 10px rgba(200,200,220,0.13), inset 0 1px 3px rgba(0,0,0,0.4);
     animation: borderGlow 3.5s ease-in-out infinite;
   }
   .login-input:focus {
-    border-color: rgba(226,226,228,0.85);
-    box-shadow: 0 0 0 1px rgba(226,226,228,0.13), 0 0 20px rgba(226,226,228,0.22), 0 0 40px rgba(226,226,228,0.09), inset 0 1px 3px rgba(0,0,0,0.4);
+    border-color: rgba(200,200,220,0.85);
+    box-shadow: 0 0 0 1px rgba(200,200,220,0.13), 0 0 20px rgba(200,200,220,0.22), 0 0 40px rgba(200,200,220,0.09), inset 0 1px 3px rgba(0,0,0,0.4);
     animation: none;
-    background: rgba(226,226,228,0.04);
-    border-left: 1px solid #E2E2E4;
+    background: rgba(200,200,220,0.04);
+    border-left: 1px solid #d0d0dc;
   }
   .login-input-icon {
     padding-left: 36px;
   }
   .login-input::placeholder {
-    color: rgba(226,226,228,0.22);
+    color: rgba(200,200,220,0.22);
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     letter-spacing: 0.08em;
     font-size: 0.85rem;
@@ -133,7 +133,7 @@ const styles = `
     width: 100%;
     background: rgba(0,0,0,0.6);
     color: rgba(255,255,255,0.92);
-    border: 1px solid #E2E2E4;
+    border: 1px solid #d0d0dc;
     border-radius: 2px;
     padding: 14px;
     font-size: 0.72rem;
@@ -149,7 +149,7 @@ const styles = `
     background-size: 300% 100%;
     animation: btnGoldGlow 3s ease-in-out infinite, btnShine 4s ease-in-out infinite;
   }
-  .enter-btn:hover  { transform: translateY(-1px); border-color: #E2E2E4; box-shadow: 0 0 28px rgba(226,226,228,0.42), 0 0 60px rgba(226,226,228,0.18); }
+  .enter-btn:hover  { transform: translateY(-1px); border-color: #d0d0dc; box-shadow: 0 0 28px rgba(200,200,220,0.42), 0 0 60px rgba(200,200,220,0.18); }
   .enter-btn:active { transform: translateY(0); box-shadow: none; }
   .enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 `
@@ -319,14 +319,14 @@ export default function Login() {
           {/* Brand */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem', position: 'relative' }}>
             {/* Gold logo glow */}
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '280px', height: '130px', background: 'radial-gradient(ellipse at center, rgba(226,226,228,0.14) 0%, rgba(226,226,228,0.06) 50%, transparent 72%)', borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '280px', height: '130px', background: 'radial-gradient(ellipse at center, rgba(200,200,220,0.14) 0%, rgba(200,200,220,0.06) 50%, transparent 72%)', borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
               <svg width="38" height="32" viewBox="0 0 46 38" fill="none">
                 <polygon points="0,36 16,2 22,14 9,36" fill="white"/>
                 <polygon points="13,36 26,8 32,22 20,36" fill="white" opacity="0.62"/>
                 <polygon points="20,36 30,18 34,28 22,36" fill="white" opacity="0.32"/>
               </svg>
-              <div style={{ width: '1px', height: '38px', background: 'linear-gradient(to bottom, transparent, #E2E2E4 30%, #E2E2E4 70%, transparent)', boxShadow: '0 0 8px rgba(226,226,228,0.55)' }} />
+              <div style={{ width: '1px', height: '38px', background: 'linear-gradient(to bottom, transparent, #d0d0dc 30%, #d0d0dc 70%, transparent)', boxShadow: '0 0 8px rgba(200,200,220,0.55)' }} />
               <span style={{
                 color: 'white', fontWeight: 900,
                 fontSize: 'clamp(1.8rem, 8vw, 2.8rem)',
@@ -339,14 +339,14 @@ export default function Login() {
                               0 0 40px rgba(255,255,255,0.08)`,
               }}>AXIOS</span>
             </div>
-            <p style={{ color: 'rgba(226,226,228,0.70)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
+            <p style={{ color: 'rgba(200,200,220,0.70)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
               I Am Worthy
             </p>
           </div>
 
           {/* Animated word */}
           <div style={{ textAlign: 'center', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-            <p style={{ color: 'rgba(226,226,228,0.55)', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
+            <p style={{ color: 'rgba(200,200,220,0.55)', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>
               Est. 1989
             </p>
             <div style={{ overflow: 'hidden', height: '2.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -360,7 +360,7 @@ export default function Login() {
                   fontStyle: 'italic',
                   letterSpacing: '0.09em',
                   margin: 0,
-                  textShadow: '0 2px 20px rgba(226,226,228,0.28), 0 0 40px rgba(226,226,228,0.10)',
+                  textShadow: '0 2px 20px rgba(200,200,220,0.28), 0 0 40px rgba(200,200,220,0.10)',
                 }}
               >
                 {WORDS[wordIndex]}
@@ -461,7 +461,7 @@ export default function Login() {
 
         <p style={{
           position: 'fixed', bottom: '1.5rem', left: '1.5rem',
-          color: 'rgba(226,226,228,0.32)', fontSize: '0.55rem',
+          color: 'rgba(200,200,220,0.32)', fontSize: '0.55rem',
           letterSpacing: '0.22em', textTransform: 'uppercase',
           fontStyle: 'italic', zIndex: 10,
           fontFamily: '"Helvetica Neue", Helvetica, sans-serif',

@@ -27,7 +27,7 @@ export default function ProtectedRoute({ children }) {
   }, [user])
 
   if (loading || !settingLoaded) {
-    return <div style={{ minHeight:'100vh', background:'#080808' }} />
+    return <div style={{ minHeight:'100vh', background:'var(--bg-primary)' }} />
   }
 
   if (!user) {

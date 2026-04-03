@@ -228,7 +228,7 @@ export default function Settings() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@1&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
-        body{background:#080808;}
+        body{background:var(--bg-primary);}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
         input::placeholder{color:rgba(255,255,255,0.2);}
         input:focus{outline:none;}
@@ -352,7 +352,7 @@ export default function Settings() {
                     </div>
                     {active && (
                       <div style={{ width:20, height:20, borderRadius:'50%', background:'var(--btn-bg)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 8px rgba(255,255,255,0.5)', flexShrink:0 }}>
-                        <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="#080808" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="var(--btn-text)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                       </div>
                     )}
                   </button>

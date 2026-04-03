@@ -181,7 +181,7 @@ export default function Dashboard() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@1&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
-        body{background:#080808;overflow-x:hidden;}
+        body{background:var(--bg-primary);overflow-x:hidden;}
         ::-webkit-scrollbar{width:3px;}
         ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px;}
         .ax-pill:hover{background:rgba(255,255,255,0.06)!important;border-color:rgba(255,255,255,0.18)!important;}
