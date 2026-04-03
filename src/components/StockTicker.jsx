@@ -10,10 +10,10 @@ const DISPLAY_NAMES = {
 
 const NAME_COLORS = {
   '^DJI':    '#60a5fa', // blue
-  '^GSPC':   '#b8b8cc', // purple
-  '^IXIC':   '#9ab4cc', // sky blue
-  'BTC-USD': '#b8b0c8', // orange
-  'GC=F':    '#d0c8b8', // gold
+  '^GSPC':   '#a78bfa', // purple
+  '^IXIC':   '#38bdf8', // sky blue
+  'BTC-USD': '#fb923c', // orange
+  'GC=F':    '#fbbf24', // gold
 }
 
 function fmt(price, symbol) {
@@ -90,7 +90,7 @@ export default function StockTicker() {
         {items.map((q, i) => {
           const hasData = q.price != null
           const up      = hasData && q.change >= 0
-          const color   = !hasData ? 'rgba(212,212,232,0.25)' : up ? '#9ab89a' : '#c4a0a0'
+          const color   = !hasData ? 'rgba(212,212,232,0.25)' : up ? '#4ade80' : '#f87171'
           const arrow   = up ? '▲' : '▼'
           const name    = DISPLAY_NAMES[q.symbol] || q.name || q.symbol
 

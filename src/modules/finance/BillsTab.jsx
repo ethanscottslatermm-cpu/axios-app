@@ -13,9 +13,9 @@ const BILL_CATS = {
 }
 
 const STATUS_COLOR = {
-  paid:       '#9ab89a',
-  'due-soon': '#c4b490',
-  overdue:    '#c4a0a0',
+  paid:       '#4ade80',
+  'due-soon': '#facc15',
+  overdue:    '#f87171',
   upcoming:   'rgba(212,212,232,0.4)',
 }
 
@@ -143,8 +143,8 @@ export default function BillsTab({ userId }) {
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
         {[
           { label: 'Monthly',  val: fmtUSD(monthly), hi: false,          color: '' },
-          { label: 'Due Soon', val: String(dueSoonN), hi: dueSoonN > 0,  color: '#c4b490' },
-          { label: 'Overdue',  val: String(overdueN), hi: overdueN > 0,  color: '#c4a0a0' },
+          { label: 'Due Soon', val: String(dueSoonN), hi: dueSoonN > 0,  color: '#facc15' },
+          { label: 'Overdue',  val: String(overdueN), hi: overdueN > 0,  color: '#f87171' },
         ].map(({ label, val, hi, color }) => (
           <div key={label} style={{ flex: 1, background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>{label}</p>
@@ -177,7 +177,7 @@ export default function BillsTab({ userId }) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                     <p style={{ color: 'var(--text-primary)', fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{bill.payee}</p>
-                    {bill.autopay && <span style={{ fontSize: 9, background: 'rgba(154,184,154,0.12)', color: '#9ab89a', border: '1px solid rgba(154,184,154,0.25)', borderRadius: 5, padding: '2px 6px', letterSpacing: '0.08em', fontFamily: 'Helvetica Neue,sans-serif', flexShrink: 0 }}>AUTO</span>}
+                    {bill.autopay && <span style={{ fontSize: 9, background: 'rgba(74,222,128,0.12)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 5, padding: '2px 6px', letterSpacing: '0.08em', fontFamily: 'Helvetica Neue,sans-serif', flexShrink: 0 }}>AUTO</span>}
                   </div>
                   <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>{BILL_CATS[bill.category]} · Due the {ORDINAL(bill.due_day)} · {bill.frequency}</p>
                   {bill.notes ? <p style={{ color: 'var(--text-faint)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif', marginTop: 2 }}>{bill.notes}</p> : null}
@@ -187,7 +187,7 @@ export default function BillsTab({ userId }) {
                   <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                     <button onClick={() => togglePaid(bill.id)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid ' + STATUS_COLOR[status], background: 'transparent', color: STATUS_COLOR[status], fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>{status === 'paid' ? 'Undo' : 'Paid'}</button>
                     <button onClick={() => openEdit(bill)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>Edit</button>
-                    <button onClick={() => deleteBill(bill.id)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(196,160,160,0.25)', background: 'transparent', color: 'rgba(196,160,160,0.6)', fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>✕</button>
+                    <button onClick={() => deleteBill(bill.id)} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(248,113,113,0.25)', background: 'transparent', color: 'rgba(248,113,113,0.6)', fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>✕</button>
                   </div>
                 </div>
               </div>
@@ -253,7 +253,7 @@ export default function BillsTab({ userId }) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10 }}>
                   <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif' }}>Bill is paid automatically</p>
                   <div onClick={() => f('autopay', !form.autopay)}
-                    style={{ width: 40, height: 22, borderRadius: 11, background: form.autopay ? '#9ab89a' : 'rgba(212,212,232,0.12)', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
+                    style={{ width: 40, height: 22, borderRadius: 11, background: form.autopay ? '#4ade80' : 'rgba(212,212,232,0.12)', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
                     <div style={{ position: 'absolute', top: 3, left: form.autopay ? 21 : 3, width: 16, height: 16, borderRadius: 8, background: '#fff', transition: 'left 0.2s' }} />
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default function BillsTab({ userId }) {
 
             {/* Save footer — always pinned at bottom */}
             <div style={{ flexShrink: 0, padding: '14px 18px', paddingBottom: 'calc(env(safe-area-inset-bottom) + 80px)', borderTop: '1px solid rgba(212,212,232,0.08)' }}>
-              {error && <p style={{ color: '#c4a0a0', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, textAlign: 'center' }}>{error}</p>}
+              {error && <p style={{ color: '#f87171', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, textAlign: 'center' }}>{error}</p>}
               <button onClick={handleSave} disabled={saving}
                 style={{ width: '100%', padding: '16px', borderRadius: 12, border: 'none', background: saving ? 'rgba(212,212,232,0.06)' : 'rgba(212,212,232,0.14)', color: saving ? 'var(--text-muted)' : 'var(--text-primary)', fontSize: 15, fontWeight: 800, fontFamily: 'Helvetica Neue,sans-serif', cursor: saving ? 'default' : 'pointer', letterSpacing: '0.02em' }}>
                 {saving ? 'Saving…' : editBill ? 'Save Changes' : 'Save Bill'}

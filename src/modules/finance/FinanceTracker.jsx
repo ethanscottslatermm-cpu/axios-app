@@ -57,7 +57,7 @@ function QuoteCard({ symbol, onRemove, canRemove }) {
   const change  = quote ? quote.c - quote.pc : null
   const pct     = quote ? ((change / quote.pc) * 100) : null
   const up      = change >= 0
-  const color   = error ? 'var(--text-muted)' : up ? '#b4c4b0' : '#c4a0a0'
+  const color   = error ? 'var(--text-muted)' : up ? '#4ade80' : '#f87171'
 
   return (
     <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12 }}>
@@ -112,7 +112,7 @@ function IndexCard({ label, symbol }) {
       ) : (
         <>
           <p style={{ color:'var(--text-primary)', fontSize:16, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>${fmt(quote?.c)}</p>
-          <p style={{ color: up ? '#b4c4b0' : '#c4a0a0', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginTop:2 }}>{fmtPct(pct)}</p>
+          <p style={{ color: up ? '#4ade80' : '#f87171', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginTop:2 }}>{fmtPct(pct)}</p>
         </>
       )}
     </div>
@@ -238,7 +238,7 @@ export default function FinanceTracker() {
   }
 
   const BILL_CATS = { rent:'Rent/Mortgage', utilities:'Utilities', insurance:'Insurance', subscriptions:'Subscriptions', loans:'Loans', phone:'Phone', internet:'Internet', other:'Other' }
-  const BILL_STATUS_COLOR = { paid:'#b4c4b0', 'due-soon':'#c4b490', overdue:'#c4a0a0', upcoming:'var(--text-muted)' }
+  const BILL_STATUS_COLOR = { paid:'#4ade80', 'due-soon':'#facc15', overdue:'#f87171', upcoming:'var(--text-muted)' }
   const BILL_STATUS_LABEL = { paid:'Paid', 'due-soon':'Due Soon', overdue:'Overdue', upcoming:'Upcoming' }
 
   const loadBankData = async () => {
@@ -301,8 +301,8 @@ export default function FinanceTracker() {
         <div style={{ ...anim(0), display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
           <div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <h1 style={{ color:'#b4c4b0', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
-              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#b4c4b0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 10v4M18 10v4"/></svg>
+              <h1 style={{ color:'#4ade80', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 10v4M18 10v4"/></svg>
             </div>
             <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
           </div>
@@ -315,9 +315,9 @@ export default function FinanceTracker() {
         <div style={{ ...anim(40), display:'flex', gap:8, marginBottom:20 }}>
           {[['markets','Markets'],['bank','Bank'],['bills','Bills'],['news','News']].map(([key, label]) => (
             <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
-              flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(180,196,176,0.5)' : 'var(--border)'}`,
-              background: activeTab===key ? 'rgba(180,196,176,0.12)' : 'transparent',
-              color: activeTab===key ? '#b4c4b0' : 'var(--text-muted)',
+              flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(74,222,128,0.5)' : 'var(--border)'}`,
+              background: activeTab===key ? 'rgba(74,222,128,0.12)' : 'transparent',
+              color: activeTab===key ? '#4ade80' : 'var(--text-muted)',
               fontSize:12, fontWeight: activeTab===key ? 700 : 400,
               fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
               letterSpacing:'0.08em', textTransform:'uppercase',
@@ -400,9 +400,9 @@ export default function FinanceTracker() {
               </div>
             )}
             {bankError && !bankLoading && (
-              <div style={{ background:'rgba(196,160,160,0.08)', border:'1px solid rgba(196,160,160,0.25)', borderRadius:12, padding:'14px 16px', marginBottom:16 }}>
-                <p style={{ color:'#c4a0a0', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{bankError}</p>
-                <button onClick={loadBankData} style={{ marginTop:10, padding:'8px 14px', borderRadius:8, border:'1px solid rgba(196,160,160,0.3)', background:'transparent', color:'#c4a0a0', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>Retry</button>
+              <div style={{ background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.25)', borderRadius:12, padding:'14px 16px', marginBottom:16 }}>
+                <p style={{ color:'#f87171', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{bankError}</p>
+                <button onClick={loadBankData} style={{ marginTop:10, padding:'8px 14px', borderRadius:8, border:'1px solid rgba(248,113,113,0.3)', background:'transparent', color:'#f87171', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>Retry</button>
               </div>
             )}
             {!connected && !bankLoading && !bankError && (
@@ -461,7 +461,7 @@ export default function FinanceTracker() {
                             {new Date(t.date + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' })} · {t.category}
                           </p>
                         </div>
-                        <p style={{ color: t.amount < 0 ? '#b4c4b0' : 'var(--text-primary)', fontSize:14, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', marginLeft:12, flexShrink:0 }}>
+                        <p style={{ color: t.amount < 0 ? '#4ade80' : 'var(--text-primary)', fontSize:14, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', marginLeft:12, flexShrink:0 }}>
                           {(t.amount < 0 ? '+' : '-') + '$' + Math.abs(t.amount).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}
                         </p>
                       </div>
@@ -469,7 +469,7 @@ export default function FinanceTracker() {
                   </div>
                 )}
                 <button onClick={() => { setConnected(false); setAccounts(null); setTxns(null) }}
-                  style={{ marginTop:20, width:'100%', padding:'11px', borderRadius:10, border:'1px solid rgba(196,160,160,0.2)', background:'transparent', color:'rgba(196,160,160,0.6)', fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer' }}>
+                  style={{ marginTop:20, width:'100%', padding:'11px', borderRadius:10, border:'1px solid rgba(248,113,113,0.2)', background:'transparent', color:'rgba(248,113,113,0.6)', fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer' }}>
                   Disconnect Bank
                 </button>
               </>
