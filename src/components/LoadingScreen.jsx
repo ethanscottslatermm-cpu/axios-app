@@ -1,57 +1,7 @@
 import { useEffect, useState } from 'react'
 
-const MESSAGES = [
-  'Welcome to AXIOS',
-  'Logging in securely',
-  'Loading your settings',
-  'Initializing',
-]
-
-const CHAR_SPEED  = 55
-const HOLD        = 900
-const ERASE_SPEED = 30
-const PAUSE       = 400
-
 export default function LoadingScreen({ onComplete }) {
-  const [text,       setText]       = useState('')
-  const [showCursor, setShowCursor] = useState(true)
-  const [fadeOut,    setFadeOut]    = useState(false)
-
-  // Typewriter — type → hold → erase → pause → repeat
-  useEffect(() => {
-    let cancelled = false
-
-    const type = (msg, i, done) => {
-      if (cancelled) return
-      setText(msg.slice(0, i))
-      if (i <= msg.length) setTimeout(() => type(msg, i + 1, done), CHAR_SPEED)
-      else setTimeout(done, HOLD)
-    }
-
-    const erase = (msg, i, done) => {
-      if (cancelled) return
-      setText(msg.slice(0, i))
-      if (i >= 0) setTimeout(() => erase(msg, i - 1, done), ERASE_SPEED)
-      else setTimeout(done, PAUSE)
-    }
-
-    let idx = 0
-    const run = () => {
-      if (cancelled) return
-      const msg = MESSAGES[idx % MESSAGES.length]
-      idx++
-      type(msg, 0, () => erase(msg, msg.length, run))
-    }
-    run()
-
-    return () => { cancelled = true }
-  }, [])
-
-  // Cursor blink
-  useEffect(() => {
-    const id = setInterval(() => setShowCursor(c => !c), 500)
-    return () => clearInterval(id)
-  }, [])
+  const [fadeOut, setFadeOut] = useState(false)
 
   // Fixed duration → fade → complete
   useEffect(() => {
@@ -98,6 +48,10 @@ export default function LoadingScreen({ onComplete }) {
         @keyframes ax-bar {
           0%   { transform:translateX(-200%); }
           100% { transform:translateX(500%); }
+        }
+        @keyframes ax-pulse-text {
+          0%, 100% { opacity:0.3; }
+          50%       { opacity:1; }
         }
       `}</style>
 
@@ -185,25 +139,16 @@ export default function LoadingScreen({ onComplete }) {
           }}/>
         </div>
 
-        {/* Typewriter */}
-        <div style={{ width:220, height:20, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <span style={{
-            fontFamily:'"Courier New",monospace',
-            fontSize:9, letterSpacing:'1.8px',
-            textTransform:'uppercase',
-            color:'rgba(210,210,230,0.75)',
-            whiteSpace:'nowrap',
-          }}>
-            {text}
-            <span style={{
-              display:'inline-block', width:1, height:11,
-              background:'rgba(210,210,230,0.6)',
-              marginLeft:2, verticalAlign:'middle',
-              opacity: showCursor ? 1 : 0,
-              transition:'opacity 0.1s',
-            }}/>
-          </span>
-        </div>
+        {/* Pulsing label */}
+        <span style={{
+          fontFamily:'"The Seasons",Georgia,serif',
+          fontSize:13, letterSpacing:'3px',
+          textTransform:'uppercase',
+          color:'rgba(255,255,255,0.9)',
+          animation:'ax-pulse-text 2s ease-in-out infinite',
+        }}>
+          Initializing
+        </span>
       </div>
     </div>
   )

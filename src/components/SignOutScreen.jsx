@@ -1,68 +1,40 @@
 import { useEffect, useState } from 'react'
 
-const MESSAGES = [
-  'Saving your settings',
-  'Securely logging you out',
-  'See you soon',
-]
-
-const CHAR_SPEED = 48   // ms per character
-const LINE_PAUSE = 600  // pause between lines finishing and next starting
+const MESSAGE    = 'See you soon'
+const CHAR_SPEED = 80   // ms per character
+const HOLD       = 1000 // ms to hold after fully typed
 
 export default function SignOutScreen({ onComplete }) {
-  // lines[i] = fully-typed string (displayed as complete lines)
-  // active = the line currently being typed
-  const [lines,      setLines]      = useState([])
-  const [active,     setActive]     = useState('')
+  const [text,       setText]       = useState('')
   const [showCursor, setShowCursor] = useState(true)
   const [fadeOut,    setFadeOut]    = useState(false)
 
-  // Sequential type-and-keep: each message types out, stays, next begins
+  // Type "See you soon" once, then fade and close
   useEffect(() => {
     let cancelled = false
+    let i = 0
 
-    const typeMessage = (msgIndex, done) => {
-      if (cancelled || msgIndex >= MESSAGES.length) { done?.(); return }
-      const msg = MESSAGES[msgIndex]
-      let i = 0
-
-      const tick = () => {
-        if (cancelled) return
-        i++
-        setActive(msg.slice(0, i))
-        if (i < msg.length) {
-          setTimeout(tick, CHAR_SPEED)
-        } else {
-          // Line finished — move it to the kept lines, pause, then next
-          setTimeout(() => {
-            if (cancelled) return
-            setLines(prev => [...prev, msg])
-            setActive('')
-            setTimeout(() => typeMessage(msgIndex + 1, done), LINE_PAUSE)
-          }, 400)
-        }
+    const tick = () => {
+      if (cancelled) return
+      i++
+      setText(MESSAGE.slice(0, i))
+      if (i < MESSAGE.length) {
+        setTimeout(tick, CHAR_SPEED)
+      } else {
+        setTimeout(() => { if (!cancelled) setFadeOut(true)  }, HOLD)
+        setTimeout(() => { if (!cancelled) onComplete?.()    }, HOLD + 700)
       }
-
-      tick()
     }
 
-    typeMessage(0, () => {
-      if (cancelled) return
-      // All messages typed — hold briefly, then fade
-      setTimeout(() => { if (!cancelled) setFadeOut(true)  }, 800)
-      setTimeout(() => { if (!cancelled) onComplete?.()     }, 800 + 600)
-    })
-
+    setTimeout(tick, CHAR_SPEED)
     return () => { cancelled = true }
   }, [])
 
-  // Cursor blink (only while a line is actively typing)
+  // Cursor blink
   useEffect(() => {
-    const id = setInterval(() => setShowCursor(c => !c), 500)
+    const id = setInterval(() => setShowCursor(c => !c), 530)
     return () => clearInterval(id)
   }, [])
-
-  const isTyping = active.length > 0
 
   return (
     <div style={{
@@ -72,9 +44,13 @@ export default function SignOutScreen({ onComplete }) {
       alignItems: 'center', justifyContent: 'center',
       overflow: 'hidden',
       opacity: fadeOut ? 0 : 1,
-      transition: 'opacity 0.6s ease',
+      transition: 'opacity 0.7s ease',
     }}>
       <style>{`
+        @font-face {
+          font-family: 'The Seasons';
+          src: url('/the-seasons-regular.ttf') format('truetype');
+        }
         @keyframes axo-orb-drift {
           0%   { opacity:0; transform:translate(0,0) scale(1); }
           15%  { opacity:1; }
@@ -97,10 +73,6 @@ export default function SignOutScreen({ onComplete }) {
         @keyframes axo-bar {
           0%   { transform:translateX(-200%); }
           100% { transform:translateX(500%); }
-        }
-        @keyframes axo-fadein {
-          from { opacity:0; transform:translateY(4px); }
-          to   { opacity:1; transform:translateY(0); }
         }
       `}</style>
 
@@ -156,7 +128,7 @@ export default function SignOutScreen({ onComplete }) {
       <div style={{
         position:'relative', zIndex:2,
         display:'flex', flexDirection:'column',
-        alignItems:'center', gap:'2rem',
+        alignItems:'center', gap:'1.5rem',
       }}>
         {/* Logo */}
         <svg viewBox="0 0 380 70" xmlns="http://www.w3.org/2000/svg"
@@ -188,53 +160,23 @@ export default function SignOutScreen({ onComplete }) {
           }}/>
         </div>
 
-        {/* Terminal log — messages stack up and stay */}
-        <div style={{
-          width:280,
-          display:'flex', flexDirection:'column', gap:10,
-          alignItems:'flex-start',
-        }}>
-          {/* Completed lines */}
-          {lines.map((line, i) => (
-            <div key={i} style={{
-              display:'flex', alignItems:'center', gap:8,
-              animation:'axo-fadein 0.3s ease both',
-            }}>
-              <span style={{ color:'rgba(255,255,255,0.2)', fontSize:9, fontFamily:'"Courier New",monospace' }}>✓</span>
-              <span style={{
-                fontFamily:'"Courier New",monospace',
-                fontSize:9, letterSpacing:'1.6px',
-                textTransform:'uppercase',
-                color:'rgba(210,210,230,0.38)',
-                whiteSpace:'nowrap',
-              }}>{line}</span>
-            </div>
-          ))}
-
-          {/* Active line being typed */}
-          {(isTyping || lines.length < MESSAGES.length) && (
-            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <span style={{ color:'rgba(255,255,255,0.35)', fontSize:9, fontFamily:'"Courier New",monospace' }}>›</span>
-              <span style={{
-                fontFamily:'"Courier New",monospace',
-                fontSize:9, letterSpacing:'1.6px',
-                textTransform:'uppercase',
-                color:'rgba(210,210,230,0.85)',
-                whiteSpace:'nowrap',
-              }}>
-                {active}
-                {isTyping && (
-                  <span style={{
-                    display:'inline-block', width:1, height:11,
-                    background:'rgba(210,210,230,0.6)',
-                    marginLeft:2, verticalAlign:'middle',
-                    opacity: showCursor ? 1 : 0,
-                    transition:'opacity 0.1s',
-                  }}/>
-                )}
-              </span>
-            </div>
-          )}
+        {/* Typewriter — "See you soon" */}
+        <div style={{ height:28, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <span style={{
+            fontFamily:'"The Seasons",Georgia,serif',
+            fontSize:16, letterSpacing:'3px',
+            color:'rgba(255,255,255,0.88)',
+            whiteSpace:'nowrap',
+          }}>
+            {text}
+            <span style={{
+              display:'inline-block', width:1, height:16,
+              background:'rgba(255,255,255,0.7)',
+              marginLeft:3, verticalAlign:'middle',
+              opacity: showCursor ? 1 : 0,
+              transition:'opacity 0.1s',
+            }}/>
+          </span>
         </div>
       </div>
     </div>

@@ -76,6 +76,10 @@ export default function AppLock({ children }) {
           0%, 100% { opacity:0.4; transform:scale(1); }
           50%       { opacity:0.9; transform:scale(1.06); }
         }
+        @keyframes axl-pulse-text {
+          0%, 100% { opacity:0.3; }
+          50%       { opacity:1; }
+        }
       `}</style>
 
       {/* ── Orbs ── */}
@@ -183,10 +187,13 @@ export default function AppLock({ children }) {
           </div>
 
           <p style={{
-            color:'rgba(255,255,255,0.28)', fontSize:9,
-            letterSpacing:'0.28em', textTransform:'uppercase',
-            fontFamily:'"Courier New",monospace', marginBottom:10,
-          }}>SESSION LOCKED</p>
+            fontFamily:'"The Seasons",Georgia,serif',
+            fontSize:14, letterSpacing:'3px',
+            textTransform:'uppercase',
+            color:'rgba(255,255,255,0.9)',
+            marginBottom:10,
+            animation:'axl-pulse-text 2s ease-in-out infinite',
+          }}>Initializing</p>
 
           <p style={{
             color:'rgba(255,255,255,0.55)', fontSize:13,
