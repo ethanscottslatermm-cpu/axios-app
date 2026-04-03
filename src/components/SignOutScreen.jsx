@@ -1,39 +1,12 @@
 import { useEffect, useState } from 'react'
 
-const MESSAGE    = 'See you soon'
-const CHAR_SPEED = 80   // ms per character
-const HOLD       = 1000 // ms to hold after fully typed
-
 export default function SignOutScreen({ onComplete }) {
-  const [text,       setText]       = useState('')
-  const [showCursor, setShowCursor] = useState(true)
-  const [fadeOut,    setFadeOut]    = useState(false)
+  const [fadeOut, setFadeOut] = useState(false)
 
-  // Type "See you soon" once, then fade and close
   useEffect(() => {
-    let cancelled = false
-    let i = 0
-
-    const tick = () => {
-      if (cancelled) return
-      i++
-      setText(MESSAGE.slice(0, i))
-      if (i < MESSAGE.length) {
-        setTimeout(tick, CHAR_SPEED)
-      } else {
-        setTimeout(() => { if (!cancelled) setFadeOut(true)  }, HOLD)
-        setTimeout(() => { if (!cancelled) onComplete?.()    }, HOLD + 700)
-      }
-    }
-
-    setTimeout(tick, CHAR_SPEED)
-    return () => { cancelled = true }
-  }, [])
-
-  // Cursor blink
-  useEffect(() => {
-    const id = setInterval(() => setShowCursor(c => !c), 530)
-    return () => clearInterval(id)
+    const t1 = setTimeout(() => setFadeOut(true),    2800)
+    const t2 = setTimeout(() => onComplete?.(),      3400)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
   return (
@@ -44,7 +17,7 @@ export default function SignOutScreen({ onComplete }) {
       alignItems: 'center', justifyContent: 'center',
       overflow: 'hidden',
       opacity: fadeOut ? 0 : 1,
-      transition: 'opacity 0.7s ease',
+      transition: 'opacity 0.6s ease',
     }}>
       <style>{`
         @font-face {
@@ -73,6 +46,10 @@ export default function SignOutScreen({ onComplete }) {
         @keyframes axo-bar {
           0%   { transform:translateX(-200%); }
           100% { transform:translateX(500%); }
+        }
+        @keyframes axo-pulse-text {
+          0%, 100% { opacity:0.3; }
+          50%       { opacity:1; }
         }
       `}</style>
 
@@ -160,24 +137,16 @@ export default function SignOutScreen({ onComplete }) {
           }}/>
         </div>
 
-        {/* Typewriter — "See you soon" */}
-        <div style={{ height:28, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <span style={{
-            fontFamily:'"The Seasons",Georgia,serif',
-            fontSize:16, letterSpacing:'3px',
-            color:'rgba(255,255,255,0.88)',
-            whiteSpace:'nowrap',
-          }}>
-            {text}
-            <span style={{
-              display:'inline-block', width:1, height:16,
-              background:'rgba(255,255,255,0.7)',
-              marginLeft:3, verticalAlign:'middle',
-              opacity: showCursor ? 1 : 0,
-              transition:'opacity 0.1s',
-            }}/>
-          </span>
-        </div>
+        {/* Pulsing label */}
+        <span style={{
+          fontFamily:'"The Seasons",Georgia,serif',
+          fontSize:13, letterSpacing:'3px',
+          textTransform:'uppercase',
+          color:'rgba(255,255,255,0.9)',
+          animation:'axo-pulse-text 2s ease-in-out infinite',
+        }}>
+          Later
+        </span>
       </div>
     </div>
   )
