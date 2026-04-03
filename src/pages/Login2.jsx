@@ -104,6 +104,25 @@ const styles = `
     background-size: 300% 100%;
   }
   .l2-enter-btn:active { transform: translateY(0); }
+
+  @keyframes secureGlow {
+    0%, 100% {
+      text-shadow: 0 0 12px rgba(255,255,255,0.55), 0 0 28px rgba(255,255,255,0.25), 0 0 56px rgba(255,255,255,0.08);
+      opacity: 0.72;
+    }
+    50% {
+      text-shadow: 0 0 22px rgba(255,255,255,1), 0 0 50px rgba(255,255,255,0.65), 0 0 100px rgba(255,255,255,0.28);
+      opacity: 1;
+    }
+  }
+  @keyframes lineBreath {
+    0%, 100% { opacity: 0.3; transform: scaleX(0.7); }
+    50%       { opacity: 0.9; transform: scaleX(1); }
+  }
+  @keyframes formReveal {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
   .l2-enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 `
 
@@ -117,6 +136,7 @@ export default function Login2() {
   const [showLoader, setShowLoader]               = useState(false)
   const [offerFaceId, setOfferFaceId]             = useState(false)
   const [registeringFaceId, setRegisteringFaceId] = useState(false)
+  const [open, setOpen]                           = useState(false)
 
   useEffect(() => {
     document.body.style.setProperty('background', '#000000', 'important')
@@ -170,69 +190,107 @@ export default function Login2() {
           background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.60) 50%, rgba(0,0,0,0) 100%)',
         }} />
 
-        {/* Form — starts at beard line, elements breathe with luxury spacing */}
-        <div style={{
-          position: 'absolute', zIndex: 10,
-          top: '64%',
-          left: 0, right: 0,
-          padding: '0 2rem',
-          maxWidth: '420px',
-          margin: '0 auto',
-          width: '100%',
-          boxSizing: 'border-box',
-        }}>
-          <form onSubmit={handleSubmit}>
+        {/* Closed — SECURE ACCESS only */}
+        {!open && (
+          <div
+            onClick={() => setOpen(true)}
+            style={{
+              position: 'absolute', zIndex: 10,
+              top: '68%', left: 0, right: 0,
+              display: 'flex', flexDirection: 'column', alignItems: 'center',
+              cursor: 'pointer',
+              WebkitTapHighlightColor: 'transparent',
+              userSelect: 'none',
+            }}
+          >
+            <p style={{
+              color: '#fff',
+              fontSize: 'clamp(0.62rem, 2.6vw, 0.78rem)',
+              letterSpacing: '0.65em',
+              textTransform: 'uppercase',
+              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+              fontWeight: 300,
+              margin: 0,
+              animation: 'secureGlow 2.8s ease-in-out infinite',
+            }}>
+              Secure Access
+            </p>
+            <div style={{
+              width: 28, height: 1,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
+              marginTop: 14,
+              animation: 'lineBreath 2.8s ease-in-out infinite',
+              animationDelay: '0.35s',
+            }} />
+          </div>
+        )}
 
-            <div style={{ marginBottom: '2.2rem' }}>
-              <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
-                </svg>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
-                {email.includes('@') && email.includes('.') && (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                    style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.75)', filter: 'drop-shadow(0 0 6px rgba(212,212,232,0.6))', pointerEvents: 'none' }}>
-                    <polyline points="20 6 9 17 4 12"/>
+        {/* Open — form revealed */}
+        {open && (
+          <div style={{
+            position: 'absolute', zIndex: 10,
+            top: '62%',
+            left: 0, right: 0,
+            padding: '0 2rem',
+            maxWidth: '420px',
+            margin: '0 auto',
+            width: '100%',
+            boxSizing: 'border-box',
+            animation: 'formReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards',
+          }}>
+            <form onSubmit={handleSubmit}>
+
+              <div style={{ marginBottom: '2.2rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
                   </svg>
-                )}
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
+                  {email.includes('@') && email.includes('.') && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.75)', filter: 'drop-shadow(0 0 6px rgba(212,212,232,0.6))', pointerEvents: 'none' }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div style={{ marginBottom: '3.5rem' }}>
-              <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
+              <div style={{ marginBottom: '3.5rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
+                </div>
               </div>
-            </div>
 
-            {error && (
-              <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>
-            )}
+              {error && (
+                <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>
+              )}
 
-            {offerFaceId ? (
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ color: 'rgba(212,212,232,0.7)', fontSize: '0.75rem', fontFamily: '"Helvetica Neue",sans-serif', marginBottom: '1.2rem', lineHeight: 1.5 }}>Enable Face ID for faster sign-in?</p>
-                <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId}
-                  style={{ width: '100%', padding: '13px', borderRadius: 2, border: 'none', background: '#fff', color: '#000', fontSize: '0.75rem', fontWeight: 700, fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: 10 }}>
-                  {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
+              {offerFaceId ? (
+                <div style={{ textAlign: 'center' }}>
+                  <p style={{ color: 'rgba(212,212,232,0.7)', fontSize: '0.75rem', fontFamily: '"Helvetica Neue",sans-serif', marginBottom: '1.2rem', lineHeight: 1.5 }}>Enable Face ID for faster sign-in?</p>
+                  <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId}
+                    style={{ width: '100%', padding: '13px', borderRadius: 2, border: 'none', background: '#fff', color: '#000', fontSize: '0.75rem', fontWeight: 700, fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: 10 }}>
+                    {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
+                  </button>
+                  <button type="button" onClick={() => setShowLoader(true)}
+                    style={{ width: '100%', padding: '11px', borderRadius: 2, border: '1px solid rgba(212,212,232,0.15)', background: 'transparent', color: 'rgba(212,212,232,0.45)', fontSize: '0.7rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                    Skip for now
+                  </button>
+                </div>
+              ) : (
+                <button type="submit" disabled={loading} className={`l2-enter-btn${password.length > 0 ? ' l2-btn-active' : ''}`}>
+                  {loading ? 'Entering...' : 'Enter'}
                 </button>
-                <button type="button" onClick={() => setShowLoader(true)}
-                  style={{ width: '100%', padding: '11px', borderRadius: 2, border: '1px solid rgba(212,212,232,0.15)', background: 'transparent', color: 'rgba(212,212,232,0.45)', fontSize: '0.7rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
-                  Skip for now
-                </button>
-              </div>
-            ) : (
-              <button type="submit" disabled={loading} className={`l2-enter-btn${password.length > 0 ? ' l2-btn-active' : ''}`}>
-                {loading ? 'Entering...' : 'Secure Access'}
-              </button>
-            )}
+              )}
 
-          </form>
-        </div>
+            </form>
+          </div>
+        )}
 
 
       </div>
