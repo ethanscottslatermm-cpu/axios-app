@@ -173,7 +173,7 @@ export default function Login2() {
         {/* Form — starts at beard line, elements breathe with luxury spacing */}
         <div style={{
           position: 'absolute', zIndex: 10,
-          top: '52%',
+          top: '64%',
           left: 0, right: 0,
           padding: '0 2rem',
           maxWidth: '420px',
@@ -234,20 +234,6 @@ export default function Login2() {
           </form>
         </div>
 
-        {/* Bottom-left Monarch Elite copyright */}
-        <p style={{
-          position: 'fixed', bottom: '1.2rem', left: '1.2rem',
-          zIndex: 10,
-          color: 'rgba(194,148,56,0.82)',
-          fontSize: '0.46rem',
-          letterSpacing: '0.14em',
-          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-          textTransform: 'uppercase',
-          textShadow: '0 0 8px rgba(194,148,56,0.55), 0 0 18px rgba(194,148,56,0.25)',
-          margin: 0,
-        }}>
-          © Monarch Elite
-        </p>
 
       </div>
     </>
