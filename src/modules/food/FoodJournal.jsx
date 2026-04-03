@@ -37,8 +37,8 @@ const Ico = {
 // ── Glow Progress Bar ──────────────────────────────────────────────────────────
 function GlowBar({ pct, h = 4, color = '#fff' }) {
   return (
-    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:`0 0 8px rgba(255,255,255,0.5)` }} />
+    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(212,212,232,0.07)', overflow:'hidden' }}>
+      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:`0 0 8px rgba(212,212,232,0.5)` }} />
     </div>
   )
 }
@@ -48,7 +48,7 @@ function MacroPill({ label, value, unit = 'g' }) {
   return (
     <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'10px 10px' }}>
       <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>{label}</p>
-      <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}<span style={{ fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.4)', marginLeft:2 }}>{unit}</span></p>
+      <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{value}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.4)', marginLeft:2 }}>{unit}</span></p>
     </div>
   )
 }
@@ -58,7 +58,7 @@ function SectionHead({ title, count }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
+        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(212,212,232,0.8),rgba(212,212,232,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(212,212,232,0.5)' }} />
         <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
       {count != null && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{count} {count === 1 ? 'item' : 'items'}</p>}
@@ -105,13 +105,13 @@ function AISearchPanel({ onSelect, onClose }) {
       <div style={{ padding:'16px 16px 14px', display:'flex', alignItems:'center', gap:12, borderBottom:'1px solid var(--border)' }}>
         <div style={{
           flex:1, display:'flex', alignItems:'center', gap:10,
-          background: focused ? 'rgba(255,255,255,0.07)' : 'var(--bg-card)',
-          border: focused ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(255,255,255,0.12)',
-          boxShadow: focused ? '0 0 18px rgba(255,255,255,0.06)' : 'none',
+          background: focused ? 'rgba(212,212,232,0.07)' : 'var(--bg-card)',
+          border: focused ? '1px solid rgba(212,212,232,0.3)' : '1px solid rgba(212,212,232,0.12)',
+          boxShadow: focused ? '0 0 18px rgba(212,212,232,0.06)' : 'none',
           borderRadius:11, padding:'11px 14px',
           transition:'border-color 0.2s, box-shadow 0.2s',
         }}>
-          <div style={{ color: loading ? 'var(--glow-bar)' : 'rgba(255,255,255,0.4)', transition:'color 0.2s' }}>
+          <div style={{ color: loading ? 'var(--glow-bar)' : 'rgba(212,212,232,0.4)', transition:'color 0.2s' }}>
             {loading ? (
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation:'spin 0.8s linear infinite' }}>
                 <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -137,7 +137,7 @@ function AISearchPanel({ onSelect, onClose }) {
             </button>
           )}
         </div>
-        <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)', display:'flex' }}>
+        <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)', display:'flex' }}>
           {Ico.close(20)}
         </button>
       </div>
@@ -157,7 +157,7 @@ function AISearchPanel({ onSelect, onClose }) {
         {error && <p style={{ color:'rgba(255,100,100,0.8)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'20px 0' }}>{error}</p>}
         {!loading && results.length === 0 && !error && !query.trim() && (
           <div style={{ textAlign:'center', padding:'48px 20px' }}>
-            <p style={{ color:'rgba(255,255,255,0.12)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.7 }}>
+            <p style={{ color:'rgba(212,212,232,0.12)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.7 }}>
               Start typing to search — results appear instantly.<br/>Try "chicken breast", "brown rice", or "banana".
             </p>
           </div>
@@ -170,7 +170,7 @@ function AISearchPanel({ onSelect, onClose }) {
                 borderRadius:12, padding:'14px 16px', textAlign:'left', cursor:'pointer', width:'100%',
                 transition:'background 0.15s, border-color 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.22)' }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(212,212,232,0.07)'; e.currentTarget.style.borderColor='rgba(212,212,232,0.22)' }}
               onMouseLeave={e => { e.currentTarget.style.background=''; e.currentTarget.style.borderColor='' }}
             >
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
@@ -187,7 +187,7 @@ function AISearchPanel({ onSelect, onClose }) {
               </div>
               <div style={{ display:'flex', gap:6 }}>
                 {[['Protein', item.protein + 'g'], ['Carbs', item.carbs + 'g'], ['Fat', item.fat + 'g']].map(([l, v]) => (
-                  <div key={l} style={{ flex:1, background:'rgba(255,255,255,0.04)', borderRadius:7, padding:'6px 8px', textAlign:'center' }}>
+                  <div key={l} style={{ flex:1, background:'rgba(212,212,232,0.04)', borderRadius:7, padding:'6px 8px', textAlign:'center' }}>
                     <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{l}</p>
                     <p style={{ color:'var(--text-secondary)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{v}</p>
                   </div>
@@ -208,8 +208,8 @@ function InputRow({ label, field, type='text', placeholder='', form, set }) {
   const [focused, setFocused] = useState(false)
   return (
     <div style={{ marginBottom:12 }}>
-      <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
-      <div style={{ background:'var(--stat-bg)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(255,255,255,0.07)' : 'none' }}>
+      <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
+      <div style={{ background:'var(--stat-bg)', border:`1px solid ${focused ? 'rgba(212,212,232,0.25)' : 'rgba(212,212,232,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(212,212,232,0.07)' : 'none' }}>
         <input
           type={type}
           value={form[field]}
@@ -309,22 +309,22 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
         maxHeight:'90vh', overflowY:'auto',
       }}>
         {/* Handle */}
-        <div style={{ width:36, height:4, background:'rgba(255,255,255,0.15)', borderRadius:99, margin:'0 auto 20px' }} />
+        <div style={{ width:36, height:4, background:'rgba(212,212,232,0.15)', borderRadius:99, margin:'0 auto 20px' }} />
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
           <h2 style={{ color:'var(--text-primary)', fontSize:17, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>
             {prefill ? 'Confirm & Add' : 'Add Food'}
           </h2>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)' }}>{Ico.close(18)}</button>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)' }}>{Ico.close(18)}</button>
         </div>
 
         {/* Meal type selector */}
         <div style={{ marginBottom:16 }}>
-          <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Meal</label>
+          <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Meal</label>
           <div style={{ display:'flex', gap:8 }}>
             {MEAL_TYPES.map(m => (
               <button key={m} onClick={() => set('meal_type', m)}
-                style={{ flex:1, padding:'9px 4px', borderRadius:9, border:`1px solid ${form.meal_type===m ? 'rgba(200,212,200,0.5)' : 'rgba(255,255,255,0.08)'}`, background: form.meal_type===m ? 'rgba(200,212,200,0.12)' : 'rgba(255,255,255,0.03)', color: form.meal_type===m ? '#c8d4c8' : 'rgba(255,255,255,0.35)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight: form.meal_type===m ? 700 : 400, cursor:'pointer', transition:'all 0.18s', textAlign:'center', letterSpacing:'0.04em' }}>
+                style={{ flex:1, padding:'9px 4px', borderRadius:9, border:`1px solid ${form.meal_type===m ? 'rgba(200,212,200,0.5)' : 'rgba(212,212,232,0.08)'}`, background: form.meal_type===m ? 'rgba(200,212,200,0.12)' : 'rgba(212,212,232,0.03)', color: form.meal_type===m ? '#c8d4c8' : 'rgba(212,212,232,0.35)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight: form.meal_type===m ? 700 : 400, cursor:'pointer', transition:'all 0.18s', textAlign:'center', letterSpacing:'0.04em' }}>
                 {m}
               </button>
             ))}
@@ -333,14 +333,14 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
 
         {/* Smart food name search */}
         <div style={{ marginBottom:12, position:'relative' }}>
-          <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Food Name</label>
+          <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Food Name</label>
           <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'11px 12px', display:'flex', alignItems:'center', gap:8 }}>
             {searching ? (
               <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color:'var(--glow-bar)', flexShrink:0, animation:'spin 0.8s linear infinite' }}>
                 <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
               </svg>
             ) : (
-              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color:'rgba(255,255,255,0.25)', flexShrink:0 }}>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color:'rgba(212,212,232,0.25)', flexShrink:0 }}>
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
             )}
@@ -377,7 +377,7 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:4 }}>
           {[['Protein (g)', 'protein', '32'], ['Carbs (g)', 'carbs', '0'], ['Fat (g)', 'fat', '14']].map(([label, field, ph]) => (
             <div key={field}>
-              <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
+              <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</label>
               <div style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'11px 12px' }}>
                 <input type="number" value={form[field]} onChange={e => set(field, e.target.value)} placeholder={ph}
                   style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }} />
@@ -419,7 +419,7 @@ function FoodRow({ entry, onDelete, delay = 0, visible }) {
       transition: `opacity 0.4s ease ${delay}ms, transform 0.4s ease ${delay}ms`,
     }}>
       <div style={{ flex:1, minWidth:0 }}>
-        <p style={{ color:'rgba(255,255,255,0.85)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{entry.food_name}</p>
+        <p style={{ color:'rgba(212,212,232,0.85)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{entry.food_name}</p>
         <div style={{ display:'flex', gap:10 }}>
           {entry.protein > 0 && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>P {entry.protein}g</p>}
           {entry.carbs   > 0 && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>C {entry.carbs}g</p>}
@@ -429,7 +429,7 @@ function FoodRow({ entry, onDelete, delay = 0, visible }) {
       <p style={{ color:'var(--text-primary)', fontSize:15, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{entry.calories}</p>
       <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>cal</p>
       <button onClick={handleDelete}
-        style={{ background: confirming ? 'rgba(255,60,60,0.15)' : 'rgba(255,255,255,0.05)', border:`1px solid ${confirming ? 'rgba(255,60,60,0.35)' : 'rgba(255,255,255,0.08)'}`, borderRadius:8, padding:'7px 9px', cursor:'pointer', color: confirming ? 'rgba(255,100,100,0.9)' : 'rgba(255,255,255,0.3)', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', flexShrink:0 }}
+        style={{ background: confirming ? 'rgba(255,60,60,0.15)' : 'rgba(212,212,232,0.05)', border:`1px solid ${confirming ? 'rgba(255,60,60,0.35)' : 'rgba(212,212,232,0.08)'}`, borderRadius:8, padding:'7px 9px', cursor:'pointer', color: confirming ? 'rgba(255,100,100,0.9)' : 'rgba(212,212,232,0.3)', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', flexShrink:0 }}
         title={confirming ? 'Tap again to confirm' : 'Delete'}>
         {confirming ? <p style={{ fontSize:9, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.06em', margin:0 }}>DEL?</p> : Ico.trash()}
       </button>
@@ -497,14 +497,14 @@ export default function FoodJournal() {
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);overflow-x:hidden;}
         ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px;}
+        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.1);border-radius:99px;}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-        input::placeholder{color:rgba(255,255,255,0.2);}
+        input::placeholder{color:rgba(212,212,232,0.2);}
         input:focus{outline:none;}
-        .ax-back:hover{background:rgba(255,255,255,0.08)!important;}
-        .ax-ai-btn:hover{background:rgba(255,255,255,0.07)!important;border-color:rgba(255,255,255,0.22)!important;}
-        .ax-add-btn:hover{background:rgba(255,255,255,0.88)!important;box-shadow:0 0 22px rgba(255,255,255,0.2)!important;}
-        .ax-meal-tab:hover{background:rgba(255,255,255,0.05)!important;}
+        .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
+        .ax-ai-btn:hover{background:rgba(212,212,232,0.07)!important;border-color:rgba(212,212,232,0.22)!important;}
+        .ax-add-btn:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
+        .ax-meal-tab:hover{background:rgba(212,212,232,0.05)!important;}
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:'calc(env(safe-area-inset-bottom) + 110px)', position:'relative' }}>
@@ -586,10 +586,10 @@ export default function FoodJournal() {
               const count = m === 'All' ? allLogs.length : (mealGroups[m]?.length || 0)
               return (
                 <button key={m} onClick={() => setActiveMeal(m)} className="ax-meal-tab"
-                  style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:99, border:`1px solid ${active ? 'rgba(200,212,200,0.5)' : 'rgba(255,255,255,0.08)'}`, background: active ? 'rgba(200,212,200,0.12)' : 'rgba(255,255,255,0.03)', color: active ? '#c8d4c8' : 'rgba(255,255,255,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0 }}>
-                  {m !== 'All' && <span style={{ color: active ? 'rgba(200,212,200,0.7)' : 'rgba(255,255,255,0.2)' }}>{MEAL_ICONS[m](12)}</span>}
+                  style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:99, border:`1px solid ${active ? 'rgba(200,212,200,0.5)' : 'rgba(212,212,232,0.08)'}`, background: active ? 'rgba(200,212,200,0.12)' : 'rgba(212,212,232,0.03)', color: active ? '#c8d4c8' : 'rgba(212,212,232,0.35)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0 }}>
+                  {m !== 'All' && <span style={{ color: active ? 'rgba(200,212,200,0.7)' : 'rgba(212,212,232,0.2)' }}>{MEAL_ICONS[m](12)}</span>}
                   {m}
-                  {count > 0 && <span style={{ background: active ? 'rgba(200,212,200,0.2)' : 'rgba(255,255,255,0.07)', borderRadius:99, padding:'1px 6px', fontSize:10 }}>{count}</span>}
+                  {count > 0 && <span style={{ background: active ? 'rgba(200,212,200,0.2)' : 'rgba(212,212,232,0.07)', borderRadius:99, padding:'1px 6px', fontSize:10 }}>{count}</span>}
                 </button>
               )
             })}
@@ -603,12 +603,12 @@ export default function FoodJournal() {
             />
 
             {loading && (
-              <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'24px 0', fontStyle:'italic' }}>Loading…</p>
+              <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'24px 0', fontStyle:'italic' }}>Loading…</p>
             )}
 
             {!loading && filteredLogs.length === 0 && (
-              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:12, padding:'32px 20px', textAlign:'center' }}>
-                <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:12 }}>Nothing logged yet.</p>
+              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:12, padding:'32px 20px', textAlign:'center' }}>
+                <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:12 }}>Nothing logged yet.</p>
                 <div style={{ display:'flex', gap:8, justifyContent:'center' }}>
                   <button onClick={() => setShowAI(true)}
                     style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
@@ -636,7 +636,7 @@ export default function FoodJournal() {
 
             {/* Meal-grouped totals when viewing All */}
             {activeMeal === 'All' && allLogs.length > 0 && (
-              <div style={{ marginTop:16, paddingTop:14, borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <div style={{ marginTop:16, paddingTop:14, borderTop:'1px solid rgba(212,212,232,0.06)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{allLogs.length} {allLogs.length === 1 ? 'entry' : 'entries'} today</p>
                 <p style={{ color:'var(--text-primary)', fontWeight:900, fontSize:15, fontFamily:'Helvetica Neue,sans-serif' }}>{calories.toLocaleString()} cal total</p>
               </div>

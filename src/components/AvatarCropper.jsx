@@ -65,10 +65,10 @@ export default function AvatarCropper({ imageSrc, onSave, onCancel }) {
     }}>
       {/* Title */}
       <div style={{ padding: '20px 20px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-        <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif' }}>
+        <p style={{ color: 'rgba(212,212,232,0.45)', fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif' }}>
           Adjust Photo
         </p>
-        <button onClick={onCancel} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.45)', fontSize: 22, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>×</button>
+        <button onClick={onCancel} style={{ background: 'none', border: 'none', color: 'rgba(212,212,232,0.45)', fontSize: 22, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>×</button>
       </div>
 
       {/* Crop area */}
@@ -86,7 +86,7 @@ export default function AvatarCropper({ imageSrc, onSave, onCancel }) {
           style={{
             containerStyle: { background: 'transparent' },
             cropAreaStyle: {
-              border: '2px solid rgba(255,255,255,0.7)',
+              border: '2px solid rgba(212,212,232,0.7)',
               boxShadow: '0 0 0 9999px rgba(0,0,0,0.6)',
             },
           }}
@@ -95,7 +95,7 @@ export default function AvatarCropper({ imageSrc, onSave, onCancel }) {
 
       {/* Zoom slider */}
       <div style={{ padding: '16px 32px 8px', flexShrink: 0 }}>
-        <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', marginBottom: 10 }}>Pinch or slide to zoom</p>
+        <p style={{ color: 'rgba(212,212,232,0.3)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', marginBottom: 10 }}>Pinch or slide to zoom</p>
         <input
           type="range"
           min={1} max={3} step={0.01}
@@ -109,8 +109,8 @@ export default function AvatarCropper({ imageSrc, onSave, onCancel }) {
       <div style={{ display: 'flex', gap: 10, padding: '12px 20px 36px', flexShrink: 0 }}>
         <button onClick={onCancel} style={{
           flex: 1, padding: '14px', borderRadius: 12,
-          border: '1px solid rgba(255,255,255,0.12)',
-          background: 'transparent', color: 'rgba(255,255,255,0.5)',
+          border: '1px solid rgba(212,212,232,0.12)',
+          background: 'transparent', color: 'rgba(212,212,232,0.5)',
           fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
         }}>
           Cancel
@@ -118,8 +118,8 @@ export default function AvatarCropper({ imageSrc, onSave, onCancel }) {
         <button onClick={handleSave} disabled={saving} style={{
           flex: 2, padding: '14px', borderRadius: 12,
           border: 'none',
-          background: saving ? 'rgba(255,255,255,0.15)' : '#fff',
-          color: saving ? 'rgba(255,255,255,0.4)' : '#000',
+          background: saving ? 'rgba(212,212,232,0.15)' : '#fff',
+          color: saving ? 'rgba(212,212,232,0.4)' : '#000',
           fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer',
           transition: 'background 0.2s',
         }}>

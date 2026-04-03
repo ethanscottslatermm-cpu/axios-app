@@ -19,8 +19,8 @@ const styles = `
     50%     { box-shadow: none; border-color: transparent; }
   }
   @keyframes l2-placeholderPulse {
-    0%,100% { opacity: 0.45; text-shadow: 0 0 8px rgba(255,255,255,0.20); }
-    50%     { opacity: 1.0;  text-shadow: 0 0 14px rgba(255,255,255,0.60), 0 0 30px rgba(255,255,255,0.20); }
+    0%,100% { opacity: 0.45; text-shadow: 0 0 8px rgba(212,212,232,0.20); }
+    50%     { opacity: 1.0;  text-shadow: 0 0 14px rgba(212,212,232,0.60), 0 0 30px rgba(212,212,232,0.20); }
   }
   @keyframes l2-iconPulse {
     0%,100% { filter: drop-shadow(0 0 3px rgba(200,200,220,0.25)); opacity: 0.50; }
@@ -41,7 +41,7 @@ const styles = `
     border: none;
     border-bottom: 1px solid transparent;
     border-radius: 0;
-    color: rgba(255,255,255,0.9);
+    color: rgba(212,212,232,0.9);
     padding: 13px 14px;
     font-size: 1rem;
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
@@ -53,20 +53,20 @@ const styles = `
   }
   .l2-input:focus {
     background: transparent;
-    border-bottom: 1px solid rgba(255,255,255,0.55);
-    box-shadow: 0 2px 12px rgba(255,255,255,0.18), 0 1px 4px rgba(255,255,255,0.10);
+    border-bottom: 1px solid rgba(212,212,232,0.55);
+    box-shadow: 0 2px 12px rgba(212,212,232,0.18), 0 1px 4px rgba(212,212,232,0.10);
   }
   .l2-input-icon { padding-left: 36px; }
   .l2-input:-webkit-autofill,
   .l2-input:-webkit-autofill:hover,
   .l2-input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 1000px rgba(0,0,0,0.88) inset !important;
-    -webkit-text-fill-color: rgba(255,255,255,0.9) !important;
+    -webkit-text-fill-color: rgba(212,212,232,0.9) !important;
     transition: background-color 5000s ease-in-out 0s;
     caret-color: white;
   }
   .l2-input::placeholder {
-    color: rgba(255,255,255,1.0);
+    color: rgba(212,212,232,1.0);
     font-family: 'The Seasons', serif;
     letter-spacing: 0.18em;
     font-size: 0.82rem;
@@ -81,7 +81,7 @@ const styles = `
     display: block;
     margin: 0 auto;
     background: transparent;
-    color: rgba(255,255,255,0.25);
+    color: rgba(212,212,232,0.25);
     border: none;
     border-radius: 2px;
     padding: 14px;
@@ -97,10 +97,10 @@ const styles = `
     text-shadow: none;
   }
   .l2-enter-btn.l2-btn-active {
-    color: rgba(255,255,255,0.92);
-    text-shadow: 0 0 14px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.2);
+    color: rgba(212,212,232,0.92);
+    text-shadow: 0 0 14px rgba(212,212,232,0.5), 0 0 30px rgba(212,212,232,0.2);
     animation: l2-btnGlow 3s ease-in-out infinite, l2-btnShine 4s ease-in-out infinite;
-    background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.07) 50%, transparent 65%);
+    background-image: linear-gradient(105deg, transparent 35%, rgba(212,212,232,0.07) 50%, transparent 65%);
     background-size: 300% 100%;
   }
   .l2-enter-btn:active { transform: translateY(0); }
@@ -185,14 +185,14 @@ export default function Login2() {
 
             <div style={{ marginBottom: '2.2rem' }}>
               <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
                 </svg>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
                 {email.includes('@') && email.includes('.') && (
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                    style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.75)', filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.6))', pointerEvents: 'none' }}>
+                    style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.75)', filter: 'drop-shadow(0 0 6px rgba(212,212,232,0.6))', pointerEvents: 'none' }}>
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                 )}
@@ -201,7 +201,7 @@ export default function Login2() {
 
             <div style={{ marginBottom: '3.5rem' }}>
               <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.45)', pointerEvents: 'none' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
@@ -215,13 +215,13 @@ export default function Login2() {
 
             {offerFaceId ? (
               <div style={{ textAlign: 'center' }}>
-                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.75rem', fontFamily: '"Helvetica Neue",sans-serif', marginBottom: '1.2rem', lineHeight: 1.5 }}>Enable Face ID for faster sign-in?</p>
+                <p style={{ color: 'rgba(212,212,232,0.7)', fontSize: '0.75rem', fontFamily: '"Helvetica Neue",sans-serif', marginBottom: '1.2rem', lineHeight: 1.5 }}>Enable Face ID for faster sign-in?</p>
                 <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId}
                   style={{ width: '100%', padding: '13px', borderRadius: 2, border: 'none', background: '#fff', color: '#000', fontSize: '0.75rem', fontWeight: 700, fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: 10 }}>
                   {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
                 </button>
                 <button type="button" onClick={() => setShowLoader(true)}
-                  style={{ width: '100%', padding: '11px', borderRadius: 2, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.45)', fontSize: '0.7rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                  style={{ width: '100%', padding: '11px', borderRadius: 2, border: '1px solid rgba(212,212,232,0.15)', background: 'transparent', color: 'rgba(212,212,232,0.45)', fontSize: '0.7rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
                   Skip for now
                 </button>
               </div>

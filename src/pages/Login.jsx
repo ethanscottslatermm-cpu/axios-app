@@ -38,8 +38,8 @@ const styles = `
     50%     { box-shadow: 0 0 28px rgba(200,200,220,0.42), 0 0 70px rgba(200,200,220,0.14), inset 0 0 28px rgba(200,200,220,0.07); border-color: rgba(200,200,220,0.65); }
   }
   @keyframes inputPulse {
-    0%,100% { box-shadow: 0 0 0px rgba(255,255,255,0); }
-    50%     { box-shadow: 0 0 16px rgba(255,255,255,0.10), 0 0 32px rgba(255,255,255,0.04); }
+    0%,100% { box-shadow: 0 0 0px rgba(212,212,232,0); }
+    50%     { box-shadow: 0 0 16px rgba(212,212,232,0.10), 0 0 32px rgba(212,212,232,0.04); }
   }
   @keyframes scanLine {
     0%   { transform: translateY(-100vh); opacity: 0; }
@@ -48,8 +48,8 @@ const styles = `
     100% { transform: translateY(100vh); opacity: 0; }
   }
   @keyframes titleShimmer {
-    0%,100% { text-shadow: 0 0 30px rgba(255,255,255,0.18), 0 0 60px rgba(255,255,255,0.06); letter-spacing: 0.18em; }
-    50%     { text-shadow: 0 0 50px rgba(255,255,255,0.45), 0 0 100px rgba(255,255,255,0.14), 0 0 160px rgba(255,255,255,0.05); letter-spacing: 0.20em; }
+    0%,100% { text-shadow: 0 0 30px rgba(212,212,232,0.18), 0 0 60px rgba(212,212,232,0.06); letter-spacing: 0.18em; }
+    50%     { text-shadow: 0 0 50px rgba(212,212,232,0.45), 0 0 100px rgba(212,212,232,0.14), 0 0 160px rgba(212,212,232,0.05); letter-spacing: 0.20em; }
   }
   @keyframes btnShine {
     0%   { background-position: -300% center; }
@@ -101,7 +101,7 @@ const styles = `
     background: rgba(0,0,0,0.5);
     border: 1px solid rgba(200,200,220,0.42);
     border-radius: 2px;
-    color: rgba(255,255,255,0.9);
+    color: rgba(212,212,232,0.9);
     padding: 13px 14px;
     font-size: 1rem;
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
@@ -132,7 +132,7 @@ const styles = `
   .enter-btn {
     width: 100%;
     background: rgba(0,0,0,0.6);
-    color: rgba(255,255,255,0.92);
+    color: rgba(212,212,232,0.92);
     border: 1px solid #d0d0dc;
     border-radius: 2px;
     padding: 14px;
@@ -144,8 +144,8 @@ const styles = `
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
     transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
     -webkit-appearance: none;
-    text-shadow: 0 0 14px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.2);
-    background-image: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.07) 50%, transparent 65%);
+    text-shadow: 0 0 14px rgba(212,212,232,0.5), 0 0 30px rgba(212,212,232,0.2);
+    background-image: linear-gradient(105deg, transparent 35%, rgba(212,212,232,0.07) 50%, transparent 65%);
     background-size: 300% 100%;
     animation: btnGoldGlow 3s ease-in-out infinite, btnShine 4s ease-in-out infinite;
   }
@@ -245,14 +245,14 @@ export default function Login() {
         {/* Atmospheric shimmer */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 2,
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 40%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(212,212,232,0.07) 0%, rgba(212,212,232,0.02) 40%, transparent 70%)',
           animation: 'shimmer 7s ease-in-out infinite',
         }} />
 
         {/* Scanline sweep */}
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, height: '3px', zIndex: 3,
-          background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.04), transparent)',
+          background: 'linear-gradient(to bottom, transparent, rgba(212,212,232,0.04), transparent)',
           animation: 'scanLine 12s linear infinite',
           pointerEvents: 'none',
         }} />
@@ -265,7 +265,7 @@ export default function Login() {
               top:'38%', left:'50%',
               width:'130vw', height:'130vw',
               borderRadius:'50%',
-              border:`1px solid rgba(255,255,255,${0.13 - i * 0.015})`,
+              border:`1px solid rgba(212,212,232,${0.13 - i * 0.015})`,
               animation:`loginRipple 7s ease-out infinite`,
               animationDelay:`-${delay}s`,
             }}/>
@@ -291,8 +291,8 @@ export default function Login() {
               left:p.l, bottom:p.bot,
               width:p.s, height:p.s,
               borderRadius:'50%',
-              background:'rgba(255,255,255,0.75)',
-              boxShadow:`0 0 ${p.s * 3}px rgba(255,255,255,0.5)`,
+              background:'rgba(212,212,232,0.75)',
+              boxShadow:`0 0 ${p.s * 3}px rgba(212,212,232,0.5)`,
               animation:`loginParticle ${p.dur} ease-in-out infinite`,
               animationDelay: p.delay,
             }}/>
@@ -303,7 +303,7 @@ export default function Login() {
         <div style={{
           position:'fixed', left:'-10%', right:'-10%', top:'25%', height:'18%',
           zIndex:3, pointerEvents:'none',
-          background:'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.05) 60%, transparent 100%)',
+          background:'linear-gradient(to bottom, transparent 0%, rgba(212,212,232,0.05) 40%, rgba(212,212,232,0.07) 50%, rgba(212,212,232,0.05) 60%, transparent 100%)',
           animation:'loginAurora 8s ease-in-out infinite',
         }}/>
 
@@ -332,11 +332,11 @@ export default function Login() {
                 fontSize: 'clamp(1.8rem, 8vw, 2.8rem)',
                 letterSpacing: '0.2em', textTransform: 'uppercase',
                 lineHeight: 1, fontFamily: '"The Seasons", serif',
-                textShadow: `-1px -1px 1px rgba(255,255,255,0.18),
+                textShadow: `-1px -1px 1px rgba(212,212,232,0.18),
                               1px  1px 2px rgba(0,0,0,0.9),
-                             -2px -2px 4px rgba(255,255,255,0.07),
+                             -2px -2px 4px rgba(212,212,232,0.07),
                               2px  2px 6px rgba(0,0,0,0.7),
-                              0 0 40px rgba(255,255,255,0.08)`,
+                              0 0 40px rgba(212,212,232,0.08)`,
               }}>AXIOS</span>
             </div>
             <p style={{ color: 'rgba(200,200,220,0.70)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
@@ -354,7 +354,7 @@ export default function Login() {
                 key={wordIndex}
                 className={phase === 'in' ? 'word-in' : 'word-out'}
                 style={{
-                  color: 'rgba(255,255,255,0.88)',
+                  color: 'rgba(212,212,232,0.88)',
                   fontSize: 'clamp(1.1rem, 4.5vw, 1.35rem)',
                   fontFamily: '"EB Garamond", Georgia, serif',
                   fontStyle: 'italic',
@@ -373,7 +373,7 @@ export default function Login() {
                   width: i === wordIndex ? '16px' : '4px',
                   height: '2px',
                   borderRadius: '1px',
-                  background: i === wordIndex ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)',
+                  background: i === wordIndex ? 'rgba(212,212,232,0.7)' : 'rgba(212,212,232,0.2)',
                   transition: 'all 0.5s ease',
                 }} />
               ))}
@@ -385,14 +385,14 @@ export default function Login() {
             width: '100%',
             padding: 'clamp(1.25rem, 5vw, 2rem)',
           }}>
-            <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 12px rgba(255,255,255,0.6), 0 0 30px rgba(255,255,255,0.25), 0 0 60px rgba(255,255,255,0.1)' }}>
+            <p style={{ fontSize: '0.58rem', textTransform: 'uppercase', marginBottom: '1.25rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.38em', color: 'rgba(212,212,232,0.9)', textShadow: '0 0 12px rgba(212,212,232,0.6), 0 0 30px rgba(212,212,232,0.25), 0 0 60px rgba(212,212,232,0.1)' }}>
               Secure Access
             </p>
 
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', color: 'rgba(255,255,255,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Email</label>
+              <label style={{ display: 'block', color: 'rgba(212,212,232,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Email</label>
               <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.22)', pointerEvents: 'none' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.22)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
                 </svg>
@@ -409,9 +409,9 @@ export default function Login() {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', color: 'rgba(255,255,255,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Password</label>
+              <label style={{ display: 'block', color: 'rgba(212,212,232,0.3)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '6px', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>Password</label>
               <div style={{ position: 'relative' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.22)', pointerEvents: 'none' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.22)', pointerEvents: 'none' }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
@@ -433,13 +433,13 @@ export default function Login() {
 
             {offerFaceId ? (
               <div style={{ textAlign:'center' }}>
-                <p style={{ color:'rgba(255,255,255,0.7)', fontSize:'0.75rem', fontFamily:'"Helvetica Neue",sans-serif', marginBottom:'1.2rem', lineHeight:1.5 }}>Enable Face ID for faster sign-in?</p>
+                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:'0.75rem', fontFamily:'"Helvetica Neue",sans-serif', marginBottom:'1.2rem', lineHeight:1.5 }}>Enable Face ID for faster sign-in?</p>
                 <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId}
                   style={{ width:'100%', padding:'13px', borderRadius:8, border:'none', background:'#fff', color:'#000', fontSize:'0.75rem', fontWeight:700, fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer', marginBottom:10 }}>
                   {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
                 </button>
                 <button type="button" onClick={() => setShowLoader(true)}
-                  style={{ width:'100%', padding:'11px', borderRadius:8, border:'1px solid rgba(255,255,255,0.15)', background:'transparent', color:'rgba(255,255,255,0.45)', fontSize:'0.7rem', fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.12em', textTransform:'uppercase', cursor:'pointer' }}>
+                  style={{ width:'100%', padding:'11px', borderRadius:8, border:'1px solid rgba(212,212,232,0.15)', background:'transparent', color:'rgba(212,212,232,0.45)', fontSize:'0.7rem', fontFamily:'"Helvetica Neue",sans-serif', letterSpacing:'0.12em', textTransform:'uppercase', cursor:'pointer' }}>
                   Skip for now
                 </button>
               </div>
@@ -449,12 +449,12 @@ export default function Login() {
             </button>
             )}
 
-            <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.9)', textShadow: '0 0 14px rgba(255,255,255,0.65), 0 0 35px rgba(255,255,255,0.25), 0 0 70px rgba(255,255,255,0.1)' }}>
+            <p style={{ fontSize: '0.56rem', textTransform: 'uppercase', textAlign: 'center', marginTop: '1rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', letterSpacing: '0.22em', color: 'rgba(212,212,232,0.9)', textShadow: '0 0 14px rgba(212,212,232,0.65), 0 0 35px rgba(212,212,232,0.25), 0 0 70px rgba(212,212,232,0.1)' }}>
               Authorized personnel only
             </p>
           </form>
 
-          <p style={{ color: 'rgba(255,255,255,0.15)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '1.5rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
+          <p style={{ color: 'rgba(212,212,232,0.15)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '1.5rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
             "Axios" — I am worthy
           </p>
         </div>

@@ -150,7 +150,7 @@ export default function FinanceGuard({ children }) {
         <button onClick={handleRegister} disabled={busy} style={{
           width: '100%', maxWidth: 280, padding: '15px',
           borderRadius: 14, border: '1px solid var(--border)',
-          background: busy ? 'rgba(255,255,255,0.06)' : 'var(--btn-bg)',
+          background: busy ? 'rgba(212,212,232,0.06)' : 'var(--btn-bg)',
           color: busy ? 'var(--text-muted)' : 'var(--btn-text)',
           fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif',
           cursor: busy ? 'not-allowed' : 'pointer',

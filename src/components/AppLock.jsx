@@ -125,7 +125,7 @@ export default function AppLock({ children }) {
       {/* ── Scanline ── */}
       <div style={{
         position:'absolute', width:'100%', height:'1px', top:0,
-        background:'linear-gradient(90deg,transparent 0%,rgba(220,220,255,0.1) 30%,rgba(255,255,255,0.2) 50%,rgba(220,220,255,0.1) 70%,transparent 100%)',
+        background:'linear-gradient(90deg,transparent 0%,rgba(220,220,255,0.1) 30%,rgba(212,212,232,0.2) 50%,rgba(220,220,255,0.1) 70%,transparent 100%)',
         animation:'axl-scan 5s ease-in-out infinite',
         pointerEvents:'none',
       }}/>
@@ -173,14 +173,14 @@ export default function AppLock({ children }) {
           {/* Shield icon */}
           <div style={{
             width:56, height:56, borderRadius:'50%',
-            border:'1px solid rgba(255,255,255,0.08)',
-            background:'rgba(255,255,255,0.04)',
+            border:'1px solid rgba(212,212,232,0.08)',
+            background:'rgba(212,212,232,0.04)',
             display:'flex', alignItems:'center', justifyContent:'center',
             margin:'0 auto 20px',
             animation: busy ? 'axl-pulse 1.2s ease-in-out infinite' : 'none',
           }}>
             <svg width={24} height={24} viewBox="0 0 24 24" fill="none"
-              stroke="rgba(255,255,255,0.55)" strokeWidth="1.3"
+              stroke="rgba(212,212,232,0.55)" strokeWidth="1.3"
               strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
@@ -190,13 +190,13 @@ export default function AppLock({ children }) {
             fontFamily:'"The Seasons",Georgia,serif',
             fontSize:14, letterSpacing:'3px',
             textTransform:'uppercase',
-            color:'rgba(255,255,255,0.9)',
+            color:'rgba(212,212,232,0.9)',
             marginBottom:10,
             animation:'axl-pulse-text 2s ease-in-out infinite',
           }}>Initializing</p>
 
           <p style={{
-            color:'rgba(255,255,255,0.55)', fontSize:13,
+            color:'rgba(212,212,232,0.55)', fontSize:13,
             fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6,
           }}>
             {busy ? 'Waiting for Face ID…' : hasCred ? 'Use Face ID to unlock.' : 'Sign in again to continue.'}
@@ -215,9 +215,9 @@ export default function AppLock({ children }) {
             <button onClick={triggerFaceId} style={{
               width:'100%', padding:'15px',
               borderRadius:14,
-              border:'1px solid rgba(255,255,255,0.12)',
-              background:'rgba(255,255,255,0.07)',
-              color:'rgba(255,255,255,0.9)',
+              border:'1px solid rgba(212,212,232,0.12)',
+              background:'rgba(212,212,232,0.07)',
+              color:'rgba(212,212,232,0.9)',
               fontSize:13, fontWeight:700,
               fontFamily:'Helvetica Neue,sans-serif',
               cursor:'pointer', letterSpacing:'0.04em',
@@ -236,9 +236,9 @@ export default function AppLock({ children }) {
           <button onClick={handleSignOut} style={{
             width:'100%', padding:'13px',
             borderRadius:14,
-            border:'1px solid rgba(255,255,255,0.07)',
+            border:'1px solid rgba(212,212,232,0.07)',
             background:'transparent',
-            color:'rgba(255,255,255,0.28)',
+            color:'rgba(212,212,232,0.28)',
             fontSize:11, fontFamily:'"Courier New",monospace',
             cursor:'pointer', letterSpacing:'0.15em',
             textTransform:'uppercase',
@@ -249,7 +249,7 @@ export default function AppLock({ children }) {
         </div>
 
         <p style={{
-          color:'rgba(255,255,255,0.1)', fontSize:8,
+          color:'rgba(212,212,232,0.1)', fontSize:8,
           letterSpacing:'0.28em', textTransform:'uppercase',
           fontFamily:'"Courier New",monospace',
         }}>

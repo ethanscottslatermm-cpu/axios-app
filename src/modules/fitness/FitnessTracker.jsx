@@ -39,7 +39,7 @@ function formatDate(ds) {
 
 function GlowBar({ pct, h=3 }) {
   return (
-    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
+    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(212,212,232,0.07)', overflow:'hidden' }}>
       <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'#b4bccc', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(180,188,204,0.5)' }} />
     </div>
   )
@@ -49,7 +49,7 @@ function SectionHead({ title, sub }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
+        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(212,212,232,0.8),rgba(212,212,232,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(212,212,232,0.5)' }} />
         <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
       {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
@@ -70,8 +70,8 @@ function InputField({ label, value, onChange, type='text', placeholder='' }) {
   const [focused, setFocused] = useState(false)
   return (
     <div style={{ marginBottom:12 }}>
-      {label && <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>}
-      <div style={{ background:'var(--stat-bg)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s' }}>
+      {label && <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>}
+      <div style={{ background:'var(--stat-bg)', border:`1px solid ${focused ? 'rgba(212,212,232,0.25)' : 'rgba(212,212,232,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s' }}>
         <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
           onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           style={{ width:'100%', background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }} />
@@ -112,14 +112,14 @@ function LogWorkoutSheet({ onSave, onClose }) {
       <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(28px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)', maxHeight:'92vh', overflowY:'auto' }}>
 
         {/* Handle */}
-        <div style={{ width:36, height:4, background:'rgba(255,255,255,0.13)', borderRadius:99, margin:'0 auto 20px' }} />
+        <div style={{ width:36, height:4, background:'rgba(212,212,232,0.13)', borderRadius:99, margin:'0 auto 20px' }} />
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
           <div>
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{step === 'workout' ? 'Step 1 of 2' : 'Step 2 of 2'}</p>
             <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>{step === 'workout' ? 'Workout Details' : 'Add Exercises'}</h2>
           </div>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)' }}>{Ico.close(18)}</button>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)' }}>{Ico.close(18)}</button>
         </div>
 
         {step === 'workout' && (
@@ -128,11 +128,11 @@ function LogWorkoutSheet({ onSave, onClose }) {
 
             {/* Type selector */}
             <div style={{ marginBottom:14 }}>
-              <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Type</label>
+              <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Type</label>
               <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                 {WORKOUT_TYPES.map(t => (
                   <button key={t} onClick={() => setWorkout(w=>({...w,type:t}))}
-                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(180,188,204,0.5)' : 'rgba(255,255,255,0.09)'}`, background: workout.type===t ? 'rgba(180,188,204,0.15)' : 'rgba(255,255,255,0.03)', color: workout.type===t ? '#b4bccc' : 'rgba(255,255,255,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
+                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(180,188,204,0.5)' : 'rgba(212,212,232,0.09)'}`, background: workout.type===t ? 'rgba(180,188,204,0.15)' : 'rgba(212,212,232,0.03)', color: workout.type===t ? '#b4bccc' : 'rgba(212,212,232,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
                     {t}
                   </button>
                 ))}
@@ -151,7 +151,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
         {step === 'exercises' && (
           <>
             {exercises.length === 0 && (
-              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:12, padding:'24px', textAlign:'center', marginBottom:16 }}>
+              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:12, padding:'24px', textAlign:'center', marginBottom:16 }}>
                 <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:12 }}>No exercises added yet.</p>
               </div>
             )}
@@ -160,7 +160,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
               {exercises.map((ex, i) => (
                 <div key={i} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px' }}>
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
-                    <p style={{ color:'rgba(255,255,255,0.45)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Exercise {i+1}</p>
+                    <p style={{ color:'rgba(212,212,232,0.45)', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Exercise {i+1}</p>
                     <button onClick={() => removeEx(i)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)' }}>{Ico.trash()}</button>
                   </div>
                   {/* Name */}
@@ -184,7 +184,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
                   <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                     {MUSCLE_GROUPS.map(m => (
                       <button key={m} onClick={() => setEx(i,'muscle_group',m)}
-                        style={{ padding:'4px 10px', borderRadius:99, border:`1px solid ${ex.muscle_group===m ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.07)'}`, background: ex.muscle_group===m ? 'rgba(255,255,255,0.1)' : 'transparent', color: ex.muscle_group===m ? '#fff' : 'rgba(255,255,255,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.15s' }}>
+                        style={{ padding:'4px 10px', borderRadius:99, border:`1px solid ${ex.muscle_group===m ? 'rgba(212,212,232,0.3)' : 'rgba(212,212,232,0.07)'}`, background: ex.muscle_group===m ? 'rgba(212,212,232,0.1)' : 'transparent', color: ex.muscle_group===m ? '#fff' : 'rgba(212,212,232,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.15s' }}>
                         {m}
                       </button>
                     ))}
@@ -194,7 +194,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
             </div>
 
             <button onClick={addExercise}
-              style={{ width:'100%', padding:'12px', background:'transparent', border:'1px dashed rgba(255,255,255,0.15)', borderRadius:10, color:'rgba(255,255,255,0.4)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6, marginBottom:14, letterSpacing:'0.08em' }}>
+              style={{ width:'100%', padding:'12px', background:'transparent', border:'1px dashed rgba(212,212,232,0.15)', borderRadius:10, color:'rgba(212,212,232,0.4)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6, marginBottom:14, letterSpacing:'0.08em' }}>
               {Ico.plus(13)} Add Exercise
             </button>
 
@@ -202,7 +202,7 @@ function LogWorkoutSheet({ onSave, onClose }) {
 
             <div style={{ display:'flex', gap:10 }}>
               <button onClick={() => setStep('workout')}
-                style={{ flex:1, padding:'13px', background:'transparent', border:'1px solid var(--border)', borderRadius:10, color:'rgba(255,255,255,0.4)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                style={{ flex:1, padding:'13px', background:'transparent', border:'1px solid var(--border)', borderRadius:10, color:'rgba(212,212,232,0.4)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                 ← Back
               </button>
               <button onClick={handleSave} disabled={saving}
@@ -242,17 +242,17 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
   return (
     <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}>
       <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(28px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)' }}>
-        <div style={{ width:36, height:4, background:'rgba(255,255,255,0.13)', borderRadius:99, margin:'0 auto 20px' }} />
+        <div style={{ width:36, height:4, background:'rgba(212,212,232,0.13)', borderRadius:99, margin:'0 auto 20px' }} />
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:22 }}>
           <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>Log Weight</h2>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)' }}>{Ico.close(18)}</button>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)' }}>{Ico.close(18)}</button>
         </div>
 
-        {current && <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:18 }}>Last logged: <span style={{ color:'rgba(255,255,255,0.6)' }}>{current} lbs</span></p>}
+        {current && <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:18 }}>Last logged: <span style={{ color:'rgba(212,212,232,0.6)' }}>{current} lbs</span></p>}
 
         {/* Big weight input */}
         <div style={{ textAlign:'center', marginBottom:22 }}>
-          <div style={{ display:'inline-flex', alignItems:'baseline', gap:8, background:'var(--stat-bg)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:16, padding:'18px 28px' }}>
+          <div style={{ display:'inline-flex', alignItems:'baseline', gap:8, background:'var(--stat-bg)', border:'1px solid rgba(212,212,232,0.12)', borderRadius:16, padding:'18px 28px' }}>
             <input type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="185"
               style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:120, textAlign:'center' }} />
             <span style={{ color:'var(--text-muted)', fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>lbs</span>
@@ -261,11 +261,11 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
 
         {/* Note */}
         <div style={{ marginBottom:16 }}>
-          <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>Note <span style={{ color:'rgba(255,255,255,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span></label>
+          <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>Note <span style={{ color:'rgba(212,212,232,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span></label>
           <input value={note} onChange={e => setNote(e.target.value)} placeholder="Morning weigh-in, post-workout…"
             style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'12px 14px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none' }}
-            onFocus={e => e.target.style.borderColor='rgba(255,255,255,0.25)'}
-            onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.09)'} />
+            onFocus={e => e.target.style.borderColor='rgba(212,212,232,0.25)'}
+            onBlur={e => e.target.style.borderColor='rgba(212,212,232,0.09)'} />
         </div>
 
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>{error}</p>}
@@ -296,7 +296,7 @@ function WorkoutCard({ workout, delay, visible, onDelete }) {
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
             <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{workout.label}</p>
-            <span style={{ padding:'2px 8px', borderRadius:99, background:'rgba(255,255,255,0.07)', color:'rgba(255,255,255,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{workout.type}</span>
+            <span style={{ padding:'2px 8px', borderRadius:99, background:'rgba(212,212,232,0.07)', color:'rgba(212,212,232,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{workout.type}</span>
           </div>
           <div style={{ display:'flex', gap:12 }}>
             <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{formatDate(workout.created_at?.split('T')[0])}</p>
@@ -312,7 +312,7 @@ function WorkoutCard({ workout, delay, visible, onDelete }) {
             </button>
           )}
           <button onClick={handleDelete}
-            style={{ background: confirming?'rgba(255,60,60,0.1)':'rgba(255,255,255,0.04)', border:`1px solid ${confirming?'rgba(255,60,60,0.3)':'rgba(255,255,255,0.08)'}`, borderRadius:8, padding:'6px 9px', cursor:'pointer', color: confirming?'rgba(255,100,100,0.9)':'rgba(255,255,255,0.25)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s', display:'flex', alignItems:'center', gap:3 }}>
+            style={{ background: confirming?'rgba(255,60,60,0.1)':'rgba(212,212,232,0.04)', border:`1px solid ${confirming?'rgba(255,60,60,0.3)':'rgba(212,212,232,0.08)'}`, borderRadius:8, padding:'6px 9px', cursor:'pointer', color: confirming?'rgba(255,100,100,0.9)':'rgba(212,212,232,0.25)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s', display:'flex', alignItems:'center', gap:3 }}>
             {confirming ? 'Del?' : Ico.trash()}
           </button>
         </div>
@@ -320,11 +320,11 @@ function WorkoutCard({ workout, delay, visible, onDelete }) {
 
       {/* Exercises expand */}
       {expanded && workout.exercises?.length > 0 && (
-        <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', padding:'12px 16px', display:'flex', flexDirection:'column', gap:8 }}>
+        <div style={{ borderTop:'1px solid rgba(212,212,232,0.06)', padding:'12px 16px', display:'flex', flexDirection:'column', gap:8 }}>
           {workout.exercises.map((ex, i) => (
             <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 10px', background:'var(--bg-card)', borderRadius:9 }}>
               <div>
-                <p style={{ color:'rgba(255,255,255,0.75)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{ex.name}</p>
+                <p style={{ color:'rgba(212,212,232,0.75)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{ex.name}</p>
                 <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{ex.muscle_group}</p>
               </div>
               <p style={{ color:'var(--text-secondary)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', textAlign:'right' }}>
@@ -350,10 +350,10 @@ function WeightSparkline({ logs }) {
   const pts = vals.map((v,i) => `${(i/(vals.length-1))*W},${H - ((v-min)/(max-min))*H}`)
   return (
     <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ overflow:'visible' }}>
-      <polyline points={pts.join(' ')} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+      <polyline points={pts.join(' ')} fill="none" stroke="rgba(212,212,232,0.5)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
       {pts.map((pt,i) => {
         const [x,y] = pt.split(',')
-        return <circle key={i} cx={x} cy={y} r="2.5" fill="rgba(255,255,255,0.8)" />
+        return <circle key={i} cx={x} cy={y} r="2.5" fill="rgba(212,212,232,0.8)" />
       })}
     </svg>
   )
@@ -456,14 +456,14 @@ export default function FitnessTracker() {
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);overflow-x:hidden;}
         ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px;}
+        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.1);border-radius:99px;}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-        input::placeholder{color:rgba(255,255,255,0.2);}
+        input::placeholder{color:rgba(212,212,232,0.2);}
         input:focus,textarea:focus{outline:none;}
-        .ax-back:hover{background:rgba(255,255,255,0.08)!important;}
-        .ax-add-btn:hover{background:rgba(255,255,255,0.88)!important;box-shadow:0 0 22px rgba(255,255,255,0.2)!important;}
-        .ax-tab:hover{background:rgba(255,255,255,0.05)!important;}
-        .ax-wt-btn:hover{border-color:rgba(255,255,255,0.25)!important;color:rgba(255,255,255,0.7)!important;}
+        .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
+        .ax-add-btn:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
+        .ax-tab:hover{background:rgba(212,212,232,0.05)!important;}
+        .ax-wt-btn:hover{border-color:rgba(212,212,232,0.25)!important;color:rgba(212,212,232,0.7)!important;}
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
@@ -526,7 +526,7 @@ export default function FitnessTracker() {
               <div key={label} style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'10px 8px', textAlign:'center' }}>
                 <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>{label}</p>
                 <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:2 }}>{value}</p>
-                <p style={{ color:'rgba(255,255,255,0.2)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                <p style={{ color:'rgba(212,212,232,0.2)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
               </div>
             ))}
           </div>
@@ -539,7 +539,7 @@ export default function FitnessTracker() {
           <div style={{ display:'flex', gap:8, ...anim(80) }}>
             {[['workouts','Workouts'],['weight','Weight Log']].map(([key,label]) => (
               <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
-                style={{ flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(180,188,204,0.5)' : 'rgba(255,255,255,0.08)'}`, background: activeTab===key ? 'rgba(180,188,204,0.15)' : 'rgba(255,255,255,0.03)', color: activeTab===key ? '#b4bccc' : 'rgba(255,255,255,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight: activeTab===key ? 700 : 400, cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em' }}>
+                style={{ flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(180,188,204,0.5)' : 'rgba(212,212,232,0.08)'}`, background: activeTab===key ? 'rgba(180,188,204,0.15)' : 'rgba(212,212,232,0.03)', color: activeTab===key ? '#b4bccc' : 'rgba(212,212,232,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight: activeTab===key ? 700 : 400, cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em' }}>
                 {label}
               </button>
             ))}
@@ -550,14 +550,14 @@ export default function FitnessTracker() {
             <div style={anim(140)}>
               <SectionHead title="Workout History" sub={`${workouts.length} logged`} />
 
-              {loadingW && <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'24px 0', fontStyle:'italic' }}>Loading…</p>}
+              {loadingW && <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'24px 0', fontStyle:'italic' }}>Loading…</p>}
 
               {!loadingW && todayWorkouts.length === 0 && (
-                <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center' }}>
-                  <div style={{ color:'rgba(255,255,255,0.15)', marginBottom:12, display:'flex', justifyContent:'center' }}>{Ico.dumbbell(32)}</div>
+                <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center' }}>
+                  <div style={{ color:'rgba(212,212,232,0.15)', marginBottom:12, display:'flex', justifyContent:'center' }}>{Ico.dumbbell(32)}</div>
                   <p style={{ color:'var(--text-muted)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:16 }}>No workouts logged yet.<br/>Start with today's session.</p>
                   <button onClick={() => setShowWorkout(true)}
-                    style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                    style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(212,212,232,0.07)', border:'1px solid rgba(212,212,232,0.12)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                     {Ico.plus(12)} Log first workout
                   </button>
                 </div>
@@ -599,7 +599,7 @@ export default function FitnessTracker() {
                       {latest || '—'}<span style={{ fontSize:14, color:'var(--text-muted)', fontWeight:400, marginLeft:4 }}>lbs</span>
                     </p>
                     {diff && (
-                      <p style={{ color: parseFloat(diff) < 0 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
+                      <p style={{ color: parseFloat(diff) < 0 ? 'rgba(212,212,232,0.6)' : 'rgba(212,212,232,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
                         {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs from last entry
                       </p>
                     )}
@@ -618,9 +618,9 @@ export default function FitnessTracker() {
                 )}
 
                 <button onClick={() => setShowWeight(true)}
-                  style={{ width:'100%', marginTop:14, padding:'11px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(255,255,255,0.4)', fontSize:11, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s' }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.3)';e.currentTarget.style.color='rgba(255,255,255,0.7)'}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.1)';e.currentTarget.style.color='rgba(255,255,255,0.4)'}}>
+                  style={{ width:'100%', marginTop:14, padding:'11px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(212,212,232,0.4)', fontSize:11, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s' }}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.3)';e.currentTarget.style.color='rgba(212,212,232,0.7)'}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.1)';e.currentTarget.style.color='rgba(212,212,232,0.4)'}}>
                   + Log Today's Weight
                 </button>
               </Card>
@@ -628,15 +628,15 @@ export default function FitnessTracker() {
               {/* Weight history */}
               <SectionHead title="Weight History" sub={`${(weightLogs||[]).length} entries`} />
               {(weightLogs||[]).length === 0 && (
-                <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:14, padding:'32px 20px', textAlign:'center' }}>
-                  <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>No weight entries yet.</p>
+                <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'32px 20px', textAlign:'center' }}>
+                  <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>No weight entries yet.</p>
                 </div>
               )}
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                 {[...(weightLogs||[])].sort((a,b)=>new Date(b.logged_date||b.date)-new Date(a.logged_date||a.date)).map((log, i) => (
                   <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:11, opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
                     <div>
-                      <p style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
+                      <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
                       {log.note && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{log.note}</p>}
                     </div>
                     <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{log.weight_lbs} <span style={{ fontSize:11, color:'var(--text-muted)', fontWeight:400 }}>lbs</span></p>

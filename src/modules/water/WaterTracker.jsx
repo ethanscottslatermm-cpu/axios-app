@@ -27,9 +27,9 @@ const WATER_BLUE = '#9ab4cc'
 function GlowBar({ pct, h=5 }) {
   const full  = pct >= 100
   const color = full ? WATER_BLUE : 'var(--btn-bg)'
-  const glow  = full ? 'rgba(154,180,204,0.55)' : 'rgba(255,255,255,0.5)'
+  const glow  = full ? 'rgba(154,180,204,0.55)' : 'rgba(212,212,232,0.5)'
   return (
-    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
+    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(212,212,232,0.07)', overflow:'hidden' }}>
       <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1), background 0.5s', boxShadow:`0 0 10px ${glow}` }} />
     </div>
   )
@@ -39,7 +39,7 @@ function SectionHead({ title, sub }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
+        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(212,212,232,0.8),rgba(212,212,232,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(212,212,232,0.5)' }} />
         <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
       {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
@@ -76,8 +76,8 @@ function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
         width: '100%',
         aspectRatio: '1',
         borderRadius: 12,
-        border: `1px solid ${filled ? 'rgba(154,180,204,0.5)' : 'rgba(255,255,255,0.09)'}`,
-        background: filled ? 'rgba(154,180,204,0.22)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${filled ? 'rgba(154,180,204,0.5)' : 'rgba(212,212,232,0.09)'}`,
+        background: filled ? 'rgba(154,180,204,0.22)' : 'rgba(212,212,232,0.04)',
         cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         transition: 'background 0.25s, border-color 0.25s, transform 0.15s, box-shadow 0.25s',
@@ -85,7 +85,7 @@ function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
         opacity: visible ? 1 : 0,
         boxShadow: filled ? '0 0 14px rgba(154,180,204,0.3)' : 'none',
         transitionDelay: `${animDelay}ms`,
-        color: filled ? WATER_BLUE : 'rgba(255,255,255,0.2)',
+        color: filled ? WATER_BLUE : 'rgba(212,212,232,0.2)',
       }}
     >
       <svg width={filled ? 22 : 20} height={filled ? 22 : 20} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -116,11 +116,11 @@ function CustomOzSheet({ onSave, onClose }) {
   return (
     <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}>
       <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(32px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)' }}>
-        <div style={{ width:36, height:4, background:'rgba(255,255,255,0.13)', borderRadius:99, margin:'0 auto 22px' }} />
+        <div style={{ width:36, height:4, background:'rgba(212,212,232,0.13)', borderRadius:99, margin:'0 auto 22px' }} />
         <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:22, letterSpacing:'-0.01em' }}>Custom Amount</h2>
 
         <div style={{ textAlign:'center', marginBottom:24 }}>
-          <div style={{ display:'inline-flex', alignItems:'baseline', gap:8, background:'var(--stat-bg)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:16, padding:'18px 28px' }}>
+          <div style={{ display:'inline-flex', alignItems:'baseline', gap:8, background:'var(--stat-bg)', border:'1px solid rgba(212,212,232,0.12)', borderRadius:16, padding:'18px 28px' }}>
             <input
               type="number"
               value={oz}
@@ -135,7 +135,7 @@ function CustomOzSheet({ onSave, onClose }) {
 
         <div style={{ display:'flex', gap:10 }}>
           <button onClick={onClose}
-            style={{ flex:1, padding:'13px', background:'transparent', border:'1px solid var(--border)', borderRadius:10, color:'rgba(255,255,255,0.4)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+            style={{ flex:1, padding:'13px', background:'transparent', border:'1px solid var(--border)', borderRadius:10, color:'rgba(212,212,232,0.4)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
             Cancel
           </button>
           <button onClick={handleSave} disabled={saving || !oz}
@@ -223,13 +223,13 @@ export default function WaterTracker() {
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);overflow-x:hidden;}
         ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px;}
+        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.1);border-radius:99px;}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-        input::placeholder{color:rgba(255,255,255,0.2);}
+        input::placeholder{color:rgba(212,212,232,0.2);}
         input:focus{outline:none;}
-        .ax-back:hover{background:rgba(255,255,255,0.08)!important;}
-        .ax-quick:hover{background:rgba(255,255,255,0.08)!important;border-color:rgba(255,255,255,0.2)!important;}
-        .ax-custom:hover{border-color:rgba(255,255,255,0.22)!important;color:rgba(255,255,255,0.6)!important;}
+        .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
+        .ax-quick:hover{background:rgba(212,212,232,0.08)!important;border-color:rgba(212,212,232,0.2)!important;}
+        .ax-custom:hover{border-color:rgba(212,212,232,0.22)!important;color:rgba(212,212,232,0.6)!important;}
 
         @keyframes ripple {
           0%   { transform: scale(0.8); opacity: 1; }
@@ -265,7 +265,7 @@ export default function WaterTracker() {
               <p style={{ color:'var(--text-primary)', fontSize:34, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>
                 {count} <span style={{ fontSize:14, color:'var(--text-muted)', fontWeight:400 }}>/ {WATER_GOAL} glasses</span>
               </p>
-              <p style={{ color: goalMet ? WATER_BLUE : 'rgba(255,255,255,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
+              <p style={{ color: goalMet ? WATER_BLUE : 'rgba(212,212,232,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
                 {goalMet ? '✓ Goal reached — well done.' : `${remaining} glass${remaining !== 1 ? 'es' : ''} remaining`}
               </p>
             </div>
@@ -334,7 +334,7 @@ export default function WaterTracker() {
                       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
                         <div style={{ color:'var(--text-muted)' }}>{Ico.drop(14)}</div>
                         <div>
-                          <p style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>
+                          <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>
                             1 glass
                           </p>
                           {time && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{time}</p>}
@@ -343,7 +343,7 @@ export default function WaterTracker() {
                       <button onClick={() => { haptic.delete(); removeGlass.mutate(log.id) }}
                         style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:7, padding:'6px 8px', cursor:'pointer', color:'var(--text-muted)', display:'flex', alignItems:'center', transition:'all 0.2s' }}
                         onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,60,60,0.1)';e.currentTarget.style.borderColor='rgba(255,60,60,0.25)';e.currentTarget.style.color='rgba(255,100,100,0.8)'}}
-                        onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,0.04)';e.currentTarget.style.borderColor='rgba(255,255,255,0.08)';e.currentTarget.style.color='rgba(255,255,255,0.25)'}}>
+                        onMouseLeave={e=>{e.currentTarget.style.background='rgba(212,212,232,0.04)';e.currentTarget.style.borderColor='rgba(212,212,232,0.08)';e.currentTarget.style.color='rgba(212,212,232,0.25)'}}>
                         {Ico.trash()}
                       </button>
                     </div>
@@ -355,13 +355,13 @@ export default function WaterTracker() {
 
           {/* Empty state */}
           {!loading && (logs||[]).length === 0 && (
-            <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center', ...anim(280) }}>
-              <div style={{ color:'rgba(255,255,255,0.15)', marginBottom:12, display:'flex', justifyContent:'center' }}>{Ico.drop(32)}</div>
+            <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center', ...anim(280) }}>
+              <div style={{ color:'rgba(212,212,232,0.15)', marginBottom:12, display:'flex', justifyContent:'center' }}>{Ico.drop(32)}</div>
               <p style={{ color:'var(--text-muted)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:16 }}>
                 No water logged yet today.<br/>Start with your first glass.
               </p>
               <button onClick={() => handleAddGlass(8)}
-                style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(212,212,232,0.07)', border:'1px solid rgba(212,212,232,0.12)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
                 {Ico.plus(12)} Log first glass
               </button>
             </div>

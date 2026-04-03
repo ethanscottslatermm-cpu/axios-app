@@ -98,7 +98,7 @@ export default function LoadingScreen({ onComplete }) {
       {/* ── Scanline ── */}
       <div style={{
         position:'absolute', width:'100%', height:'1px', top:0,
-        background:'linear-gradient(90deg,transparent 0%,rgba(220,220,255,0.1) 30%,rgba(255,255,255,0.2) 50%,rgba(220,220,255,0.1) 70%,transparent 100%)',
+        background:'linear-gradient(90deg,transparent 0%,rgba(220,220,255,0.1) 30%,rgba(212,212,232,0.2) 50%,rgba(220,220,255,0.1) 70%,transparent 100%)',
         animation:'ax-scan 5s ease-in-out infinite',
         pointerEvents:'none',
       }}/>
@@ -144,7 +144,7 @@ export default function LoadingScreen({ onComplete }) {
           fontFamily:'"The Seasons",Georgia,serif',
           fontSize:13, letterSpacing:'3px',
           textTransform:'uppercase',
-          color:'rgba(255,255,255,0.9)',
+          color:'rgba(212,212,232,0.9)',
           animation:'ax-pulse-text 2s ease-in-out infinite',
         }}>
           Initializing

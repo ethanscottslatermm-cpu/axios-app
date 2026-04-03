@@ -532,7 +532,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
         const sel   = selected === l.id || hovered === l.id
         return (
           <text key={l.id} x={l.x} y={l.y}
-            fill={sel ? color : 'rgba(255,255,255,0.28)'}
+            fill={sel ? color : 'rgba(212,212,232,0.28)'}
             fontSize="7.5"
             fontFamily="Helvetica Neue,Arial,sans-serif"
             fontWeight={sel ? '700' : '400'}
@@ -559,7 +559,7 @@ function ExerciseCard({ ex }) {
         <div style={{ flex:1 }}>
           <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{ex.name}</p>
           <div style={{ display:'flex', gap:6 }}>
-            <span style={{ color:'rgba(255,255,255,0.32)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', background:'rgba(255,255,255,0.06)', padding:'2px 7px', borderRadius:5 }}>{ex.eq}</span>
+            <span style={{ color:'rgba(212,212,232,0.32)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', background:'rgba(212,212,232,0.06)', padding:'2px 7px', borderRadius:5 }}>{ex.eq}</span>
             <span style={{ color:'#b4bccc', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, background:'rgba(180,188,204,0.1)', padding:'2px 7px', borderRadius:5 }}>{ex.sets}</span>
           </div>
         </div>
@@ -659,7 +659,7 @@ export default function WorkoutGuide({ onClose }) {
           {[['front','Front'],['back','Back']].map(([v, lbl]) => (
             <button key={v} onClick={() => handleViewChange(v)} style={{
               flex:1, padding:'7px', borderRadius:7,
-              background: view===v ? 'rgba(255,255,255,0.1)' : 'transparent',
+              background: view===v ? 'rgba(212,212,232,0.1)' : 'transparent',
               color: view===v ? 'var(--text-primary)' : 'var(--text-muted)',
               border:'none', cursor:'pointer', fontSize:11,
               fontWeight: view===v ? 700 : 400,
@@ -685,7 +685,7 @@ export default function WorkoutGuide({ onClose }) {
         </div>
 
         {!selected && (
-          <p style={{ textAlign:'center', color:'rgba(255,255,255,0.2)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:14 }}>
+          <p style={{ textAlign:'center', color:'rgba(212,212,232,0.2)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:14 }}>
             Tap a muscle group to see exercises
           </p>
         )}
@@ -724,21 +724,21 @@ export default function WorkoutGuide({ onClose }) {
                 <div style={{ width:10, height:10, borderRadius:'50%', background:selectedDB.color, boxShadow:`0 0 10px ${selectedDB.color}` }}/>
                 <p style={{ color:selectedDB.color, fontSize:15, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>{selectedDB.label}</p>
               </div>
-              <p style={{ color:'rgba(255,255,255,0.38)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', fontStyle:'italic', marginBottom:10 }}>
+              <p style={{ color:'rgba(212,212,232,0.38)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', fontStyle:'italic', marginBottom:10 }}>
                 {selectedDB.scientific}
               </p>
               {/* Intensity */}
               <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:10 }}>
-                <span style={{ color:'rgba(255,255,255,0.28)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Intensity</span>
+                <span style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Intensity</span>
                 {[1,2,3,4,5].map(i => (
                   <div key={i} style={{
                     width:7, height:7, borderRadius:'50%',
-                    background: i <= selectedDB.intensity ? selectedDB.color : 'rgba(255,255,255,0.08)',
+                    background: i <= selectedDB.intensity ? selectedDB.color : 'rgba(212,212,232,0.08)',
                     boxShadow: i <= selectedDB.intensity ? `0 0 6px ${selectedDB.color}88` : 'none',
                   }}/>
                 ))}
               </div>
-              <p style={{ color:'rgba(255,255,255,0.52)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.65 }}>{selectedDB.desc}</p>
+              <p style={{ color:'rgba(212,212,232,0.52)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.65 }}>{selectedDB.desc}</p>
             </div>
 
             {/* Exercise list */}
@@ -772,10 +772,10 @@ export default function WorkoutGuide({ onClose }) {
 
         {!selected && (
           <div style={{ textAlign:'center', padding:'24px 0' }}>
-            <svg width={36} height={36} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block', margin:'0 auto 10px' }}>
+            <svg width={36} height={36} viewBox="0 0 24 24" fill="none" stroke="rgba(212,212,232,0.1)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block', margin:'0 auto 10px' }}>
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
-            <p style={{ color:'rgba(255,255,255,0.15)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6 }}>
+            <p style={{ color:'rgba(212,212,232,0.15)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6 }}>
               Select a muscle group<br/>from the diagram or chips above
             </p>
           </div>

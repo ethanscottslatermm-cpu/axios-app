@@ -27,10 +27,10 @@ export default function MaintenanceScreen() {
       <p style={{ color: 'rgba(148,163,184,0.5)', fontSize: 9, letterSpacing: '0.34em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 14 }}>
         AXIOS
       </p>
-      <h1 style={{ color: 'rgba(255,255,255,0.85)', fontSize: 22, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '-0.02em', marginBottom: 12 }}>
+      <h1 style={{ color: 'rgba(212,212,232,0.85)', fontSize: 22, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '-0.02em', marginBottom: 12 }}>
         Updating & Optimizing
       </h1>
-      <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif', lineHeight: 1.6, maxWidth: 280 }}>
+      <p style={{ color: 'rgba(212,212,232,0.35)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif', lineHeight: 1.6, maxWidth: 280 }}>
         Axios is currently updating and optimizing performance. We'll be back shortly.
       </p>
 

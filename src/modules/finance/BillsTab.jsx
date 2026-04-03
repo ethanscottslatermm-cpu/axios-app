@@ -16,7 +16,7 @@ const STATUS_COLOR = {
   paid:       '#9ab89a',
   'due-soon': '#c4b490',
   overdue:    '#c4a0a0',
-  upcoming:   'rgba(255,255,255,0.4)',
+  upcoming:   'rgba(212,212,232,0.4)',
 }
 
 const STATUS_LABEL = {
@@ -42,7 +42,7 @@ function getStatus(bill) {
 
 const Field = ({ label, children }) => (
   <div style={{ marginBottom: 14 }}>
-    <label style={{ display: 'block', color: 'rgba(255,255,255,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>{label}</label>
+    <label style={{ display: 'block', color: 'rgba(212,212,232,0.32)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6 }}>{label}</label>
     {children}
   </div>
 )
@@ -154,7 +154,7 @@ export default function BillsTab({ userId }) {
       </div>
 
       {/* Add Bill button */}
-      <button onClick={openAdd} style={{ width: '100%', padding: '12px', borderRadius: 11, border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)', fontSize: 13, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+      <button onClick={openAdd} style={{ width: '100%', padding: '12px', borderRadius: 11, border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', background: 'rgba(212,212,232,0.05)', color: 'var(--text-primary)', fontSize: 13, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
         Add Bill
       </button>
@@ -162,7 +162,7 @@ export default function BillsTab({ userId }) {
       {loading && <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '32px 0' }}>Loading…</p>}
 
       {!loading && bills.length === 0 && (
-        <p style={{ color: 'rgba(255,255,255,0.12)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '40px 0' }}>No bills yet. Tap Add Bill to get started.</p>
+        <p style={{ color: 'rgba(212,212,232,0.12)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '40px 0' }}>No bills yet. Tap Add Bill to get started.</p>
       )}
 
       {/* Bill groups */}
@@ -205,10 +205,10 @@ export default function BillsTab({ userId }) {
 
             {/* Drag handle + header */}
             <div style={{ flexShrink: 0, padding: '16px 18px 0' }}>
-              <div style={{ width: 36, height: 4, background: 'rgba(255,255,255,0.15)', borderRadius: 99, margin: '0 auto 18px' }} />
+              <div style={{ width: 36, height: 4, background: 'rgba(212,212,232,0.15)', borderRadius: 99, margin: '0 auto 18px' }} />
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                 <h2 style={{ color: 'var(--text-primary)', fontSize: 17, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif' }}>{editBill ? 'Edit Bill' : 'Add Bill'}</h2>
-                <button onClick={() => setShowSheet(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.45)', fontSize: 22, lineHeight: 1 }}>✕</button>
+                <button onClick={() => setShowSheet(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(212,212,232,0.45)', fontSize: 22, lineHeight: 1 }}>✕</button>
               </div>
             </div>
 
@@ -231,7 +231,7 @@ export default function BillsTab({ userId }) {
                 <div style={{ display: 'flex', gap: 8 }}>
                   {['monthly', 'yearly', 'weekly', 'one-time'].map(freq => (
                     <button key={freq} onClick={() => f('frequency', freq)}
-                      style={{ flex: 1, padding: '9px 4px', borderRadius: 9, border: '1px solid ' + (form.frequency === freq ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)'), background: form.frequency === freq ? 'rgba(255,255,255,0.1)' : 'transparent', color: form.frequency === freq ? '#fff' : 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: form.frequency === freq ? 700 : 400, cursor: 'pointer', textTransform: 'capitalize', letterSpacing: '0.04em' }}>
+                      style={{ flex: 1, padding: '9px 4px', borderRadius: 9, border: '1px solid ' + (form.frequency === freq ? 'rgba(212,212,232,0.35)' : 'rgba(212,212,232,0.08)'), background: form.frequency === freq ? 'rgba(212,212,232,0.1)' : 'transparent', color: form.frequency === freq ? '#fff' : 'rgba(212,212,232,0.35)', fontSize: 9, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: form.frequency === freq ? 700 : 400, cursor: 'pointer', textTransform: 'capitalize', letterSpacing: '0.04em' }}>
                       {freq}
                     </button>
                   ))}
@@ -242,7 +242,7 @@ export default function BillsTab({ userId }) {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {Object.entries(BILL_CATS).map(([k, v]) => (
                     <button key={k} onClick={() => f('category', k)}
-                      style={{ padding: '8px 12px', borderRadius: 9, border: '1px solid ' + (form.category === k ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)'), background: form.category === k ? 'rgba(255,255,255,0.1)' : 'transparent', color: form.category === k ? '#fff' : 'rgba(255,255,255,0.35)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
+                      style={{ padding: '8px 12px', borderRadius: 9, border: '1px solid ' + (form.category === k ? 'rgba(212,212,232,0.35)' : 'rgba(212,212,232,0.08)'), background: form.category === k ? 'rgba(212,212,232,0.1)' : 'transparent', color: form.category === k ? '#fff' : 'rgba(212,212,232,0.35)', fontSize: 10, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
                       {v}
                     </button>
                   ))}
@@ -253,7 +253,7 @@ export default function BillsTab({ userId }) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--stat-bg)', border: '1px solid var(--border)', borderRadius: 10 }}>
                   <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif' }}>Bill is paid automatically</p>
                   <div onClick={() => f('autopay', !form.autopay)}
-                    style={{ width: 40, height: 22, borderRadius: 11, background: form.autopay ? '#9ab89a' : 'rgba(255,255,255,0.12)', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
+                    style={{ width: 40, height: 22, borderRadius: 11, background: form.autopay ? '#9ab89a' : 'rgba(212,212,232,0.12)', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
                     <div style={{ position: 'absolute', top: 3, left: form.autopay ? 21 : 3, width: 16, height: 16, borderRadius: 8, background: '#fff', transition: 'left 0.2s' }} />
                   </div>
                 </div>
@@ -268,10 +268,10 @@ export default function BillsTab({ userId }) {
             </div>
 
             {/* Save footer — always pinned at bottom */}
-            <div style={{ flexShrink: 0, padding: '14px 18px', paddingBottom: 'calc(env(safe-area-inset-bottom) + 80px)', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ flexShrink: 0, padding: '14px 18px', paddingBottom: 'calc(env(safe-area-inset-bottom) + 80px)', borderTop: '1px solid rgba(212,212,232,0.08)' }}>
               {error && <p style={{ color: '#c4a0a0', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, textAlign: 'center' }}>{error}</p>}
               <button onClick={handleSave} disabled={saving}
-                style={{ width: '100%', padding: '16px', borderRadius: 12, border: 'none', background: saving ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.14)', color: saving ? 'var(--text-muted)' : 'var(--text-primary)', fontSize: 15, fontWeight: 800, fontFamily: 'Helvetica Neue,sans-serif', cursor: saving ? 'default' : 'pointer', letterSpacing: '0.02em' }}>
+                style={{ width: '100%', padding: '16px', borderRadius: 12, border: 'none', background: saving ? 'rgba(212,212,232,0.06)' : 'rgba(212,212,232,0.14)', color: saving ? 'var(--text-muted)' : 'var(--text-primary)', fontSize: 15, fontWeight: 800, fontFamily: 'Helvetica Neue,sans-serif', cursor: saving ? 'default' : 'pointer', letterSpacing: '0.02em' }}>
                 {saving ? 'Saving…' : editBill ? 'Save Changes' : 'Save Bill'}
               </button>
             </div>

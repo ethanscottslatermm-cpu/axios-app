@@ -42,7 +42,7 @@ function SectionHead({ title, sub }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,255,255,0.8),rgba(255,255,255,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.5)' }} />
+        <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(212,212,232,0.8),rgba(212,212,232,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(212,212,232,0.5)' }} />
         <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
       {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
@@ -84,14 +84,14 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
     <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', display:'flex', alignItems:'flex-end' }}>
       <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(28px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)', maxHeight:'90vh', overflowY:'auto' }}>
 
-        <div style={{ width:36, height:4, background:'rgba(255,255,255,0.13)', borderRadius:99, margin:'0 auto 22px' }} />
+        <div style={{ width:36, height:4, background:'rgba(212,212,232,0.13)', borderRadius:99, margin:'0 auto 22px' }} />
 
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
           <div>
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Today's Devotional</p>
             <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>My Journal</h2>
           </div>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.4)' }}>{Ico.close(18)}</button>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)' }}>{Ico.close(18)}</button>
         </div>
 
         {/* Verse reminder */}
@@ -104,22 +104,22 @@ function JournalSheet({ existing, verseRef, verseText, onSave, onClose }) {
 
         {/* Reflection */}
         <div style={{ marginBottom:16 }}>
-          <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Reflection</label>
+          <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Reflection</label>
           <textarea value={reflection} onChange={e => setReflection(e.target.value)} placeholder="What does this scripture mean to you today?" rows={5}
             style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
-            onFocus={e=>e.target.style.borderColor='rgba(255,255,255,0.25)'}
-            onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.09)'} />
+            onFocus={e=>e.target.style.borderColor='rgba(212,212,232,0.25)'}
+            onBlur={e=>e.target.style.borderColor='rgba(212,212,232,0.09)'} />
         </div>
 
         {/* Application */}
         <div style={{ marginBottom:8 }}>
-          <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>
-            Application <span style={{ color:'rgba(255,255,255,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span>
+          <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>
+            Application <span style={{ color:'rgba(212,212,232,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span>
           </label>
           <textarea value={application} onChange={e => setApplication(e.target.value)} placeholder="How will you apply this today?" rows={3}
             style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px', color:'var(--text-primary)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, resize:'none', outline:'none', transition:'border-color 0.2s' }}
-            onFocus={e=>e.target.style.borderColor='rgba(255,255,255,0.25)'}
-            onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.09)'} />
+            onFocus={e=>e.target.style.borderColor='rgba(212,212,232,0.25)'}
+            onBlur={e=>e.target.style.borderColor='rgba(212,212,232,0.09)'} />
         </div>
 
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, marginTop:8 }}>{error}</p>}
@@ -142,32 +142,32 @@ function PastEntry({ entry, delay, visible }) {
     <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, overflow:'hidden', opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(12px)', transition:`opacity 0.45s ease ${delay}ms, transform 0.45s ease ${delay}ms` }}>
       <button onClick={() => setExpanded(e=>!e)} style={{ width:'100%', padding:'14px 16px', background:'none', border:'none', cursor:'pointer', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
-          <p style={{ color:'rgba(255,255,255,0.6)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:2 }}>
+          <p style={{ color:'rgba(212,212,232,0.6)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:2 }}>
             {entry.scripture_ref?.toUpperCase().replace(/\//g,' ')}
           </p>
           <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
             {new Date(entry.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
           </p>
         </div>
-        <span style={{ color:'rgba(255,255,255,0.2)', transform: expanded?'rotate(90deg)':'none', transition:'transform 0.2s', fontSize:18 }}>›</span>
+        <span style={{ color:'rgba(212,212,232,0.2)', transform: expanded?'rotate(90deg)':'none', transition:'transform 0.2s', fontSize:18 }}>›</span>
       </button>
       {expanded && (
-        <div style={{ padding:'0 16px 16px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ padding:'0 16px 16px', borderTop:'1px solid rgba(212,212,232,0.06)' }}>
           {entry.scripture_text && (
-            <p style={{ color:'var(--text-secondary)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, padding:'14px 0', borderBottom:'1px solid rgba(255,255,255,0.05)', marginBottom:14 }}>
+            <p style={{ color:'var(--text-secondary)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, padding:'14px 0', borderBottom:'1px solid rgba(212,212,232,0.05)', marginBottom:14 }}>
               "{entry.scripture_text}"
             </p>
           )}
           {entry.reflection && (
             <div style={{ marginBottom:10 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Reflection</p>
-              <p style={{ color:'rgba(255,255,255,0.65)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{entry.reflection}</p>
+              <p style={{ color:'rgba(212,212,232,0.65)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{entry.reflection}</p>
             </div>
           )}
           {entry.application && (
             <div>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Application</p>
-              <p style={{ color:'rgba(255,255,255,0.65)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{entry.application}</p>
+              <p style={{ color:'rgba(212,212,232,0.65)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7 }}>{entry.application}</p>
             </div>
           )}
         </div>
@@ -356,14 +356,14 @@ function BibleReader({ onClose }) {
           <div style={{ maxWidth:640, margin:'0 auto' }}>
             {loading ? (
               <div style={{ paddingTop:60, textAlign:'center' }}>
-                <p style={{ color:'rgba(255,255,255,0.2)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Loading chapter…</p>
+                <p style={{ color:'rgba(212,212,232,0.2)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Loading chapter…</p>
               </div>
             ) : (
               <div style={{ paddingBottom:24 }}>
                 {verses.map(v => (
                   <div key={v.verse} style={{ display:'flex', gap:10, marginBottom:14 }}>
                     <span style={{ color:'rgba(185,28,28,0.55)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, minWidth:20, paddingTop:3, flexShrink:0 }}>{v.verse}</span>
-                    <p style={{ color:'rgba(255,255,255,0.82)', fontSize:17, fontFamily:"'EB Garamond',serif", lineHeight:1.85, letterSpacing:'0.01em' }}>{v.text.trim()}</p>
+                    <p style={{ color:'rgba(212,212,232,0.82)', fontSize:17, fontFamily:"'EB Garamond',serif", lineHeight:1.85, letterSpacing:'0.01em' }}>{v.text.trim()}</p>
                   </div>
                 ))}
               </div>
@@ -376,12 +376,12 @@ function BibleReader({ onClose }) {
       {view === 'read' && (
         <div style={{ flexShrink:0, borderTop:'1px solid var(--border)', background:'var(--header-bg)', backdropFilter:'blur(18px)', padding:'12px 16px', display:'flex', alignItems:'center', gap:10 }}>
           <button onClick={prevChapter} disabled={chapter <= 1}
-            style={{ flex:1, padding:'12px', borderRadius:10, background:'var(--stat-bg)', border:'1px solid var(--border)', color: chapter<=1 ? 'rgba(255,255,255,0.15)' : 'var(--text-secondary)', cursor: chapter<=1 ? 'default' : 'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', transition:'all 0.15s' }}>
+            style={{ flex:1, padding:'12px', borderRadius:10, background:'var(--stat-bg)', border:'1px solid var(--border)', color: chapter<=1 ? 'rgba(212,212,232,0.15)' : 'var(--text-secondary)', cursor: chapter<=1 ? 'default' : 'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', transition:'all 0.15s' }}>
             ← Prev
           </button>
           <span style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', whiteSpace:'nowrap' }}>{chapter} / {book.chapters}</span>
           <button onClick={nextChapter} disabled={chapter >= book.chapters}
-            style={{ flex:1, padding:'12px', borderRadius:10, background:'var(--stat-bg)', border:'1px solid var(--border)', color: chapter>=book.chapters ? 'rgba(255,255,255,0.15)' : 'var(--text-secondary)', cursor: chapter>=book.chapters ? 'default' : 'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', transition:'all 0.15s' }}>
+            style={{ flex:1, padding:'12px', borderRadius:10, background:'var(--stat-bg)', border:'1px solid var(--border)', color: chapter>=book.chapters ? 'rgba(212,212,232,0.15)' : 'var(--text-secondary)', cursor: chapter>=book.chapters ? 'default' : 'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.08em', transition:'all 0.15s' }}>
             Next →
           </button>
         </div>
@@ -496,12 +496,12 @@ export default function Devotional() {
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);overflow-x:hidden;}
         ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px;}
-        textarea::placeholder{color:rgba(255,255,255,0.2);}
+        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.1);border-radius:99px;}
+        textarea::placeholder{color:rgba(212,212,232,0.2);}
         textarea:focus{outline:none;}
-        .ax-back:hover{background:rgba(255,255,255,0.08)!important;}
-        .ax-journal-btn:hover{background:rgba(255,255,255,0.88)!important;box-shadow:0 0 22px rgba(255,255,255,0.2)!important;}
-        .ax-edit-btn:hover{border-color:rgba(255,255,255,0.25)!important;color:rgba(255,255,255,0.65)!important;}
+        .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
+        .ax-journal-btn:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
+        .ax-edit-btn:hover{border-color:rgba(212,212,232,0.25)!important;color:rgba(212,212,232,0.65)!important;}
         @keyframes fadeVerse {
           from{opacity:0;transform:translateY(6px);}
           to{opacity:1;transform:translateY(0);}
@@ -528,7 +528,7 @@ export default function Devotional() {
             </div>
             {today && (
               <button onClick={() => setShowJournal(true)} className="ax-edit-btn"
-                style={{ display:'flex', alignItems:'center', gap:5, padding:'8px 12px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'8px 12px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(212,212,232,0.4)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
                 {Ico.edit()} Edit
               </button>
             )}
@@ -553,14 +553,14 @@ export default function Devotional() {
         <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
           {/* Date label */}
-          <p style={{ color:'rgba(255,255,255,0.2)', fontSize:11, fontFamily:"'EB Garamond',serif", fontStyle:'italic', letterSpacing:'0.06em', ...anim(60) }}>
+          <p style={{ color:'rgba(212,212,232,0.2)', fontSize:11, fontFamily:"'EB Garamond',serif", fontStyle:'italic', letterSpacing:'0.06em', ...anim(60) }}>
             {todayLabel}
           </p>
 
           {/* Scripture card */}
           <div style={{ position:'relative', background:'var(--bg-card)', border:'1px solid var(--border)', borderLeft:'3px solid rgba(185,28,28,0.45)', boxShadow:'var(--card-shadow)', borderRadius:16, padding:'24px 20px', overflow:'hidden', ...anim(100) }}>
             {/* Decorative cross */}
-            <div style={{ position:'absolute', top:16, right:16, color:'rgba(255,255,255,0.04)', pointerEvents:'none' }}>{Ico.cross(48)}</div>
+            <div style={{ position:'absolute', top:16, right:16, color:'rgba(212,212,232,0.04)', pointerEvents:'none' }}>{Ico.cross(48)}</div>
 
             <p style={{ color:'rgba(185,28,28,0.6)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:16, fontWeight:600 }}>
               {verseLoading ? 'Loading…' : verse?.reference}
@@ -568,15 +568,15 @@ export default function Devotional() {
 
             {verseLoading ? (
               <div style={{ height:80, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Fetching today's verse…</p>
+                <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Fetching today's verse…</p>
               </div>
             ) : (
-              <p style={{ color:'rgba(255,255,255,0.85)', fontSize:18, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.85, letterSpacing:'0.01em', animation:'fadeVerse 0.7s ease both' }}>
+              <p style={{ color:'rgba(212,212,232,0.85)', fontSize:18, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.85, letterSpacing:'0.01em', animation:'fadeVerse 0.7s ease both' }}>
                 "{verse?.text}"
               </p>
             )}
 
-            <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid rgba(212,212,232,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <p style={{ color:'rgba(185,28,28,0.75)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.14em', fontWeight:600 }}>KJV · DAILY VERSE</p>
               <button onClick={() => setShowBible(true)}
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:8, background:'rgba(168,180,192,0.1)', border:'1px solid rgba(168,180,192,0.3)', color:'#a8b4c0', cursor:'pointer', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
@@ -588,8 +588,8 @@ export default function Devotional() {
           {/* Journal section */}
           {!today ? (
             <div style={anim(200)}>
-              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(255,255,255,0.1)', borderRadius:14, padding:'32px 20px', textAlign:'center', marginBottom:0 }}>
-                <div style={{ color:'rgba(255,255,255,0.15)', marginBottom:14, display:'flex', justifyContent:'center' }}>{Ico.book(30)}</div>
+              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.1)', borderRadius:14, padding:'32px 20px', textAlign:'center', marginBottom:0 }}>
+                <div style={{ color:'rgba(212,212,232,0.15)', marginBottom:14, display:'flex', justifyContent:'center' }}>{Ico.book(30)}</div>
                 <p style={{ color:'var(--text-muted)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:20 }}>
                   Reflect on today's scripture.<br/>Write what it means to you.
                 </p>
@@ -611,14 +611,14 @@ export default function Devotional() {
               {today.reflection && (
                 <div style={{ marginBottom:14 }}>
                   <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Reflection</p>
-                  <p style={{ color:'rgba(255,255,255,0.75)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.8 }}>{today.reflection}</p>
+                  <p style={{ color:'rgba(212,212,232,0.75)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.8 }}>{today.reflection}</p>
                 </div>
               )}
 
               {today.application && (
-                <div style={{ paddingTop:12, borderTop:'1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ paddingTop:12, borderTop:'1px solid rgba(212,212,232,0.06)' }}>
                   <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Application</p>
-                  <p style={{ color:'rgba(255,255,255,0.75)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.8 }}>{today.application}</p>
+                  <p style={{ color:'rgba(212,212,232,0.75)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.8 }}>{today.application}</p>
                 </div>
               )}
 
@@ -643,7 +643,7 @@ export default function Devotional() {
 
           {history.length === 0 && today && (
             <div style={{ textAlign:'center', padding:'20px 0', ...anim(300) }}>
-              <p style={{ color:'rgba(255,255,255,0.15)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Past entries will appear here.</p>
+              <p style={{ color:'rgba(212,212,232,0.15)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Past entries will appear here.</p>
             </div>
           )}
 

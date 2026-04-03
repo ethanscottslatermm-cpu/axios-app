@@ -376,7 +376,7 @@ export default function Admin() {
           {[{ id:'users', label:'Users' }, { id:'activity', label:'Activity' }, { id:'content', label:'Content' }].map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
               flex: 1, padding: '8px 4px', borderRadius: 9, border: '1px solid var(--border)', cursor: 'pointer',
-              background: activeTab === t.id ? 'rgba(255,255,255,0.08)' : 'transparent',
+              background: activeTab === t.id ? 'rgba(212,212,232,0.08)' : 'transparent',
               color: activeTab === t.id ? 'var(--text-primary)' : 'var(--text-muted)',
               fontSize: 11, fontWeight: activeTab === t.id ? 700 : 400,
               fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.06em', transition: 'all 0.15s',
@@ -402,13 +402,13 @@ export default function Admin() {
           </div>
           <button onClick={toggleAppOffline} disabled={togglingOffline} style={{
             width: 52, height: 30, borderRadius: 99, cursor: 'pointer', border: 'none', transition: 'all 0.25s',
-            background: appOffline ? '#c4a0a0' : 'rgba(255,255,255,0.12)',
+            background: appOffline ? '#c4a0a0' : 'rgba(212,212,232,0.12)',
             position: 'relative', flexShrink: 0,
           }}>
             <div style={{
               position: 'absolute', top: 3, left: appOffline ? 25 : 3,
               width: 24, height: 24, borderRadius: '50%',
-              background: appOffline ? '#fff' : 'rgba(255,255,255,0.5)',
+              background: appOffline ? '#fff' : 'rgba(212,212,232,0.5)',
               transition: 'left 0.25s',
             }} />
           </button>
@@ -434,7 +434,7 @@ export default function Admin() {
             <button key={f} onClick={() => setFilter(f)} style={{
               flex: 1, padding: '9px 4px', borderRadius: 9,
               border: '1px solid var(--border)',
-              background: filter === f ? 'rgba(255,255,255,0.08)' : 'transparent',
+              background: filter === f ? 'rgba(212,212,232,0.08)' : 'transparent',
               color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)',
               fontSize: 11, fontWeight: filter === f ? 700 : 400,
               fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer',
@@ -483,13 +483,13 @@ export default function Admin() {
               const cutoff = new Date(Date.now() - 15 * 60 * 1000)
               const online = users.filter(u => u.last_seen && new Date(u.last_seen) > cutoff)
               return online.length === 0 ? (
-                <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif' }}>No users active in the last 15 min.</p>
+                <p style={{ color: 'rgba(212,212,232,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif' }}>No users active in the last 15 min.</p>
               ) : (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {online.map(u => (
                     <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '7px 12px', borderRadius: 99, background: 'rgba(154,184,154,0.08)', border: '1px solid rgba(154,184,154,0.25)' }}>
                       <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#9ab89a', boxShadow: '0 0 6px #9ab89a' }} />
-                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>{u.name || 'Unnamed'}</span>
+                      <span style={{ color: 'rgba(212,212,232,0.8)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif' }}>{u.name || 'Unnamed'}</span>
                     </div>
                   ))}
                 </div>
@@ -501,9 +501,9 @@ export default function Admin() {
           <div style={anim(60)}>
             <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 10, fontWeight: 700 }}>Login History</p>
             {histLoading ? (
-              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '24px 0' }}>Loading…</p>
+              <p style={{ color: 'rgba(212,212,232,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '24px 0' }}>Loading…</p>
             ) : loginHistory.length === 0 ? (
-              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '24px 0' }}>No login history yet.</p>
+              <p style={{ color: 'rgba(212,212,232,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '24px 0' }}>No login history yet.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {loginHistory.map(entry => {
@@ -539,8 +539,8 @@ export default function Admin() {
           {/* Verse Pool */}
           <div style={anim(0)}>
             <p style={{ color: 'var(--text-muted)', fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 6, fontWeight: 700 }}>Daily Verse Pool</p>
-            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
-              Format: <span style={{ fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)' }}>book/chapter/verse</span> — e.g. <span style={{ fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)' }}>john/3/16</span>
+            <p style={{ color: 'rgba(212,212,232,0.3)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
+              Format: <span style={{ fontFamily: 'monospace', color: 'rgba(212,212,232,0.5)' }}>book/chapter/verse</span> — e.g. <span style={{ fontFamily: 'monospace', color: 'rgba(212,212,232,0.5)' }}>john/3/16</span>
             </p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
               <input value={newVerseRef} onChange={e => setNewVerseRef(e.target.value)} onKeyDown={e => e.key === 'Enter' && addVerse()} placeholder="john/3/16"
@@ -551,14 +551,14 @@ export default function Admin() {
               </button>
             </div>
             {verses.length === 0 ? (
-              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '20px 0' }}>No verses — run the schema to seed defaults.</p>
+              <p style={{ color: 'rgba(212,212,232,0.2)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', padding: '20px 0' }}>No verses — run the schema to seed defaults.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {verses.map(v => (
-                  <div key={v.id} style={{ background: 'var(--bg-card)', border: `1px solid ${v.active ? 'var(--border)' : 'rgba(255,255,255,0.04)'}`, borderRadius: 10, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8, opacity: v.active ? 1 : 0.45 }}>
+                  <div key={v.id} style={{ background: 'var(--bg-card)', border: `1px solid ${v.active ? 'var(--border)' : 'rgba(212,212,232,0.04)'}`, borderRadius: 10, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8, opacity: v.active ? 1 : 0.45 }}>
                     <p style={{ flex: 1, color: v.active ? 'var(--text-primary)' : 'var(--text-muted)', fontSize: 12, fontFamily: 'monospace' }}>{v.reference}</p>
                     <button onClick={() => toggleVerse(v.id, v.active)}
-                      style={{ padding: '4px 9px', borderRadius: 6, background: v.active ? 'rgba(154,184,154,0.1)' : 'rgba(255,255,255,0.06)', border: `1px solid ${v.active ? 'rgba(154,184,154,0.3)' : 'rgba(255,255,255,0.1)'}`, color: v.active ? '#9ab89a' : 'var(--text-muted)', fontSize: 10, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em' }}>
+                      style={{ padding: '4px 9px', borderRadius: 6, background: v.active ? 'rgba(154,184,154,0.1)' : 'rgba(212,212,232,0.06)', border: `1px solid ${v.active ? 'rgba(154,184,154,0.3)' : 'rgba(212,212,232,0.1)'}`, color: v.active ? '#9ab89a' : 'var(--text-muted)', fontSize: 10, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer', letterSpacing: '0.1em' }}>
                       {v.active ? 'ON' : 'OFF'}
                     </button>
                     <button onClick={() => deleteVerse(v.id)}

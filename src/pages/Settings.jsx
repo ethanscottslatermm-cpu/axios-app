@@ -28,7 +28,7 @@ const Ico = {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-function SectionLabel({ children, color = 'rgba(255,255,255,0.75)' }) {
+function SectionLabel({ children, color = 'rgba(212,212,232,0.75)' }) {
   return (
     <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
       <div style={{ width:2, height:14, background:`linear-gradient(to bottom,${color},${color}22)`, borderRadius:2, boxShadow:`0 0 6px ${color}55` }} />
@@ -49,12 +49,12 @@ function Field({ label, value, onChange, type='text', icon, disabled=false, plac
   const [focused, setFocused] = useState(false)
   return (
     <div style={{ marginBottom:14 }}>
-      <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>
-      <div style={{ display:'flex', alignItems:'center', gap:11, background:'var(--stat-bg)', border:`1px solid ${focused ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(255,255,255,0.07),0 0 14px rgba(255,255,255,0.04)' : 'none' }}>
+      <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>
+      <div style={{ display:'flex', alignItems:'center', gap:11, background:'var(--stat-bg)', border:`1px solid ${focused ? 'rgba(212,212,232,0.25)' : 'rgba(212,212,232,0.09)'}`, borderRadius:10, padding:'12px 14px', transition:'border-color 0.2s,box-shadow 0.2s', boxShadow: focused ? '0 0 0 1px rgba(212,212,232,0.07),0 0 14px rgba(212,212,232,0.04)' : 'none' }}>
         {icon && <div style={{ color:'var(--text-muted)', flexShrink:0 }}>{icon()}</div>}
         <input type={type} value={value} onChange={e => onChange(e.target.value)} disabled={disabled} placeholder={placeholder}
           onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-          style={{ flex:1, background:'transparent', border:'none', outline:'none', color: disabled ? 'rgba(255,255,255,0.28)' : '#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', WebkitTextFillColor: disabled ? 'rgba(255,255,255,0.28)' : '#fff' }} />
+          style={{ flex:1, background:'transparent', border:'none', outline:'none', color: disabled ? 'rgba(212,212,232,0.28)' : '#fff', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', WebkitTextFillColor: disabled ? 'rgba(212,212,232,0.28)' : '#fff' }} />
       </div>
     </div>
   )
@@ -64,18 +64,18 @@ function SelectField({ label, value, onChange, options }) {
   const [open, setOpen] = useState(false)
   return (
     <div style={{ marginBottom:14 }}>
-      <label style={{ display:'block', color:'rgba(255,255,255,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>
+      <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>{label}</label>
       <div style={{ position:'relative' }}>
         <button onClick={() => setOpen(o => !o)}
-          style={{ width:'100%', padding:'12px 14px', borderRadius:10, border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', background:'var(--stat-bg)', color: value ? '#fff' : 'rgba(255,255,255,0.28)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          style={{ width:'100%', padding:'12px 14px', borderRadius:10, border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', background:'var(--stat-bg)', color: value ? '#fff' : 'rgba(212,212,232,0.28)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           {value || 'Select…'}
           <span style={{ transform: open ? 'rotate(90deg)' : 'none', transition:'transform 0.2s', color:'var(--text-muted)' }}>{Ico.chevron()}</span>
         </button>
         {open && (
-          <div style={{ position:'absolute', top:'calc(100% + 5px)', left:0, right:0, zIndex:200, background:'var(--bg-secondary)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:10, overflow:'hidden' }}>
+          <div style={{ position:'absolute', top:'calc(100% + 5px)', left:0, right:0, zIndex:200, background:'var(--bg-secondary)', border:'1px solid rgba(212,212,232,0.12)', borderRadius:10, overflow:'hidden' }}>
             {options.map(opt => (
               <button key={opt} onClick={() => { onChange(opt); setOpen(false) }}
-                style={{ width:'100%', padding:'11px 14px', background: value===opt ? 'rgba(255,255,255,0.08)' : 'transparent', border:'none', borderBottom:'1px solid rgba(255,255,255,0.05)', color: value===opt ? '#fff' : 'rgba(255,255,255,0.6)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer' }}>
+                style={{ width:'100%', padding:'11px 14px', background: value===opt ? 'rgba(212,212,232,0.08)' : 'transparent', border:'none', borderBottom:'1px solid rgba(212,212,232,0.05)', color: value===opt ? '#fff' : 'rgba(212,212,232,0.6)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer' }}>
                 {opt}
               </button>
             ))}
@@ -230,12 +230,12 @@ export default function Settings() {
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-        input::placeholder{color:rgba(255,255,255,0.2);}
+        input::placeholder{color:rgba(212,212,232,0.2);}
         input:focus{outline:none;}
-        .ax-save:hover:not(:disabled){background:rgba(255,255,255,0.88)!important;box-shadow:0 0 22px rgba(255,255,255,0.2)!important;}
-        .ax-back:hover{background:rgba(255,255,255,0.07)!important;}
+        .ax-save:hover:not(:disabled){background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
+        .ax-back:hover{background:rgba(212,212,232,0.07)!important;}
         .ax-signout:hover{background:rgba(255,50,50,0.06)!important;border-color:rgba(255,80,80,0.3)!important;color:rgba(255,120,120,0.8)!important;}
-        .ax-reob:hover{border-color:rgba(255,255,255,0.25)!important;color:rgba(255,255,255,0.6)!important;}
+        .ax-reob:hover{border-color:rgba(212,212,232,0.25)!important;color:rgba(212,212,232,0.6)!important;}
         .ax-wipe:hover{background:rgba(255,30,30,0.08)!important;border-color:rgba(255,60,60,0.4)!important;}
         @keyframes spin{to{transform:rotate(360deg);}}
         @keyframes spin{to{transform:rotate(360deg);}}
@@ -270,7 +270,7 @@ export default function Settings() {
               )}
               {avatarUploading && (
                 <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.55)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                  <div style={{ width:14, height:14, border:'2px solid rgba(255,255,255,0.25)', borderTop:'2px solid #fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }} />
+                  <div style={{ width:14, height:14, border:'2px solid rgba(212,212,232,0.25)', borderTop:'2px solid #fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }} />
                 </div>
               )}
             </div>
@@ -334,10 +334,10 @@ export default function Settings() {
                     style={{
                       display:'flex', alignItems:'center', justifyContent:'space-between',
                       padding:'14px', borderRadius:12,
-                      background: active ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.02)',
-                      border:`1px solid ${active ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.08)'}`,
+                      background: active ? 'rgba(212,212,232,0.07)' : 'rgba(212,212,232,0.02)',
+                      border:`1px solid ${active ? 'rgba(212,212,232,0.28)' : 'rgba(212,212,232,0.08)'}`,
                       cursor:'pointer', transition:'all 0.2s', width:'100%', textAlign:'left',
-                      boxShadow: active ? '0 0 16px rgba(255,255,255,0.06)' : 'none',
+                      boxShadow: active ? '0 0 16px rgba(212,212,232,0.06)' : 'none',
                     }}>
                     <div style={{ display:'flex', alignItems:'center', gap:12 }}>
                       <div style={{ display:'flex', gap:4 }}>
@@ -346,12 +346,12 @@ export default function Settings() {
                         ))}
                       </div>
                       <div>
-                        <p style={{ color: active ? '#fff' : 'rgba(255,255,255,0.6)', fontSize:13, fontWeight: active ? 700 : 500, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{t.name}</p>
+                        <p style={{ color: active ? '#fff' : 'rgba(212,212,232,0.6)', fontSize:13, fontWeight: active ? 700 : 500, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{t.name}</p>
                         <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{t.description}</p>
                       </div>
                     </div>
                     {active && (
-                      <div style={{ width:20, height:20, borderRadius:'50%', background:'var(--btn-bg)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 8px rgba(255,255,255,0.5)', flexShrink:0 }}>
+                      <div style={{ width:20, height:20, borderRadius:'50%', background:'var(--btn-bg)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 8px rgba(212,212,232,0.5)', flexShrink:0 }}>
                         <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="var(--btn-text)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                       </div>
                     )}
@@ -365,7 +365,7 @@ export default function Settings() {
           <div style={anim(360)}>
             {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12, textAlign:'center' }}>{error}</p>}
             <button onClick={save} disabled={saving} className="ax-save"
-              style={{ width:'100%', padding:'15px', background: saved ? 'rgba(255,255,255,0.12)' : '#fff', color: saved ? '#fff' : 'var(--bg-primary)', border: saved ? '1px solid rgba(255,255,255,0.2)' : 'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
+              style={{ width:'100%', padding:'15px', background: saved ? 'rgba(212,212,232,0.12)' : '#fff', color: saved ? '#fff' : 'var(--bg-primary)', border: saved ? '1px solid rgba(212,212,232,0.2)' : 'none', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
               {saved ? <>{Ico.check()} Saved</> : saving ? 'Saving…' : 'Save Changes'}
             </button>
           </div>
@@ -419,8 +419,8 @@ export default function Settings() {
           {/* Account */}
           <Card style={anim(420)}>
             <SectionLabel color="#7a7a8a">Account</SectionLabel>
-            <div style={{ padding:'8px 0 16px', borderBottom:'1px solid rgba(255,255,255,0.06)', marginBottom:16 }}>
-              <p style={{ color:'rgba(255,255,255,0.4)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Signed in as</p>
+            <div style={{ padding:'8px 0 16px', borderBottom:'1px solid rgba(212,212,232,0.06)', marginBottom:16 }}>
+              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Signed in as</p>
               <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>{user?.email}</p>
             </div>
             {/* Face ID setup */}
@@ -449,13 +449,13 @@ export default function Settings() {
                 }}
                 style={{
                   width:40, height:22, borderRadius:11, border:'none', cursor:'pointer', padding:0,
-                  background: financeLock ? 'var(--btn-bg)' : 'rgba(255,255,255,0.1)',
+                  background: financeLock ? 'var(--btn-bg)' : 'rgba(212,212,232,0.1)',
                   position:'relative', transition:'background 0.25s', flexShrink:0,
                 }}>
                 <span style={{
                   position:'absolute', top:3, left: financeLock ? 21 : 3,
                   width:16, height:16, borderRadius:'50%',
-                  background: financeLock ? 'var(--btn-text)' : 'rgba(255,255,255,0.4)',
+                  background: financeLock ? 'var(--btn-text)' : 'rgba(212,212,232,0.4)',
                   transition:'left 0.25s', display:'block',
                 }} />
               </button>
@@ -463,7 +463,7 @@ export default function Settings() {
 
             {/* Admin panel — only visible to admin */}
             {isAdmin && (
-              <button onClick={() => navigate('/admin')} style={{ width:'100%', padding:'12px', background:'rgba(255,255,255,0.04)', border:'1px solid var(--border)', borderRadius:9, color:'var(--text-primary)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:10 }}>
+              <button onClick={() => navigate('/admin')} style={{ width:'100%', padding:'12px', background:'rgba(212,212,232,0.04)', border:'1px solid var(--border)', borderRadius:9, color:'var(--text-primary)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:10 }}>
                 <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 Admin Panel
               </button>
@@ -479,7 +479,7 @@ export default function Settings() {
             </button>
           </Card>
 
-          <p style={{ color:'rgba(255,255,255,0.08)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', paddingBottom:8 }}>AXIOS · I AM WORTHY</p>
+          <p style={{ color:'rgba(212,212,232,0.08)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', paddingBottom:8 }}>AXIOS · I AM WORTHY</p>
 
         </div>
       </div>

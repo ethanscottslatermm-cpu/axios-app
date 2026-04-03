@@ -53,8 +53,8 @@ function SelectField({ value, onChange, options, placeholder }) {
       <button
         onClick={() => setOpen(o => !o)}
         style={{
-          width:'100%', padding:'13px 16px', borderRadius:10, border:'1px solid rgba(255,255,255,0.12)',
-          background:'var(--stat-bg)', color: value ? '#fff' : 'rgba(255,255,255,0.3)',
+          width:'100%', padding:'13px 16px', borderRadius:10, border:'1px solid rgba(212,212,232,0.12)',
+          background:'var(--stat-bg)', color: value ? '#fff' : 'rgba(212,212,232,0.3)',
           fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer',
           display:'flex', justifyContent:'space-between', alignItems:'center',
         }}
@@ -65,10 +65,10 @@ function SelectField({ value, onChange, options, placeholder }) {
         </svg>
       </button>
       {open && (
-        <div style={{ position:'absolute', top:'calc(100% + 6px)', left:0, right:0, zIndex:200, background:'var(--bg-secondary)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:10, overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:'calc(100% + 6px)', left:0, right:0, zIndex:200, background:'var(--bg-secondary)', border:'1px solid rgba(212,212,232,0.12)', borderRadius:10, overflow:'hidden' }}>
           {options.map(opt => (
             <button key={opt} onClick={() => { onChange(opt); setOpen(false) }}
-              style={{ width:'100%', padding:'12px 16px', background: value === opt ? 'rgba(255,255,255,0.08)' : 'transparent', border:'none', color: value === opt ? '#fff' : 'rgba(255,255,255,0.6)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+              style={{ width:'100%', padding:'12px 16px', background: value === opt ? 'rgba(212,212,232,0.08)' : 'transparent', border:'none', color: value === opt ? '#fff' : 'rgba(212,212,232,0.6)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(212,212,232,0.05)' }}>
               {opt}
             </button>
           ))}
@@ -84,9 +84,9 @@ function StepDots({ total, current }) {
       {Array.from({ length: total }).map((_,i) => (
         <div key={i} style={{
           width: i === current ? 22 : 7, height:7, borderRadius:99,
-          background: i === current ? '#fff' : i < current ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.12)',
+          background: i === current ? '#fff' : i < current ? 'rgba(212,212,232,0.4)' : 'rgba(212,212,232,0.12)',
           transition:'all 0.3s cubic-bezier(.16,1,.3,1)',
-          boxShadow: i === current ? '0 0 8px rgba(255,255,255,0.5)' : 'none',
+          boxShadow: i === current ? '0 0 8px rgba(212,212,232,0.5)' : 'none',
         }} />
       ))}
     </div>
@@ -159,10 +159,10 @@ export default function Onboarding() {
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-        input::placeholder{color:rgba(255,255,255,0.2);}
+        input::placeholder{color:rgba(212,212,232,0.2);}
         input:focus{outline:none;}
-        .ax-field:focus-within{border-color:rgba(255,255,255,0.28)!important;box-shadow:0 0 0 1px rgba(255,255,255,0.07),0 0 16px rgba(255,255,255,0.04)!important;}
-        .ax-ob-btn:hover:not(:disabled){background:rgba(255,255,255,0.88)!important;box-shadow:0 0 22px rgba(255,255,255,0.2)!important;}
+        .ax-field:focus-within{border-color:rgba(212,212,232,0.28)!important;box-shadow:0 0 0 1px rgba(212,212,232,0.07),0 0 16px rgba(212,212,232,0.04)!important;}
+        .ax-ob-btn:hover:not(:disabled){background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
       `}</style>
 
       <div style={{
@@ -173,8 +173,8 @@ export default function Onboarding() {
 
         {/* Logo mark */}
         <div style={{ marginBottom:40, textAlign:'center' }}>
-          <p style={{ color:'rgba(255,255,255,0.15)', fontSize:10, letterSpacing:'0.4em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>AXIOS</p>
-          <p style={{ color:'rgba(255,255,255,0.08)', fontSize:9, letterSpacing:'0.3em', fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>I AM WORTHY</p>
+          <p style={{ color:'rgba(212,212,232,0.15)', fontSize:10, letterSpacing:'0.4em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>AXIOS</p>
+          <p style={{ color:'rgba(212,212,232,0.08)', fontSize:9, letterSpacing:'0.3em', fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>I AM WORTHY</p>
         </div>
 
         <div style={{
@@ -241,7 +241,7 @@ export default function Onboarding() {
         </div>
 
         {/* Step counter */}
-        <p style={{ color:'rgba(255,255,255,0.12)', fontSize:10, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginTop:32 }}>
+        <p style={{ color:'rgba(212,212,232,0.12)', fontSize:10, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginTop:32 }}>
           {step + 1} of {STEPS.length}
         </p>
       </div>

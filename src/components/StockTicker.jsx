@@ -90,7 +90,7 @@ export default function StockTicker() {
         {items.map((q, i) => {
           const hasData = q.price != null
           const up      = hasData && q.change >= 0
-          const color   = !hasData ? 'rgba(255,255,255,0.25)' : up ? '#9ab89a' : '#c4a0a0'
+          const color   = !hasData ? 'rgba(212,212,232,0.25)' : up ? '#9ab89a' : '#c4a0a0'
           const arrow   = up ? '▲' : '▼'
           const name    = DISPLAY_NAMES[q.symbol] || q.name || q.symbol
 
@@ -102,14 +102,14 @@ export default function StockTicker() {
               padding: '0 18px',
               fontSize: 10,
               fontFamily: 'Helvetica Neue, sans-serif',
-              borderRight: '1px solid rgba(255,255,255,0.07)',
+              borderRight: '1px solid rgba(212,212,232,0.07)',
             }}>
-              <span style={{ color: NAME_COLORS[q.symbol] || 'rgba(255,255,255,0.4)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700, fontSize: 9 }}>
+              <span style={{ color: NAME_COLORS[q.symbol] || 'rgba(212,212,232,0.4)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700, fontSize: 9 }}>
                 {name}
               </span>
               {hasData ? (
                 <>
-                  <span style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+                  <span style={{ color: 'rgba(212,212,232,0.85)', fontWeight: 600 }}>
                     ${fmt(q.price, q.symbol)}
                   </span>
                   <span style={{ color, fontSize: 9, fontWeight: 700 }}>
@@ -117,7 +117,7 @@ export default function StockTicker() {
                   </span>
                 </>
               ) : (
-                <span className={loading ? 'ticker-loading' : ''} style={{ color: 'rgba(255,255,255,0.2)', fontSize: 9 }}>
+                <span className={loading ? 'ticker-loading' : ''} style={{ color: 'rgba(212,212,232,0.2)', fontSize: 9 }}>
                   {loading ? '· · ·' : '—'}
                 </span>
               )}

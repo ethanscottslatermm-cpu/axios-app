@@ -58,9 +58,9 @@ const modules = [
   { key:'finance',    label:'Finance',      path:'/finance',    icon: Ico.finance },
 ]
 
-function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(255,255,255,0.55)' }) {
+function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
   return (
-    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
+    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(212,212,232,0.07)', overflow:'hidden' }}>
       <div style={{ height:'100%', width:`${pct}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:`0 0 8px ${glow}` }} />
     </div>
   )
@@ -75,7 +75,7 @@ function Card({ children, style={} }) {
 }
 
 function SectionHead({ title, action, actionLabel, color }) {
-  const c = color || 'rgba(255,255,255,0.8)'
+  const c = color || 'rgba(212,212,232,0.8)'
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
@@ -183,10 +183,10 @@ export default function Dashboard() {
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);overflow-x:hidden;}
         ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px;}
-        .ax-pill:hover{background:rgba(255,255,255,0.06)!important;border-color:rgba(255,255,255,0.18)!important;}
-        .ax-log-row:hover{background:rgba(255,255,255,0.03);border-radius:8px;}
-        .ax-btn-white:hover{background:rgba(255,255,255,0.88)!important;box-shadow:0 0 22px rgba(255,255,255,0.22)!important;}
+        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.1);border-radius:99px;}
+        .ax-pill:hover{background:rgba(212,212,232,0.06)!important;border-color:rgba(212,212,232,0.18)!important;}
+        .ax-log-row:hover{background:rgba(212,212,232,0.03);border-radius:8px;}
+        .ax-btn-white:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.22)!important;}
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
@@ -258,14 +258,14 @@ export default function Dashboard() {
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {modules.map(({ key, label, path, icon }, i) => {
                 const done  = loggedModules[key]
-                const color = MODULE_COLORS[key] || 'rgba(255,255,255,0.5)'
+                const color = MODULE_COLORS[key] || 'rgba(212,212,232,0.5)'
                 return (
                   <button key={key} onClick={() => navigate(path)} className="ax-pill"
                     style={{
                       display:'flex', alignItems:'center', justifyContent:'space-between',
                       padding:'13px 14px', borderRadius:11,
-                      border:`1px solid ${done ? `${color}30` : 'rgba(255,255,255,0.06)'}`,
-                      background: done ? `${color}0d` : 'rgba(255,255,255,0.02)',
+                      border:`1px solid ${done ? `${color}30` : 'rgba(212,212,232,0.06)'}`,
+                      background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
                       cursor:'pointer', textAlign:'left', width:'100%',
                       opacity: visible ? 1 : 0,
                       transform: visible ? 'translateX(0)' : 'translateX(-8px)',
@@ -279,7 +279,7 @@ export default function Dashboard() {
                         <p style={{ color: done ? `${color}88` : `${color}55`, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
                       </div>
                     </div>
-                    <div style={{ color:'rgba(255,255,255,0.2)' }}>{Ico.chevron()}</div>
+                    <div style={{ color:'rgba(212,212,232,0.2)' }}>{Ico.chevron()}</div>
                   </button>
                 )
               })}
@@ -290,15 +290,15 @@ export default function Dashboard() {
           <Card style={anim(280)}>
             <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" color={MODULE_COLORS.food} />
             {recentFood.length === 0
-              ? <p style={{ color:'rgba(255,255,255,0.2)', fontSize:13, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'14px 0' }}>Nothing logged yet today.</p>
+              ? <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'14px 0' }}>Nothing logged yet today.</p>
               : recentFood.map((e, i) => (
-                <div key={e.id} className="ax-log-row" style={{ display:'flex', justifyContent:'space-between', padding:'10px 6px', borderBottom: i < recentFood.length-1 ? '1px solid rgba(255,255,255,0.05)' : 'none', transition:'background 0.15s' }}>
-                  <span style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.food_name}</span>
+                <div key={e.id} className="ax-log-row" style={{ display:'flex', justifyContent:'space-between', padding:'10px 6px', borderBottom: i < recentFood.length-1 ? '1px solid rgba(212,212,232,0.05)' : 'none', transition:'background 0.15s' }}>
+                  <span style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.food_name}</span>
                   <span style={{ color:`${MODULE_COLORS.food}88`, fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.calories} cal</span>
                 </div>
               ))
             }
-            <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', gap:14 }}>
+            <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(212,212,232,0.06)', display:'flex', alignItems:'center', gap:14 }}>
               <div>
                 <p style={{ color:`${MODULE_COLORS.food}88`, fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
                 <p style={{ color:MODULE_COLORS.food, fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
@@ -318,10 +318,10 @@ export default function Dashboard() {
                 const full = i < waterCount
                 return (
                   <svg key={i} width={26} height={26} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ transition:'all 0.3s', filter: full ? '0 0 6px rgba(154,180,204,0.5)' : 'none' }}>
-                    <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(154,180,204,0.7)' : 'rgba(255,255,255,0.04)'} stroke="none"/>
-                    <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#9ab4cc' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
-                    <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#9ab4cc' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
-                    <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#9ab4cc' : 'rgba(255,255,255,0.18)'} strokeWidth="1.4"/>
+                    <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(154,180,204,0.7)' : 'rgba(212,212,232,0.04)'} stroke="none"/>
+                    <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                    <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                    <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
                   </svg>
                 )
               })}
