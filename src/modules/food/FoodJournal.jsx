@@ -32,10 +32,10 @@ const HEALTHY_MEALS = [
 ]
 
 const GEO_SEARCHES = [
-  { label:'Healthy Restaurants', query:'healthy+restaurants', emoji:'🥗' },
-  { label:'Salad Bars',          query:'salad+bar',           emoji:'🥙' },
-  { label:'Organic Cafes',       query:'organic+cafe',        emoji:'🌿' },
-  { label:'Smoothie Bars',       query:'smoothie+juice+bar',  emoji:'🥤' },
+  { label:'Healthy Restaurants', mapsQuery:'healthy+restaurants', ddQuery:'healthy',        emoji:'🥗' },
+  { label:'Salad Bars',          mapsQuery:'salad+bar',           ddQuery:'salad',           emoji:'🥙' },
+  { label:'Organic Cafes',       mapsQuery:'organic+cafe',        ddQuery:'organic+healthy', emoji:'🌿' },
+  { label:'Smoothie Bars',       mapsQuery:'smoothie+juice+bar',  ddQuery:'smoothie',        emoji:'🥤' },
 ]
 
 const MEAL_ICONS = {
@@ -469,9 +469,10 @@ export default function FoodJournal() {
   const [showAdd, setShowAdd]   = useState(false)
   const [prefill, setPrefill]   = useState(null)
   const [activeMeal, setActiveMeal] = useState('All')
-  const [geoStatus,  setGeoStatus]  = useState('idle')   // 'idle'|'locating'|'ready'|'denied'
-  const [userCoords, setUserCoords] = useState(null)
-  const [suggestCat, setSuggestCat] = useState('All')
+  const [geoStatus,    setGeoStatus]    = useState('idle')   // 'idle'|'locating'|'ready'|'denied'
+  const [userCoords,   setUserCoords]   = useState(null)
+  const [suggestCat,   setSuggestCat]   = useState('All')
+  const [showSuggest,  setShowSuggest]  = useState(false)
 
   const { logs, totals, addEntry, deleteEntry, isLoading: loading } = useFoodLog(todayStr)
   const { history: foodHistory } = useFoodHistory()
@@ -619,31 +620,50 @@ export default function FoodJournal() {
             <MacroPill label="Fat"     value={fat} />
           </div>
 
+          {/* ── Healthy Suggestions featured card ── */}
+          <button onClick={() => setShowSuggest(s => !s)} style={{
+            width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
+            padding:'13px 16px',
+            background: showSuggest ? 'rgba(130,200,130,0.13)' : 'rgba(130,200,130,0.07)',
+            border: `1px solid ${showSuggest ? 'rgba(160,210,160,0.55)' : 'rgba(160,210,160,0.28)'}`,
+            boxShadow: showSuggest ? '0 0 18px rgba(130,200,130,0.12)' : '0 0 0 1px rgba(130,200,130,0.04)',
+            borderRadius:13, cursor:'pointer', transition:'all 0.22s',
+            ...anim(100),
+          }}>
+            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{
+                width:34, height:34, borderRadius:9, flexShrink:0,
+                background:'rgba(130,200,130,0.15)', border:'1px solid rgba(160,210,160,0.35)',
+                display:'flex', alignItems:'center', justifyContent:'center', fontSize:16,
+              }}>🥗</div>
+              <div style={{ textAlign:'left' }}>
+                <p style={{ color:'#a8d8a8', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Healthy Suggestions</p>
+                <p style={{ color:'rgba(160,210,160,0.5)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.04em' }}>Clean meals · Nearby eats · DoorDash</p>
+              </div>
+            </div>
+            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="rgba(160,210,160,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              style={{ transform: showSuggest ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.22s', flexShrink:0 }}>
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+
           {/* Meal filter tabs */}
           <div style={{ display:'flex', gap:8, overflowX:'auto', paddingBottom:2, ...anim(140) }}>
-            {['All', ...MEAL_TYPES, 'Suggest'].map(m => {
-              const active  = activeMeal === m
-              const isSug   = m === 'Suggest'
-              const count   = m === 'All' ? allLogs.length : isSug ? null : (mealGroups[m]?.length || 0)
+            {['All', ...MEAL_TYPES].map(m => {
+              const active = activeMeal === m
+              const count  = m === 'All' ? allLogs.length : (mealGroups[m]?.length || 0)
               return (
                 <button key={m} onClick={() => setActiveMeal(m)} className="ax-meal-tab"
                   style={{
                     display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:99,
-                    border: active
-                      ? (isSug ? '1px solid rgba(180,220,180,0.55)' : '1px solid rgba(200,212,200,0.5)')
-                      : (isSug ? '1px solid rgba(180,220,180,0.22)' : '1px solid rgba(212,212,232,0.08)'),
-                    background: active
-                      ? (isSug ? 'rgba(160,210,160,0.14)' : 'rgba(200,212,200,0.12)')
-                      : (isSug ? 'rgba(160,210,160,0.05)' : 'rgba(212,212,232,0.03)'),
-                    color: active
-                      ? (isSug ? '#a8d8a8' : '#c8d4c8')
-                      : (isSug ? 'rgba(160,210,160,0.55)' : 'rgba(212,212,232,0.35)'),
+                    border: `1px solid ${active ? 'rgba(200,212,200,0.5)' : 'rgba(212,212,232,0.08)'}`,
+                    background: active ? 'rgba(200,212,200,0.12)' : 'rgba(212,212,232,0.03)',
+                    color: active ? '#c8d4c8' : 'rgba(212,212,232,0.35)',
                     fontSize:11, fontFamily:'Helvetica Neue,sans-serif',
-                    fontWeight: active ? 700 : (isSug ? 500 : 400),
+                    fontWeight: active ? 700 : 400,
                     cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.18s', flexShrink:0,
                   }}>
-                  {isSug && <span style={{ fontSize:12 }}>✦</span>}
-                  {!isSug && m !== 'All' && <span style={{ color: active ? 'rgba(200,212,200,0.7)' : 'rgba(212,212,232,0.2)' }}>{MEAL_ICONS[m](12)}</span>}
+                  {m !== 'All' && <span style={{ color: active ? 'rgba(200,212,200,0.7)' : 'rgba(212,212,232,0.2)' }}>{MEAL_ICONS[m](12)}</span>}
                   {m}
                   {count > 0 && <span style={{ background: active ? 'rgba(200,212,200,0.2)' : 'rgba(212,212,232,0.07)', borderRadius:99, padding:'1px 6px', fontSize:10 }}>{count}</span>}
                 </button>
@@ -651,8 +671,8 @@ export default function FoodJournal() {
             })}
           </div>
 
-          {/* ── Suggest Tab ── */}
-          {activeMeal === 'Suggest' && (
+          {/* ── Healthy Suggestions panel ── */}
+          {showSuggest && (
             <div style={anim(160)}>
               {/* Category filter */}
               <div style={{ display:'flex', gap:6, marginBottom:16, overflowX:'auto' }}>
@@ -736,23 +756,43 @@ export default function FoodJournal() {
                 )}
 
                 {geoStatus === 'ready' && userCoords && (
-                  <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                  <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                     {GEO_SEARCHES.map(s => (
-                      <a key={s.label}
-                        href={`https://www.google.com/maps/search/${s.query}/@${userCoords.lat},${userCoords.lng},15z`}
-                        target="_blank" rel="noopener noreferrer"
-                        style={{
-                          display:'flex', alignItems:'center', gap:12, padding:'13px 14px',
-                          background:'var(--bg-card)', border:'1px solid rgba(160,210,160,0.2)',
-                          borderRadius:11, textDecoration:'none', transition:'all 0.15s',
-                        }}>
-                        <span style={{ fontSize:20 }}>{s.emoji}</span>
-                        <div style={{ flex:1 }}>
-                          <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{s.label}</p>
-                          <p style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>Open in Google Maps</p>
+                      <div key={s.label} style={{
+                        background:'var(--bg-card)', border:'1px solid rgba(160,210,160,0.2)',
+                        borderRadius:13, padding:'12px 14px',
+                      }}>
+                        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
+                          <span style={{ fontSize:20 }}>{s.emoji}</span>
+                          <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{s.label}</p>
                         </div>
-                        <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="rgba(160,210,160,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                      </a>
+                        <div style={{ display:'flex', gap:8 }}>
+                          <a href={`https://www.google.com/maps/search/${s.mapsQuery}/@${userCoords.lat},${userCoords.lng},15z`}
+                            target="_blank" rel="noopener noreferrer"
+                            style={{
+                              flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6,
+                              padding:'9px 0', borderRadius:9, textDecoration:'none',
+                              background:'rgba(66,133,244,0.1)', border:'1px solid rgba(66,133,244,0.3)',
+                              color:'#7ab3f5', fontSize:11, fontWeight:700,
+                              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', transition:'all 0.15s',
+                            }}>
+                            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Maps
+                          </a>
+                          <a href={`https://www.doordash.com/search/store/${s.ddQuery}/`}
+                            target="_blank" rel="noopener noreferrer"
+                            style={{
+                              flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6,
+                              padding:'9px 0', borderRadius:9, textDecoration:'none',
+                              background:'rgba(235,78,60,0.1)', border:'1px solid rgba(235,78,60,0.3)',
+                              color:'#f08070', fontSize:11, fontWeight:700,
+                              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', transition:'all 0.15s',
+                            }}>
+                            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            DoorDash
+                          </a>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -761,7 +801,7 @@ export default function FoodJournal() {
           )}
 
           {/* Log entries */}
-          {activeMeal !== 'Suggest' && (
+          {(
           <div style={anim(200)}>
             <SectionHead
               title={activeMeal === 'All' ? "Today's Log" : activeMeal}
