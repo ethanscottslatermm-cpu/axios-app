@@ -6,7 +6,7 @@ import { useFoodHistory } from '../../hooks/useFoodLog'
 import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
-import { searchFood } from '../../lib/foodSearch'
+import { searchFood, lookupBarcode } from '../../lib/foodSearch'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 
@@ -54,6 +54,7 @@ const Ico = {
   close:   (s=16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>,
   spark:   (s=15) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>,
   check:   (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>,
+  barcode: (s=20) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5v2M3 10v4M3 19v-2M21 5v2M21 10v4M21 19v-2M7 5v14M10 5v14M13 5v14M17 5v14"/></svg>,
 }
 
 // ── Glow Progress Bar ──────────────────────────────────────────────────────────
@@ -88,13 +89,105 @@ function SectionHead({ title, count }) {
   )
 }
 
+// ── Barcode Scanner ────────────────────────────────────────────────────────────
+function BarcodeScanner({ onResult, onClose }) {
+  const [status, setStatus] = useState('starting') // starting | scanning | found | error
+  const [msg,    setMsg]    = useState('')
+  const scannerRef = useRef(null)
+
+  useEffect(() => {
+    let html5Qrcode
+    import('html5-qrcode').then(({ Html5Qrcode }) => {
+      html5Qrcode = new Html5Qrcode('barcode-reader')
+      scannerRef.current = html5Qrcode
+      html5Qrcode.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 240, height: 140 } },
+        async (decodedText) => {
+          setStatus('found')
+          setMsg('Looking up product…')
+          try {
+            await html5Qrcode.stop()
+          } catch {}
+          try {
+            const food = await lookupBarcode(decodedText)
+            onResult(food)
+          } catch {
+            setStatus('error')
+            setMsg('Product not found in database. Try searching manually.')
+          }
+        },
+        () => {}
+      ).then(() => setStatus('scanning')).catch(() => {
+        setStatus('error')
+        setMsg('Camera access denied. Please allow camera permissions.')
+      })
+    })
+    return () => {
+      scannerRef.current?.stop().catch(() => {})
+    }
+  }, [])
+
+  return (
+    <div style={{
+      position:'fixed', inset:0, zIndex:300,
+      background:'rgba(0,0,0,0.95)', display:'flex', flexDirection:'column',
+    }}>
+      {/* Header */}
+      <div style={{ padding:'16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(212,212,232,0.1)' }}>
+        <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>Scan Barcode</p>
+        <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.5)', display:'flex' }}>
+          {Ico.close(20)}
+        </button>
+      </div>
+
+      {/* Viewfinder */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24, padding:24 }}>
+        <div style={{ position:'relative', width:'100%', maxWidth:340 }}>
+          <div id="barcode-reader" style={{ width:'100%', borderRadius:12, overflow:'hidden' }} />
+          {status === 'scanning' && (
+            <div style={{
+              position:'absolute', inset:0, pointerEvents:'none',
+              border:'2px solid rgba(212,212,232,0.6)', borderRadius:12,
+              boxShadow:'0 0 0 9999px rgba(0,0,0,0.5)',
+            }}>
+              <div style={{ position:'absolute', top:0, left:0, width:24, height:24, borderTop:'3px solid #c8a000', borderLeft:'3px solid #c8a000', borderRadius:'4px 0 0 0' }} />
+              <div style={{ position:'absolute', top:0, right:0, width:24, height:24, borderTop:'3px solid #c8a000', borderRight:'3px solid #c8a000', borderRadius:'0 4px 0 0' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, width:24, height:24, borderBottom:'3px solid #c8a000', borderLeft:'3px solid #c8a000', borderRadius:'0 0 0 4px' }} />
+              <div style={{ position:'absolute', bottom:0, right:0, width:24, height:24, borderBottom:'3px solid #c8a000', borderRight:'3px solid #c8a000', borderRadius:'0 0 4px 0' }} />
+            </div>
+          )}
+        </div>
+
+        <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', letterSpacing:'0.06em' }}>
+          {status === 'starting'  && 'Starting camera…'}
+          {status === 'scanning'  && 'Point at a barcode on any packaged food'}
+          {status === 'found'     && msg}
+          {status === 'error'     && msg}
+        </p>
+
+        {status === 'error' && (
+          <button onClick={onClose} style={{ padding:'11px 28px', borderRadius:9, background:'rgba(212,212,232,0.08)', border:'1px solid rgba(212,212,232,0.2)', color:'var(--text-primary)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.12em', cursor:'pointer' }}>
+            BACK TO SEARCH
+          </button>
+        )}
+      </div>
+
+      <p style={{ textAlign:'center', padding:'0 0 32px', color:'rgba(212,212,232,0.2)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em' }}>
+        Powered by Open Food Facts · 3M+ products
+      </p>
+    </div>
+  )
+}
+
 // ── AI Search Panel ────────────────────────────────────────────────────────────
 function AISearchPanel({ onSelect, onClose }) {
-  const [query,   setQuery]   = useState('')
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error,   setError]   = useState('')
-  const [focused, setFocused] = useState(false)
+  const [query,    setQuery]    = useState('')
+  const [results,  setResults]  = useState([])
+  const [loading,  setLoading]  = useState(false)
+  const [error,    setError]    = useState('')
+  const [focused,  setFocused]  = useState(false)
+  const [scanning, setScanning] = useState(false)
   const inputRef = useRef(null)
 
   useEffect(() => { inputRef.current?.focus() }, [])
@@ -123,6 +216,12 @@ function AISearchPanel({ onSelect, onClose }) {
       background:'var(--overlay-bg)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)',
       display:'flex', flexDirection:'column', padding:'0 0 env(safe-area-inset-bottom)',
     }}>
+      {scanning && (
+        <BarcodeScanner
+          onResult={food => { setScanning(false); onSelect(food) }}
+          onClose={() => setScanning(false)}
+        />
+      )}
       {/* Header */}
       <div style={{ padding:'16px 16px 14px', display:'flex', alignItems:'center', gap:12, borderBottom:'1px solid var(--border)' }}>
         <div style={{
@@ -159,6 +258,9 @@ function AISearchPanel({ onSelect, onClose }) {
             </button>
           )}
         </div>
+        <button onClick={() => setScanning(true)} style={{ background:'rgba(212,212,232,0.06)', border:'1px solid rgba(212,212,232,0.14)', borderRadius:9, padding:'8px 10px', cursor:'pointer', color:'rgba(212,212,232,0.6)', display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
+          {Ico.barcode(18)}
+        </button>
         <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)', display:'flex' }}>
           {Ico.close(20)}
         </button>
@@ -170,7 +272,7 @@ function AISearchPanel({ onSelect, onClose }) {
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
         </svg>
         <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em', textTransform:'uppercase' }}>
-          USDA FoodData Central · 300,000+ foods
+          USDA · 300,000+ foods  ·  Open Food Facts · 3M+ barcodes
         </p>
       </div>
 
