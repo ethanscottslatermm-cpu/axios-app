@@ -105,6 +105,30 @@ const styles = `
   }
   .l2-enter-btn:active { transform: translateY(0); }
 
+  @keyframes securePulse {
+    0%, 100% {
+      text-shadow:
+        0 0 10px rgba(255,255,255,0.95),
+        0 0 28px rgba(255,255,255,0.7),
+        0 0 60px rgba(255,255,255,0.38),
+        0 0 110px rgba(255,255,255,0.18);
+      opacity: 0.88;
+      letter-spacing: 0.55em;
+    }
+    50% {
+      text-shadow:
+        0 0 18px rgba(255,255,255,1),
+        0 0 55px rgba(255,255,255,1),
+        0 0 100px rgba(255,255,255,0.62),
+        0 0 170px rgba(255,255,255,0.32);
+      opacity: 1;
+      letter-spacing: 0.60em;
+    }
+  }
+  @keyframes accessFade {
+    0%, 100% { opacity: 0.28; letter-spacing: 0.62em; }
+    50%       { opacity: 0.48; letter-spacing: 0.66em; }
+  }
   @keyframes secureGlow {
     0%, 100% {
       text-shadow: 0 0 12px rgba(255,255,255,0.55), 0 0 28px rgba(255,255,255,0.25), 0 0 56px rgba(255,255,255,0.08);
@@ -203,24 +227,39 @@ export default function Login2() {
               userSelect: 'none',
             }}
           >
+            {/* SECURE — large, dominant, glowing pulse */}
             <p style={{
               color: '#fff',
-              fontSize: 'clamp(0.62rem, 2.6vw, 0.78rem)',
-              letterSpacing: '0.65em',
+              fontSize: 'clamp(1.5rem, 7vw, 2.2rem)',
+              letterSpacing: '0.55em',
               textTransform: 'uppercase',
               fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-              fontWeight: 300,
+              fontWeight: 600,
               margin: 0,
-              animation: 'secureGlow 2.8s ease-in-out infinite',
+              animation: 'securePulse 3s ease-in-out infinite',
             }}>
-              Secure Access
+              Secure
+            </p>
+            {/* access — small subtitle */}
+            <p style={{
+              color: '#fff',
+              fontSize: 'clamp(0.5rem, 2vw, 0.62rem)',
+              letterSpacing: '0.62em',
+              textTransform: 'uppercase',
+              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+              fontWeight: 200,
+              margin: '6px 0 0',
+              animation: 'accessFade 3s ease-in-out infinite',
+              animationDelay: '0.15s',
+            }}>
+              Access
             </p>
             <div style={{
-              width: 28, height: 1,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
-              marginTop: 14,
-              animation: 'lineBreath 2.8s ease-in-out infinite',
-              animationDelay: '0.35s',
+              width: 32, height: 1,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)',
+              marginTop: 16,
+              animation: 'lineBreath 3s ease-in-out infinite',
+              animationDelay: '0.4s',
             }} />
           </div>
         )}
