@@ -95,7 +95,7 @@ export function BottomNav() {
     { label:'Food',      path:'/food',       icon: Ico.food,    color: '#c8d4c8' },
     { label:'Water',     path:'/water',      icon: Ico.water,   color: '#9ab4cc' },
     { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#b4bccc' },
-    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#b8b0c8' },
+    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#c8a000' },
     { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#a8b4c0' },
     { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#b4c4b0' },
     { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#7a7a8a' },
