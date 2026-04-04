@@ -404,6 +404,186 @@ function FrontBase() {
 }
 
 
+
+// ─── Bone Overlay ─────────────────────────────────────────────────────────────
+function BoneOverlay({ view }) {
+  return (
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}>
+      <defs>
+        <filter id="bone-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="bone-glow-soft" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.4" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <style>{`
+        @keyframes bonePulse {
+          0%, 100% { opacity: 0.68; }
+          50%       { opacity: 1; }
+        }
+        @keyframes bonePulseSoft {
+          0%, 100% { opacity: 0.38; }
+          50%       { opacity: 0.65; }
+        }
+        .bone-main   { animation: bonePulse     3.4s ease-in-out infinite; }
+        .bone-soft   { animation: bonePulseSoft 3.8s ease-in-out infinite; }
+        .bone-detail { animation: bonePulseSoft 4.2s ease-in-out infinite; }
+      `}</style>
+
+      {view === 'front' && (
+        <g filter="url(#bone-glow)">
+
+          {/* ── Skull / Cranium outline ── */}
+          <ellipse className="bone-soft" cx="120" cy="32" rx="23" ry="27" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeDasharray="3 2"/>
+
+          {/* ── Orbital rims (eye sockets) ── */}
+          {/* Left orbit */}
+          <path className="bone-main" d="M102 24 Q108 20 114 24 Q117 28 115 33 Q109 36 103 33 Q100 28 102 24" fill="none" stroke="#7ab8ff" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"/>
+          {/* Right orbit */}
+          <path className="bone-main" d="M126 24 Q132 20 138 24 Q141 28 139 33 Q133 36 127 33 Q124 28 126 24" fill="none" stroke="#7ab8ff" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"/>
+
+          {/* ── Nasal bone ── */}
+          <path className="bone-detail" d="M118 33 Q120 36 120 40 Q120 36 122 33" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round"/>
+
+          {/* ── Zygomatic arch — high cheekbones ── */}
+          {/* Left cheekbone: from lateral orbital rim sweeping to zygomatic arch */}
+          <path className="bone-main" d="M100 30 Q96 34 95 40 Q94 46 97 50 Q100 53 104 52" fill="none" stroke="#7ab8ff" strokeWidth="1.1" strokeLinecap="round"/>
+          {/* Left cheek prominence highlight */}
+          <path className="bone-soft" d="M95 38 Q93 43 95 48" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round"/>
+          {/* Right cheekbone */}
+          <path className="bone-main" d="M140 30 Q144 34 145 40 Q146 46 143 50 Q140 53 136 52" fill="none" stroke="#7ab8ff" strokeWidth="1.1" strokeLinecap="round"/>
+          {/* Right cheek prominence highlight */}
+          <path className="bone-soft" d="M145 38 Q147 43 145 48" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round"/>
+
+          {/* ── Mandible / Jaw ── */}
+          <path className="bone-main" d="M101 50 Q98 55 99 60 Q106 66 120 67 Q134 66 141 60 Q142 55 139 50" fill="none" stroke="#7ab8ff" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"/>
+          {/* Chin point */}
+          <path className="bone-soft" d="M115 65 Q120 68 125 65" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round"/>
+
+          {/* ── Clavicles (collar bones) — illuminated ── */}
+          <path className="bone-main" d="M120 88 Q106 85 94 88 Q88 91 82 95" fill="none" stroke="#7ab8ff" strokeWidth="1.1" strokeLinecap="round"/>
+          <path className="bone-main" d="M120 88 Q134 85 146 88 Q152 91 158 95" fill="none" stroke="#7ab8ff" strokeWidth="1.1" strokeLinecap="round"/>
+
+          {/* ── Sternum ── */}
+          <path className="bone-main" d="M120 90 Q120 110 120 130 Q120 142 120 150" fill="none" stroke="#7ab8ff" strokeWidth="1.0" strokeLinecap="round"/>
+          {/* Manubrium (top of sternum) */}
+          <path className="bone-soft" d="M112 90 Q120 88 128 90" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round"/>
+
+          {/* ── Rib cage ── */}
+          {/* Rib 1 */}
+          <path className="bone-detail" d="M120 97 Q106 95 96 100 Q90 104 88 110" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round"/>
+          <path className="bone-detail" d="M120 97 Q134 95 144 100 Q150 104 152 110" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round"/>
+          {/* Rib 2 */}
+          <path className="bone-detail" d="M120 104 Q104 102 92 108 Q85 113 82 120" fill="none" stroke="#7ab8ff" strokeWidth="0.65" strokeLinecap="round"/>
+          <path className="bone-detail" d="M120 104 Q136 102 148 108 Q155 113 158 120" fill="none" stroke="#7ab8ff" strokeWidth="0.65" strokeLinecap="round"/>
+          {/* Rib 3 */}
+          <path className="bone-soft" d="M120 113 Q102 111 88 118 Q81 124 78 132" fill="none" stroke="#7ab8ff" strokeWidth="0.6" strokeLinecap="round"/>
+          <path className="bone-soft" d="M120 113 Q138 111 152 118 Q159 124 162 132" fill="none" stroke="#7ab8ff" strokeWidth="0.6" strokeLinecap="round"/>
+          {/* Rib 4 */}
+          <path className="bone-soft" d="M120 122 Q100 120 84 128 Q78 136 76 144" fill="none" stroke="#7ab8ff" strokeWidth="0.55" strokeLinecap="round"/>
+          <path className="bone-soft" d="M120 122 Q140 120 156 128 Q162 136 164 144" fill="none" stroke="#7ab8ff" strokeWidth="0.55" strokeLinecap="round"/>
+          {/* Costal margin (rib arch at bottom) */}
+          <path className="bone-soft" d="M78 148 Q96 155 120 152 Q144 155 162 148" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round"/>
+
+          {/* ── Iliac crest (hip bones) ── */}
+          <path className="bone-main" d="M72 216 Q68 228 70 244 Q76 254 90 256 Q104 257 112 252" fill="none" stroke="#7ab8ff" strokeWidth="1.0" strokeLinecap="round"/>
+          <path className="bone-main" d="M168 216 Q172 228 170 244 Q164 254 150 256 Q136 257 128 252" fill="none" stroke="#7ab8ff" strokeWidth="1.0" strokeLinecap="round"/>
+          {/* Pubic symphysis */}
+          <path className="bone-soft" d="M112 252 Q120 255 128 252" fill="none" stroke="#7ab8ff" strokeWidth="0.75" strokeLinecap="round"/>
+
+          {/* ── Humerus (upper arm bone) ── */}
+          {/* Left */}
+          <path className="bone-soft" d="M64 102 Q58 120 56 140 Q54 155 56 162" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="2.5 2"/>
+          {/* Right */}
+          <path className="bone-soft" d="M176 102 Q182 120 184 140 Q186 155 184 162" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="2.5 2"/>
+
+          {/* ── Radius / Ulna (forearm bones) ── */}
+          {/* Left - radius */}
+          <path className="bone-detail" d="M54 166 Q48 184 46 204 Q44 216 46 224" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round" strokeDasharray="2 2"/>
+          {/* Left - ulna */}
+          <path className="bone-detail" d="M64 166 Q62 184 60 204 Q58 216 60 222" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round" strokeDasharray="2 2"/>
+          {/* Right - radius */}
+          <path className="bone-detail" d="M186 166 Q192 184 194 204 Q196 216 194 224" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round" strokeDasharray="2 2"/>
+          {/* Right - ulna */}
+          <path className="bone-detail" d="M176 166 Q178 184 180 204 Q182 216 180 222" fill="none" stroke="#7ab8ff" strokeWidth="0.7" strokeLinecap="round" strokeDasharray="2 2"/>
+
+          {/* ── Femur (thigh bone) ── */}
+          {/* Left */}
+          <path className="bone-soft" d="M84 260 Q80 290 78 320 Q76 338 78 352" fill="none" stroke="#7ab8ff" strokeWidth="0.85" strokeLinecap="round" strokeDasharray="3 2"/>
+          {/* Right */}
+          <path className="bone-soft" d="M156 260 Q160 290 162 320 Q164 338 162 352" fill="none" stroke="#7ab8ff" strokeWidth="0.85" strokeLinecap="round" strokeDasharray="3 2"/>
+
+          {/* ── Patella (kneecaps) ── */}
+          <ellipse className="bone-main" cx="79" cy="364" rx="13" ry="8" fill="none" stroke="#7ab8ff" strokeWidth="1.1"/>
+          <ellipse className="bone-main" cx="161" cy="364" rx="13" ry="8" fill="none" stroke="#7ab8ff" strokeWidth="1.1"/>
+
+          {/* ── Tibia crest (shin bone) ── */}
+          {/* Left */}
+          <path className="bone-main" d="M75 378 Q73 400 73 424 Q73 434 74 440" fill="none" stroke="#7ab8ff" strokeWidth="1.0" strokeLinecap="round"/>
+          {/* Right */}
+          <path className="bone-main" d="M165 378 Q167 400 167 424 Q167 434 166 440" fill="none" stroke="#7ab8ff" strokeWidth="1.0" strokeLinecap="round"/>
+        </g>
+      )}
+
+      {view === 'back' && (
+        <g filter="url(#bone-glow-soft)">
+          {/* ── Skull back ── */}
+          <ellipse className="bone-soft" cx="120" cy="32" rx="23" ry="27" fill="none" stroke="#7ab8ff" strokeWidth="0.6" strokeDasharray="3 2"/>
+
+          {/* ── Scapula (shoulder blades) ── */}
+          <path className="bone-main" d="M82 100 Q74 112 72 130 Q72 144 80 150 Q90 154 100 148 Q108 140 106 124 Q104 108 96 100 Z" fill="none" stroke="#7ab8ff" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"/>
+          <path className="bone-soft" d="M82 100 Q90 118 88 136" fill="none" stroke="#7ab8ff" strokeWidth="0.6"/>
+          <path className="bone-main" d="M158 100 Q166 112 168 130 Q168 144 160 150 Q150 154 140 148 Q132 140 134 124 Q136 108 144 100 Z" fill="none" stroke="#7ab8ff" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"/>
+          <path className="bone-soft" d="M158 100 Q150 118 152 136" fill="none" stroke="#7ab8ff" strokeWidth="0.6"/>
+
+          {/* ── Spine ── */}
+          <path className="bone-main" d="M120 84 Q120 110 120 140 Q120 170 120 200 Q120 220 120 250" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 2.5"/>
+          {/* Vertebrae dots */}
+          {[90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240].map((y, i) => (
+            i < 14 ? `<circle cx="120" cy="${y}" r="1.8" fill="#7ab8ff" opacity="0.5"/>` : null
+          ))}
+
+          {/* ── Posterior ribs ── */}
+          <path className="bone-detail" d="M120 98 Q106 96 96 102 Q88 108 84 116" fill="none" stroke="#7ab8ff" strokeWidth="0.6" strokeLinecap="round"/>
+          <path className="bone-detail" d="M120 98 Q134 96 144 102 Q152 108 156 116" fill="none" stroke="#7ab8ff" strokeWidth="0.6" strokeLinecap="round"/>
+          <path className="bone-detail" d="M120 108 Q104 106 92 113 Q84 120 80 130" fill="none" stroke="#7ab8ff" strokeWidth="0.55" strokeLinecap="round"/>
+          <path className="bone-detail" d="M120 108 Q136 106 148 113 Q156 120 160 130" fill="none" stroke="#7ab8ff" strokeWidth="0.55" strokeLinecap="round"/>
+          <path className="bone-detail" d="M120 118 Q102 116 88 124 Q80 132 76 142" fill="none" stroke="#7ab8ff" strokeWidth="0.5" strokeLinecap="round"/>
+          <path className="bone-detail" d="M120 118 Q138 116 152 124 Q160 132 164 142" fill="none" stroke="#7ab8ff" strokeWidth="0.5" strokeLinecap="round"/>
+
+          {/* ── Iliac crest back ── */}
+          <path className="bone-main" d="M72 216 Q64 226 66 244 Q72 256 90 258" fill="none" stroke="#7ab8ff" strokeWidth="1.0" strokeLinecap="round"/>
+          <path className="bone-main" d="M168 216 Q176 226 174 244 Q168 256 150 258" fill="none" stroke="#7ab8ff" strokeWidth="1.0" strokeLinecap="round"/>
+          {/* Sacrum */}
+          <path className="bone-soft" d="M108 248 Q120 252 132 248" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round"/>
+
+          {/* ── Femur back ── */}
+          <path className="bone-soft" d="M84 262 Q80 292 78 322 Q76 340 78 354" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 2"/>
+          <path className="bone-soft" d="M156 262 Q160 292 162 322 Q164 340 162 354" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 2"/>
+
+          {/* ── Patella back / popliteal ── */}
+          <ellipse className="bone-soft" cx="79" cy="364" rx="13" ry="8" fill="none" stroke="#7ab8ff" strokeWidth="0.8"/>
+          <ellipse className="bone-soft" cx="161" cy="364" rx="13" ry="8" fill="none" stroke="#7ab8ff" strokeWidth="0.8"/>
+
+          {/* ── Fibula / Tibia back ── */}
+          <path className="bone-soft" d="M75 380 Q73 404 73 428 Q73 436 74 442" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="2.5 2"/>
+          <path className="bone-soft" d="M165 380 Q167 404 167 428 Q167 436 166 442" fill="none" stroke="#7ab8ff" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="2.5 2"/>
+        </g>
+      )}
+    </svg>
+  )
+}
+
 // ─── Vein Overlay ─────────────────────────────────────────────────────────────
 function VeinOverlay({ view }) {
   return (
@@ -857,6 +1037,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
         {/* Anatomy diagram */}
         <div style={{ position:'relative', width:240, height:500, margin:'0 auto 14px' }}>
           {view === 'front' ? <FrontBase/> : <BackBase/>}
+          <BoneOverlay view={view} />
           <VeinOverlay view={view} />
           <ZoneOverlay
             view={view}
