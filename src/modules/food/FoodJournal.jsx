@@ -134,7 +134,7 @@ function BarcodeScanner({ onResult, onClose }) {
       background:'rgba(0,0,0,0.95)', display:'flex', flexDirection:'column',
     }}>
       {/* Header */}
-      <div style={{ padding:'16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(212,212,232,0.1)' }}>
+      <div style={{ padding:'max(16px, env(safe-area-inset-top)) 16px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(212,212,232,0.1)' }}>
         <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>Scan Barcode</p>
         <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.5)', display:'flex' }}>
           {Ico.close(20)}
@@ -364,6 +364,7 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
   const [suggestions,  setSuggestions]  = useState([])
   const [searching,    setSearching]    = useState(false)
   const [showSug,      setShowSug]      = useState(false)
+  const [scanning,     setScanning]     = useState(false)
 
   useEffect(() => { setTimeout(() => setVisible(true), 30) }, [])
 
@@ -418,7 +419,21 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
     }
   }
 
+  const pickBarcode = (food) => {
+    setForm(f => ({
+      ...f,
+      food_name: [food.brand, food.name].filter(Boolean).join(' – '),
+      calories:  String(food.calories || ''),
+      protein:   String(food.protein  || ''),
+      carbs:     String(food.carbs    || ''),
+      fat:       String(food.fat      || ''),
+    }))
+    setScanning(false)
+  }
+
   return (
+    <>
+    {scanning && <BarcodeScanner onResult={pickBarcode} onClose={() => setScanning(false)} />}
     <div style={{
       position:'fixed', inset:0, zIndex:300,
       background:'var(--overlay-bg)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)',
@@ -476,6 +491,9 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
               autoComplete="off"
               style={{ flex:1, background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif' }}
             />
+            <button onClick={() => setScanning(true)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)', display:'flex', flexShrink:0, padding:'2px' }} title="Scan barcode">
+              {Ico.barcode(16)}
+            </button>
           </div>
           {/* Suggestions dropdown */}
           {showSug && suggestions.length > 0 && (
@@ -521,6 +539,7 @@ function ManualAddSheet({ prefill = null, mealType, onSave, onClose }) {
         </button>
       </div>
     </div>
+    </>
   )
 }
 
