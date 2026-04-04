@@ -105,29 +105,26 @@ const styles = `
   }
   .l2-enter-btn:active { transform: translateY(0); }
 
-  @keyframes securePulse {
-    0%, 100% {
-      text-shadow:
-        0 0 10px rgba(255,255,255,0.95),
-        0 0 28px rgba(255,255,255,0.7),
-        0 0 60px rgba(255,255,255,0.38),
-        0 0 110px rgba(255,255,255,0.18);
-      opacity: 0.88;
-      letter-spacing: 0.55em;
-    }
-    50% {
-      text-shadow:
-        0 0 18px rgba(255,255,255,1),
-        0 0 55px rgba(255,255,255,1),
-        0 0 100px rgba(255,255,255,0.62),
-        0 0 170px rgba(255,255,255,0.32);
-      opacity: 1;
-      letter-spacing: 0.60em;
-    }
+  @keyframes l2-orb-drift {
+    0%   { opacity:0; transform:translate(0,0) scale(1); }
+    15%  { opacity:1; }
+    50%  { transform:translate(16px,20px) scale(1.07); }
+    85%  { opacity:1; }
+    100% { opacity:0; transform:translate(-6px,38px) scale(0.94); }
   }
-  @keyframes accessFade {
-    0%, 100% { opacity: 0.28; letter-spacing: 0.62em; }
-    50%       { opacity: 0.48; letter-spacing: 0.66em; }
+  @keyframes l2-scan {
+    0%   { top:0%; opacity:0; }
+    4%   { opacity:1; }
+    96%  { opacity:1; }
+    100% { top:100%; opacity:0; }
+  }
+  @keyframes l2-vline {
+    0%, 100% { opacity:0; transform:scaleY(0.35); }
+    40%, 60%  { opacity:0.7; transform:scaleY(1); }
+  }
+  @keyframes l2-corner {
+    0%, 100% { opacity:0.18; }
+    50%       { opacity:0.55; }
   }
   @keyframes secureGlow {
     0%, 100% {
@@ -214,6 +211,33 @@ export default function Login2() {
           background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.60) 50%, rgba(0,0,0,0) 100%)',
         }} />
 
+        {/* Floating orbs */}
+        <div style={{ position:'fixed', inset:0, zIndex:2, overflow:'hidden', pointerEvents:'none' }}>
+          {[
+            { w:280, h:280, top:'-10%', left:'-10%', bg:'rgba(180,180,210,0.14)', dur:'9s',  delay:'0s'   },
+            { w:200, h:200, bottom:'5%', right:'-6%', bg:'rgba(140,140,175,0.12)', dur:'11s', delay:'-4s'  },
+            { w:160, h:160, top:'45%',  left:'55%',  bg:'rgba(200,200,230,0.09)', dur:'13s', delay:'-7s'  },
+          ].map((o, i) => (
+            <div key={i} style={{
+              position:'absolute', borderRadius:'50%',
+              width:o.w, height:o.h,
+              background:`radial-gradient(circle,${o.bg} 0%,transparent 70%)`,
+              filter:'blur(40px)',
+              top:o.top, left:o.left, bottom:o.bottom, right:o.right,
+              animation:`l2-orb-drift ${o.dur} linear infinite`,
+              animationDelay:o.delay,
+            }}/>
+          ))}
+        </div>
+
+        {/* Scanline traveling down */}
+        <div style={{
+          position:'fixed', width:'100%', height:'1px', top:0, zIndex:3,
+          background:'linear-gradient(90deg,transparent 0%,rgba(220,220,255,0.07) 30%,rgba(212,212,232,0.14) 50%,rgba(220,220,255,0.07) 70%,transparent 100%)',
+          animation:'l2-scan 8s ease-in-out infinite',
+          pointerEvents:'none',
+        }}/>
+
         {/* Closed — SECURE ACCESS only */}
         {!open && (
           <div
@@ -227,39 +251,45 @@ export default function Login2() {
               userSelect: 'none',
             }}
           >
-            {/* SECURE — large, dominant, glowing pulse */}
-            <p style={{
-              color: '#fff',
-              fontSize: 'clamp(1.5rem, 7vw, 2.2rem)',
-              letterSpacing: '0.55em',
-              textTransform: 'uppercase',
-              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-              fontWeight: 600,
-              margin: 0,
-              animation: 'securePulse 3s ease-in-out infinite',
-            }}>
-              Secure
-            </p>
-            {/* access — small subtitle */}
-            <p style={{
-              color: '#fff',
-              fontSize: 'clamp(0.5rem, 2vw, 0.62rem)',
-              letterSpacing: '0.62em',
-              textTransform: 'uppercase',
-              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-              fontWeight: 200,
-              margin: '6px 0 0',
-              animation: 'accessFade 3s ease-in-out infinite',
-              animationDelay: '0.15s',
-            }}>
-              Access
-            </p>
+            {/* Vertical accent line above text */}
             <div style={{
-              width: 32, height: 1,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)',
-              marginTop: 16,
-              animation: 'lineBreath 3s ease-in-out infinite',
-              animationDelay: '0.4s',
+              width: 1, height: 36,
+              background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.65), transparent)',
+              marginBottom: 18,
+              animation: 'l2-vline 2.8s ease-in-out infinite',
+            }} />
+
+            {/* Corner bracket accents */}
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              {/* top-left */}
+              <div style={{ position:'absolute', top:-8, left:-10, width:8, height:8, borderTop:'1px solid rgba(255,255,255,0.45)', borderLeft:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite' }} />
+              {/* top-right */}
+              <div style={{ position:'absolute', top:-8, right:-10, width:8, height:8, borderTop:'1px solid rgba(255,255,255,0.45)', borderRight:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite', animationDelay:'0.2s' }} />
+              {/* bottom-left */}
+              <div style={{ position:'absolute', bottom:-8, left:-10, width:8, height:8, borderBottom:'1px solid rgba(255,255,255,0.45)', borderLeft:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite', animationDelay:'0.4s' }} />
+              {/* bottom-right */}
+              <div style={{ position:'absolute', bottom:-8, right:-10, width:8, height:8, borderBottom:'1px solid rgba(255,255,255,0.45)', borderRight:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite', animationDelay:'0.6s' }} />
+
+              <p style={{
+                color: '#fff',
+                fontSize: 'clamp(0.62rem, 2.6vw, 0.78rem)',
+                letterSpacing: '0.65em',
+                textTransform: 'uppercase',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontWeight: 300,
+                margin: 0,
+                animation: 'secureGlow 2.8s ease-in-out infinite',
+              }}>
+                Secure Access
+              </p>
+            </div>
+
+            <div style={{
+              width: 28, height: 1,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
+              marginTop: 18,
+              animation: 'lineBreath 2.8s ease-in-out infinite',
+              animationDelay: '0.35s',
             }} />
           </div>
         )}
