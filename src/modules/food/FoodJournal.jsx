@@ -94,37 +94,50 @@ function BarcodeScanner({ onResult, onClose }) {
   const [status, setStatus] = useState('starting') // starting | scanning | found | error
   const [msg,    setMsg]    = useState('')
   const scannerRef = useRef(null)
+  const handledRef = useRef(false) // prevent multiple firings
 
   useEffect(() => {
     let html5Qrcode
     import('html5-qrcode').then(({ Html5Qrcode }) => {
       html5Qrcode = new Html5Qrcode('barcode-reader')
       scannerRef.current = html5Qrcode
-      html5Qrcode.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 240, height: 140 } },
-        async (decodedText) => {
-          setStatus('found')
-          setMsg('Looking up product…')
-          try {
-            await html5Qrcode.stop()
-          } catch {}
+
+      const onSuccess = (decodedText) => {
+        // Guard: only handle the first successful scan
+        if (handledRef.current) return
+        handledRef.current = true
+
+        setStatus('found')
+        setMsg('Looking up product…')
+
+        // Stop scanner asynchronously outside this callback to avoid deadlock
+        setTimeout(async () => {
+          try { await html5Qrcode.stop() } catch {}
           try {
             const food = await lookupBarcode(decodedText)
             onResult(food)
           } catch {
             setStatus('error')
             setMsg('Product not found in database. Try searching manually.')
+            handledRef.current = false // allow retry
           }
-        },
-        () => {}
+        }, 0)
+      }
+
+      html5Qrcode.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 240, height: 140 } },
+        onSuccess,
+        () => {} // ignore per-frame errors
       ).then(() => setStatus('scanning')).catch(() => {
         setStatus('error')
         setMsg('Camera access denied. Please allow camera permissions.')
       })
     })
     return () => {
-      scannerRef.current?.stop().catch(() => {})
+      if (scannerRef.current) {
+        scannerRef.current.stop().catch(() => {})
+      }
     }
   }, [])
 
