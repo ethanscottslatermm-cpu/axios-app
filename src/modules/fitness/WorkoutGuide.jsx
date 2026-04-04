@@ -403,6 +403,125 @@ function FrontBase() {
   )
 }
 
+
+// ─── Vein Overlay ─────────────────────────────────────────────────────────────
+function VeinOverlay({ view }) {
+  return (
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}>
+      <defs>
+        <filter id="vein-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="vein-glow-soft" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <style>{`
+        @keyframes veinPulse {
+          0%, 100% { opacity: 0.72; }
+          50%       { opacity: 1; }
+        }
+        @keyframes veinPulseSoft {
+          0%, 100% { opacity: 0.45; }
+          50%       { opacity: 0.75; }
+        }
+        .vein-main { animation: veinPulse 2.8s ease-in-out infinite; }
+        .vein-soft { animation: veinPulseSoft 3.2s ease-in-out infinite; }
+        .vein-branch { animation: veinPulseSoft 3.8s ease-in-out infinite; }
+      `}</style>
+
+      {view === 'front' && (
+        <g filter="url(#vein-glow)">
+          {/* ── Neck / Jugular veins ── */}
+          <path className="vein-main" d="M113 64 Q112 70 111 78 Q110 82 110 88" fill="none" stroke="#cc1111" strokeWidth="0.9" strokeLinecap="round"/>
+          <path className="vein-main" d="M127 64 Q128 70 129 78 Q130 82 130 88" fill="none" stroke="#cc1111" strokeWidth="0.9" strokeLinecap="round"/>
+
+          {/* ── Chest / Pec veins ── */}
+          <path className="vein-soft" d="M120 96 Q112 104 100 108 Q92 110 86 108" fill="none" stroke="#cc1111" strokeWidth="0.8" strokeLinecap="round"/>
+          <path className="vein-soft" d="M120 96 Q128 104 140 108 Q148 110 154 108" fill="none" stroke="#cc1111" strokeWidth="0.8" strokeLinecap="round"/>
+          <path className="vein-branch" d="M100 108 Q96 114 94 120" fill="none" stroke="#cc1111" strokeWidth="0.6" strokeLinecap="round"/>
+          <path className="vein-branch" d="M140 108 Q144 114 146 120" fill="none" stroke="#cc1111" strokeWidth="0.6" strokeLinecap="round"/>
+
+          {/* ── Left arm — Cephalic vein (outer bicep) ── */}
+          <path className="vein-main" d="M68 102 Q60 112 54 128 Q50 144 50 158 Q50 162 52 164" fill="none" stroke="#cc1111" strokeWidth="1.1" strokeLinecap="round"/>
+          {/* Left arm — Basilic vein (inner bicep) */}
+          <path className="vein-soft" d="M72 104 Q68 118 68 134 Q68 148 68 162" fill="none" stroke="#cc1111" strokeWidth="0.75" strokeLinecap="round"/>
+          {/* Left arm — median cubital (elbow) */}
+          <path className="vein-branch" d="M52 164 Q58 167 62 165 Q66 163 68 162" fill="none" stroke="#cc1111" strokeWidth="0.8" strokeLinecap="round"/>
+          {/* Left forearm veins */}
+          <path className="vein-main" d="M52 166 Q46 180 44 196 Q42 210 44 222" fill="none" stroke="#cc1111" strokeWidth="1.0" strokeLinecap="round"/>
+          <path className="vein-soft" d="M62 166 Q58 180 58 196 Q57 210 58 220" fill="none" stroke="#cc1111" strokeWidth="0.75" strokeLinecap="round"/>
+          <path className="vein-branch" d="M68 164 Q66 180 64 196 Q62 210 62 222" fill="none" stroke="#cc1111" strokeWidth="0.6" strokeLinecap="round"/>
+          {/* Left forearm cross-branches */}
+          <path className="vein-branch" d="M46 188 Q52 186 56 188" fill="none" stroke="#cc1111" strokeWidth="0.55" strokeLinecap="round"/>
+          <path className="vein-branch" d="M44 204 Q52 202 58 204" fill="none" stroke="#cc1111" strokeWidth="0.55" strokeLinecap="round"/>
+
+          {/* ── Right arm — Cephalic vein (outer bicep) ── */}
+          <path className="vein-main" d="M172 102 Q180 112 186 128 Q190 144 190 158 Q190 162 188 164" fill="none" stroke="#cc1111" strokeWidth="1.1" strokeLinecap="round"/>
+          {/* Right arm — Basilic vein (inner bicep) */}
+          <path className="vein-soft" d="M168 104 Q172 118 172 134 Q172 148 172 162" fill="none" stroke="#cc1111" strokeWidth="0.75" strokeLinecap="round"/>
+          {/* Right arm — median cubital (elbow) */}
+          <path className="vein-branch" d="M188 164 Q182 167 178 165 Q174 163 172 162" fill="none" stroke="#cc1111" strokeWidth="0.8" strokeLinecap="round"/>
+          {/* Right forearm veins */}
+          <path className="vein-main" d="M188 166 Q194 180 196 196 Q198 210 196 222" fill="none" stroke="#cc1111" strokeWidth="1.0" strokeLinecap="round"/>
+          <path className="vein-soft" d="M178 166 Q182 180 182 196 Q183 210 182 220" fill="none" stroke="#cc1111" strokeWidth="0.75" strokeLinecap="round"/>
+          <path className="vein-branch" d="M172 164 Q174 180 176 196 Q178 210 178 222" fill="none" stroke="#cc1111" strokeWidth="0.6" strokeLinecap="round"/>
+          {/* Right forearm cross-branches */}
+          <path className="vein-branch" d="M194 188 Q188 186 184 188" fill="none" stroke="#cc1111" strokeWidth="0.55" strokeLinecap="round"/>
+          <path className="vein-branch" d="M196 204 Q188 202 182 204" fill="none" stroke="#cc1111" strokeWidth="0.55" strokeLinecap="round"/>
+
+          {/* ── Abdomen / linea alba veins ── */}
+          <path className="vein-branch" d="M116 152 Q114 162 114 174 Q114 184 116 192" fill="none" stroke="#cc1111" strokeWidth="0.55" strokeLinecap="round"/>
+          <path className="vein-branch" d="M124 152 Q126 162 126 174 Q126 184 124 192" fill="none" stroke="#cc1111" strokeWidth="0.55" strokeLinecap="round"/>
+
+          {/* ── Left leg — Saphenous / femoral veins ── */}
+          <path className="vein-main" d="M88 260 Q84 288 82 316 Q80 336 80 352" fill="none" stroke="#cc1111" strokeWidth="0.9" strokeLinecap="round"/>
+          <path className="vein-soft" d="M76 260 Q72 288 70 316 Q68 336 68 352" fill="none" stroke="#cc1111" strokeWidth="0.7" strokeLinecap="round"/>
+          <path className="vein-branch" d="M88 290 Q82 288 76 290" fill="none" stroke="#cc1111" strokeWidth="0.5" strokeLinecap="round"/>
+          <path className="vein-branch" d="M86 320 Q80 318 74 320" fill="none" stroke="#cc1111" strokeWidth="0.5" strokeLinecap="round"/>
+          {/* Left shin */}
+          <path className="vein-soft" d="M78 380 Q76 398 76 416 Q75 428 76 438" fill="none" stroke="#cc1111" strokeWidth="0.7" strokeLinecap="round"/>
+
+          {/* ── Right leg — Saphenous / femoral veins ── */}
+          <path className="vein-main" d="M152 260 Q156 288 158 316 Q160 336 160 352" fill="none" stroke="#cc1111" strokeWidth="0.9" strokeLinecap="round"/>
+          <path className="vein-soft" d="M164 260 Q168 288 170 316 Q172 336 172 352" fill="none" stroke="#cc1111" strokeWidth="0.7" strokeLinecap="round"/>
+          <path className="vein-branch" d="M152 290 Q158 288 164 290" fill="none" stroke="#cc1111" strokeWidth="0.5" strokeLinecap="round"/>
+          <path className="vein-branch" d="M154 320 Q160 318 166 320" fill="none" stroke="#cc1111" strokeWidth="0.5" strokeLinecap="round"/>
+          {/* Right shin */}
+          <path className="vein-soft" d="M162 380 Q164 398 164 416 Q165 428 164 438" fill="none" stroke="#cc1111" strokeWidth="0.7" strokeLinecap="round"/>
+        </g>
+      )}
+
+      {view === 'back' && (
+        <g filter="url(#vein-glow-soft)">
+          {/* ── Back — posterior arm veins ── */}
+          <path className="vein-soft" d="M66 104 Q56 120 52 140 Q50 156 52 164" fill="none" stroke="#cc1111" strokeWidth="0.9" strokeLinecap="round"/>
+          <path className="vein-branch" d="M52 166 Q48 182 46 200 Q44 214 46 222" fill="none" stroke="#cc1111" strokeWidth="0.75" strokeLinecap="round"/>
+          <path className="vein-soft" d="M174 104 Q184 120 188 140 Q190 156 188 164" fill="none" stroke="#cc1111" strokeWidth="0.9" strokeLinecap="round"/>
+          <path className="vein-branch" d="M188 166 Q192 182 194 200 Q196 214 194 222" fill="none" stroke="#cc1111" strokeWidth="0.75" strokeLinecap="round"/>
+
+          {/* ── Back — erector spinae / lumbar veins ── */}
+          <path className="vein-branch" d="M114 100 Q112 120 112 148 Q112 172 114 196" fill="none" stroke="#cc1111" strokeWidth="0.6" strokeLinecap="round"/>
+          <path className="vein-branch" d="M126 100 Q128 120 128 148 Q128 172 126 196" fill="none" stroke="#cc1111" strokeWidth="0.6" strokeLinecap="round"/>
+
+          {/* ── Back — posterior leg veins ── */}
+          <path className="vein-soft" d="M82 262 Q80 292 80 322 Q80 340 80 354" fill="none" stroke="#cc1111" strokeWidth="0.8" strokeLinecap="round"/>
+          <path className="vein-soft" d="M158 262 Q160 292 160 322 Q160 340 160 354" fill="none" stroke="#cc1111" strokeWidth="0.8" strokeLinecap="round"/>
+        </g>
+      )}
+    </svg>
+  )
+}
+
 function BackBase() {
   return (
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
@@ -738,6 +857,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
         {/* Anatomy diagram */}
         <div style={{ position:'relative', width:240, height:500, margin:'0 auto 14px' }}>
           {view === 'front' ? <FrontBase/> : <BackBase/>}
+          <VeinOverlay view={view} />
           <ZoneOverlay
             view={view}
             selected={selected}
