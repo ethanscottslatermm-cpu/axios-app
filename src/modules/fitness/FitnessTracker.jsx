@@ -45,6 +45,94 @@ function GlowBar({ pct, h=3 }) {
   )
 }
 
+// ── Scale Dial ─────────────────────────────────────────────────────────────────
+function ScaleDial({ weight, goal }) {
+  const val = parseFloat(weight) || 0
+  const mid = parseFloat(goal) || val || 150
+  const deg = val ? Math.max(-78, Math.min(78, ((val - mid) / 50) * 78)) : 0
+  const toRad = a => a * Math.PI / 180
+  const cx = 100, cy = 84, r = 62
+  const arcStart = { x: cx + r * Math.cos(toRad(215)), y: cy + r * Math.sin(toRad(215)) }
+  const arcEnd   = { x: cx + r * Math.cos(toRad(325)), y: cy + r * Math.sin(toRad(325)) }
+  const ticks = Array.from({ length: 9 }, (_, i) => {
+    const angle = toRad(215 + i * 13.75)
+    const inner = i === 4 ? r - 14 : i % 2 === 0 ? r - 10 : r - 6
+    return {
+      x1: cx + inner * Math.cos(angle), y1: cy + inner * Math.sin(angle),
+      x2: cx + r * Math.cos(angle),     y2: cy + r * Math.sin(angle),
+      major: i === 4, mid: i % 2 === 0,
+    }
+  })
+  const cornerStyle = (pos) => ({
+    position: 'absolute', width: 10, height: 10, ...pos,
+    borderTop:    pos.top    !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
+    borderBottom: pos.bottom !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
+    borderLeft:   pos.left   !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
+    borderRight:  pos.right  !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
+  })
+  return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', marginBottom:4 }}>
+      <div style={{
+        position:'relative', width:'100%', maxWidth:250,
+        background:'linear-gradient(170deg,rgba(22,20,34,0.96) 0%,rgba(10,8,16,0.99) 100%)',
+        border:'1px solid rgba(212,212,232,0.26)',
+        borderRadius:22,
+        boxShadow:'0 0 0 1px rgba(212,212,232,0.06), 0 8px 28px rgba(0,0,0,0.55), inset 0 1px 0 rgba(212,212,232,0.1)',
+        padding:'14px 14px 10px',
+      }}>
+        <div style={cornerStyle({ top:6, left:6 })} />
+        <div style={cornerStyle({ top:6, right:6 })} />
+        <div style={cornerStyle({ bottom:6, left:6 })} />
+        <div style={cornerStyle({ bottom:6, right:6 })} />
+
+        <svg width="100%" viewBox="0 0 200 106" style={{ display:'block', overflow:'visible' }}>
+          <defs>
+            <filter id="ndl-glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          {/* Arc track */}
+          <path d={`M${arcStart.x},${arcStart.y} A${r},${r} 0 0,1 ${arcEnd.x},${arcEnd.y}`}
+            fill="none" stroke="rgba(212,212,232,0.13)" strokeWidth="2"/>
+          {/* Active arc — up to needle */}
+          <path d={`M${arcStart.x},${arcStart.y} A${r},${r} 0 0,1 ${arcEnd.x},${arcEnd.y}`}
+            fill="none" stroke="rgba(180,188,204,0.22)" strokeWidth="1.5" strokeDasharray="200" />
+          {/* Ticks */}
+          {ticks.map((t, i) => (
+            <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
+              stroke={t.major ? 'rgba(212,212,232,0.72)' : t.mid ? 'rgba(212,212,232,0.38)' : 'rgba(212,212,232,0.16)'}
+              strokeWidth={t.major ? 2 : 1} strokeLinecap="round"/>
+          ))}
+          {/* Needle */}
+          <g style={{ transformOrigin:`${cx}px ${cy}px`, transform:`rotate(${deg}deg)`, transition:'transform 1.4s cubic-bezier(0.16,1,0.3,1)' }}>
+            <line x1={cx} y1={cy + 9} x2={cx} y2={cy - r + 14}
+              stroke="#c8cce0" strokeWidth="1.8" strokeLinecap="round" filter="url(#ndl-glow)"/>
+            <line x1={cx} y1={cy + 9} x2={cx} y2={cy + 4}
+              stroke="rgba(212,212,232,0.3)" strokeWidth="3" strokeLinecap="round"/>
+          </g>
+          {/* Pivot */}
+          <circle cx={cx} cy={cy} r={5} fill="rgba(212,212,232,0.55)" />
+          <circle cx={cx} cy={cy} r={2.5} fill="#0a0810"/>
+        </svg>
+
+        {/* Weight readout */}
+        <div style={{ textAlign:'center', marginTop:-2, paddingBottom:2 }}>
+          <p style={{ color:'var(--text-primary)', fontSize:34, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>
+            {weight || '—'}
+            <span style={{ fontSize:12, color:'var(--text-muted)', fontWeight:400, marginLeft:4 }}>lbs</span>
+          </p>
+        </div>
+
+        {/* Base platform line */}
+        <div style={{ height:3, marginTop:10, borderRadius:2, background:'rgba(212,212,232,0.07)' }}>
+          <div style={{ height:'100%', width:'100%', background:'linear-gradient(90deg,transparent,rgba(212,212,232,0.18),transparent)', borderRadius:2 }}/>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function SectionHead({ title, sub }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
@@ -346,16 +434,25 @@ function WeightSparkline({ logs }) {
   const vals   = sorted.map(l => parseFloat(l.weight_lbs || l.weight))
   const min    = Math.min(...vals) - 1
   const max    = Math.max(...vals) + 1
-  const W = 200, H = 48
-  const pts = vals.map((v,i) => `${(i/(vals.length-1))*W},${H - ((v-min)/(max-min))*H}`)
+  const W = 300, H = 44
+  const pts = vals.map((v,i) => `${(i/(vals.length-1))*W},${H - ((v-min)/(max-min))*(H-6)+3}`)
   return (
-    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ overflow:'visible' }}>
-      <polyline points={pts.join(' ')} fill="none" stroke="rgba(212,212,232,0.5)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
-      {pts.map((pt,i) => {
-        const [x,y] = pt.split(',')
-        return <circle key={i} cx={x} cy={y} r="2.5" fill="rgba(212,212,232,0.8)" />
-      })}
-    </svg>
+    <div>
+      <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Trend</p>
+      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow:'visible', display:'block' }}>
+        <defs>
+          <linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(180,188,204,0.18)"/>
+            <stop offset="100%" stopColor="rgba(180,188,204,0)"/>
+          </linearGradient>
+        </defs>
+        <polyline points={pts.join(' ')} fill="none" stroke="rgba(212,212,232,0.5)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
+        {pts.map((pt,i) => {
+          const [x,y] = pt.split(',')
+          return <circle key={i} cx={x} cy={y} r="2.5" fill="rgba(212,212,232,0.75)" />
+        })}
+      </svg>
+    </div>
   )
 }
 
@@ -605,32 +702,31 @@ export default function FitnessTracker() {
           {activeTab === 'weight' && (
             <div style={anim(140)}>
 
-              {/* Weight summary card */}
+              {/* Scale card */}
               <Card style={{ marginBottom:14 }}>
                 <SectionHead title="Body Weight" />
-                <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:16 }}>
-                  <div>
-                    <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Current</p>
-                    <p style={{ color:'var(--text-primary)', fontSize:38, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>
-                      {latest || '—'}<span style={{ fontSize:14, color:'var(--text-muted)', fontWeight:400, marginLeft:4 }}>lbs</span>
-                    </p>
-                    {diff && (
-                      <p style={{ color: parseFloat(diff) < 0 ? 'rgba(212,212,232,0.6)' : 'rgba(212,212,232,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>
-                        {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs from last entry
-                      </p>
-                    )}
-                  </div>
-                  <WeightSparkline logs={weightLogs} />
-                </div>
+                <ScaleDial weight={latest} goal={weightGoal} />
+
+                {diff && (
+                  <p style={{ textAlign:'center', color: parseFloat(diff) < 0 ? 'rgba(212,212,232,0.6)' : 'rgba(212,212,232,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:10 }}>
+                    {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs from last entry
+                  </p>
+                )}
 
                 {weightGoal && latest && (
-                  <>
+                  <div style={{ marginTop:14 }}>
                     <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8 }}>
                       <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Goal: {weightGoal} lbs</p>
                       <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{toGoal > 0 ? `${toGoal} lbs to go` : 'Goal reached!'}</p>
                     </div>
                     <GlowBar pct={Math.min(100, (1 - Math.max(0,parseFloat(latest)-parseFloat(weightGoal)) / (parseFloat(latest)-parseFloat(weightGoal)+1))*100)} />
-                  </>
+                  </div>
+                )}
+
+                {(weightLogs||[]).length >= 2 && (
+                  <div style={{ marginTop:14 }}>
+                    <WeightSparkline logs={weightLogs} />
+                  </div>
                 )}
 
                 <button onClick={() => setShowWeight(true)}
