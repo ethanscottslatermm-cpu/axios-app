@@ -498,33 +498,70 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
     if (id === hovered)  return 0.62
     return 0.07
   }
-  const sw = (id) => (id === selected ? 2 : id === hovered ? 1.5 : 0.8)
+  const sw = (id) => (id === selected ? 2.5 : id === hovered ? 1.5 : 0.8)
 
   const renderShape = (s, color, op, strokeW) => {
-    if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.18s' }}/>
-    if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.18s' }}/>
-    return <path d={s.d} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.18s' }}/>
+    if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
+    if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
+    return <path d={s.d} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
   }
 
   return (
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
+      <defs>
+        {/* Muscle zone glow — colour-matched halo around the selected shape */}
+        <filter id="zone-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        {/* Heart glow */}
+        <filter id="heart-glow" x="-120%" y="-120%" width="340%" height="340%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <style>{`
+        @keyframes muscleGlow {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.62; }
+        }
+        @keyframes heartbeat {
+          0%,  100% { transform: scale(1);    opacity: 0.68; }
+          12%        { transform: scale(1.28); opacity: 1;    }
+          24%        { transform: scale(1);    opacity: 0.68; }
+          38%        { transform: scale(1.16); opacity: 0.88; }
+          60%        { transform: scale(1);    opacity: 0.68; }
+        }
+      `}</style>
+
       {zones.map(id => {
-        const data   = DB[id]
-        const color  = data?.color || '#b4bccc'
-        const op     = opacity(id)
+        const data    = DB[id]
+        const color   = data?.color || '#b4bccc'
+        const op      = opacity(id)
         const strokeW = sw(id)
+        const isSel   = id === selected
         return (
           <g key={id}
             onClick={() => onSelect(selected === id ? null : id)}
             onMouseEnter={() => onHover(id)}
             onMouseLeave={() => onHover(null)}
-            style={{ cursor:'pointer' }}>
+            style={{
+              cursor:'pointer',
+              ...(isSel ? { filter:'url(#zone-glow)', animation:'muscleGlow 2.6s ease-in-out infinite' } : {}),
+            }}>
             {(shapes[id] || []).map((s, i) => (
               <g key={i}>{renderShape(s, color, op, strokeW)}</g>
             ))}
           </g>
         )
       })}
+
       {/* Labels */}
       {labels.map(l => {
         const data  = DB[l.id]
@@ -542,6 +579,19 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
           </text>
         )
       })}
+
+      {/* Glowing heartbeat — front view only */}
+      {view === 'front' && (
+        <g
+          filter="url(#heart-glow)"
+          style={{ transformBox:'fill-box', transformOrigin:'center', animation:'heartbeat 1.5s ease-in-out infinite' }}>
+          <path
+            d="M106,126 C106,126 97,119 97,113 C97,108 101,106 104,107 C105,107.5 106,109 106,109 C106,109 107,107.5 108,107 C111,106 115,108 115,113 C115,119 106,126 106,126 Z"
+            fill="#e8525a"
+            opacity={0.8}
+          />
+        </g>
+      )}
     </svg>
   )
 }
