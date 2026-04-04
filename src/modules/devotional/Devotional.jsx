@@ -21,12 +21,12 @@ const Ico = {
 
 // ── Daily verse references (cycles deterministically by day of year) ───────────
 const VERSE_REFS = [
-  'john/3/16','psalms/23/1','philippians/4/13','romans/8/28','jeremiah/29/11',
-  'proverbs/3/5','isaiah/40/31','matthew/6/33','joshua/1/9','romans/12/2',
-  'psalms/46/1','john/14/6','galatians/5/22','ephesians/2/8','hebrews/11/1',
-  'matthew/11/28','romans/8/38','psalms/119/105','john/16/33','philippians/4/6',
-  '1corinthians/13/4','james/1/2','romans/5/8','psalms/27/1','isaiah/41/10',
-  'john/15/13','matthew/5/16','romans/10/9','1john/4/19','proverbs/31/25',
+  'john+3:16','psalms+23:1','philippians+4:13','romans+8:28','jeremiah+29:11',
+  'proverbs+3:5','isaiah+40:31','matthew+6:33','joshua+1:9','romans+12:2',
+  'psalms+46:1','john+14:6','galatians+5:22','ephesians+2:8','hebrews+11:1',
+  'matthew+11:28','romans+8:38','psalms+119:105','john+16:33','philippians+4:6',
+  '1+corinthians+13:4','james+1:2','romans+5:8','psalms+27:1','isaiah+41:10',
+  'john+15:13','matthew+5:16','romans+10:9','1+john+4:19','proverbs+31:25',
 ]
 
 function getDailyRefFromPool(pool) {
@@ -324,7 +324,7 @@ function BibleReader({ onClose }) {
       </div>
 
       {/* Body */}
-      <div style={{ flex:1, overflowY:'auto', padding:'16px' }}>
+      <div style={{ flex:1, minHeight:0, overflowY:'auto', padding:'16px', paddingBottom:'max(80px, env(safe-area-inset-bottom))' }}>
 
         {/* Book list */}
         {view === 'books' && (
@@ -495,8 +495,8 @@ export default function Devotional() {
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg-primary);overflow-x:hidden;}
-        ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.1);border-radius:99px;}
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.25);border-radius:99px;}
         textarea::placeholder{color:rgba(212,212,232,0.2);}
         textarea:focus{outline:none;}
         .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
