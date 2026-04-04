@@ -289,24 +289,24 @@ const BACK_ZONE_SHAPES = {
 }
 
 const FRONT_LABELS = [
-  { id:'shoulders', x:2,   y:104, a:'start' },
-  { id:'biceps',    x:2,   y:130, a:'start' },
-  { id:'forearms',  x:2,   y:192, a:'start' },
-  { id:'core',      x:2,   y:174, a:'start' },
-  { id:'chest',     x:238, y:104, a:'end'   },
-  { id:'obliques',  x:238, y:182, a:'end'   },
-  { id:'quads',     x:238, y:296, a:'end'   },
-  { id:'calves',    x:2,   y:408, a:'start' },
+  { id:'shoulders', x:2,   y:101, a:'start', sci:'Deltoid'            },
+  { id:'biceps',    x:2,   y:127, a:'start', sci:'Biceps Brachii'     },
+  { id:'forearms',  x:2,   y:189, a:'start', sci:'Brachioradialis'    },
+  { id:'core',      x:2,   y:171, a:'start', sci:'Rectus Abdominis'   },
+  { id:'chest',     x:238, y:101, a:'end',   sci:'Pectoralis Major'   },
+  { id:'obliques',  x:238, y:179, a:'end',   sci:'Obliquus Externus'  },
+  { id:'quads',     x:238, y:293, a:'end',   sci:'Quadriceps Femoris' },
+  { id:'calves',    x:2,   y:405, a:'start', sci:'Gastrocnemius'      },
 ]
 
 const BACK_LABELS = [
-  { id:'traps',      x:238, y:86,  a:'end'   },
-  { id:'lats',       x:238, y:148, a:'end'   },
-  { id:'triceps',    x:2,   y:128, a:'start' },
-  { id:'lower_back', x:2,   y:184, a:'start' },
-  { id:'glutes',     x:238, y:244, a:'end'   },
-  { id:'hamstrings', x:2,   y:304, a:'start' },
-  { id:'calves',     x:238, y:412, a:'end'   },
+  { id:'traps',      x:238, y:83,  a:'end',   sci:'Trapezius'         },
+  { id:'lats',       x:238, y:145, a:'end',   sci:'Latissimus Dorsi'  },
+  { id:'triceps',    x:2,   y:125, a:'start', sci:'Triceps Brachii'   },
+  { id:'lower_back', x:2,   y:181, a:'start', sci:'Erector Spinae'    },
+  { id:'glutes',     x:238, y:241, a:'end',   sci:'Gluteus Maximus'   },
+  { id:'hamstrings', x:2,   y:301, a:'start', sci:'Biceps Femoris'    },
+  { id:'calves',     x:238, y:409, a:'end',   sci:'Gastrocnemius'     },
 ]
 
 // ─── Base Body SVGs ───────────────────────────────────────────────────────────
@@ -569,13 +569,25 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
         const sel   = selected === l.id || hovered === l.id
         return (
           <text key={l.id} x={l.x} y={l.y}
-            fill={sel ? color : 'rgba(212,212,232,0.28)'}
+            fill={sel ? color : 'rgba(212,212,232,0.32)'}
             fontSize="7.5"
             fontFamily="Helvetica Neue,Arial,sans-serif"
-            fontWeight={sel ? '700' : '400'}
+            fontWeight={sel ? '700' : '500'}
             textAnchor={l.a}
             style={{ pointerEvents:'none', transition:'fill 0.18s', letterSpacing:'0.04em' }}>
             {DB[l.id]?.label || l.id}
+            {l.sci && (
+              <tspan
+                x={l.x}
+                dy="9"
+                fontSize="5.8"
+                fontWeight="400"
+                letterSpacing="0.06em"
+                fill={sel ? color : 'rgba(212,212,232,0.18)'}
+                style={{ fontStyle:'italic' }}>
+                {l.sci}
+              </tspan>
+            )}
           </text>
         )
       })}
