@@ -1012,7 +1012,7 @@ export default function FoodJournal() {
                     <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Past Days</p>
                     <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{foodHistory.length} days logged</p>
                   </div>
-                  <div style={{ maxHeight:320, overflowY:'auto', display:'flex', flexDirection:'column', gap:8, paddingRight:4, scrollbarWidth:'thin', scrollbarColor:'var(--scrollbar) transparent' }}>
+                  <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                     {foodHistory.map((day) => (
                       <div key={day.date} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10 }}>
                         <div>
