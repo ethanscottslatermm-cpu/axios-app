@@ -45,6 +45,36 @@ function Card({ children, style={} }) {
   )
 }
 
+function CollapsibleCard({ title, color = 'rgba(212,212,232,0.75)', children, animStyle={}, defaultOpen=false }) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, overflow:'hidden', ...animStyle }}>
+      <button onClick={() => setOpen(o => !o)} style={{
+        width:'100%', padding:'16px 18px', background:'none', border:'none', cursor:'pointer',
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+          <div style={{ width:2, height:14, background:`linear-gradient(to bottom,${color},${color}22)`, borderRadius:2, boxShadow:`0 0 6px ${color}55`, flexShrink:0 }} />
+          <p style={{ color, fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        </div>
+        <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          style={{ transition:'transform 0.25s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)', opacity:0.6, flexShrink:0 }}>
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div style={{
+        maxHeight: open ? '2000px' : '0px',
+        overflow: 'hidden',
+        transition: open ? 'max-height 0.4s cubic-bezier(0.16,1,0.3,1)' : 'max-height 0.25s ease-in',
+      }}>
+        <div style={{ padding:'0 18px 18px' }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Field({ label, value, onChange, type='text', icon, disabled=false, placeholder='' }) {
   const [focused, setFocused] = useState(false)
   return (
@@ -280,52 +310,46 @@ export default function Settings() {
         <div style={{ maxWidth:520, width:'100%', margin:'0 auto', padding:'20px 16px 0', display:'flex', flexDirection:'column', gap:16, position:'relative', zIndex:1 }}>
 
           {/* Profile */}
-          <Card style={anim(60)}>
-            <SectionLabel color="#d8d8e8">Profile</SectionLabel>
+          <CollapsibleCard title="Profile" color="#d8d8e8" animStyle={anim(60)} defaultOpen={true}>
             <Field label="Display Name" value={profile.name} onChange={v=>set('name',v)} icon={Ico.user} placeholder="Ethan" />
             <Field label="Email" value={user?.email||''} onChange={()=>{}} icon={Ico.mail} disabled />
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <Field label="Age" value={profile.age} onChange={v=>set('age',v)} type="number" placeholder="28" />
               <SelectField label="Biological Sex" value={profile.gender} onChange={v=>set('gender',v)} options={['Male','Female','Prefer not to say']} />
             </div>
-          </Card>
+          </CollapsibleCard>
 
           {/* Body */}
-          <Card style={anim(120)}>
-            <SectionLabel color="#b8b8cc">Body Stats</SectionLabel>
+          <CollapsibleCard title="Body Stats" color="#b8b8cc" animStyle={anim(120)}>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <Field label="Height (ft)" value={profile.height_ft} onChange={v=>set('height_ft',v)} icon={Ico.scale} type="number" placeholder="5" />
               <Field label="Height (in)" value={profile.height_in} onChange={v=>set('height_in',v)} type="number" placeholder="11" />
             </div>
             <Field label="Current Weight (lbs)" value={profile.weight_lbs} onChange={v=>set('weight_lbs',v)} icon={Ico.scale} type="number" placeholder="185" />
             <Field label="Goal Weight (lbs)" value={profile.goal_weight} onChange={v=>set('goal_weight',v)} icon={Ico.target} type="number" placeholder="175" />
-          </Card>
+          </CollapsibleCard>
 
           {/* Goals */}
-          <Card style={anim(180)}>
-            <SectionLabel color="#b4bccc">Goals & Activity</SectionLabel>
+          <CollapsibleCard title="Goals & Activity" color="#b4bccc" animStyle={anim(180)}>
             <SelectField label="Primary Goal" value={profile.primary_goal} onChange={v=>set('primary_goal',v)} options={['Lose weight','Build muscle','Maintain weight','Improve endurance','Overall wellness']} />
             <SelectField label="Activity Level" value={profile.activity_level} onChange={v=>set('activity_level',v)} options={['Sedentary','Lightly active','Moderately active','Very active','Athlete']} />
-          </Card>
+          </CollapsibleCard>
 
           {/* Daily Targets */}
-          <Card style={anim(240)}>
-            <SectionLabel color="#9ab4cc">Daily Targets</SectionLabel>
+          <CollapsibleCard title="Daily Targets" color="#9ab4cc" animStyle={anim(240)}>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <Field label="Calorie Goal" value={profile.calorie_goal} onChange={v=>set('calorie_goal',v)} icon={Ico.flame} type="number" placeholder="2200" />
               <Field label="Water Goal (glasses)" value={profile.water_goal} onChange={v=>set('water_goal',v)} icon={Ico.drop} type="number" placeholder="8" />
             </div>
-          </Card>
+          </CollapsibleCard>
 
           {/* Spiritual */}
-          <Card style={anim(300)}>
-            <SectionLabel color="#a8b4c0">Spiritual Preferences</SectionLabel>
+          <CollapsibleCard title="Spiritual Preferences" color="#a8b4c0" animStyle={anim(300)}>
             <SelectField label="Faith Focus" value={profile.faith_focus} onChange={v=>set('faith_focus',v)} options={['Christian','Non-denominational','Spiritual but not religious','Other','Prefer not to say']} />
-          </Card>
+          </CollapsibleCard>
 
           {/* Theme */}
-          <Card style={anim(330)}>
-            <SectionLabel color="#7a7a8a">App Theme</SectionLabel>
+          <CollapsibleCard title="App Theme" color="#7a7a8a" animStyle={anim(330)}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               {Object.entries(THEMES).filter(([key]) => ['axios','ash','midnight'].includes(key)).map(([key, t]) => {
                 const active = themeKey === key
@@ -359,7 +383,7 @@ export default function Settings() {
                 )
               })}
             </div>
-          </Card>
+          </CollapsibleCard>
 
           {/* Save */}
           <div style={anim(360)}>
@@ -371,11 +395,7 @@ export default function Settings() {
           </div>
 
           {/* Danger Zone */}
-          <Card style={anim(380)}>
-            <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
-              <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(255,80,80,0.9),rgba(255,80,80,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(255,80,80,0.4)' }} />
-              <p style={{ color:'rgba(255,100,100,0.6)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Danger Zone</p>
-            </div>
+          <CollapsibleCard title="Danger Zone" color="rgba(255,100,100,0.6)" animStyle={anim(380)}>
 
             <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.6, marginBottom:16 }}>
               Permanently deletes all your logged data — food, water, weight, workouts, prayers, and devotionals. Your account remains active. This cannot be undone.
@@ -414,11 +434,10 @@ export default function Settings() {
               {wipeStep === 2 && 'Wiping…'}
               {wipeStep === 3 && '✓ Done'}
             </button>
-          </Card>
+          </CollapsibleCard>
 
           {/* Account */}
-          <Card style={anim(420)}>
-            <SectionLabel color="#7a7a8a">Account</SectionLabel>
+          <CollapsibleCard title="Account" color="#7a7a8a" animStyle={anim(420)}>
             <div style={{ padding:'8px 0 16px', borderBottom:'1px solid rgba(212,212,232,0.06)', marginBottom:16 }}>
               <p style={{ color:'rgba(212,212,232,0.4)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Signed in as</p>
               <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>{user?.email}</p>
@@ -477,7 +496,7 @@ export default function Settings() {
               style={{ width:'100%', padding:'12px', background:'transparent', border:'1px solid rgba(255,80,80,0.16)', borderRadius:9, color:'rgba(255,80,80,0.45)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
               {Ico.logout()} Sign Out
             </button>
-          </Card>
+          </CollapsibleCard>
 
           <p style={{ color:'rgba(212,212,232,0.08)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', paddingBottom:8 }}>AXIOS · I AM WORTHY</p>
 
