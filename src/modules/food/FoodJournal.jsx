@@ -143,8 +143,8 @@ function BarcodeScanner({ onResult, onClose }) {
 
   return (
     <div style={{
-      position:'fixed', inset:0, zIndex:300,
-      background:'rgba(0,0,0,0.95)', display:'flex', flexDirection:'column',
+      position:'fixed', inset:0, zIndex:500,
+      background:'rgba(0,0,0,0.97)', display:'flex', flexDirection:'column',
     }}>
       {/* Header */}
       <div style={{ padding:'max(16px, env(safe-area-inset-top)) 16px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(212,212,232,0.1)' }}>
@@ -682,7 +682,7 @@ export default function FoodJournal() {
         .ax-meal-tab:hover{background:rgba(212,212,232,0.05)!important;}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:'calc(env(safe-area-inset-bottom) + 110px)', position:'relative' }}>
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:'calc(env(safe-area-inset-bottom) + 160px)', position:'relative' }}>
         {/* Food market background */}
         <div style={{
           position:'fixed', inset:0, zIndex:0,
