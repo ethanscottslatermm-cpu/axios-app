@@ -30,35 +30,16 @@ function fmt(price, symbol) {
 }
 
 // ── News config ───────────────────────────────────────────────────────────────
-// rss2json.com converts RSS → JSON with CORS headers, free up to 10k req/month
-const NEWS_FEEDS = [
-  { url: 'https://rss.cnn.com/rss/cnn_topstories.rss',  source: 'CNN',     color: '#ef4444' },
-  { url: 'https://feeds.bbci.co.uk/news/rss.xml',        source: 'BBC',     color: '#60a5fa' },
-  { url: 'https://feeds.npr.org/1001/rss.xml',           source: 'NPR',     color: '#4ade80' },
-]
-const RSS2JSON = 'https://api.rss2json.com/v1/api.json'
-
+// Fetched via Netlify function (server-side RSS parse, no CORS / no API key)
 async function fetchAllNews() {
-  const all = []
-  await Promise.allSettled(
-    NEWS_FEEDS.map(async (feed) => {
-      try {
-        const res = await fetch(`${RSS2JSON}?rss_url=${encodeURIComponent(feed.url)}&count=6`, { cache: 'no-store' })
-        if (!res.ok) return
-        const data = await res.json()
-        if (data.status !== 'ok' || !Array.isArray(data.items)) return
-        for (const item of data.items.slice(0, 6)) {
-          all.push({
-            id:     item.guid || item.link || item.title,
-            title:  (item.title || '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim(),
-            source: feed.source,
-            color:  feed.color,
-          })
-        }
-      } catch {}
-    })
-  )
-  return all
+  try {
+    const res = await fetch('/api/news')
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data) ? data : []
+  } catch {
+    return []
+  }
 }
 
 function truncate(str, max = 90) {
