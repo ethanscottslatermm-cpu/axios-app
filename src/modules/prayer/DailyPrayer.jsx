@@ -164,26 +164,27 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
 
   return (
     <div style={{
-      background: 'linear-gradient(135deg, rgba(200,160,0,0.06) 0%, rgba(212,212,232,0.03) 100%)',
-      border:     '1px solid rgba(200,160,0,0.2)',
-      borderRadius: 16,
-      padding:    '22px 20px 20px',
-      position:   'relative',
-      overflow:   'hidden',
+      background:   'var(--stat-bg)',
+      border:       '1px solid var(--accent-prayer)',
+      borderRadius:  16,
+      padding:      '22px 20px 20px',
+      position:     'relative',
+      overflow:     'hidden',
+      boxShadow:    '0 0 18px color-mix(in srgb, var(--accent-prayer) 10%, transparent)',
       ...anim(30),
     }}>
-      {/* Subtle gold glow top-right */}
-      <div style={{ position:'absolute', top:-30, right:-30, width:120, height:120, background:'radial-gradient(circle, rgba(200,160,0,0.12), transparent 70%)', pointerEvents:'none' }} />
+      {/* Accent glow top-right */}
+      <div style={{ position:'absolute', top:-30, right:-30, width:120, height:120, background:'radial-gradient(circle, var(--accent-prayer), transparent 70%)', opacity:0.08, pointerEvents:'none' }} />
 
       {/* Header row */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
         <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-          <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(200,160,0,0.9),rgba(200,160,0,0.1))', borderRadius:2, boxShadow:'0 0 8px rgba(200,160,0,0.4)' }} />
-          <span style={{ color:'rgba(200,160,0,0.85)', fontSize:9, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>
+          <div style={{ width:2, height:14, background:`linear-gradient(to bottom,var(--accent-prayer),transparent)`, borderRadius:2, boxShadow:`0 0 8px var(--accent-prayer)` }} />
+          <span style={{ color:'var(--accent-prayer)', fontSize:9, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>
             Daily Prayer
           </span>
         </div>
-        <span style={{ color:'rgba(212,212,232,0.22)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>
+        <span style={{ color:'var(--text-faint)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>
           {today}
         </span>
       </div>
@@ -192,9 +193,9 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
       <div style={{ marginBottom:14 }}>
         <span style={{
           display:       'inline-block',
-          background:    'rgba(200,160,0,0.1)',
-          border:        '1px solid rgba(200,160,0,0.25)',
-          color:         'rgba(200,160,0,0.75)',
+          background:    'var(--badge-bg)',
+          border:        '1px solid var(--accent-prayer)',
+          color:         'var(--accent-prayer)',
           fontSize:       8,
           fontWeight:     700,
           letterSpacing: '0.2em',
@@ -202,6 +203,7 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
           fontFamily:    'Helvetica Neue,sans-serif',
           padding:       '3px 9px',
           borderRadius:   99,
+          opacity:        0.85,
         }}>
           {prayer.theme}
         </span>
@@ -209,13 +211,14 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
 
       {/* Prayer text */}
       <p style={{
-        color:       'rgba(212,212,232,0.82)',
+        color:       'var(--text-primary)',
         fontSize:     16,
         fontFamily:  "'EB Garamond', Georgia, serif",
         fontStyle:   'italic',
         lineHeight:   1.75,
         marginBottom: 16,
         letterSpacing:'0.01em',
+        opacity:      0.88,
       }}>
         {prayer.text}
       </p>
@@ -223,12 +226,13 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
       {/* Scripture reference */}
       {prayer.scripture && (
         <p style={{
-          color:        'rgba(200,160,0,0.45)',
+          color:        'var(--accent-prayer)',
           fontSize:      10,
           fontFamily:   'Helvetica Neue, sans-serif',
           letterSpacing:'0.14em',
           textTransform:'uppercase',
           fontWeight:    600,
+          opacity:       0.6,
         }}>
           — {prayer.scripture}
         </p>

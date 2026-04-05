@@ -243,6 +243,43 @@ export const THEMES = {
       '--card-shadow':   '0 0 0 0.5px rgba(26,110,181,0.12), 0 0 16px rgba(26,110,181,0.06), 0 2px 10px rgba(0,0,0,0.12)',
     }
   },
+  axis_organic: {
+    name: 'Axis — Organic',
+    description: 'Volcanic black, each module colored like a natural gemstone',
+    preview: ['#060608', '#c8853a', '#2dd4bf', '#9b7ad4'],
+    vars: {
+      '--bg-primary':    '#060608',
+      '--bg-secondary':  '#0c0b09',
+      '--bg-card':       'rgba(200,180,140,0.05)',
+      '--bg-card-hover': 'rgba(200,180,140,0.09)',
+      '--border':        'rgba(200,180,140,0.18)',
+      '--border-focus':  'rgba(200,180,140,0.50)',
+      '--text-primary':  '#ede8e0',
+      '--text-secondary':'rgba(220,210,195,0.65)',
+      '--text-muted':    'rgba(200,190,175,0.42)',
+      '--text-faint':    'rgba(200,190,175,0.18)',
+      '--glow':          'rgba(200,133,58,0.55)',
+      '--glow-bar':      '#c8853a',
+      '--btn-bg':        '#c8853a',
+      '--btn-text':      '#060608',
+      '--overlay-bg':    'rgba(0,0,0,0.85)',
+      '--header-bg':     'rgba(6,6,8,0.97)',
+      '--sheet-bg':      '#0c0b09',
+      '--input-bg':      'rgba(200,180,140,0.04)',
+      '--img-opacity':   '0.14',
+      '--scrollbar':     'rgba(200,180,140,0.20)',
+      '--badge-bg':      'rgba(200,180,140,0.08)',
+      '--stat-bg':       'rgba(200,180,140,0.06)',
+      '--card-shadow':   '0 0 0 1px rgba(200,180,140,0.15), 0 0 22px rgba(200,133,58,0.05), 0 2px 12px rgba(0,0,0,0.65)',
+      // Per-module mineral accents
+      '--accent-food':        '#c8853a',
+      '--accent-water':       '#2dd4bf',
+      '--accent-fitness':     '#dc4f3a',
+      '--accent-finance':     '#4db891',
+      '--accent-prayer':      '#9b7ad4',
+      '--accent-devotional':  '#c4a44a',
+    }
+  },
   forest: {
     name: 'Forest',
     description: 'Deep green — grounded and calm',
@@ -310,6 +347,11 @@ export function ThemeProvider({ children }) {
     const theme = THEMES[themeKey]
     if (!theme) return
     const root = document.documentElement
+
+    // Clear per-module accents first so switching away from axis_organic resets them
+    ;['food','water','fitness','finance','prayer','devotional'].forEach(m =>
+      root.style.removeProperty(`--accent-${m}`)
+    )
 
     // Set all theme variables
     Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v))
