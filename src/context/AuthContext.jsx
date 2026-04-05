@@ -78,10 +78,8 @@ export function AuthProvider({ children }) {
     // Record login timestamp + history
     const now    = new Date().toISOString()
     const device = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
-    const { error: loginErr } = await supabase.from('profiles').update({ last_login: now }).eq('id', data.user.id)
-    if (loginErr) console.error('[Auth] last_login update failed:', loginErr.message)
-    const { error: histErr } = await supabase.from('login_history').insert({ user_id: data.user.id, logged_in_at: now, device })
-    if (histErr) console.error('[Auth] login_history insert failed:', histErr.message)
+    await supabase.from('profiles').update({ last_login: now }).eq('id', data.user.id)
+    await supabase.from('login_history').insert({ user_id: data.user.id, logged_in_at: now, device })
 
     setLocked(false) // freshly signed in — no lock needed
     return data
@@ -91,7 +89,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!user) return
     const bump = () => supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', user.id)
-      .then(({ error }) => { if (error) console.error('[Auth] last_seen bump failed:', error.message) })
     bump()
     const id = setInterval(bump, 5 * 60 * 1000)
     return () => clearInterval(id)

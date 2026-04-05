@@ -261,7 +261,7 @@ const FRONT_ZONE_SHAPES = {
 
 const BACK_ZONE_SHAPES = {
   traps:      [
-    { d:'M82 84 Q96 76 110 70 L120 72 L130 70 Q144 76 158 84 Q164 98 160 118 Q152 134 140 140 Q130 144 120 144 Q110 144 100 140 Q88 134 80 118 Q76 98 82 84 Z' },
+    { d:'M82 84 Q96 76 110 70 L120 72 L130 70 Q144 76 158 84 Q142 90 120 91 Q98 90 82 84 Z' },
   ],
   lats:       [
     { d:'M64 104 Q54 120 52 144 Q50 166 56 182 Q64 194 74 200 Q78 204 76 212 L72 212 Q64 200 58 182 Q52 160 54 136 Q56 114 64 104 Z' },
@@ -300,7 +300,7 @@ const FRONT_LABELS = [
 ]
 
 const BACK_LABELS = [
-  { id:'traps',      x:238, y:107, a:'end',   sci:'Trapezius'         },
+  { id:'traps',      x:238, y:83,  a:'end',   sci:'Trapezius'         },
   { id:'lats',       x:238, y:145, a:'end',   sci:'Latissimus Dorsi'  },
   { id:'triceps',    x:2,   y:125, a:'start', sci:'Triceps Brachii'   },
   { id:'lower_back', x:2,   y:181, a:'start', sci:'Erector Spinae'    },
