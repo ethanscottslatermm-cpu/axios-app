@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
 import { getLinkToken, exchangeToken, fetchBalances, fetchTransactions } from '../../lib/plaidClient'
-import { getQuote, getMarketNews, searchSymbol } from '../../lib/finnhub'
+import { getQuote, getMarketNews, getCryptoNews, searchSymbol } from '../../lib/finnhub'
 import { BottomNav } from '../../pages/Dashboard'
 import BillsTab from './BillsTab'
 import { useWatchlist } from '../../hooks/useWatchlist'
@@ -119,6 +119,101 @@ function IndexCard({ label, symbol }) {
   )
 }
 
+// ── Crypto symbol map ────────────────────────────────────────────────────────
+const CRYPTO_MAP = {
+  BTC:  'BINANCE:BTCUSDT',
+  ETH:  'BINANCE:ETHUSDT',
+  XRP:  'BINANCE:XRPUSDT',
+  SOL:  'BINANCE:SOLUSDT',
+  BNB:  'BINANCE:BNBUSDT',
+  DOGE: 'BINANCE:DOGEUSDT',
+  ADA:  'BINANCE:ADAUSDT',
+  AVAX: 'BINANCE:AVAXUSDT',
+  LINK: 'BINANCE:LINKUSDT',
+  DOT:  'BINANCE:DOTUSDT',
+  MATIC:'BINANCE:MATICUSDT',
+  LTC:  'BINANCE:LTCUSDT',
+}
+const ROTATION_COINS = ['SOL','BNB','DOGE','ADA','AVAX','LINK','DOT','MATIC']
+
+function fmtCrypto(n) {
+  if (n == null) return '—'
+  if (n >= 1000) return n.toLocaleString('en-US', { minimumFractionDigits:0, maximumFractionDigits:0 })
+  if (n >= 1)    return n.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })
+  return n.toLocaleString('en-US', { minimumFractionDigits:4, maximumFractionDigits:6 })
+}
+
+function CryptoTopCard({ coin, fhSymbol, badge }) {
+  const [quote,   setQuote]   = useState(null)
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    getQuote(fhSymbol).then(d => { setQuote(d); setLoading(false) }).catch(() => setLoading(false))
+  }, [fhSymbol])
+  const change = quote ? quote.c - quote.pc : null
+  const pct    = quote ? ((change / quote.pc) * 100) : null
+  const up     = change >= 0
+  return (
+    <div style={{ background:'var(--bg-card)', border:`1px solid ${badge === 'hot' ? 'rgba(251,146,60,0.35)' : 'var(--border)'}`, boxShadow:'var(--card-shadow)', borderRadius:14, padding:'14px 12px', textAlign:'center', position:'relative', overflow:'hidden' }}>
+      {badge === 'hot' && (
+        <span style={{ position:'absolute', top:6, right:8, fontSize:7, fontWeight:800, letterSpacing:'0.18em', color:'#fb923c', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>TOP</span>
+      )}
+      <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{coin}</p>
+      {loading ? (
+        <p style={{ color:'var(--text-faint)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>—</p>
+      ) : (
+        <>
+          <p style={{ color:'var(--text-primary)', fontSize:15, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>${fmtCrypto(quote?.c)}</p>
+          <p style={{ color: up ? '#4ade80' : '#f87171', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginTop:3 }}>{fmtPct(pct)}</p>
+        </>
+      )}
+    </div>
+  )
+}
+
+function CryptoWatchCard({ coin, onRemove }) {
+  const fhSym = CRYPTO_MAP[coin]
+  const [quote,   setQuote]   = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error,   setError]   = useState(false)
+  useEffect(() => {
+    if (!fhSym) { setError(true); setLoading(false); return }
+    let cancelled = false
+    setLoading(true); setError(false)
+    getQuote(fhSym)
+      .then(d => { if (!cancelled) { setQuote(d); setLoading(false) } })
+      .catch(() => { if (!cancelled) { setError(true); setLoading(false) } })
+    return () => { cancelled = true }
+  }, [fhSym])
+  const change = quote ? quote.c - quote.pc : null
+  const pct    = quote ? ((change / quote.pc) * 100) : null
+  const up     = change >= 0
+  const color  = error ? 'var(--text-muted)' : up ? '#4ade80' : '#f87171'
+  return (
+    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+        <button onClick={() => onRemove(coin)} style={{ background:'none', border:'none', color:'var(--text-faint)', cursor:'pointer', padding:0, display:'flex', alignItems:'center' }}>{Ico.x()}</button>
+        <div>
+          <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{coin}</p>
+          {loading && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Loading…</p>}
+          {error   && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{fhSym ? 'Unavailable' : 'Unknown symbol'}</p>}
+          {quote && !loading && (
+            <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>H ${fmtCrypto(quote.h)} · L ${fmtCrypto(quote.l)}</p>
+          )}
+        </div>
+      </div>
+      {quote && !loading && (
+        <div style={{ textAlign:'right' }}>
+          <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>${fmtCrypto(quote.c)}</p>
+          <div style={{ display:'flex', alignItems:'center', gap:4, justifyContent:'flex-end', color }}>
+            {up ? Ico.up() : Ico.down()}
+            <p style={{ fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600 }}>{fmtPct(pct)}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function NewsCard({ item }) {
   return (
     <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ display:'block', textDecoration:'none', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12 }}>
@@ -141,7 +236,15 @@ export default function FinanceTracker() {
   const [results,     setResults]     = useState([])
   const [searching,   setSearching]   = useState(false)
   const [lastRefresh, setLastRefresh] = useState(Date.now())
-  const [activeTab,   setActiveTab]   = useState('markets') // markets | bank | news | bills
+  const [activeTab,   setActiveTab]   = useState('markets') // markets | bank | bills | crypto
+  const [cryptoWatchlist, setCryptoWatchlist] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('axios-crypto-watchlist') || '["XRP"]') } catch { return ['XRP'] }
+  })
+  const [rotatingCoin,    setRotatingCoin]    = useState(null)
+  const [cryptoNews,      setCryptoNews]      = useState([])
+  const [cryptoNewsLoad,  setCryptoNewsLoad]  = useState(false)
+  const [showCryptoAdd,   setShowCryptoAdd]   = useState(false)
+  const [cryptoInput,     setCryptoInput]     = useState('')
   // Bills state
   const [bills,       setBills]       = useState(() => {
     try { return JSON.parse(localStorage.getItem('axios-bills') || '[]') } catch { return [] }
@@ -166,6 +269,26 @@ export default function FinanceTracker() {
     setNewsLoading(true)
     getMarketNews().then(d => { setNews(d); setNewsLoading(false) }).catch(() => setNewsLoading(false))
   }, [lastRefresh])
+
+  // Load crypto data when crypto tab opens
+  useEffect(() => {
+    if (activeTab !== 'crypto') return
+    // Find best rotating performer
+    Promise.allSettled(
+      ROTATION_COINS.map(coin =>
+        getQuote(CRYPTO_MAP[coin]).then(d => ({ coin, pct: d.c && d.pc ? ((d.c - d.pc) / d.pc) * 100 : -999 }))
+      )
+    ).then(results => {
+      const best = results
+        .filter(r => r.status === 'fulfilled')
+        .map(r => r.value)
+        .sort((a, b) => b.pct - a.pct)[0]
+      if (best) setRotatingCoin(best.coin)
+    })
+    // Load crypto news
+    setCryptoNewsLoad(true)
+    getCryptoNews().then(d => { setCryptoNews(d); setCryptoNewsLoad(false) }).catch(() => setCryptoNewsLoad(false))
+  }, [activeTab])
 
   useEffect(() => {
     if (!query.trim()) { setResults([]); return }
@@ -313,7 +436,7 @@ export default function FinanceTracker() {
 
         {/* Tabs */}
         <div style={{ ...anim(40), display:'flex', gap:8, marginBottom:20 }}>
-          {[['markets','Markets'],['bank','Bank'],['bills','Bills'],['news','News']].map(([key, label]) => (
+          {[['markets','Markets'],['bank','Bank'],['bills','Bills'],['crypto','Crypto']].map(([key, label]) => (
             <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
               flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(74,222,128,0.5)' : 'var(--border)'}`,
               background: activeTab===key ? 'rgba(74,222,128,0.12)' : 'transparent',
@@ -480,16 +603,84 @@ export default function FinanceTracker() {
         {/* Bills Tab */}
         {activeTab === 'bills' && <BillsTab userId={user?.id} />}
 
-
+        {/* Crypto Tab */}
+        {activeTab === 'crypto' && (
           <div style={anim(80)}>
-            <SectionHead title="Market News" sub="General" />
-            {newsLoading ? (
-              <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
-            ) : (
-              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                {news.map((item, i) => <NewsCard key={i} item={item} />)}
+
+            {/* Top 3 */}
+            <div style={{ marginBottom:24 }}>
+              <SectionHead title="Top Crypto" sub="Live prices" />
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
+                <CryptoTopCard coin="BTC" fhSymbol={CRYPTO_MAP.BTC} />
+                <CryptoTopCard coin="ETH" fhSymbol={CRYPTO_MAP.ETH} />
+                {rotatingCoin
+                  ? <CryptoTopCard coin={rotatingCoin} fhSymbol={CRYPTO_MAP[rotatingCoin]} badge="hot" />
+                  : <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 12px', display:'flex', alignItems:'center', justifyContent:'center' }}><p style={{ color:'var(--text-faint)', fontSize:11 }}>—</p></div>
+                }
               </div>
-            )}
+            </div>
+
+            {/* Crypto Watchlist */}
+            <div style={{ marginBottom:24 }}>
+              <SectionHead title="Watchlist" sub={cryptoWatchlist.length + ' coins'} />
+              <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:12 }}>
+                {cryptoWatchlist.map(coin => (
+                  <CryptoWatchCard
+                    key={coin}
+                    coin={coin}
+                    onRemove={coin => {
+                      const updated = cryptoWatchlist.filter(c => c !== coin)
+                      setCryptoWatchlist(updated)
+                      localStorage.setItem('axios-crypto-watchlist', JSON.stringify(updated))
+                    }}
+                  />
+                ))}
+              </div>
+              {showCryptoAdd ? (
+                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'14px 16px' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+                    <input
+                      autoFocus
+                      value={cryptoInput}
+                      onChange={e => setCryptoInput(e.target.value.toUpperCase())}
+                      onKeyDown={e => {
+                        if (e.key !== 'Enter') return
+                        const coin = cryptoInput.trim().toUpperCase()
+                        if (coin && !cryptoWatchlist.includes(coin)) {
+                          const updated = [...cryptoWatchlist, coin]
+                          setCryptoWatchlist(updated)
+                          localStorage.setItem('axios-crypto-watchlist', JSON.stringify(updated))
+                        }
+                        setCryptoInput(''); setShowCryptoAdd(false)
+                      }}
+                      placeholder="Ticker (e.g. SOL, DOGE)…"
+                      style={{ flex:1, background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', caretColor:'var(--text-primary)', textTransform:'uppercase' }}
+                    />
+                    <button onClick={() => { setShowCryptoAdd(false); setCryptoInput('') }} style={{ background:'none', border:'none', color:'var(--text-muted)', cursor:'pointer' }}>{Ico.x()}</button>
+                  </div>
+                  <p style={{ color:'var(--text-faint)', fontSize:10, marginTop:8, fontFamily:'Helvetica Neue,sans-serif' }}>Press Enter to add · Must be in CRYPTO_MAP or Finnhub Binance format</p>
+                </div>
+              ) : (
+                <button onClick={() => setShowCryptoAdd(true)} style={{ width:'100%', padding:'12px', borderRadius:12, border:'1px dashed var(--border)', background:'transparent', color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
+                  {Ico.plus()} Add coin
+                </button>
+              )}
+            </div>
+
+            {/* Crypto News */}
+            <div>
+              <SectionHead title="Crypto News" sub="Latest" />
+              {cryptoNewsLoad ? (
+                <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
+              ) : cryptoNews.length === 0 ? (
+                <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>No news available.</p>
+              ) : (
+                <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                  {cryptoNews.map((item, i) => <NewsCard key={i} item={item} />)}
+                </div>
+              )}
+            </div>
+
           </div>
         )}
       </div>

@@ -15,6 +15,13 @@ export async function getMarketNews() {
   return data.slice(0, 6)
 }
 
+export async function getCryptoNews() {
+  const res = await fetch(`${BASE}/news?category=crypto&token=${KEY}`)
+  if (!res.ok) throw new Error(`Finnhub error: ${res.status}`)
+  const data = await res.json()
+  return data.slice(0, 12)
+}
+
 export async function searchSymbol(query) {
   const res = await fetch(`${BASE}/search?q=${encodeURIComponent(query)}&token=${KEY}`)
   if (!res.ok) throw new Error(`Finnhub error: ${res.status}`)
