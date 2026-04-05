@@ -6,6 +6,7 @@ import { usePrayers } from '../../hooks/usePrayers'
 import { BottomNav } from '../../pages/Dashboard'
 import { supabase } from '../../lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
+import DailyPrayer from './DailyPrayer'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 
@@ -344,6 +345,9 @@ export default function PrayerTracker() {
 
         {/* ── Body ── */}
         <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
+
+          {/* ── Daily Prayer ── */}
+          <DailyPrayer anim={anim} visible={visible} />
 
           {/* Status filter tabs */}
           <div style={{ display:'flex', gap:8, overflowX:'auto', paddingBottom:2, ...anim(80) }}>
