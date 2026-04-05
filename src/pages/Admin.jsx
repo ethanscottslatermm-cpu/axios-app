@@ -216,6 +216,13 @@ export default function Admin() {
   const [appOffline,    setAppOffline]    = useState(false)
   const [togglingOffline, setTogglingOffline] = useState(false)
   const [activeTab,     setActiveTab]     = useState('users')
+  // System tab state
+  const [health,        setHealth]        = useState(null)
+  const [healthLoading, setHealthLoading] = useState(false)
+  const [deploys,       setDeploys]       = useState(null)
+  const [deploysLoad,   setDeploysLoad]   = useState(false)
+  const [sweepResult,   setSweepResult]   = useState(null)
+  const [sweeping,      setSweeping]      = useState(false)
   const [loginHistory,  setLoginHistory]  = useState([])
   const [histLoading,   setHistLoading]   = useState(false)
   const [verses,        setVerses]        = useState([])
@@ -281,6 +288,25 @@ export default function Admin() {
     setConfirm(null)
     setExpanded(null)
     loadUsers()
+  }
+
+  // System tab — load health + deploy status
+  useEffect(() => {
+    if (activeTab !== 'system') return
+    setHealthLoading(true)
+    setDeploysLoad(true)
+    fetch('/api/supabase-health').then(r => r.json()).then(d => { setHealth(d); setHealthLoading(false) }).catch(() => setHealthLoading(false))
+    fetch('/api/deploy-status').then(r => r.json()).then(d => { setDeploys(d); setDeploysLoad(false) }).catch(() => setDeploysLoad(false))
+  }, [activeTab])
+
+  async function runSweep(action) {
+    setSweeping(true); setSweepResult(null)
+    try {
+      const res = await fetch('/api/maintenance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }) })
+      const data = await res.json()
+      setSweepResult(data)
+    } catch (e) { setSweepResult({ error: e.message }) }
+    setSweeping(false)
   }
 
   // Activity tab — load login history
@@ -373,7 +399,7 @@ export default function Admin() {
           </div>
         </div>
         <div style={{ display: 'flex', padding: '0 12px 10px', gap: 6 }}>
-          {[{ id:'users', label:'Users' }, { id:'activity', label:'Activity' }, { id:'content', label:'Content' }].map(t => (
+          {[{ id:'users', label:'Users' }, { id:'activity', label:'Activity' }, { id:'content', label:'Content' }, { id:'system', label:'System' }].map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
               flex: 1, padding: '8px 4px', borderRadius: 9, border: '1px solid var(--border)', cursor: 'pointer',
               background: activeTab === t.id ? 'rgba(212,212,232,0.08)' : 'transparent',
@@ -583,6 +609,142 @@ export default function Admin() {
               {notesSaving ? 'Saving…' : 'Save'}
             </button>
           </div>
+        </>)}
+
+        {/* ── System Tab ── */}
+        {activeTab === 'system' && (<>
+
+          {/* ── Watermark / Attribution ── */}
+          <div style={{ background:'linear-gradient(135deg,rgba(200,180,140,0.07),rgba(212,212,232,0.03))', border:'1px solid rgba(200,180,140,0.22)', borderRadius:16, padding:'20px 18px', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:-20, right:-20, width:100, height:100, background:'radial-gradient(circle,rgba(200,180,140,0.1),transparent 70%)', pointerEvents:'none' }} />
+            <p style={{ color:'rgba(200,180,140,0.5)', fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, marginBottom:8 }}>Founder · Creator</p>
+            <p style={{ color:'rgba(200,180,140,0.92)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em', marginBottom:4 }}>Ethan Thomas Scott</p>
+            <p style={{ color:'rgba(200,180,140,0.4)', fontSize:10, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>All rights reserved · AXIOS App</p>
+            <div style={{ marginTop:14, paddingTop:12, borderTop:'1px solid rgba(200,180,140,0.1)', display:'flex', gap:16 }}>
+              <div><p style={{ color:'rgba(200,180,140,0.35)', fontSize:8, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>App</p><p style={{ color:'rgba(200,180,140,0.7)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600 }}>AXIOS</p></div>
+              <div><p style={{ color:'rgba(200,180,140,0.35)', fontSize:8, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Role</p><p style={{ color:'rgba(200,180,140,0.7)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600 }}>Founder</p></div>
+              <div><p style={{ color:'rgba(200,180,140,0.35)', fontSize:8, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Stack</p><p style={{ color:'rgba(200,180,140,0.7)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600 }}>React · Supabase · Netlify</p></div>
+            </div>
+          </div>
+
+          {/* ── Maintenance Sweeps ── */}
+          <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px' }}>
+            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, marginBottom:4 }}>Code Maintenance</p>
+            <p style={{ color:'var(--text-faint)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginBottom:14, lineHeight:1.5 }}>Run server-side sweeps on the database. These operations are irreversible.</p>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {[
+                { action:'sweep_old_logs',    label:'Sweep old logs (>1 year)',          desc:'Removes food, water, prayer, fitness entries older than 365 days' },
+                { action:'expire_suspensions', label:'Expire suspensions',               desc:'Reactivates suspended accounts whose end date has passed' },
+                { action:'purge_orphans',      label:'Purge orphaned watchlist rows',     desc:'Removes watchlist entries with no matching user profile' },
+              ].map(({ action, label, desc }) => (
+                <div key={action} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{label}</p>
+                    <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.4 }}>{desc}</p>
+                  </div>
+                  <button onClick={() => runSweep(action)} disabled={sweeping} style={{ padding:'7px 14px', borderRadius:8, border:'1px solid rgba(196,160,160,0.3)', background:'rgba(196,160,160,0.08)', color:'rgba(196,160,160,0.8)', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', cursor: sweeping ? 'not-allowed' : 'pointer', flexShrink:0, opacity: sweeping ? 0.5 : 1, letterSpacing:'0.1em' }}>
+                    {sweeping ? '…' : 'Run'}
+                  </button>
+                </div>
+              ))}
+            </div>
+            {sweepResult && (
+              <div style={{ marginTop:12, padding:'10px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)' }}>
+                {sweepResult.error ? (
+                  <p style={{ color:'rgba(248,113,113,0.8)', fontSize:11, fontFamily:'monospace' }}>Error: {sweepResult.error}</p>
+                ) : (
+                  Object.entries(sweepResult.results || {}).map(([k, v]) => (
+                    <p key={k} style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'monospace', marginBottom:2 }}><span style={{ color:'var(--text-secondary)' }}>{k}</span> — {v}</p>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* ── Supabase Health ── */}
+          <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px' }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Supabase Health</p>
+              <button onClick={() => { setHealthLoading(true); fetch('/api/supabase-health').then(r=>r.json()).then(d=>{setHealth(d);setHealthLoading(false)}).catch(()=>setHealthLoading(false)) }}
+                style={{ background:'none', border:'none', color:'var(--text-muted)', cursor:'pointer', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>↻ Refresh</button>
+            </div>
+            {healthLoading ? (
+              <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'16px 0' }}>Loading…</p>
+            ) : health?.error ? (
+              <p style={{ color:'rgba(248,113,113,0.7)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>{health.error}</p>
+            ) : health ? (
+              <>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:14 }}>
+                  {Object.entries(health.counts || {}).map(([table, count]) => (
+                    <div key={table} style={{ background:'var(--stat-bg)', borderRadius:8, padding:'10px 12px' }}>
+                      <p style={{ color:'var(--text-faint)', fontSize:9, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{table.replace(/_/g,' ')}</p>
+                      <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{count ?? '—'}</p>
+                    </div>
+                  ))}
+                </div>
+                {health.errors?.length > 0 && (
+                  <div style={{ marginTop:8 }}>
+                    <p style={{ color:'rgba(248,113,113,0.6)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Recent Errors</p>
+                    {health.errors.slice(0,5).map((e, i) => (
+                      <div key={i} style={{ background:'rgba(248,113,113,0.05)', border:'1px solid rgba(248,113,113,0.15)', borderRadius:8, padding:'8px 10px', marginBottom:6 }}>
+                        <p style={{ color:'rgba(248,113,113,0.8)', fontSize:11, fontFamily:'monospace', lineHeight:1.4 }}>{typeof e === 'string' ? e : JSON.stringify(e)}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : null}
+          </div>
+
+          {/* ── Netlify Deploy Status ── */}
+          <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 16px' }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Netlify Deploys</p>
+              <button onClick={() => { setDeploysLoad(true); fetch('/api/deploy-status').then(r=>r.json()).then(d=>{setDeploys(d);setDeploysLoad(false)}).catch(()=>setDeploysLoad(false)) }}
+                style={{ background:'none', border:'none', color:'var(--text-muted)', cursor:'pointer', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>↻ Refresh</button>
+            </div>
+            {deploysLoad ? (
+              <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'16px 0' }}>Loading…</p>
+            ) : deploys?.error ? (
+              <div>
+                <p style={{ color:'rgba(248,113,113,0.7)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.5, marginBottom:8 }}>{deploys.error}</p>
+                <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.5 }}>In Netlify: Site settings → Environment variables → Add <span style={{ fontFamily:'monospace', color:'var(--text-muted)' }}>NETLIFY_TOKEN</span> and <span style={{ fontFamily:'monospace', color:'var(--text-muted)' }}>NETLIFY_SITE_ID</span></p>
+              </div>
+            ) : deploys ? (
+              <>
+                {deploys.buildMinutes && (
+                  <div style={{ marginBottom:14, padding:'12px 14px', background:'var(--stat-bg)', borderRadius:10 }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Build Minutes This Month</p>
+                    <div style={{ display:'flex', alignItems:'baseline', gap:6, marginBottom:8 }}>
+                      <p style={{ color:'var(--text-primary)', fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{deploys.buildMinutes.used ?? '—'}</p>
+                      <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>/ {deploys.buildMinutes.included} min</p>
+                    </div>
+                    <div style={{ height:4, borderRadius:2, background:'var(--bg-card)', overflow:'hidden' }}>
+                      <div style={{ height:'100%', borderRadius:2, width: `${Math.min(100, ((deploys.buildMinutes.used||0)/deploys.buildMinutes.included)*100)}%`, background: (deploys.buildMinutes.used||0) > deploys.buildMinutes.included*0.8 ? '#f87171' : '#4ade80', transition:'width 0.5s ease' }} />
+                    </div>
+                    <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>{Math.max(0, deploys.buildMinutes.included - (deploys.buildMinutes.used||0))} min remaining</p>
+                  </div>
+                )}
+                <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                  {(deploys.deploys || []).map(d => {
+                    const stateColor = d.state === 'ready' ? '#4ade80' : d.state === 'building' ? '#fbbf24' : d.state === 'error' ? '#f87171' : 'var(--text-muted)'
+                    const ago = (() => { const diff = Math.floor((Date.now() - new Date(d.createdAt).getTime())/1000); if(diff<60) return diff+'s ago'; if(diff<3600) return Math.floor(diff/60)+'m ago'; if(diff<86400) return Math.floor(diff/3600)+'h ago'; return Math.floor(diff/86400)+'d ago'; })()
+                    return (
+                      <div key={d.id} style={{ background:'var(--stat-bg)', borderRadius:9, padding:'10px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:10 }}>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.title}</p>
+                          <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{d.branch} · {ago}{d.buildTime ? ' · '+d.buildTime+'s' : ''}</p>
+                          {d.error && <p style={{ color:'rgba(248,113,113,0.7)', fontSize:10, fontFamily:'monospace', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.error}</p>}
+                        </div>
+                        <span style={{ color:stateColor, fontSize:9, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{d.state}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            ) : null}
+          </div>
+
         </>)}
 
         <p style={{ color: 'var(--text-faint)', fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', marginTop: 8 }}>
