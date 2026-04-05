@@ -139,6 +139,21 @@ const DB = {
       { name: 'Snatch-Grip Shrug',   eq: 'Barbell',   sets: '3 × 10',   yt: 'snatch grip shrug upper trap tutorial' },
     ],
   },
+  upper_back: {
+    label: 'Upper Back', scientific: 'Rhomboids · Infraspinatus · Teres Major',
+    color: '#22d3ee', intensity: 3,
+    desc: 'The rhomboids retract and downwardly rotate the scapula — the direct antagonist to tight, overdeveloped pecs. The infraspinatus and teres major externally rotate the shoulder and protect the rotator cuff under heavy pressing loads. Neglecting this region causes rounded shoulders and eventual impingement.',
+    exercises: [
+      { name: 'Seated Cable Row',      eq: 'Cable',      sets: '4 × 10',       yt: 'seated cable row upper back form tutorial' },
+      { name: 'Chest-Supported Row',   eq: 'Dumbbells',  sets: '4 × 12',       yt: 'chest supported row rhomboid tutorial' },
+      { name: 'Band Pull-Apart',       eq: 'Band',       sets: '4 × 20',       yt: 'band pull apart upper back posture tutorial' },
+      { name: 'Prone Y-T-W',          eq: 'Bodyweight', sets: '3 × 12',       yt: 'prone YTW scapular exercise tutorial' },
+      { name: 'High-Elbow Row',        eq: 'Barbell',    sets: '4 × 10',       yt: 'high elbow row rhomboid rear delt tutorial' },
+      { name: 'Inverted Row',          eq: 'Bodyweight', sets: '3 × failure',  yt: 'inverted row upper back form tutorial' },
+      { name: 'Rear Delt Row',         eq: 'Dumbbells',  sets: '3 × 15',       yt: 'rear delt row rhomboid form tutorial' },
+      { name: 'Scapular Pull-Up',      eq: 'Pull-up Bar',sets: '3 × 10',       yt: 'scapular pull up upper back activation tutorial' },
+    ],
+  },
   lats: {
     label: 'Lats', scientific: 'Latissimus Dorsi',
     color: '#b4bccc', intensity: 4,
@@ -217,7 +232,7 @@ const DB = {
 }
 
 const FRONT_ZONES = ['chest','shoulders','biceps','forearms','core','obliques','quads','calves']
-const BACK_ZONES  = ['traps','lats','triceps','lower_back','glutes','hamstrings','calves']
+const BACK_ZONES  = ['traps','upper_back','lats','triceps','lower_back','glutes','hamstrings','calves']
 
 // Zone SVG shape data
 const FRONT_ZONE_SHAPES = {
@@ -263,6 +278,9 @@ const BACK_ZONE_SHAPES = {
   traps:      [
     { d:'M82 84 Q96 76 110 70 L120 72 L130 70 Q144 76 158 84 Q142 90 120 91 Q98 90 82 84 Z' },
   ],
+  upper_back: [
+    { d:'M86 92 Q70 104 66 126 Q64 146 70 160 Q84 166 100 163 Q110 161 120 161 Q130 161 140 163 Q156 166 170 160 Q176 146 174 126 Q170 104 154 92 Q138 86 120 88 Q102 86 86 92 Z' },
+  ],
   lats:       [
     { d:'M64 104 Q54 120 52 144 Q50 166 56 182 Q64 194 74 200 Q78 204 76 212 L72 212 Q64 200 58 182 Q52 160 54 136 Q56 114 64 104 Z' },
     { d:'M176 104 Q186 120 188 144 Q190 166 184 182 Q176 194 166 200 Q162 204 164 212 L168 212 Q176 200 182 182 Q188 160 186 136 Q184 114 176 104 Z' },
@@ -301,6 +319,7 @@ const FRONT_LABELS = [
 
 const BACK_LABELS = [
   { id:'traps',      x:238, y:83,  a:'end',   sci:'Trapezius'         },
+  { id:'upper_back', x:2,   y:115, a:'start', sci:'Rhomboids'         },
   { id:'lats',       x:238, y:145, a:'end',   sci:'Latissimus Dorsi'  },
   { id:'triceps',    x:2,   y:125, a:'start', sci:'Triceps Brachii'   },
   { id:'lower_back', x:2,   y:181, a:'start', sci:'Erector Spinae'    },
