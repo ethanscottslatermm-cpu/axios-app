@@ -239,7 +239,7 @@ export default function WaterTracker() {
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
-        <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${WATER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.11, pointerEvents:'none', filter:'grayscale(100%)' }} />
+        <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${WATER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 25%', opacity:0.17, filter:'grayscale(100%) contrast(1.3) brightness(1.1)'', backgroundRepeat:'no-repeat', opacity:0.11, pointerEvents:'none', filter:'grayscale(100%)' }} />
         <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.2) 40%, rgba(8,8,8,0.88) 100%)', pointerEvents:'none' }} />
 
         {/* ── Sticky Header ── */}

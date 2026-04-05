@@ -273,7 +273,7 @@ export default function Settings() {
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
-        <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${SETTINGS_IMG})`, backgroundSize:'cover', backgroundPosition:'center 25%', backgroundRepeat:'no-repeat', opacity:0.09, pointerEvents:'none', filter:'grayscale(100%)' }} />
+        <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${SETTINGS_IMG})`, backgroundSize:'cover', backgroundPosition:'center 20%', opacity:0.17, filter:'grayscale(100%) contrast(1.3) brightness(1.1)', backgroundRepeat:'no-repeat', opacity:0.09, pointerEvents:'none', filter:'grayscale(100%)' }} />
         <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.6) 0%, rgba(8,8,8,0.2) 40%, rgba(8,8,8,0.9) 100%)', pointerEvents:'none' }} />
 
         {/* Header */}

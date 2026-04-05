@@ -568,11 +568,11 @@ export default function FitnessTracker() {
         <div style={{
           position:'fixed', inset:0, zIndex:0,
           backgroundImage:`url(${GYM_IMG})`,
-          backgroundSize:'cover', backgroundPosition:'center 30%',
+          backgroundSize:'cover', backgroundPosition:'center 25%',
           backgroundRepeat:'no-repeat',
-          opacity:0.13,
+          opacity:0.2,
           pointerEvents:'none',
-          filter:'grayscale(100%)',
+          filter:'grayscale(100%) contrast(1.3) brightness(1.1)',
         }} />
         {/* Dark gradient overlay so content stays readable */}
         <div style={{

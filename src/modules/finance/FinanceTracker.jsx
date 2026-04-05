@@ -286,7 +286,7 @@ export default function FinanceTracker() {
 
   return (
     <>
-      <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:'url(' + FINANCE_IMG + ')', backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.08, pointerEvents:'none', filter:'grayscale(100%)' }} />
+      <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:'url(' + FINANCE_IMG + ')', backgroundSize:'cover', backgroundPosition:'center 20%', opacity:0.17, filter:'grayscale(100%) contrast(1.3) brightness(1.1)', backgroundRepeat:'no-repeat', opacity:0.08, pointerEvents:'none', filter:'grayscale(100%)' }} />
       <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.6) 0%, rgba(8,8,8,0.25) 40%, rgba(8,8,8,0.92) 100%)', pointerEvents:'none' }} />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@1&display=swap');
