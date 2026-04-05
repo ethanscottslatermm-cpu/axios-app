@@ -424,7 +424,7 @@ export default function FinanceTracker() {
         <div style={{ ...anim(0), display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
           <div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <h1 style={{ color:'#4ade80', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
+              <h1 style={{ color:'#4ade80', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Stocks</h1>
               <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 10v4M18 10v4"/></svg>
             </div>
             <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
@@ -436,7 +436,7 @@ export default function FinanceTracker() {
 
         {/* Tabs */}
         <div style={{ ...anim(40), display:'flex', gap:8, marginBottom:20 }}>
-          {[['markets','Markets'],['bank','Bank'],['bills','Bills'],['crypto','Crypto']].map(([key, label]) => (
+          {[['markets','Stocks'],['crypto','Crypto'],['bank','Bank'],['bills','Bills']].map(([key, label]) => (
             <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
               flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(74,222,128,0.5)' : 'var(--border)'}`,
               background: activeTab===key ? 'rgba(74,222,128,0.12)' : 'transparent',
@@ -509,10 +509,20 @@ export default function FinanceTracker() {
                 {Ico.plus()} Add symbol
               </button>
             )}
+
+            {/* Market News */}
+            <div style={{ marginTop:8 }}>
+              <SectionHead title="Market News" sub="General" />
+              {newsLoading ? (
+                <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic', textAlign:'center', padding:'32px 0' }}>Loading news…</p>
+              ) : (
+                <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                  {news.map((item, i) => <NewsCard key={i} item={item} />)}
+                </div>
+              )}
+            </div>
           </div>
         )}
-
-        {/* News Tab */}
 
         {/* Bank Tab */}
         {activeTab === 'bank' && (
