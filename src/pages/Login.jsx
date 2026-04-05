@@ -232,7 +232,7 @@ export default function Login() {
   return (
     <>
       <style>{styles}</style>
-      <div style={{ minHeight: '100dvh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ minHeight: '100dvh', background: '#000', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', overflowY: 'auto', overflowX: 'hidden', position: 'relative' }}>
 
         {/* Hero — fills screen, anchored to show chest/abs on all devices */}
         <div style={{
@@ -335,7 +335,7 @@ export default function Login() {
               position: 'fixed', inset: 0, zIndex: 10,
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'flex-end',
-              paddingBottom: '28vh',
+              paddingBottom: 'clamp(16vh, 28vh, 32vh)',
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
               userSelect: 'none',
@@ -369,13 +369,15 @@ export default function Login() {
             position: 'relative', zIndex: 10,
             display: 'flex', flexDirection: 'column', alignItems: 'center',
             width: '100%', maxWidth: '420px',
-            padding: '2rem 1.25rem',
+            padding: 'clamp(1rem, 4vh, 2rem) 1.25rem clamp(1rem, 4vh, 2rem)',
             margin: '0 auto',
+            minHeight: '100dvh',
+            justifyContent: 'center',
             animation: 'secureReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards',
           }}>
 
             {/* Brand */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem', position: 'relative' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'clamp(0.75rem, 2.5vh, 1.5rem)', position: 'relative' }}>
               <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '280px', height: '130px', background: 'radial-gradient(ellipse at center, rgba(200,200,220,0.14) 0%, rgba(200,200,220,0.06) 50%, transparent 72%)', borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                 <svg width="38" height="32" viewBox="0 0 46 38" fill="none">
@@ -398,7 +400,7 @@ export default function Login() {
             </div>
 
             {/* Animated word */}
-            <div style={{ textAlign: 'center', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(1rem, 2.5vh, 2rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
               <p style={{ color: 'rgba(200,200,220,0.55)', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif', margin: 0 }}>Est. 1989</p>
               <div style={{ overflow: 'hidden', height: '2.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <p key={wordIndex} className={phase === 'in' ? 'word-in' : 'word-out'} style={{ color: 'rgba(212,212,232,0.88)', fontSize: 'clamp(1.1rem, 4.5vw, 1.35rem)', fontFamily: '"EB Garamond", Georgia, serif', fontStyle: 'italic', letterSpacing: '0.09em', margin: 0, textShadow: '0 2px 20px rgba(200,200,220,0.28)' }}>

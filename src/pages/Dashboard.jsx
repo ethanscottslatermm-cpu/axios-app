@@ -106,22 +106,22 @@ export function BottomNav() {
       background:'var(--header-bg)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
       borderTop:'1px solid var(--border)',
       display:'flex', alignItems:'center', justifyContent:'space-around',
-      padding:'10px 0 max(12px,env(safe-area-inset-bottom))',
+      padding:'8px 4px max(10px,env(safe-area-inset-bottom))',
     }}>
       {items.map(({ label, path, icon, color }) => {
         const active = loc.pathname === path
         return (
           <button key={path} onClick={() => navigate(path)} style={{
-            display:'flex', flexDirection:'column', alignItems:'center', gap:4,
+            display:'flex', flexDirection:'column', alignItems:'center', gap:3,
             background:'none', border:'none', cursor:'pointer',
             opacity: active ? 1 : 0.45,
             transition:'opacity 0.2s',
-            minWidth:52, padding:'2px 0',
+            flex:1, minWidth:0, padding:'2px 1px',
           }}>
             <div style={{ color, filter: active ? `drop-shadow(0 0 6px ${color}bb)` : 'none', transition:'filter 0.2s' }}>
-              {icon(22)}
+              {icon(20)}
             </div>
-            <span style={{ color, fontSize:9, letterSpacing:'0.08em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400 }}>{label}</span>
+            <span style={{ color, fontSize:'clamp(7px,2vw,9px)', letterSpacing:'0.06em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400 }}>{label}</span>
           </button>
         )
       })}
