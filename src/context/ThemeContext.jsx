@@ -318,7 +318,7 @@ export function ThemeProvider({ children }) {
   const { user } = useAuth()
   const [themeKey, setThemeKey] = useState(() => {
     const saved = localStorage.getItem('axios-theme')
-    return (saved && THEMES[saved]) ? saved : 'axios'
+    return (saved && THEMES[saved]) ? saved : 'axis_organic'
   })
   const [loading,  setLoading]  = useState(true)
 
