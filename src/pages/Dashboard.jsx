@@ -91,14 +91,14 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#d8d8e8' },
-    { label:'Food',      path:'/food',       icon: Ico.food,    color: '#c8d4c8' },
-    { label:'Water',     path:'/water',      icon: Ico.water,   color: '#9ab4cc' },
-    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#b4bccc' },
-    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#c8a000' },
-    { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#a8b4c0' },
-    { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#b4c4b0' },
-    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#7a7a8a' },
+    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#c8c8d8', activeColor: '#d8d8f0' },
+    { label:'Food',      path:'/food',       icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
+    { label:'Water',     path:'/water',      icon: Ico.water,   color: '#9ab4cc', activeColor: '#38bdf8' },
+    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
+    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
+    { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#a8b4c0', activeColor: '#f472b6' },
+    { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
+    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#7a7a8a', activeColor: '#a0a0b8' },
   ]
   return (
     <nav style={{
@@ -108,8 +108,9 @@ export function BottomNav() {
       display:'flex', alignItems:'center', justifyContent:'space-around',
       padding:'8px 4px max(10px,env(safe-area-inset-bottom))',
     }}>
-      {items.map(({ label, path, icon, color }) => {
+      {items.map(({ label, path, icon, color, activeColor }) => {
         const active = loc.pathname === path
+        const c = active ? activeColor : color
         return (
           <button key={path} onClick={() => navigate(path)} style={{
             display:'flex', flexDirection:'column', alignItems:'center', gap:3,
@@ -118,10 +119,10 @@ export function BottomNav() {
             transition:'opacity 0.2s',
             flex:1, minWidth:0, padding:'2px 1px',
           }}>
-            <div style={{ color, filter: active ? `drop-shadow(0 0 6px ${color}bb)` : 'none', transition:'filter 0.2s' }}>
+            <div style={{ color: c, filter: active ? `drop-shadow(0 0 6px ${activeColor}99)` : 'none', transition:'color 0.2s, filter 0.2s' }}>
               {icon(20)}
             </div>
-            <span style={{ color, fontSize:'clamp(7px,2vw,9px)', letterSpacing:'0.06em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400 }}>{label}</span>
+            <span style={{ color: c, fontSize:'clamp(7px,2vw,9px)', letterSpacing:'0.06em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, transition:'color 0.2s' }}>{label}</span>
           </button>
         )
       })}
