@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
@@ -255,7 +255,7 @@ function BibleReader({ onClose }) {
   const [verses,       setVerses]       = useState([])
   const [loading,      setLoading]      = useState(false)
   const [view,         setView]         = useState('read') // 'books' | 'chapters' | 'read'
-  const verseListRef = useState(null)
+  const bodyRef = useRef(null)
 
   const visibleBooks = BOOKS.filter(b => b.t === testament)
 
@@ -271,6 +271,11 @@ function BibleReader({ onClose }) {
       })
       .catch(() => setLoading(false))
   }, [book, chapter, view])
+
+  // Reset scroll position whenever the view changes
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = 0
+  }, [view])
 
   const goBack = () => {
     if (view === 'read') setView('chapters')
@@ -324,7 +329,7 @@ function BibleReader({ onClose }) {
       </div>
 
       {/* Body */}
-      <div style={{ flex:1, minHeight:0, overflowY:'auto', padding:'16px', paddingBottom:'max(80px, env(safe-area-inset-bottom))' }}>
+      <div ref={bodyRef} style={{ flex:1, minHeight:0, overflowY:'scroll', WebkitOverflowScrolling:'touch', padding:'16px', paddingBottom:'max(32px, env(safe-area-inset-bottom))' }}>
 
         {/* Book list */}
         {view === 'books' && (
