@@ -331,7 +331,7 @@ const BACK_LABELS = [
 // ─── Base Body SVGs ───────────────────────────────────────────────────────────
 function FrontBase() {
   return (
-    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', filter:'drop-shadow(0 0 7px rgba(255,255,255,0.22)) drop-shadow(0 0 2px rgba(255,255,255,0.38))' }}>
       <defs>
         <radialGradient id="fg-rg1" cx="50%" cy="35%" r="60%">
           <stop offset="0%"   stopColor="#2c2640"/>
@@ -723,7 +723,7 @@ function VeinOverlay({ view }) {
 
 function BackBase() {
   return (
-    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', filter:'drop-shadow(0 0 7px rgba(255,255,255,0.22)) drop-shadow(0 0 2px rgba(255,255,255,0.38))' }}>
       <defs>
         <radialGradient id="bg-rg1" cx="50%" cy="35%" r="60%">
           <stop offset="0%"   stopColor="#2c2640"/>
@@ -1032,7 +1032,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
           )}
           <div style={{ flex:1 }}>
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>AXIOS FITNESS</p>
-            <h2 style={{ color:accent, fontWeight:900, fontSize:18, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Workout Guide</h2>
+            <h2 style={{ color:'var(--btn-bg)', fontWeight:900, fontSize:18, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Workout Guide</h2>
           </div>
         </div>
         {/* Front / Back toggle */}

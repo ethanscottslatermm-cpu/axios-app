@@ -639,15 +639,15 @@ export default function FitnessTracker() {
                     padding:'10px',
                     borderRadius:10,
                     border: isActive
-                      ? `1px solid ${isGuide ? 'rgba(180,188,204,0.65)' : 'rgba(180,188,204,0.5)'}`
+                      ? '1px solid rgba(248,113,113,0.55)'
                       : `1px solid ${isGuide ? 'rgba(180,188,204,0.3)' : 'rgba(212,212,232,0.08)'}`,
                     background: isActive
-                      ? (isGuide ? 'rgba(180,188,204,0.18)' : 'rgba(180,188,204,0.15)')
+                      ? 'rgba(248,113,113,0.12)'
                       : (isGuide ? 'rgba(180,188,204,0.06)' : 'rgba(212,212,232,0.03)'),
                     color: isActive
-                      ? (isGuide ? '#d4d4e8' : '#b4bccc')
+                      ? '#f87171'
                       : (isGuide ? 'rgba(180,188,204,0.7)' : 'rgba(212,212,232,0.35)'),
-                    boxShadow: isActive && isGuide ? '0 0 12px rgba(180,188,204,0.15)' : 'none',
+                    boxShadow: isActive ? '0 0 12px rgba(248,113,113,0.18)' : 'none',
                     fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
                     fontWeight: isActive ? 700 : (isGuide ? 600 : 400),
                     cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
