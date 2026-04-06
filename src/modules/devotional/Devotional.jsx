@@ -364,11 +364,11 @@ function BibleReader({ onClose }) {
                 <p style={{ color:'rgba(212,212,232,0.2)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Loading chapter…</p>
               </div>
             ) : (
-              <div style={{ paddingBottom:24 }}>
+              <div style={{ background:'rgba(255,250,240,0.05)', border:'1px solid rgba(255,246,228,0.09)', borderRadius:14, padding:'20px 16px 24px', marginTop:4 }}>
                 {verses.map(v => (
                   <div key={v.verse} style={{ display:'flex', gap:10, marginBottom:14 }}>
-                    <span style={{ color:'rgba(185,28,28,0.55)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, minWidth:20, paddingTop:3, flexShrink:0 }}>{v.verse}</span>
-                    <p style={{ color:'rgba(212,212,232,0.82)', fontSize:17, fontFamily:"'EB Garamond',serif", lineHeight:1.85, letterSpacing:'0.01em' }}>{v.text.trim()}</p>
+                    <span style={{ color:'rgba(220,80,80,0.55)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, minWidth:20, paddingTop:3, flexShrink:0 }}>{v.verse}</span>
+                    <p style={{ color:'rgba(242,235,218,0.88)', fontSize:17, fontFamily:"'EB Garamond',serif", lineHeight:1.85, letterSpacing:'0.01em' }}>{v.text.trim()}</p>
                   </div>
                 ))}
               </div>
@@ -584,7 +584,7 @@ export default function Devotional() {
             <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid rgba(212,212,232,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <p style={{ color:'rgba(185,28,28,0.75)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.14em', fontWeight:600 }}>KJV · DAILY VERSE</p>
               <button onClick={() => setShowBible(true)}
-                style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:8, background:'rgba(168,180,192,0.1)', border:'1px solid rgba(168,180,192,0.3)', color:'#a8b4c0', cursor:'pointer', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s' }}>
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:8, background:'rgba(244,114,182,0.12)', border:'1px solid rgba(244,114,182,0.4)', color:'#f472b6', cursor:'pointer', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', transition:'all 0.2s', boxShadow:'0 0 14px rgba(244,114,182,0.25)' }}>
                 {Ico.book(12)} Read Bible
               </button>
             </div>
