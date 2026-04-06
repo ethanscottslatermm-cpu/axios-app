@@ -27,10 +27,10 @@ const WATER_BLUE = '#9ab4cc'
 function GlowBar({ pct, h=5 }) {
   const full  = pct >= 100
   const color = full ? WATER_BLUE : 'var(--btn-bg)'
-  const glow  = full ? 'rgba(154,180,204,0.55)' : 'rgba(212,212,232,0.5)'
+  const glow  = full ? 'rgba(154,180,204,0.7)' : 'rgba(154,180,204,0.45)'
   return (
-    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(212,212,232,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:color, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1), background 0.5s', boxShadow:`0 0 10px ${glow}` }} />
+    <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(154,180,204,0.1)', overflow:'hidden', boxShadow:'inset 0 0 6px rgba(56,139,220,0.08)' }}>
+      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:`linear-gradient(to right, ${WATER_BLUE}, #38bdf8)`, borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:`0 0 14px ${glow}` }} />
     </div>
   )
 }
@@ -228,8 +228,8 @@ export default function WaterTracker() {
         input::placeholder{color:rgba(212,212,232,0.2);}
         input:focus{outline:none;}
         .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
-        .ax-quick:hover{background:rgba(212,212,232,0.08)!important;border-color:rgba(212,212,232,0.2)!important;}
-        .ax-custom:hover{border-color:rgba(212,212,232,0.22)!important;color:rgba(212,212,232,0.6)!important;}
+        .ax-quick:hover{background:rgba(154,180,204,0.12)!important;border-color:rgba(154,180,204,0.38)!important;box-shadow:0 0 12px rgba(154,180,204,0.12)!important;}
+        .ax-custom:hover{border-color:rgba(154,180,204,0.38)!important;color:rgba(154,180,204,0.75)!important;}
 
         @keyframes ripple {
           0%   { transform: scale(0.8); opacity: 1; }
@@ -241,9 +241,10 @@ export default function WaterTracker() {
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
         <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${WATER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 25%', backgroundRepeat:'no-repeat', opacity:0.17, filter:'grayscale(100%) contrast(1.3) brightness(1.1)', pointerEvents:'none' }} />
         <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.2) 40%, rgba(8,8,8,0.88) 100%)', pointerEvents:'none' }} />
+        <div style={{ position:'fixed', inset:0, zIndex:0, background:'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(56,139,220,0.07) 0%, transparent 70%)', pointerEvents:'none' }} />
 
         {/* ── Sticky Header ── */}
-        <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px 14px' }}>
+        <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid rgba(154,180,204,0.25)', boxShadow:'0 1px 20px rgba(56,139,220,0.08)', padding:'14px 16px 14px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
               style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
@@ -252,7 +253,7 @@ export default function WaterTracker() {
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#9ab4cc', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Water Intake</h1>
+                <h1 style={{ color:'#9ab4cc', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', textShadow:'0 0 20px rgba(154,180,204,0.5)' }}>Water Intake</h1>
                 <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9ab4cc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M9 2h6"/><path d="M7.5 5h9l.5 2V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V7l.5-2z"/><path d="M7.5 11h9"/></svg>
               </div>
             </div>
@@ -307,7 +308,7 @@ export default function WaterTracker() {
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               {quickSizes.map(({ label, sub, oz, icon }) => (
                 <button key={oz} onClick={() => handleAddGlass(oz)} className="ax-quick"
-                  style={{ padding:'16px', borderRadius:12, background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', cursor:'pointer', textAlign:'left', transition:'all 0.18s', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  style={{ padding:'16px', borderRadius:12, background:'var(--bg-card)', border:'1px solid rgba(154,180,204,0.18)', boxShadow:'var(--card-shadow)', cursor:'pointer', textAlign:'left', transition:'all 0.18s', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <div>
                     <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{label}</p>
                     <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
@@ -330,9 +331,9 @@ export default function WaterTracker() {
                 {[...(logs||[])].reverse().map((log, i) => {
                   const time = log.created_at ? new Date(log.created_at).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) : ''
                   return (
-                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'11px 12px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, opacity: visible?1:0, transform: visible?'translateX(0)':'translateX(-8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
+                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'11px 12px', background:'var(--bg-card)', border:'1px solid var(--border)', borderLeft:'2px solid rgba(154,180,204,0.4)', boxShadow:'var(--card-shadow)', borderRadius:10, opacity: visible?1:0, transform: visible?'translateX(0)':'translateX(-8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
                       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                        <div style={{ color:'var(--text-muted)' }}>{Ico.drop(14)}</div>
+                        <div style={{ color:WATER_BLUE }}>{Ico.drop(14)}</div>
                         <div>
                           <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>
                             1 glass
