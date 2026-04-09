@@ -18,6 +18,7 @@ import FitnessTracker from './modules/fitness/FitnessTracker'
 import PrayerTracker  from './modules/prayer/PrayerTracker'
 import Devotional     from './modules/devotional/Devotional'
 import FinanceTracker from './modules/finance/FinanceTracker'
+import CalendarModule from './modules/calendar/CalendarModule'
 import Admin       from './pages/Admin'
 import AdminGuard   from './components/AdminGuard'
 import FinanceGuard from './components/FinanceGuard'
@@ -72,6 +73,9 @@ export default function App() {
                 } />
                 <Route path="/finance" element={
                   <ProtectedRoute><OnboardingRoute><FinanceGuard><FinanceTracker /></FinanceGuard></OnboardingRoute></ProtectedRoute>
+                } />
+                <Route path="/calendar" element={
+                  <ProtectedRoute><OnboardingRoute><CalendarModule /></OnboardingRoute></ProtectedRoute>
                 } />
                 <Route path="/admin" element={
                   <ProtectedRoute><AdminGuard><Admin /></AdminGuard></ProtectedRoute>

@@ -220,3 +220,24 @@ create policy "Only admins can modify app_settings"
   on app_settings for all using (
     exists (select 1 from profiles where id = auth.uid() and role = 'admin')
   );
+
+-- ─────────────────────────────────────────
+-- CALENDAR EVENTS
+-- ─────────────────────────────────────────
+create table if not exists calendar_events (
+  id             uuid primary key default uuid_generate_v4(),
+  user_id        uuid references auth.users(id) on delete cascade not null,
+  title          text not null,
+  date           date not null,
+  time           time,
+  type           text check (type in ('general','workout','prayer','meal','finance')) default 'general',
+  notes          text,
+  recurring      text check (recurring in ('none','daily','weekly')) default 'none',
+  email_reminder boolean default false,
+  reminder_sent  boolean default false,
+  created_at     timestamptz default now()
+);
+alter table calendar_events enable row level security;
+create policy "Users manage own calendar events"
+  on calendar_events for all using (auth.uid() = user_id);
+create index if not exists idx_calendar_events_user_date on calendar_events(user_id, date);
