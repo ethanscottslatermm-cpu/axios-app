@@ -843,6 +843,17 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
+        {/* White text glow */}
+        <filter id="label-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+          <feFlood floodColor="#ffffff" floodOpacity="1" result="white"/>
+          <feComposite in="white" in2="blur" operator="in" result="whiteBlur"/>
+          <feMerge>
+            <feMergeNode in="whiteBlur"/>
+            <feMergeNode in="whiteBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
       <style>{`
         @keyframes muscleGlow {
@@ -887,12 +898,13 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
         const sel   = selected === l.id || hovered === l.id
         return (
           <text key={l.id} x={l.x} y={l.y}
-            fill={sel ? color : 'rgba(212,212,232,0.32)'}
+            fill="#ffffff"
             fontSize="7.5"
             fontFamily="Helvetica Neue,Arial,sans-serif"
             fontWeight={sel ? '700' : '500'}
             textAnchor={l.a}
-            style={{ pointerEvents:'none', transition:'fill 0.18s', letterSpacing:'0.04em' }}>
+            filter="url(#label-glow)"
+            style={{ pointerEvents:'none', transition:'fill 0.18s, opacity 0.18s', letterSpacing:'0.04em', opacity: sel ? 1 : 0.55 }}>
             {DB[l.id]?.label || l.id}
             {l.sci && (
               <tspan
@@ -901,7 +913,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
                 fontSize="5.8"
                 fontWeight="400"
                 letterSpacing="0.06em"
-                fill={sel ? color : 'rgba(212,212,232,0.18)'}
+                fill="#ffffff"
                 style={{ fontStyle:'italic' }}>
                 {l.sci}
               </tspan>
@@ -1068,7 +1080,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
         </div>
 
         {!selected && (
-          <p style={{ textAlign:'center', color:'rgba(212,212,232,0.2)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:14 }}>
+          <p style={{ textAlign:'center', color:'#ffffff', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', marginBottom:14, opacity:0.55, textShadow:'0 0 8px rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.5)' }}>
             Tap a muscle group to see exercises
           </p>
         )}
