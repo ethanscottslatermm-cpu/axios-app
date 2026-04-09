@@ -255,6 +255,41 @@ export default function Dashboard() {
             ))}
           </div>
 
+          {/* Calendar */}
+          <Card style={anim(130)}>
+            <SectionHead title="Upcoming" action={() => navigate('/calendar')} actionLabel="Open Calendar →" color="#c8853a" />
+            {upcomingEvents.length === 0 ? (
+              <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', textAlign:'center', padding:'10px 0 4px' }}>
+                No upcoming events
+              </p>
+            ) : (
+              <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
+                {upcomingEvents.map(ev => {
+                  const typeColors = { general:'#c8853a', workout:'#dc4f3a', prayer:'#9b7ad4', meal:'#c8853a', finance:'#4db891' }
+                  const color = typeColors[ev.type] || '#c8853a'
+                  const isToday = ev.date === todayStr
+                  const dateLabel = isToday ? 'Today' : new Date(ev.date + 'T12:00:00').toLocaleDateString([], { month:'short', day:'numeric' })
+                  const timeLabel = ev.time ? new Date(`2000-01-01T${ev.time}`).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : null
+                  return (
+                    <div key={ev.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 12px', background:'var(--stat-bg)', border:`1px solid ${color}22`, borderRadius:9 }}>
+                      <span style={{ width:7, height:7, borderRadius:'50%', background:color, boxShadow:`0 0 5px ${color}88`, flexShrink:0, display:'inline-block' }}/>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{ev.title}</p>
+                        <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:'1px 0 0' }}>{dateLabel}{timeLabel ? ' · ' + timeLabel : ''}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+            <button
+              onClick={() => navigate('/calendar')}
+              style={{ width:'100%', marginTop:12, padding:'10px', borderRadius:8, background:'transparent', border:'1px solid #c8853a44', color:'#c8853a99', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor='#c8853a';e.currentTarget.style.color='#c8853a'}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor='#c8853a44';e.currentTarget.style.color='#c8853a99'}}
+            >+ Schedule Event</button>
+          </Card>
+
           {/* Modules */}
           <Card style={anim(160)}>
             <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} />
@@ -354,41 +389,6 @@ export default function Dashboard() {
             >
               + Log a prayer
             </button>
-          </Card>
-
-          {/* Calendar */}
-          <Card style={anim(460)}>
-            <SectionHead title="Upcoming" action={() => navigate('/calendar')} actionLabel="Open Calendar →" color="#c8853a" />
-            {upcomingEvents.length === 0 ? (
-              <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', textAlign:'center', padding:'10px 0 4px' }}>
-                No upcoming events
-              </p>
-            ) : (
-              <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
-                {upcomingEvents.map(ev => {
-                  const typeColors = { general:'#c8853a', workout:'#dc4f3a', prayer:'#9b7ad4', meal:'#c8853a', finance:'#4db891' }
-                  const color = typeColors[ev.type] || '#c8853a'
-                  const isToday = ev.date === todayStr
-                  const dateLabel = isToday ? 'Today' : new Date(ev.date + 'T12:00:00').toLocaleDateString([], { month:'short', day:'numeric' })
-                  const timeLabel = ev.time ? new Date(`2000-01-01T${ev.time}`).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : null
-                  return (
-                    <div key={ev.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 12px', background:'var(--stat-bg)', border:`1px solid ${color}22`, borderRadius:9 }}>
-                      <span style={{ width:7, height:7, borderRadius:'50%', background:color, boxShadow:`0 0 5px ${color}88`, flexShrink:0, display:'inline-block' }}/>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{ev.title}</p>
-                        <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:'1px 0 0' }}>{dateLabel}{timeLabel ? ' · ' + timeLabel : ''}</p>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-            <button
-              onClick={() => navigate('/calendar')}
-              style={{ width:'100%', marginTop:12, padding:'10px', borderRadius:8, background:'transparent', border:'1px solid #c8853a44', color:'#c8853a99', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor='#c8853a';e.currentTarget.style.color='#c8853a'}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor='#c8853a44';e.currentTarget.style.color='#c8853a99'}}
-            >+ Schedule Event</button>
           </Card>
 
         </div>
