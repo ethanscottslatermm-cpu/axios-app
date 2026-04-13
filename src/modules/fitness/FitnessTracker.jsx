@@ -52,8 +52,32 @@ function ScaleDial({ weight, goal }) {
   const deg = val ? Math.max(-78, Math.min(78, ((val - mid) / 50) * 78)) : 0
   const toRad = a => a * Math.PI / 180
   const cx = 100, cy = 84, r = 62
+
+  // ── Color based on distance from goal ──────────────────────────────────────
+  // deg < 0 = under goal (green), 0–15 = close (amber), >15 = over (red)
+  const needleColor = !val ? '#c8cce0'
+    : deg <= 0  ? '#4ade80'
+    : deg <= 15 ? '#fbbf24'
+    :              '#f87171'
+  const needleGlow = !val ? 'rgba(200,204,224,0.5)'
+    : deg <= 0  ? 'rgba(74,222,128,0.6)'
+    : deg <= 15 ? 'rgba(251,191,36,0.6)'
+    :              'rgba(248,113,113,0.6)'
+
   const arcStart = { x: cx + r * Math.cos(toRad(215)), y: cy + r * Math.sin(toRad(215)) }
   const arcEnd   = { x: cx + r * Math.cos(toRad(325)), y: cy + r * Math.sin(toRad(325)) }
+
+  // ── Animated arc fill ──────────────────────────────────────────────────────
+  // Arc spans 215°→325° (110°). Needle center = 270°. Clamp needle to arc range.
+  const totalArc = r * (110 * Math.PI / 180)           // ≈ 119px
+  const clampedDeg = Math.max(-55, Math.min(55, deg))  // keep within arc bounds
+  const filledArc = ((55 + clampedDeg) / 110) * totalArc
+  const [arcOffset, setArcOffset] = useState(totalArc) // start fully hidden
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setArcOffset(totalArc - filledArc))
+    return () => cancelAnimationFrame(id)
+  }, [filledArc, totalArc])
+
   const ticks = Array.from({ length: 9 }, (_, i) => {
     const angle = toRad(215 + i * 13.75)
     const inner = i === 4 ? r - 14 : i % 2 === 0 ? r - 10 : r - 6
@@ -72,6 +96,8 @@ function ScaleDial({ weight, goal }) {
   })
   return (
     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', marginBottom:4 }}>
+      {/* Inject goal-tick pulse keyframes once */}
+      <style>{`@keyframes sdGoalPulse{0%,100%{opacity:0.72}50%{opacity:1}}`}</style>
       <div style={{
         position:'relative', width:'100%', maxWidth:250,
         background:'linear-gradient(170deg,rgba(22,20,34,0.96) 0%,rgba(10,8,16,0.99) 100%)',
@@ -91,28 +117,48 @@ function ScaleDial({ weight, goal }) {
               <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
+            <filter id="goal-tick-glow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
           </defs>
+
           {/* Arc track */}
           <path d={`M${arcStart.x},${arcStart.y} A${r},${r} 0 0,1 ${arcEnd.x},${arcEnd.y}`}
             fill="none" stroke="rgba(212,212,232,0.13)" strokeWidth="2"/>
-          {/* Active arc — up to needle */}
+
+          {/* Active arc — animates from 0 to needle position */}
           <path d={`M${arcStart.x},${arcStart.y} A${r},${r} 0 0,1 ${arcEnd.x},${arcEnd.y}`}
-            fill="none" stroke="rgba(180,188,204,0.22)" strokeWidth="1.5" strokeDasharray="200" />
+            fill="none" stroke={needleColor} strokeWidth="1.5" opacity="0.55"
+            strokeDasharray={totalArc}
+            strokeDashoffset={arcOffset}
+            style={{ transition:'stroke-dashoffset 1.4s cubic-bezier(0.16,1,0.3,1), stroke 0.6s ease' }}
+          />
+
           {/* Ticks */}
-          {ticks.map((t, i) => (
-            <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
-              stroke={t.major ? 'rgba(212,212,232,0.72)' : t.mid ? 'rgba(212,212,232,0.38)' : 'rgba(212,212,232,0.16)'}
-              strokeWidth={t.major ? 2 : 1} strokeLinecap="round"/>
-          ))}
+          {ticks.map((t, i) => {
+            const isGoal = i === 4
+            return (
+              <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
+                stroke={isGoal ? needleColor : t.mid ? 'rgba(212,212,232,0.38)' : 'rgba(212,212,232,0.16)'}
+                strokeWidth={isGoal ? 2.5 : 1} strokeLinecap="round"
+                filter={isGoal ? 'url(#goal-tick-glow)' : undefined}
+                style={isGoal ? { animation:'sdGoalPulse 2.4s ease-in-out infinite', transition:'stroke 0.6s ease' } : undefined}
+              />
+            )
+          })}
+
           {/* Needle */}
           <g style={{ transformOrigin:`${cx}px ${cy}px`, transform:`rotate(${deg}deg)`, transition:'transform 1.4s cubic-bezier(0.16,1,0.3,1)' }}>
             <line x1={cx} y1={cy + 9} x2={cx} y2={cy - r + 14}
-              stroke="#c8cce0" strokeWidth="1.8" strokeLinecap="round" filter="url(#ndl-glow)"/>
+              stroke={needleColor} strokeWidth="1.8" strokeLinecap="round" filter="url(#ndl-glow)"
+              style={{ transition:'stroke 0.6s ease' }}/>
             <line x1={cx} y1={cy + 9} x2={cx} y2={cy + 4}
               stroke="rgba(212,212,232,0.3)" strokeWidth="3" strokeLinecap="round"/>
           </g>
+
           {/* Pivot */}
-          <circle cx={cx} cy={cy} r={5} fill="rgba(212,212,232,0.55)" />
+          <circle cx={cx} cy={cy} r={5} fill={needleGlow} style={{ transition:'fill 0.6s ease' }}/>
           <circle cx={cx} cy={cy} r={2.5} fill="#0a0810"/>
         </svg>
 
