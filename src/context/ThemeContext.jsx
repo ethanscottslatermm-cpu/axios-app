@@ -276,7 +276,7 @@ export const THEMES = {
       '--accent-water':       '#2dd4bf',
       '--accent-fitness':     '#dc4f3a',
       '--accent-finance':     '#4db891',
-      '--accent-prayer':      '#9b7ad4',
+      '--accent-prayer':      '#c8a000',
       '--accent-devotional':  '#c4a44a',
     }
   },

@@ -16,7 +16,7 @@ const MONTHS = [
 const TYPE_CFG = {
   general: { label: 'General',  color: 'var(--btn-bg)',              icon: '◆' },
   workout: { label: 'Workout',  color: 'var(--accent-fitness,#dc4f3a)', icon: '◆' },
-  prayer:  { label: 'Prayer',   color: 'var(--accent-prayer,#9b7ad4)',  icon: '◆' },
+  prayer:  { label: 'Prayer',   color: 'var(--accent-prayer,#c8a000)',  icon: '◆' },
   meal:    { label: 'Meal',     color: 'var(--accent-food,#c8853a)',    icon: '◆' },
   finance: { label: 'Finance',  color: 'var(--accent-finance,#4db891)', icon: '◆' },
 }

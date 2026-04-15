@@ -40,7 +40,7 @@
   --accent-water:      var(--glow-bar);
   --accent-fitness:    var(--glow-bar);
   --accent-finance:    var(--glow-bar);
-  --accent-prayer:     var(--glow-bar);
+  --accent-prayer:     #c8a000;
   --accent-devotional: var(--glow-bar);
 }
 
