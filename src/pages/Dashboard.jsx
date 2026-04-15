@@ -102,7 +102,7 @@ export function BottomNav() {
     { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#7a7a8a', activeColor: '#a0a0b8' },
   ]
   return (
-    <nav style={{
+    <nav className="ax-bottom-nav" style={{
       position:'fixed', bottom:0, left:0, right:0, zIndex:100,
       background:'var(--header-bg)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
       borderTop:'1px solid var(--border)',

@@ -74,6 +74,27 @@ body {
   overflow-x: hidden;
 }
 
+/* ── Desktop: center the mobile layout in the browser ──────────────────────── */
+@media (min-width: 500px) {
+  body {
+    background: var(--bg-primary);
+    display: flex;
+    justify-content: center;
+  }
+
+  #root {
+    max-width: 430px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(212,212,232,0.08), 0 0 60px rgba(0,0,0,0.8);
+  }
+
+  /* Constrain the bottom nav to the same 430px column */
+  .ax-bottom-nav {
+    left: max(0px, calc(50vw - 215px)) !important;
+    right: max(0px, calc(50vw - 215px)) !important;
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
