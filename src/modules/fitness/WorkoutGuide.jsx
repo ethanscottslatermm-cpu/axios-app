@@ -1020,7 +1020,13 @@ export default function WorkoutGuide({ onClose, inline = false }) {
       display:'flex', flexDirection:'column',
       WebkitFontSmoothing:'antialiased',
     }}>
-      {!inline && <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>}
+      <style>{`
+        @keyframes slideUp  { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        @keyframes scanCW   { to { transform: rotate( 360deg) } }
+        @keyframes scanCCW  { to { transform: rotate(-360deg) } }
+        @keyframes bgPulse  { 0%,100%{opacity:0.6} 50%{opacity:1} }
+        @keyframes gridFade { 0%,100%{opacity:0.03} 50%{opacity:0.06} }
+      `}</style>
 
       {/* Header */}
       <div style={{
@@ -1067,6 +1073,59 @@ export default function WorkoutGuide({ onClose, inline = false }) {
 
         {/* Anatomy diagram */}
         <div style={{ position:'relative', width:240, height:500, margin:'0 auto 14px' }}>
+
+          {/* ── Background: radial glow + scan rings + reticle ── */}
+          {/* Radial glow — tints to selected muscle color */}
+          <div style={{
+            position:'absolute', inset:0, zIndex:0, borderRadius:16, pointerEvents:'none',
+            background: selectedDB
+              ? `radial-gradient(ellipse 65% 55% at 50% 44%, ${selectedDB.color}30 0%, transparent 68%)`
+              : 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(180,188,204,0.12) 0%, transparent 68%)',
+            transition:'background 0.7s ease',
+            animation:'bgPulse 3.5s ease-in-out infinite',
+          }} />
+
+          {/* Subtle dot-grid */}
+          <div style={{
+            position:'absolute', inset:0, zIndex:0, borderRadius:16, pointerEvents:'none',
+            backgroundImage:'radial-gradient(circle, rgba(212,212,232,0.18) 1px, transparent 1px)',
+            backgroundSize:'20px 20px',
+            animation:'gridFade 5s ease-in-out infinite',
+            maskImage:'radial-gradient(ellipse 80% 90% at 50% 50%, black 40%, transparent 100%)',
+            WebkitMaskImage:'radial-gradient(ellipse 80% 90% at 50% 50%, black 40%, transparent 100%)',
+          }} />
+
+          {/* Scan rings + crosshair */}
+          <svg style={{ position:'absolute', inset:0, zIndex:0, width:'100%', height:'100%', overflow:'visible', pointerEvents:'none' }} viewBox="0 0 240 500">
+            {/* Outer dashed ellipse — slow CW */}
+            <ellipse cx="120" cy="248" rx="112" ry="242"
+              fill="none" stroke="rgba(212,212,232,0.07)" strokeWidth="1" strokeDasharray="14 9"
+              style={{ transformOrigin:'120px 248px', animation:'scanCW 22s linear infinite' }}
+            />
+            {/* Mid ellipse — CCW */}
+            <ellipse cx="120" cy="248" rx="90" ry="198"
+              fill="none" stroke="rgba(212,212,232,0.1)" strokeWidth="0.8" strokeDasharray="7 11"
+              style={{ transformOrigin:'120px 248px', animation:'scanCCW 14s linear infinite' }}
+            />
+            {/* Inner ellipse — faster CW, tints to muscle color */}
+            <ellipse cx="120" cy="248" rx="66" ry="148"
+              fill="none"
+              stroke={selectedDB ? `${selectedDB.color}66` : 'rgba(212,212,232,0.08)'}
+              strokeWidth="1" strokeDasharray="5 13"
+              style={{ transformOrigin:'120px 248px', animation:'scanCW 8s linear infinite', transition:'stroke 0.7s ease' }}
+            />
+            {/* Crosshair */}
+            <line x1="120" y1="8"   x2="120" y2="492" stroke="rgba(212,212,232,0.04)" strokeWidth="0.5"/>
+            <line x1="8"   y1="248" x2="232" y2="248" stroke="rgba(212,212,232,0.04)" strokeWidth="0.5"/>
+            {/* Corner reticles */}
+            <g stroke="rgba(212,212,232,0.35)" strokeWidth="1" opacity="0.5">
+              <line x1="18" y1="30" x2="34" y2="30"/><line x1="18" y1="30" x2="18" y2="46"/>
+              <line x1="222" y1="30" x2="206" y2="30"/><line x1="222" y1="30" x2="222" y2="46"/>
+              <line x1="18" y1="470" x2="34" y2="470"/><line x1="18" y1="470" x2="18" y2="454"/>
+              <line x1="222" y1="470" x2="206" y2="470"/><line x1="222" y1="470" x2="222" y2="454"/>
+            </g>
+          </svg>
+
           {view === 'front' ? <FrontBase/> : <BackBase/>}
           <BoneOverlay view={view} />
           <VeinOverlay view={view} />
