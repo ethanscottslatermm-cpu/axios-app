@@ -95,11 +95,9 @@ body {
   }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-focus); }
+/* Scrollbar — hidden but still scrollable */
+::-webkit-scrollbar { width: 0; background: transparent; }
+* { scrollbar-width: none; }
 
 /* Serif utility */
 .font-serif { font-family: 'EB Garamond', Georgia, serif; }
