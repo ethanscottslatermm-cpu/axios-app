@@ -222,6 +222,58 @@ create policy "Only admins can modify app_settings"
   );
 
 -- ─────────────────────────────────────────
+-- PLAID ITEMS (bank connections)
+-- ─────────────────────────────────────────
+create table if not exists plaid_items (
+  id               uuid primary key default uuid_generate_v4(),
+  user_id          uuid references auth.users(id) on delete cascade not null,
+  access_token     text not null,
+  item_id          text not null,
+  institution_name text,
+  created_at       timestamptz default now(),
+  unique (user_id)
+);
+alter table plaid_items enable row level security;
+create policy "Users manage own plaid items"
+  on plaid_items for all using (auth.uid() = user_id);
+
+-- ─────────────────────────────────────────
+-- BILLS
+-- ─────────────────────────────────────────
+create table if not exists bills (
+  id           uuid primary key default uuid_generate_v4(),
+  user_id      uuid references auth.users(id) on delete cascade not null,
+  payee        text not null,
+  amount       numeric(10,2) not null default 0,
+  due_day      integer not null check (due_day between 1 and 31),
+  frequency    text check (frequency in ('monthly','yearly','weekly','one-time')) default 'monthly',
+  category     text default 'other',
+  autopay      boolean default false,
+  notes        text,
+  paid_months  text[] default '{}',
+  created_at   timestamptz default now()
+);
+alter table bills enable row level security;
+create policy "Users manage own bills"
+  on bills for all using (auth.uid() = user_id);
+create index if not exists idx_bills_user_due on bills(user_id, due_day);
+
+-- ─────────────────────────────────────────
+-- WEBAUTHN CREDENTIALS
+-- ─────────────────────────────────────────
+create table if not exists webauthn_credentials (
+  id             uuid primary key default uuid_generate_v4(),
+  user_id        uuid references auth.users(id) on delete cascade not null,
+  credential_id  text not null,
+  public_key     text not null,
+  created_at     timestamptz default now(),
+  unique (user_id)
+);
+alter table webauthn_credentials enable row level security;
+create policy "Users manage own webauthn credentials"
+  on webauthn_credentials for all using (auth.uid() = user_id);
+
+-- ─────────────────────────────────────────
 -- CALENDAR EVENTS
 -- ─────────────────────────────────────────
 create table if not exists calendar_events (

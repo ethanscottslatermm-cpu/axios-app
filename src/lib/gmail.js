@@ -7,12 +7,13 @@ export function isGmailConnected() { return !!_accessToken }
 export function getGmailEmail()    { return _userEmail }
 
 export function disconnectGmail() {
+  const tokenToRevoke = _accessToken
   _accessToken = null
   _userEmail   = null
   localStorage.removeItem('gmail_access_token')
   localStorage.removeItem('gmail_user_email')
-  if (window.google?.accounts?.oauth2) {
-    window.google.accounts.oauth2.revoke(_accessToken, () => {})
+  if (tokenToRevoke && window.google?.accounts?.oauth2) {
+    window.google.accounts.oauth2.revoke(tokenToRevoke, () => {})
   }
 }
 
@@ -46,10 +47,16 @@ export function connectGmail(onSuccess, onError) {
           const r    = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
             headers: { Authorization: `Bearer ${_accessToken}` },
           })
-          const info = await r.json()
-          _userEmail = info.email
-          localStorage.setItem('gmail_user_email', _userEmail)
-        } catch {}
+          if (r.ok) {
+            const info = await r.json()
+            if (info.email) {
+              _userEmail = info.email
+              localStorage.setItem('gmail_user_email', _userEmail)
+            }
+          }
+        } catch (err) {
+          console.warn('Failed to fetch Gmail user info:', err)
+        }
         onSuccess?.(_userEmail)
       },
     })

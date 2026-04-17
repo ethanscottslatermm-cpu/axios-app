@@ -88,7 +88,9 @@ export function AuthProvider({ children }) {
   // Heartbeat — keeps last_seen fresh every 5 minutes while the app is open
   useEffect(() => {
     if (!user) return
-    const bump = () => supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', user.id)
+    const bump = () =>
+      supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', user.id)
+        .then(({ error }) => { if (error) console.warn('last_seen update failed:', error.message) })
     bump()
     const id = setInterval(bump, 5 * 60 * 1000)
     return () => clearInterval(id)
