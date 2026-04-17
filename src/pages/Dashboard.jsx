@@ -213,7 +213,6 @@ export default function Dashboard() {
         <div style={{
           position:'sticky', top:0, zIndex:50,
           background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)',
-          borderBottom:'1px solid var(--border)',
           padding:'14px 16px 12px',
         }}>
           <p style={{ color:'var(--text-muted)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>
@@ -229,10 +228,11 @@ export default function Dashboard() {
               {Ico.plus(12)} Log
             </button>
           </div>
+          {/* Ticker spans full width, bleeding past the 16px padding */}
+          <div style={{ margin:'12px -16px 0' }}>
+            <QuoteTicker />
+          </div>
         </div>
-
-        {/* Quote Ticker */}
-        <QuoteTicker />
 
         {/* Scrollable body */}
         <div style={{ padding:'16px 16px 0', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
