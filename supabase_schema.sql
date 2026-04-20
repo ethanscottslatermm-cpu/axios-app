@@ -148,6 +148,7 @@ create index idx_stock_watchlist_user on stock_watchlist(user_id, added_at asc);
 -- ─────────────────────────────────────────
 alter table profiles add column if not exists last_login  timestamptz;
 alter table profiles add column if not exists last_seen   timestamptz;
+alter table profiles add column if not exists theme       text;
 
 -- ─────────────────────────────────────────
 -- LOGIN HISTORY

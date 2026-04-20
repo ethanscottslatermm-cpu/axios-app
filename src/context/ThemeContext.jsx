@@ -355,18 +355,17 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     if (!user) { setLoading(false); return }
     supabase.from('profiles').select('theme').eq('id', user.id).single()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
         const local = localStorage.getItem('axios-theme')
-        const db    = data?.theme
+        const db    = !error ? data?.theme : null
         if (local && THEMES[local]) {
-          // localStorage is the user's last explicit choice — trust it
           setThemeKey(local)
-          // Sync back to Supabase if out of date
-          if (db !== local) {
-            supabase.from('profiles').upsert({ id: user.id, theme: local }, { onConflict: 'id' })
+          if (!error && db !== local) {
+            supabase.from('profiles').upsert({ id: user.id, theme: local }, { onConflict: 'id' }).catch(() => {})
           }
         } else if (db && THEMES[db]) {
           setThemeKey(db)
+          localStorage.setItem('axios-theme', db)
         }
         setLoading(false)
       })
@@ -414,9 +413,10 @@ export function ThemeProvider({ children }) {
 
   const setTheme = async (key) => {
     if (!THEMES[key]) return
+    localStorage.setItem('axios-theme', key)
     setThemeKey(key)
     if (user) {
-      await supabase.from('profiles').upsert({ id: user.id, theme: key }, { onConflict: 'id' })
+      supabase.from('profiles').upsert({ id: user.id, theme: key }, { onConflict: 'id' }).catch(() => {})
     }
   }
 
