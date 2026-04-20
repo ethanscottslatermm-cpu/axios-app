@@ -81,6 +81,15 @@ export function AuthProvider({ children }) {
     await supabase.from('profiles').update({ last_login: now }).eq('id', data.user.id)
     await supabase.from('login_history').insert({ user_id: data.user.id, logged_in_at: now, device })
 
+    // Reset demo user data on every login
+    if (data.user.email === 'demo@axioss.app') {
+      await fetch('/.netlify/functions/reset-demo-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: data.user.id }),
+      }).catch(() => {})
+    }
+
     setLocked(false) // freshly signed in — no lock needed
     return data
   }
