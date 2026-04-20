@@ -351,7 +351,7 @@ export default function Settings() {
           {/* Theme */}
           <CollapsibleCard title="App Theme" color="#7a7a8a" animStyle={anim(330)}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              {Object.entries(THEMES).filter(([key]) => ['axios','ash','midnight','axis_organic'].includes(key)).map(([key, t]) => {
+              {Object.entries(THEMES).map(([key, t]) => {
                 const active = themeKey === key
                 return (
                   <button key={key} onClick={() => setTheme(key)}
