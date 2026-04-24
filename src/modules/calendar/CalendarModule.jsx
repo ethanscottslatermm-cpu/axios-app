@@ -490,7 +490,7 @@ export default function CalendarModule() {
 
         {/* View tabs */}
         <div style={{ display:'flex', gap:5, overflowX:'auto', paddingBottom:2 }}>
-          {VIEW_TABS.map(({ key, label }) => {
+          {VIEW_TABS.map(({ key, label, icon }) => {
             const active = activeView === key
             return (
               <button key={key} onClick={() => setActiveView(key)} style={{
