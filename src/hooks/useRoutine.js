@@ -22,13 +22,24 @@ export function useRoutineItems() {
   })
 
   const addItem = useMutation({
-    mutationFn: async ({ title, routine_type, position }) => {
+    mutationFn: async ({ title, routine_type, position, category = 'other', duration_min = null, notes = null }) => {
       const { data, error } = await supabase
         .from('routine_items')
-        .insert({ user_id: user.id, title, routine_type, position })
+        .insert({ user_id: user.id, title, routine_type, position, category, duration_min, notes })
         .select().single()
       if (error) throw error
       return data
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['routine_items', user?.id] }),
+  })
+
+  const updateItem = useMutation({
+    mutationFn: async ({ id, title, category, duration_min, notes }) => {
+      const { error } = await supabase
+        .from('routine_items')
+        .update({ title, category, duration_min, notes })
+        .eq('id', id)
+      if (error) throw error
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['routine_items', user?.id] }),
   })
@@ -97,7 +108,7 @@ export function useRoutineItems() {
     },
   })
 
-  return { items, isLoading, addItem, deleteItem, setReminder }
+  return { items, isLoading, addItem, updateItem, deleteItem, setReminder }
 }
 
 export function useRoutineLogs(date) {
@@ -147,4 +158,29 @@ export function useRoutineLogs(date) {
   const isCompleted = (itemId) => getLog(itemId)?.completed || false
 
   return { logs, toggleComplete, isCompleted, getLog }
+}
+
+export function useRoutineHistory(days = 30) {
+  const { user } = useAuth()
+  const end   = new Date().toISOString().split('T')[0]
+  const start = (() => {
+    const d = new Date(); d.setDate(d.getDate() - (days - 1))
+    return d.toISOString().split('T')[0]
+  })()
+
+  return useQuery({
+    queryKey: ['routine_history', user?.id, days],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('routine_logs')
+        .select('item_id, date, completed')
+        .eq('user_id', user.id)
+        .gte('date', start)
+        .lte('date', end)
+        .eq('completed', true)
+      if (error) throw error
+      return data
+    },
+    enabled: !!user,
+  })
 }

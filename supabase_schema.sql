@@ -313,6 +313,10 @@ alter table routine_items enable row level security;
 create policy "Users manage own routine items"
   on routine_items for all using (auth.uid() = user_id);
 create index if not exists idx_routine_items_user on routine_items(user_id, routine_type, position);
+-- New columns (run if table already exists)
+alter table routine_items add column if not exists category     text default 'other';
+alter table routine_items add column if not exists duration_min integer;
+alter table routine_items add column if not exists notes        text;
 
 -- ─────────────────────────────────────────
 -- ROUTINE LOGS (daily completion tracking)

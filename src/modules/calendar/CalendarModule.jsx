@@ -5,6 +5,7 @@ import {
   isGmailConnected, getGmailEmail,
   connectGmail, disconnectGmail, sendReminderEmail,
 } from '../../lib/gmail'
+import RoutineTracker from './RoutineTracker'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const DAYS  = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -220,6 +221,7 @@ function inputStyle() {
 export default function CalendarModule() {
   const navigate   = useNavigate()
   const today      = new Date()
+  const [activeView, setActiveView] = useState('calendar')
   const [year,  setYear]  = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth())
   const [selected,  setSelected]  = useState(null)       // 'YYYY-MM-DD'
@@ -309,27 +311,54 @@ export default function CalendarModule() {
       <div style={{
         position:'sticky', top:0, zIndex:10,
         background:'var(--header-bg)', borderBottom:'1px solid var(--border)',
-        padding:'16px 18px 14px', display:'flex', alignItems:'center', gap:14,
+        padding:'16px 18px 12px',
       }}>
-        <button onClick={() => navigate('/dashboard')} style={{
-          background:'none', border:'none', cursor:'pointer',
-          color:'var(--text-muted)', fontSize:20, lineHeight:1, padding:'2px 6px 2px 0',
-        }}>‹</button>
-        <div style={{ flex:1 }}>
-          <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:FF, margin:0 }}>AXIOS</p>
-          <h1 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:FF, margin:0, letterSpacing:'-0.02em' }}>Calendar</h1>
+        <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:12 }}>
+          <button onClick={() => navigate('/dashboard')} style={{
+            background:'none', border:'none', cursor:'pointer',
+            color:'var(--text-muted)', fontSize:20, lineHeight:1, padding:'2px 6px 2px 0',
+          }}>‹</button>
+          <div style={{ flex:1 }}>
+            <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:FF, margin:0 }}>AXIOS</p>
+            <h1 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:FF, margin:0, letterSpacing:'-0.02em' }}>
+              {activeView === 'calendar' ? 'Calendar' : 'Routine Tracker'}
+            </h1>
+          </div>
+          {activeView === 'calendar' && (
+            <button
+              onClick={() => { setSelected(selected || todayStr); setShowModal(true) }}
+              style={{
+                background:'var(--btn-bg)', border:'none', borderRadius:9,
+                color:'var(--btn-text)', fontSize:20, width:36, height:36,
+                cursor:'pointer', fontWeight:700, lineHeight:1, display:'flex', alignItems:'center', justifyContent:'center',
+              }}
+            >+</button>
+          )}
         </div>
-        <button
-          onClick={() => { setSelected(selected || todayStr); setShowModal(true) }}
-          style={{
-            background:'var(--btn-bg)', border:'none', borderRadius:9,
-            color:'var(--btn-text)', fontSize:20, width:36, height:36,
-            cursor:'pointer', fontWeight:700, lineHeight:1, display:'flex', alignItems:'center', justifyContent:'center',
-          }}
-        >+</button>
+        {/* View tabs */}
+        <div style={{ display:'flex', gap:6 }}>
+          {[
+            { key:'calendar', label:'Calendar' },
+            { key:'routine',  label:'Routines'  },
+          ].map(({ key, label }) => {
+            const active = activeView === key
+            return (
+              <button key={key} onClick={() => setActiveView(key)} style={{
+                padding:'7px 16px', borderRadius:99,
+                background: active ? 'rgba(200,212,200,0.12)' : 'transparent',
+                border: `1px solid ${active ? 'rgba(200,212,200,0.35)' : 'rgba(212,212,232,0.1)'}`,
+                color: active ? '#c8d4c8' : 'rgba(212,212,232,0.35)',
+                fontSize:11, fontFamily:FF, fontWeight: active ? 700 : 400,
+                cursor:'pointer', transition:'all 0.18s', letterSpacing:'0.04em',
+              }}>{label}</button>
+            )
+          })}
+        </div>
       </div>
 
-      <div style={{ padding:'20px 18px 0' }}>
+      {activeView === 'routine' && <RoutineTracker today={todayStr} />}
+
+      {activeView === 'calendar' && <div style={{ padding:'20px 18px 0' }}>
 
         {/* Month navigation */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
@@ -471,7 +500,7 @@ export default function CalendarModule() {
           )}
         </div>
 
-      </div>
+      </div>}
 
       {/* Create event modal */}
       {showModal && (
