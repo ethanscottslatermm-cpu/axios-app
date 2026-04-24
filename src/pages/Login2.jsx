@@ -210,22 +210,9 @@ export default function Login2() {
           position: 'fixed', inset: 0, zIndex: 0,
           backgroundImage: `url(${BG})`,
           backgroundSize: 'contain',
-          backgroundPosition: 'center 8%',
+          backgroundPosition: 'center 5%',
           backgroundRepeat: 'no-repeat',
-          filter: 'contrast(1.18) brightness(0.88) saturate(0.85)',
-          imageRendering: '-webkit-optimize-contrast',
-        }} />
-        {/* Sharpening overlay — adds micro-contrast on top of image */}
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 0,
-          backgroundImage: `url(${BG})`,
-          backgroundSize: 'contain',
-          backgroundPosition: 'center 8%',
-          backgroundRepeat: 'no-repeat',
-          filter: 'contrast(2.2) brightness(0.5) saturate(0)',
-          mixBlendMode: 'overlay',
-          opacity: 0.18,
-          pointerEvents: 'none',
+          filter: 'blur(0.55px) contrast(1.12) brightness(0.82) saturate(0.9)',
         }} />
 
         {/* ── Starfield ── */}
@@ -314,7 +301,7 @@ export default function Login2() {
             onClick={() => setOpen(true)}
             style={{
               position: 'absolute', zIndex: 10,
-              top: '11%', left: 0, right: 0,
+              top: '19%', left: 0, right: 0,
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
@@ -323,9 +310,9 @@ export default function Login2() {
           >
             {/* Vertical accent line above text */}
             <div style={{
-              width: 1, height: 36,
+              width: 1, height: 16,
               background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.65), transparent)',
-              marginBottom: 18,
+              marginBottom: 8,
               animation: 'l2-vline 2.8s ease-in-out infinite',
             }} />
 
