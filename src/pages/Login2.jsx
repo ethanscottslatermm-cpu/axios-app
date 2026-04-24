@@ -209,14 +209,32 @@ export default function Login2() {
       <style>{styles}</style>
       <div style={{ position: 'fixed', inset: 0, background: '#000' }}>
 
-        {/* Embedded background — full image */}
+        {/* ── Background image ── */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 0,
           backgroundImage: `url(${BG})`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center top',
+          backgroundPosition: '38% top',
           backgroundRepeat: 'no-repeat',
-          filter: 'contrast(1.1) brightness(0.82) saturate(0.9)',
+          filter: 'contrast(1.08) brightness(0.9) saturate(0.85)',
+        }} />
+
+        {/* ── Cinematic gradient frame (top + bottom) ── */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none',
+          background: `linear-gradient(to bottom,
+            rgba(0,0,0,0.78) 0%,
+            rgba(0,0,0,0.22) 18%,
+            rgba(0,0,0,0.0)  36%,
+            rgba(0,0,0,0.0)  52%,
+            rgba(0,0,0,0.50) 68%,
+            rgba(0,0,0,0.92) 100%)`,
+        }} />
+
+        {/* ── Radial edge vignette ── */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 38% 45%, transparent 40%, rgba(0,0,0,0.55) 100%)',
         }} />
 
         {/* ── Starfield ── */}
@@ -266,10 +284,10 @@ export default function Login2() {
           ))}
         </div>
 
-        {/* Bottom fade — starts higher to frame the full form zone */}
+        {/* ── Horizontal edge vignette (sides) ── */}
         <div style={{
-          position: 'fixed', bottom: 0, left: 0, right: 0, height: '65%', zIndex: 1,
-          background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.60) 50%, rgba(0,0,0,0) 100%)',
+          position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none',
+          background: 'linear-gradient(to right, rgba(0,0,0,0.32) 0%, transparent 18%, transparent 82%, rgba(0,0,0,0.32) 100%)',
         }} />
 
         {/* Floating orbs */}
@@ -299,15 +317,15 @@ export default function Login2() {
           pointerEvents:'none',
         }}/>
 
-        {/* ── AXIOS logo — top of page ── */}
+        {/* ── AXIOS logo — anchored in top dark zone ── */}
         <div style={{
           position: 'absolute', zIndex: 10,
-          top: '6%', left: 0, right: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+          top: '7%', left: 0, right: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
           pointerEvents: 'none',
         }}>
           <svg viewBox="0 0 380 70" xmlns="http://www.w3.org/2000/svg"
-            style={{ width: 220, height: 'auto', overflow: 'visible' }}>
+            style={{ width: 230, height: 'auto', overflow: 'visible', filter: 'drop-shadow(0 2px 18px rgba(0,0,0,0.7))' }}>
             <defs>
               <linearGradient id="ax-login-sg" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
                 <stop offset="0%"   stopColor="#3a3a42"/>
@@ -327,13 +345,23 @@ export default function Login2() {
           </svg>
 
           {/* Shimmer bar */}
-          <div style={{ width: 90, height: 1, background: 'rgba(200,200,220,0.08)', borderRadius: 1, overflow: 'hidden' }}>
+          <div style={{ width: 100, height: 1, background: 'rgba(200,200,220,0.06)', borderRadius: 1, overflow: 'hidden' }}>
             <div style={{
               height: '100%', width: '40%',
-              background: 'linear-gradient(90deg,transparent,rgba(220,220,240,0.85),transparent)',
+              background: 'linear-gradient(90deg,transparent,rgba(220,220,240,0.9),transparent)',
               animation: 'l2-logo-bar 2.4s ease-in-out infinite',
             }}/>
           </div>
+
+          {/* Tagline */}
+          <p style={{
+            color: 'rgba(212,212,232,0.28)',
+            fontSize: '0.6rem',
+            letterSpacing: '0.38em',
+            textTransform: 'uppercase',
+            fontFamily: '"The Seasons", Georgia, serif',
+            margin: 0,
+          }}>I Am Worthy</p>
         </div>
 
         {/* Closed — SECURE ACCESS only */}
