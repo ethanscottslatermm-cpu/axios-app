@@ -253,7 +253,7 @@ export default function MuscleMapView({ workouts = [] }) {
           <Model
             data={[]}
             type={view}
-            bodyColor="#0c0c12"
+            bodyColor="#1a1a28"
             onClick={handleClick}
             style={{ width: '100%', display: 'block', position: 'relative', zIndex: 1 }}
             svgStyle={{ borderRadius: 8 }}
@@ -265,7 +265,7 @@ export default function MuscleMapView({ workouts = [] }) {
             const color = DB[dbKey]?.color || '#b4bccc'
             const c     = counts[m] || 0
             const isSel = selected === m
-            const op    = isSel ? 1.0 : c === 0 ? 0.10 : c === 1 ? 0.42 : c === 2 ? 0.65 : 0.85
+            const op    = isSel ? 1.0 : c === 0 ? 0.38 : c === 1 ? 0.60 : c === 2 ? 0.80 : 0.95
             return (
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
