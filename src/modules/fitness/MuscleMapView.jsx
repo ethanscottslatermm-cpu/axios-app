@@ -185,18 +185,6 @@ export default function MuscleMapView({ workouts = [] }) {
     return lw
   }, [workouts])
 
-  // Include selected muscle at full brightness so it always lights up on tap
-  const modelData = useMemo(() => {
-    const entries = MUSCLES
-      .filter(m => (counts[m] || 0) > 0)
-      .map(m => ({ name: m, muscles: SLUG_MAP[m], frequency: Math.min(counts[m], 3) }))
-
-    if (selected && !entries.find(e => e.name === selected)) {
-      entries.push({ name: selected, muscles: SLUG_MAP[selected], frequency: 3 })
-    }
-    return entries
-  }, [counts, selected])
-
   useEffect(() => {
     if (selected) {
       const dbKey = GROUP_TO_DB[selected]
@@ -231,7 +219,7 @@ export default function MuscleMapView({ workouts = [] }) {
       <style>{`
         @keyframes mmFadeUp { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
         @keyframes mmGlow   { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
-        .mm-label-glow { filter: drop-shadow(0 0 3px currentColor) }
+        @keyframes mmPulse  { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
       `}</style>
 
       {/* Front / Back toggle */}
@@ -248,29 +236,55 @@ export default function MuscleMapView({ workouts = [] }) {
         ))}
       </div>
 
-      {/* Activity legend */}
-      <div style={{ display: 'flex', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ color: 'var(--text-faint)', fontSize: 10, fontFamily: FF }}>Activity</span>
-        {[['Cold','rgba(155,168,188,0.35)'],['×1','#7a8fa8'],['×2','#a8b8cc'],['×3+','#d8e0ee']].map(([l, c]) => (
-          <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-            <div style={{ width: 12, height: 10, borderRadius: 2, background: c }}/>
-            <span style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF }}>{l}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Body model + label overlay */}
       <div style={{ display: 'flex', justifyContent: 'center', overflow: 'visible' }}>
         <div style={{ position: 'relative', width: '100%', maxWidth: 240, overflow: 'visible' }}>
+
+          {/* Background glow — tints to selected muscle DB color */}
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
+            background: dbData
+              ? `radial-gradient(ellipse 72% 62% at 50% 45%, ${dbData.color}28 0%, transparent 65%)`
+              : 'none',
+            transition: 'background 0.6s ease',
+          }}/>
+
+          {/* Base body silhouette — handles all click events */}
           <Model
-            data={modelData}
+            data={[]}
             type={view}
-            highlightedColors={['#7a8fa8', '#a8b8cc', '#d8e0ee']}
             bodyColor="#0c0c12"
             onClick={handleClick}
-            style={{ width: '100%', display: 'block' }}
-            svgStyle={{ borderRadius: 8, overflow: 'visible' }}
+            style={{ width: '100%', display: 'block', position: 'relative', zIndex: 1 }}
+            svgStyle={{ borderRadius: 8 }}
           />
+
+          {/* Per-muscle DB-colored overlays */}
+          {MUSCLES.map(m => {
+            const dbKey = GROUP_TO_DB[m]
+            const color = DB[dbKey]?.color || '#b4bccc'
+            const c     = counts[m] || 0
+            const isSel = selected === m
+            const op    = isSel ? 1.0 : c === 0 ? 0.10 : c === 1 ? 0.42 : c === 2 ? 0.65 : 0.85
+            return (
+              <div key={m} style={{
+                position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+                opacity: op,
+                filter: isSel ? `drop-shadow(0 0 9px ${color}) drop-shadow(0 0 4px ${color})` : undefined,
+                transition: 'opacity 0.35s ease, filter 0.35s ease',
+                animation: isSel ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
+              }}>
+                <Model
+                  data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
+                  type={view}
+                  bodyColor="rgba(0,0,0,0)"
+                  highlightedColors={[color, color, color]}
+                  style={{ width: '100%', display: 'block' }}
+                  svgStyle={{ borderRadius: 8 }}
+                />
+              </div>
+            )
+          })}
 
           {/* Label overlay — viewBox matches model's 0 0 100 200 space */}
           <svg
@@ -354,13 +368,13 @@ export default function MuscleMapView({ workouts = [] }) {
           {/* Workout stats strip */}
           <div style={{
             background: 'var(--stat-bg)',
-            border: `1px solid ${n > 0 ? 'rgba(180,188,220,0.32)' : 'var(--border)'}`,
+            border: `1px solid ${n > 0 && dbData ? dbData.color + '40' : 'var(--border)'}`,
             borderRadius: 12, padding: '12px 16px',
             display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8,
           }}>
             <div>
               <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Sessions / 7d</p>
-              <p style={{ color: n > 0 ? heat.hex : 'var(--text-muted)', fontSize: 22, fontWeight: 900, fontFamily: FF, margin: 0, lineHeight: 1 }}>{n}</p>
+              <p style={{ color: n > 0 && dbData ? dbData.color : 'var(--text-muted)', fontSize: 22, fontWeight: 900, fontFamily: FF, margin: 0, lineHeight: 1 }}>{n}</p>
             </div>
             <div>
               <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Last Trained</p>
@@ -434,18 +448,23 @@ export default function MuscleMapView({ workouts = [] }) {
       {/* Muscle pill row */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
         {MUSCLES.map(m => {
-          const c = counts[m] || 0; const isSel = selected === m
+          const c     = counts[m] || 0
+          const isSel = selected === m
+          const color = DB[GROUP_TO_DB[m]]?.color || '#b4bccc'
           return (
             <button key={m} onClick={() => setSelected(s => s === m ? null : m)} style={{
               display: 'flex', alignItems: 'center', gap: 4,
               padding: '4px 10px', borderRadius: 99, cursor: 'pointer',
-              background: isSel ? 'rgba(180,188,220,0.12)' : 'var(--bg-card)',
-              border: `1px solid ${c > 0 ? `rgba(180,188,220,${Math.min(0.22 + c * 0.18, 0.65)})` : 'var(--border)'}`,
+              background: isSel ? `${color}22` : 'var(--bg-card)',
+              border: `1px solid ${isSel ? color + '66' : c > 0 ? color + '33' : 'var(--border)'}`,
               transition: 'all 0.15s',
             }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0, background: c > 0 ? getHeat(c).hex : 'rgba(140,155,175,0.25)' }}/>
-              <span style={{ color: c > 0 ? 'var(--text-secondary)' : 'var(--text-faint)', fontSize: 10, fontFamily: FF }}>{m}</span>
-              {c > 0 && <span style={{ color: getHeat(c).hex, fontSize: 9, fontFamily: FF, fontWeight: 700 }}>{c}</span>}
+              <div style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+                background: c > 0 ? color : 'rgba(140,155,175,0.25)',
+                boxShadow: isSel ? `0 0 6px ${color}` : 'none',
+              }}/>
+              <span style={{ color: isSel ? color : c > 0 ? 'var(--text-secondary)' : 'var(--text-faint)', fontSize: 10, fontFamily: FF, fontWeight: isSel ? 700 : 400 }}>{m}</span>
+              {c > 0 && <span style={{ color, fontSize: 9, fontFamily: FF, fontWeight: 700 }}>{c}</span>}
             </button>
           )
         })}
