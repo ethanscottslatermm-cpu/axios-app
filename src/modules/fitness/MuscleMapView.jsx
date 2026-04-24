@@ -4,15 +4,16 @@ import { DB } from './WorkoutGuide'
 
 const FF = 'Helvetica Neue,Arial,sans-serif'
 
-const MUSCLES = ['Chest','Shoulders','Biceps','Triceps','Core','Back','Quads','Hamstrings','Glutes','Calves']
+const MUSCLES = ['Chest','Shoulders','Traps','Biceps','Triceps','Core','Back','Quads','Hamstrings','Glutes','Calves']
 
 const SLUG_MAP = {
   Chest:      ['chest'],
   Shoulders:  ['front-deltoids', 'back-deltoids'],
+  Traps:      ['trapezius'],
   Biceps:     ['biceps', 'forearm'],
   Triceps:    ['triceps'],
   Core:       ['abs', 'obliques'],
-  Back:       ['trapezius', 'upper-back', 'lower-back'],
+  Back:       ['upper-back', 'lower-back'],
   Quads:      ['quadriceps'],
   Hamstrings: ['hamstring'],
   Glutes:     ['gluteal'],
@@ -28,7 +29,7 @@ const GROUP_FROM_SLUG = {
   triceps:         'Triceps',
   abs:             'Core',
   obliques:        'Core',
-  trapezius:       'Back',
+  trapezius:       'Traps',
   'upper-back':    'Back',
   'lower-back':    'Back',
   quadriceps:      'Quads',
@@ -44,6 +45,7 @@ const GROUP_FROM_SLUG = {
 const GROUP_TO_DB = {
   Chest:      'chest',
   Shoulders:  'shoulders',
+  Traps:      'traps',
   Biceps:     'biceps',
   Triceps:    'triceps',
   Core:       'core',
@@ -54,22 +56,38 @@ const GROUP_TO_DB = {
   Calves:     'calves',
 }
 
+const SCI_SHORT = {
+  Chest:      'Pectoralis',
+  Shoulders:  'Deltoideus',
+  Traps:      'Trapezius',
+  Biceps:     'Biceps Brachii',
+  Triceps:    'Triceps Brachii',
+  Core:       'Rectus Abdominis',
+  Back:       'Latissimus Dorsi',
+  Quads:      'Quadriceps Femoris',
+  Hamstrings: 'Biceps Femoris',
+  Glutes:     'Gluteus Maximus',
+  Calves:     'Gastrocnemius',
+}
+
 // Labels positioned in the model's 0 0 100 200 coordinate space.
 // x < 0 or x > 100 renders outside body (requires overflow:visible on parent).
 // ex = x-coordinate of the leader line's body-side endpoint.
 const LABELS = {
   anterior: [
-    { group: 'Shoulders', x: 103, y: 43,  anchor: 'start', ex: 79 },
-    { group: 'Chest',     x: 103, y: 51,  anchor: 'start', ex: 70 },
-    { group: 'Biceps',    x: -3,  y: 61,  anchor: 'end',   ex: 17 },
+    { group: 'Traps',     x: -3,  y: 37,  anchor: 'end',   ex: 25 },
+    { group: 'Shoulders', x: 103, y: 44,  anchor: 'start', ex: 79 },
+    { group: 'Chest',     x: 103, y: 53,  anchor: 'start', ex: 70 },
+    { group: 'Biceps',    x: -3,  y: 62,  anchor: 'end',   ex: 17 },
     { group: 'Core',      x: 103, y: 83,  anchor: 'start', ex: 59 },
     { group: 'Quads',     x: -3,  y: 118, anchor: 'end',   ex: 29 },
     { group: 'Calves',    x: 103, y: 175, anchor: 'start', ex: 74 },
   ],
   posterior: [
-    { group: 'Shoulders', x: -3,  y: 44,  anchor: 'end',   ex: 29 },
-    { group: 'Back',      x: 103, y: 57,  anchor: 'start', ex: 66 },
-    { group: 'Triceps',   x: -3,  y: 65,  anchor: 'end',   ex: 27 },
+    { group: 'Traps',     x: 103, y: 40,  anchor: 'start', ex: 64 },
+    { group: 'Shoulders', x: -3,  y: 46,  anchor: 'end',   ex: 29 },
+    { group: 'Back',      x: 103, y: 58,  anchor: 'start', ex: 66 },
+    { group: 'Triceps',   x: -3,  y: 66,  anchor: 'end',   ex: 27 },
     { group: 'Glutes',    x: 103, y: 111, anchor: 'start', ex: 69 },
     { group: 'Hamstrings',x: -3,  y: 140, anchor: 'end',   ex: 29 },
     { group: 'Calves',    x: 103, y: 178, anchor: 'start', ex: 71 },
@@ -255,7 +273,10 @@ export default function MuscleMapView({ workouts = [] }) {
             type={view}
             bodyColor="#1a1a28"
             onClick={handleClick}
-            style={{ width: '100%', display: 'block', position: 'relative', zIndex: 1 }}
+            style={{
+              width: '100%', display: 'block', position: 'relative', zIndex: 1,
+              filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.28)) drop-shadow(0 0 1px rgba(255,255,255,0.55))',
+            }}
             svgStyle={{ borderRadius: 8 }}
           />
 
@@ -328,22 +349,36 @@ export default function MuscleMapView({ workouts = [] }) {
                     fill={color}
                     style={{ transition: 'fill 0.2s, r 0.2s' }}
                   />
-                  {/* Label text */}
+                  {/* Label text — common name */}
                   <text
-                    x={l.x} y={l.y + 1.5}
+                    x={l.x} y={l.y}
                     textAnchor={l.anchor}
-                    fontSize="4.8"
+                    fontSize="4.2"
                     fontFamily={FF}
-                    fontWeight={isActive ? '700' : '400'}
+                    fontWeight={isActive ? '700' : '500'}
                     fill={color}
                     filter={isActive ? 'url(#mm-label-glow)' : undefined}
                     letterSpacing="0.04em"
                     style={{
-                      transition: 'fill 0.2s, font-weight 0.2s',
+                      transition: 'fill 0.2s',
                       animation: isActive ? 'mmGlow 2.4s ease-in-out infinite' : undefined,
                     }}
                   >
                     {l.group}
+                  </text>
+                  {/* Scientific name sub-label */}
+                  <text
+                    x={l.x} y={l.y + 4.2}
+                    textAnchor={l.anchor}
+                    fontSize="3.0"
+                    fontFamily={FF}
+                    fontWeight="400"
+                    fontStyle="italic"
+                    fill={isActive ? `${color}cc` : 'rgba(200,210,230,0.18)'}
+                    letterSpacing="0.02em"
+                    style={{ transition: 'fill 0.2s' }}
+                  >
+                    {SCI_SHORT[l.group] || ''}
                   </text>
                 </g>
               )
