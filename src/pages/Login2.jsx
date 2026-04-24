@@ -18,9 +18,13 @@ const styles = `
     0%,100% { box-shadow: none; border-color: transparent; }
     50%     { box-shadow: none; border-color: transparent; }
   }
+  @keyframes l2-shimmer {
+    0%   { background-position: -250% center; }
+    100% { background-position: 250% center; }
+  }
   @keyframes l2-placeholderPulse {
-    0%,100% { opacity: 0.45; text-shadow: 0 0 8px rgba(212,212,232,0.20); }
-    50%     { opacity: 1.0;  text-shadow: 0 0 14px rgba(212,212,232,0.60), 0 0 30px rgba(212,212,232,0.20); }
+    0%,100% { opacity: 0.45; }
+    50%     { opacity: 1.0;  }
   }
   @keyframes l2-iconPulse {
     0%,100% { filter: drop-shadow(0 0 3px rgba(200,200,220,0.25)); opacity: 0.50; }
@@ -66,12 +70,16 @@ const styles = `
     caret-color: white;
   }
   .l2-input::placeholder {
-    color: rgba(212,212,232,1.0);
     font-family: 'The Seasons', serif;
-    letter-spacing: 0.18em;
-    font-size: 0.82rem;
-    animation: l2-placeholderPulse 3s ease-in-out infinite;
+    letter-spacing: 0.22em;
+    font-size: 0.78rem;
     text-transform: uppercase;
+    background: linear-gradient(90deg, #3a3a48 0%, #8c8c9e 38%, rgba(212,212,232,0.96) 50%, #8c8c9e 62%, #3a3a48 100%);
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: l2-shimmer 2.8s linear infinite;
   }
   .l2-lock-icon {
     animation: l2-iconPulse 3s ease-in-out infinite;
@@ -397,14 +405,18 @@ export default function Login2() {
               <div style={{ position:'absolute', bottom:-8, right:-10, width:8, height:8, borderBottom:'1px solid rgba(255,255,255,0.45)', borderRight:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite', animationDelay:'0.6s' }} />
 
               <p style={{
-                color: '#fff',
                 fontSize: 'clamp(0.62rem, 2.6vw, 0.78rem)',
                 letterSpacing: '0.65em',
                 textTransform: 'uppercase',
                 fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
                 fontWeight: 300,
                 margin: 0,
-                animation: 'secureGlow 2.8s ease-in-out infinite',
+                background: 'linear-gradient(90deg, #3a3a42 0%, #8a8a96 38%, #ffffff 50%, #8a8a96 62%, #3a3a42 100%)',
+                backgroundSize: '250% auto',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                animation: 'l2-shimmer 2.8s linear infinite',
               }}>
                 Secure Access
               </p>
