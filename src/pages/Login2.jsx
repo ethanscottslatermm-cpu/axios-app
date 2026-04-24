@@ -145,6 +145,15 @@ const styles = `
     to   { opacity: 1; transform: translateY(0); }
   }
   .l2-enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  @keyframes starTwinkle {
+    0%, 100% { opacity: 0.08; transform: scale(0.7); }
+    50%       { opacity: 0.75; transform: scale(1.15); }
+  }
+  @keyframes starDrift {
+    0%   { transform: translateY(0px) scale(1); }
+    50%  { transform: translateY(-3px) scale(1.1); }
+    100% { transform: translateY(0px) scale(1); }
+  }
 `
 
 export default function Login2() {
@@ -201,9 +210,70 @@ export default function Login2() {
           position: 'fixed', inset: 0, zIndex: 0,
           backgroundImage: `url(${BG})`,
           backgroundSize: 'contain',
-          backgroundPosition: 'center 15%',
+          backgroundPosition: 'center 8%',
           backgroundRepeat: 'no-repeat',
+          filter: 'contrast(1.18) brightness(0.88) saturate(0.85)',
+          imageRendering: '-webkit-optimize-contrast',
         }} />
+        {/* Sharpening overlay — adds micro-contrast on top of image */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 0,
+          backgroundImage: `url(${BG})`,
+          backgroundSize: 'contain',
+          backgroundPosition: 'center 8%',
+          backgroundRepeat: 'no-repeat',
+          filter: 'contrast(2.2) brightness(0.5) saturate(0)',
+          mixBlendMode: 'overlay',
+          opacity: 0.18,
+          pointerEvents: 'none',
+        }} />
+
+        {/* ── Starfield ── */}
+        <div style={{ position:'fixed', inset:0, zIndex:1, overflow:'hidden', pointerEvents:'none' }}>
+          {[
+            {x:'8%',  y:'6%',  s:1.5, d:'3.1s', dl:'0s'   },
+            {x:'18%', y:'3%',  s:1,   d:'4.2s', dl:'-1.2s'},
+            {x:'31%', y:'8%',  s:2,   d:'5.0s', dl:'-0.5s'},
+            {x:'47%', y:'2%',  s:1.5, d:'3.7s', dl:'-2.1s'},
+            {x:'62%', y:'7%',  s:1,   d:'4.8s', dl:'-0.9s'},
+            {x:'74%', y:'4%',  s:2,   d:'3.4s', dl:'-1.8s'},
+            {x:'85%', y:'9%',  s:1,   d:'5.2s', dl:'-0.3s'},
+            {x:'92%', y:'5%',  s:1.5, d:'4.0s', dl:'-2.7s'},
+            {x:'5%',  y:'15%', s:1,   d:'3.9s', dl:'-1.5s'},
+            {x:'24%', y:'18%', s:1.5, d:'4.5s', dl:'-0.7s'},
+            {x:'38%', y:'13%', s:2,   d:'3.2s', dl:'-3.1s'},
+            {x:'55%', y:'17%', s:1,   d:'5.5s', dl:'-1.0s'},
+            {x:'70%', y:'12%', s:1.5, d:'4.1s', dl:'-2.4s'},
+            {x:'82%', y:'19%', s:1,   d:'3.6s', dl:'-0.6s'},
+            {x:'95%', y:'14%', s:2,   d:'4.7s', dl:'-1.9s'},
+            {x:'12%', y:'25%', s:1,   d:'5.1s', dl:'-0.4s'},
+            {x:'44%', y:'22%', s:1.5, d:'3.3s', dl:'-2.0s'},
+            {x:'66%', y:'27%', s:1,   d:'4.4s', dl:'-1.3s'},
+            {x:'88%', y:'24%', s:2,   d:'3.8s', dl:'-3.5s'},
+            {x:'3%',  y:'32%', s:1,   d:'5.3s', dl:'-0.8s'},
+            {x:'27%', y:'35%', s:1.5, d:'4.6s', dl:'-2.6s'},
+            {x:'51%', y:'30%', s:1,   d:'3.5s', dl:'-1.1s'},
+            {x:'78%', y:'33%', s:2,   d:'4.9s', dl:'-0.2s'},
+            {x:'91%', y:'38%', s:1,   d:'3.0s', dl:'-1.7s'},
+            {x:'16%', y:'42%', s:1.5, d:'5.4s', dl:'-2.3s'},
+            {x:'59%', y:'40%', s:1,   d:'4.3s', dl:'-0.5s'},
+            {x:'83%', y:'45%', s:2,   d:'3.7s', dl:'-1.4s'},
+            {x:'7%',  y:'52%', s:1,   d:'5.0s', dl:'-2.8s'},
+            {x:'34%', y:'55%', s:1.5, d:'3.9s', dl:'-0.1s'},
+            {x:'72%', y:'50%', s:1,   d:'4.2s', dl:'-1.6s'},
+          ].map((st, i) => (
+            <div key={i} style={{
+              position: 'absolute',
+              left: st.x, top: st.y,
+              width: st.s, height: st.s,
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,0.9)',
+              boxShadow: `0 0 ${st.s * 2}px ${st.s}px rgba(200,210,255,0.6)`,
+              animation: `starTwinkle ${st.d} ease-in-out infinite, starDrift ${parseFloat(st.d) * 1.4 + 's'} ease-in-out infinite`,
+              animationDelay: st.dl,
+            }}/>
+          ))}
+        </div>
 
         {/* Bottom fade — starts higher to frame the full form zone */}
         <div style={{
@@ -244,7 +314,7 @@ export default function Login2() {
             onClick={() => setOpen(true)}
             style={{
               position: 'absolute', zIndex: 10,
-              top: '68%', left: 0, right: 0,
+              top: '11%', left: 0, right: 0,
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
