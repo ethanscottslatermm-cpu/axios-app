@@ -6,31 +6,32 @@ export const THEMES = {
   axios: {
     name: 'Axios Platinum',
     description: 'Void black with chrome platinum — the signature look',
-    preview: ['#060608', '#0d0d11', '#d0d0dc'],
+    preview: ['#050507', '#0b0b10', '#e2e2f0'],
     vars: {
-      '--bg-primary':    '#060608',
-      '--bg-secondary':  '#0d0d11',
-      '--bg-card':       'rgba(212,212,232,0.06)',
-      '--bg-card-hover': 'rgba(212,212,232,0.11)',
-      '--border':        'rgba(212,212,232,0.42)',
-      '--border-focus':  'rgba(220,220,240,0.82)',
-      '--text-primary':  '#e8e8f0',
-      '--text-secondary':'rgba(180,180,195,0.70)',
-      '--text-muted':    'rgba(180,180,195,0.45)',
-      '--text-faint':    'rgba(180,180,195,0.20)',
-      '--glow':          'rgba(220,220,240,0.60)',
-      '--glow-bar':      '#d0d0dc',
-      '--btn-bg':        '#d0d0dc',
-      '--btn-text':      '#060608',
-      '--overlay-bg':    'rgba(0,0,0,0.82)',
-      '--header-bg':     'rgba(6,6,8,0.96)',
-      '--sheet-bg':      '#0d0d11',
-      '--input-bg':      'rgba(208,208,220,0.05)',
-      '--img-opacity':   '0.11',
-      '--scrollbar':     'rgba(212,212,232,0.38)',
-      '--badge-bg':      'rgba(212,212,232,0.10)',
-      '--stat-bg':       'rgba(212,212,232,0.07)',
-      '--card-shadow':   '0 0 0 1px rgba(212,212,232,0.38), 0 0 22px rgba(212,212,232,0.08), 0 2px 12px rgba(0,0,0,0.60)',
+      '--bg-primary':    '#050507',
+      '--bg-secondary':  '#0b0b10',
+      '--bg-card':       'rgba(220,220,240,0.08)',
+      '--bg-card-hover': 'rgba(220,220,240,0.15)',
+      '--border':        'rgba(220,220,240,0.55)',
+      '--border-focus':  'rgba(240,240,255,0.94)',
+      '--text-primary':  '#f2f2fa',
+      '--text-secondary':'rgba(200,200,218,0.82)',
+      '--text-muted':    'rgba(190,190,210,0.54)',
+      '--text-faint':    'rgba(190,190,210,0.25)',
+      '--glow':          'rgba(220,220,250,0.88)',
+      '--glow-bar':      '#e2e2f0',
+      '--btn-bg':        '#e2e2f0',
+      '--btn-text':      '#040406',
+      '--overlay-bg':    'rgba(0,0,0,0.88)',
+      '--header-bg':     'rgba(5,5,7,0.97)',
+      '--sheet-bg':      '#0b0b10',
+      '--input-bg':      'rgba(220,220,240,0.07)',
+      '--img-opacity':   '0.13',
+      '--scrollbar':     'rgba(220,220,240,0.52)',
+      '--badge-bg':      'rgba(220,220,240,0.14)',
+      '--stat-bg':       'rgba(220,220,240,0.09)',
+      '--card-shadow':   '0 0 0 1px rgba(220,220,240,0.54), 0 0 32px rgba(180,180,235,0.20), 0 4px 18px rgba(0,0,0,0.72)',
+      '--bg-ambient':    'rgba(165,165,210,0.11)',
     }
   },
   obsidian: {
@@ -391,8 +392,15 @@ export function ThemeProvider({ children }) {
     root.style.setProperty('--axios-border',theme.vars['--border'])
     root.style.setProperty('--axios-muted', theme.vars['--text-muted'])
 
-    // Force body background and text color
-    document.body.style.setProperty('background', theme.vars['--bg-primary'], 'important')
+    // Force body background and text color — include ambient orb glow if theme defines it
+    const ambient = theme.vars['--bg-ambient']
+    const bodyBg = ambient
+      ? `radial-gradient(ellipse 100% 55% at 50% -8%, ${ambient} 0%, transparent 62%),` +
+        `radial-gradient(ellipse 65% 38% at -8% 52%, ${ambient} 0%, transparent 58%),` +
+        `radial-gradient(ellipse 60% 35% at 108% 52%, ${ambient} 0%, transparent 58%),` +
+        theme.vars['--bg-primary']
+      : theme.vars['--bg-primary']
+    document.body.style.setProperty('background', bodyBg, 'important')
     document.body.style.setProperty('color', theme.vars['--text-primary'], 'important')
 
     // Store in localStorage as instant-load fallback
@@ -406,7 +414,14 @@ export function ThemeProvider({ children }) {
       const theme = THEMES[saved]
       const root = document.documentElement
       Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v))
-      document.body.style.setProperty('background', theme.vars['--bg-primary'], 'important')
+      const ambient = theme.vars['--bg-ambient']
+      const bodyBg = ambient
+        ? `radial-gradient(ellipse 100% 55% at 50% -8%, ${ambient} 0%, transparent 62%),` +
+          `radial-gradient(ellipse 65% 38% at -8% 52%, ${ambient} 0%, transparent 58%),` +
+          `radial-gradient(ellipse 60% 35% at 108% 52%, ${ambient} 0%, transparent 58%),` +
+          theme.vars['--bg-primary']
+        : theme.vars['--bg-primary']
+      document.body.style.setProperty('background', bodyBg, 'important')
       document.body.style.setProperty('color', theme.vars['--text-primary'], 'important')
     }
   }, [])
