@@ -6,7 +6,6 @@ import { useWeightLog } from '../../hooks/useWeightLog'
 import { BottomNav } from '../../pages/Dashboard'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import WorkoutGuide from './WorkoutGuide'
 import MuscleMapView from './MuscleMapView'
 
 
@@ -515,7 +514,6 @@ export default function FitnessTracker() {
   const [workouts,     setWorkouts]     = useState([])
   const [showWorkout,  setShowWorkout]  = useState(false)
   const [showWeight,   setShowWeight]   = useState(false)
-  const [showGuide,    setShowGuide]    = useState(false)
   const [activeTab,    setActiveTab]    = useState('workouts') // 'workouts' | 'weight'
   const [loadingW,     setLoadingW]     = useState(false)
   const todayWorkouts = (workouts || []).filter(w => (w.workout_date || w.created_at?.split('T')[0]) === todayStr)
@@ -676,27 +674,20 @@ export default function FitnessTracker() {
 
           {/* Tab switcher */}
           <div style={{ display:'flex', gap:8, ...anim(80) }}>
-            {[['guide','Exercise Guide'],['workouts','Workouts'],['weight','Weight Log'],['body','Body Map']].map(([key,label]) => {
-              const isGuide  = key === 'guide'
+            {[['body','Body Map'],['workouts','Workouts'],['weight','Weight Log']].map(([key,label]) => {
               const isActive = activeTab === key
               return (
                 <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
                   style={{
-                    flex: isGuide ? 1.4 : 1,
+                    flex: 1,
                     padding:'10px',
                     borderRadius:10,
-                    border: isActive
-                      ? '1px solid rgba(248,113,113,0.55)'
-                      : `1px solid ${isGuide ? 'rgba(180,188,204,0.3)' : 'rgba(212,212,232,0.08)'}`,
-                    background: isActive
-                      ? 'rgba(248,113,113,0.12)'
-                      : (isGuide ? 'rgba(180,188,204,0.06)' : 'rgba(212,212,232,0.03)'),
-                    color: isActive
-                      ? '#f87171'
-                      : (isGuide ? 'rgba(180,188,204,0.7)' : 'rgba(212,212,232,0.35)'),
+                    border: isActive ? '1px solid rgba(248,113,113,0.55)' : 'rgba(212,212,232,0.08)',
+                    background: isActive ? 'rgba(248,113,113,0.12)' : 'rgba(212,212,232,0.03)',
+                    color: isActive ? '#f87171' : 'rgba(212,212,232,0.35)',
                     boxShadow: isActive ? '0 0 12px rgba(248,113,113,0.18)' : 'none',
                     fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
-                    fontWeight: isActive ? 700 : (isGuide ? 600 : 400),
+                    fontWeight: isActive ? 700 : 400,
                     cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
                   }}>
                   {label}
@@ -805,13 +796,6 @@ export default function FitnessTracker() {
             </div>
           )}
 
-          {/* ── Guide Tab ── */}
-          {activeTab === 'guide' && (
-            <div style={anim(80)}>
-              <WorkoutGuide inline onClose={() => setActiveTab('workouts')} />
-            </div>
-          )}
-
           {activeTab === 'body' && (
             <div style={anim(80)}>
               <MuscleMapView workouts={workouts} />
@@ -823,7 +807,6 @@ export default function FitnessTracker() {
 
       {showWorkout && <LogWorkoutSheet onSave={handleSaveWorkout} onClose={() => setShowWorkout(false)} />}
       {showWeight  && <LogWeightSheet  onSave={handleSaveWeight}  onClose={() => setShowWeight(false)} current={latest} todayStr={todayStr} />}
-      {showGuide   && <WorkoutGuide onClose={() => setShowGuide(false)} />}
 
       <BottomNav />
     </>
