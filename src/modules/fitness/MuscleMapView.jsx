@@ -1,11 +1,11 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Model from 'react-body-highlighter'
+import { DB } from './WorkoutGuide'
 
 const FF = 'Helvetica Neue,Arial,sans-serif'
 
 const MUSCLES = ['Chest','Shoulders','Biceps','Triceps','Core','Back','Quads','Hamstrings','Glutes','Calves']
 
-// App muscle group → package muscle slugs
 const SLUG_MAP = {
   Chest:      ['chest'],
   Shoulders:  ['front-deltoids', 'back-deltoids'],
@@ -19,7 +19,6 @@ const SLUG_MAP = {
   Calves:     ['calves', 'left-soleus', 'right-soleus'],
 }
 
-// Package slug → our group name (for onClick)
 const GROUP_FROM_SLUG = {
   chest:           'Chest',
   'front-deltoids':'Shoulders',
@@ -42,24 +41,24 @@ const GROUP_FROM_SLUG = {
   'right-soleus':  'Calves',
 }
 
-const EXERCISES_MAP = {
-  Chest:      'Bench Press, Push-ups, Cable Flyes',
-  Shoulders:  'Overhead Press, Lateral Raises, Face Pulls',
-  Biceps:     'Barbell Curls, Hammer Curls, Chin-ups',
-  Triceps:    'Dips, Pushdowns, Close-Grip Press',
-  Core:       'Planks, Crunches, Hanging Leg Raises',
-  Back:       'Pull-ups, Barbell Rows, Deadlifts',
-  Quads:      'Squats, Leg Press, Walking Lunges',
-  Hamstrings: 'Romanian DL, Leg Curls, Good Mornings',
-  Glutes:     'Hip Thrusts, Glute Bridges, Bulgarian Split Squat',
-  Calves:     'Standing Calf Raises, Seated Calf Raises',
+const GROUP_TO_DB = {
+  Chest:      'chest',
+  Shoulders:  'shoulders',
+  Biceps:     'biceps',
+  Triceps:    'triceps',
+  Core:       'core',
+  Back:       'lats',
+  Quads:      'quads',
+  Hamstrings: 'hamstrings',
+  Glutes:     'glutes',
+  Calves:     'calves',
 }
 
 function getHeat(n) {
   if (n === 0) return { label: 'Cold',  hex: 'rgba(140,155,175,0.4)' }
-  if (n === 1) return { label: '×1',    hex: '#a03020' }
-  if (n === 2) return { label: '×2',    hex: '#d73a28' }
-  return             { label: '×3+',   hex: '#ff6437' }
+  if (n === 1) return { label: '×1',    hex: '#7a8fa8' }
+  if (n === 2) return { label: '×2',    hex: '#a8b8cc' }
+  return             { label: '×3+',   hex: '#d8e0ee' }
 }
 
 function getRecovery(n) {
@@ -80,9 +79,56 @@ function fmtDate(ds, todayStr) {
   return new Date(ds + 'T12:00:00').toLocaleDateString([], { month: 'short', day: 'numeric' })
 }
 
+function pickFour(pool) {
+  const arr = [...pool]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr.slice(0, 4)
+}
+
+function ExCard({ ex, accent }) {
+  const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(ex.yt)}`
+  return (
+    <div style={{
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      borderRadius: 10, padding: '11px 12px',
+      display: 'flex', flexDirection: 'column', gap: 6,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+        <div style={{ flex: 1 }}>
+          <p style={{ color: 'var(--text-primary)', fontSize: 12, fontWeight: 700, fontFamily: FF, marginBottom: 3 }}>{ex.name}</p>
+          <div style={{ display: 'flex', gap: 5 }}>
+            <span style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF, background: 'rgba(212,212,232,0.06)', padding: '2px 6px', borderRadius: 4, border: '1px solid var(--border)' }}>{ex.eq}</span>
+            <span style={{ color: accent, fontSize: 9, fontFamily: FF, fontWeight: 700, background: `${accent}18`, padding: '2px 6px', borderRadius: 4 }}>{ex.sets}</span>
+          </div>
+        </div>
+        <a href={ytUrl} target="_blank" rel="noopener noreferrer"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0,
+            padding: '6px 9px', borderRadius: 7,
+            background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.28)',
+            color: '#ef4444', fontSize: 9, fontWeight: 700,
+            fontFamily: FF, letterSpacing: '0.08em', textDecoration: 'none',
+          }}
+          onClick={e => e.stopPropagation()}>
+          <svg width={10} height={10} viewBox="0 0 24 24" fill="#ef4444">
+            <path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/>
+            <polygon fill="white" points="10,8.5 16,12 10,15.5"/>
+          </svg>
+          Watch
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export default function MuscleMapView({ workouts = [] }) {
-  const [selected, setSelected] = useState(null)
-  const [view, setView]         = useState('anterior')
+  const [selected,  setSelected]  = useState(null)
+  const [view,      setView]      = useState('anterior')
+  const [exercises, setExercises] = useState([])
+  const [spinning,  setSpinning]  = useState(false)
 
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
@@ -117,7 +163,6 @@ export default function MuscleMapView({ workouts = [] }) {
     return lw
   }, [workouts])
 
-  // Build data for the model — only include trained muscles (frequency drives color)
   const modelData = useMemo(() =>
     MUSCLES
       .filter(m => (counts[m] || 0) > 0)
@@ -128,36 +173,56 @@ export default function MuscleMapView({ workouts = [] }) {
       }))
   , [counts])
 
+  useEffect(() => {
+    if (selected) {
+      const dbKey = GROUP_TO_DB[selected]
+      if (dbKey && DB[dbKey]) setExercises(pickFour(DB[dbKey].exercises))
+    } else {
+      setExercises([])
+    }
+  }, [selected])
+
   function handleClick({ muscle }) {
     const group = GROUP_FROM_SLUG[muscle]
     if (group) setSelected(s => s === group ? null : group)
   }
 
-  const sel = selected
-    ? { n: counts[selected] || 0, last: lastWorked[selected], heat: getHeat(counts[selected] || 0), rec: getRecovery(counts[selected] || 0) }
-    : null
+  function handleShuffle() {
+    if (!selected) return
+    const dbKey = GROUP_TO_DB[selected]
+    if (!dbKey || !DB[dbKey]) return
+    setSpinning(true)
+    setExercises(pickFour(DB[dbKey].exercises))
+    setTimeout(() => setSpinning(false), 460)
+  }
+
+  const n      = selected ? (counts[selected] || 0) : 0
+  const heat   = getHeat(n)
+  const rec    = selected ? getRecovery(n) : null
+  const dbData = selected ? DB[GROUP_TO_DB[selected]] : null
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <style>{`@keyframes mmFadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
 
       {/* Front / Back toggle */}
       <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-        {[['anterior','Front View'], ['posterior','Back View']].map(([v, label]) => (
+        {[['anterior','Front'], ['posterior','Back']].map(([v, label]) => (
           <button key={v} onClick={() => setView(v)} style={{
-            padding: '6px 18px', borderRadius: 99, cursor: 'pointer',
-            background: view === v ? 'rgba(215,58,40,0.14)' : 'var(--bg-card)',
-            border:    `1px solid ${view === v ? 'rgba(215,58,40,0.55)' : 'var(--border)'}`,
-            color:      view === v ? '#ff6437' : 'var(--text-muted)',
+            padding: '6px 20px', borderRadius: 99, cursor: 'pointer',
+            background: view === v ? 'rgba(180,188,220,0.12)' : 'var(--bg-card)',
+            border:    `1px solid ${view === v ? 'rgba(180,188,220,0.45)' : 'var(--border)'}`,
+            color:      view === v ? '#d8e0ee' : 'var(--text-muted)',
             fontSize: 11, fontFamily: FF, fontWeight: view === v ? 700 : 400,
             letterSpacing: '0.08em', textTransform: 'uppercase', transition: 'all 0.15s',
           }}>{label}</button>
         ))}
       </div>
 
-      {/* Heat legend */}
+      {/* Activity legend */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ color: 'var(--text-faint)', fontSize: 10, fontFamily: FF }}>Legend</span>
-        {[['Cold','rgba(155,168,188,0.35)'],['×1','#a03020'],['×2','#d73a28'],['×3+','#ff6437']].map(([l, c]) => (
+        <span style={{ color: 'var(--text-faint)', fontSize: 10, fontFamily: FF }}>Activity</span>
+        {[['Cold','rgba(155,168,188,0.35)'],['×1','#7a8fa8'],['×2','#a8b8cc'],['×3+','#d8e0ee']].map(([l, c]) => (
           <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <div style={{ width: 12, height: 10, borderRadius: 2, background: c }}/>
             <span style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF }}>{l}</span>
@@ -170,73 +235,122 @@ export default function MuscleMapView({ workouts = [] }) {
         <Model
           data={modelData}
           type={view}
-          highlightedColors={['#a03020', '#d73a28', '#ff6437']}
-          bodyColor="#111118"
+          highlightedColors={['#7a8fa8', '#a8b8cc', '#d8e0ee']}
+          bodyColor="#0c0c12"
           onClick={handleClick}
           style={{ width: '100%', maxWidth: 240 }}
           svgStyle={{ borderRadius: 8, overflow: 'visible' }}
         />
       </div>
 
-      {/* Stats card */}
-      <div style={{
-        background: 'var(--stat-bg)',
-        border:     `1px solid ${sel && sel.n > 0 ? 'rgba(215,58,40,0.40)' : 'var(--border)'}`,
-        borderRadius: 12, padding: '16px 18px', minHeight: 64,
-        boxShadow: sel && sel.n > 0 ? '0 0 22px rgba(215,58,40,0.10)' : 'var(--card-shadow)',
-        transition: 'border-color 0.3s, box-shadow 0.3s',
-      }}>
-        {!sel ? (
+      {/* Detail panel */}
+      {!selected ? (
+        <div style={{
+          background: 'var(--stat-bg)', border: '1px solid var(--border)',
+          borderRadius: 12, padding: '16px 18px',
+        }}>
           <p style={{ color: 'var(--text-faint)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', textAlign: 'center', margin: 0 }}>
             Tap a muscle group to see your stats
           </p>
-        ) : (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-              <div>
-                <p style={{ color: 'var(--text-primary)', fontSize: 15, fontWeight: 700, fontFamily: FF, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>{selected}</p>
-                <p style={{ color: sel.heat.hex, fontSize: 10, fontFamily: FF, margin: 0, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                  Activity {sel.heat.label}
-                </p>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <p style={{ color: sel.n > 0 ? sel.heat.hex : 'var(--text-faint)', fontSize: 26, fontWeight: 900, fontFamily: FF, margin: 0, lineHeight: 1 }}>{sel.n}</p>
-                <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '2px 0 0', letterSpacing: '0.16em', textTransform: 'uppercase' }}>sessions / 7d</p>
-              </div>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, animation: 'mmFadeUp 0.22s ease both' }}>
+
+          {/* Workout stats strip */}
+          <div style={{
+            background: 'var(--stat-bg)',
+            border: `1px solid ${n > 0 ? 'rgba(180,188,220,0.32)' : 'var(--border)'}`,
+            borderRadius: 12, padding: '12px 16px',
+            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8,
+          }}>
+            <div>
+              <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Sessions / 7d</p>
+              <p style={{ color: n > 0 ? heat.hex : 'var(--text-muted)', fontSize: 22, fontWeight: 900, fontFamily: FF, margin: 0, lineHeight: 1 }}>{n}</p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 12px' }}>
-              <div>
-                <p style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF, margin: '0 0 2px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Status</p>
-                <p style={{ color: sel.rec.color, fontSize: 11, fontFamily: FF, margin: 0 }}>{sel.rec.pct}% — {sel.rec.status}</p>
-              </div>
-              <div>
-                <p style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF, margin: '0 0 2px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Last Trained</p>
-                <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, margin: 0 }}>{fmtDate(sel.last, todayStr)}</p>
-              </div>
-              <div style={{ gridColumn: '1 / -1', marginTop: 2 }}>
-                <p style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF, margin: '0 0 2px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Primary Exercises</p>
-                <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, margin: 0, lineHeight: 1.5 }}>{EXERCISES_MAP[selected] || '—'}</p>
-              </div>
+            <div>
+              <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Last Trained</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, margin: '3px 0 0' }}>{fmtDate(lastWorked[selected], todayStr)}</p>
+            </div>
+            <div>
+              <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Status</p>
+              {rec && <p style={{ color: rec.color, fontSize: 11, fontFamily: FF, margin: '3px 0 0' }}>{rec.status}</p>}
             </div>
           </div>
-        )}
-      </div>
+
+          {/* Muscle info */}
+          {dbData && (
+            <div style={{
+              background: 'var(--bg-card)', border: `1px solid ${dbData.color}30`,
+              borderRadius: 12, padding: '13px 15px',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: dbData.color, boxShadow: `0 0 8px ${dbData.color}` }}/>
+                <p style={{ color: dbData.color, fontSize: 14, fontWeight: 800, fontFamily: FF, margin: 0 }}>{selected}</p>
+              </div>
+              <p style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF, letterSpacing: '0.06em', fontStyle: 'italic', margin: '0 0 8px' }}>
+                {dbData.scientific}
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 9 }}>
+                <span style={{ color: 'var(--text-faint)', fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: FF }}>Intensity</span>
+                {[1,2,3,4,5].map(i => (
+                  <div key={i} style={{
+                    width: 6, height: 6, borderRadius: '50%',
+                    background: i <= dbData.intensity ? dbData.color : 'rgba(212,212,232,0.08)',
+                    boxShadow: i <= dbData.intensity ? `0 0 5px ${dbData.color}88` : 'none',
+                  }}/>
+                ))}
+              </div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, lineHeight: 1.65, margin: 0 }}>{dbData.desc}</p>
+            </div>
+          )}
+
+          {/* Exercises */}
+          {dbData && exercises.length > 0 && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <div style={{ width: 3, height: 12, background: dbData.color, borderRadius: 2, boxShadow: `0 0 6px ${dbData.color}` }}/>
+                <p style={{ color: dbData.color, fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: FF, fontWeight: 700, flex: 1, margin: 0 }}>
+                  Exercises
+                </p>
+                <button onClick={handleShuffle} style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  padding: '4px 9px', borderRadius: 7,
+                  background: `${dbData.color}18`, border: `1px solid ${dbData.color}44`,
+                  color: dbData.color, fontSize: 9, fontWeight: 700,
+                  fontFamily: FF, cursor: 'pointer', letterSpacing: '0.08em',
+                }}>
+                  <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    style={{ transform: spinning ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.46s ease' }}>
+                    <polyline points="1 4 1 10 7 10"/>
+                    <polyline points="23 20 23 14 17 14"/>
+                    <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                  </svg>
+                  Shuffle
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {exercises.map((ex, i) => <ExCard key={`${ex.name}-${i}`} ex={ex} accent={dbData.color} />)}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Muscle pill row */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
         {MUSCLES.map(m => {
-          const n = counts[m] || 0; const isSel = selected === m
+          const c = counts[m] || 0; const isSel = selected === m
           return (
             <button key={m} onClick={() => setSelected(s => s === m ? null : m)} style={{
               display: 'flex', alignItems: 'center', gap: 4,
               padding: '4px 10px', borderRadius: 99, cursor: 'pointer',
-              background: isSel ? 'rgba(215,58,40,0.14)' : 'var(--bg-card)',
-              border: `1px solid ${n > 0 ? `rgba(215,58,40,${Math.min(0.25 + n * 0.18, 0.70)})` : 'var(--border)'}`,
+              background: isSel ? 'rgba(180,188,220,0.12)' : 'var(--bg-card)',
+              border: `1px solid ${c > 0 ? `rgba(180,188,220,${Math.min(0.22 + c * 0.18, 0.65)})` : 'var(--border)'}`,
               transition: 'all 0.15s',
             }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0, background: n > 0 ? getHeat(n).hex : 'rgba(140,155,175,0.25)' }}/>
-              <span style={{ color: n > 0 ? 'var(--text-secondary)' : 'var(--text-faint)', fontSize: 10, fontFamily: FF }}>{m}</span>
-              {n > 0 && <span style={{ color: getHeat(n).hex, fontSize: 9, fontFamily: FF, fontWeight: 700 }}>{n}</span>}
+              <div style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0, background: c > 0 ? getHeat(c).hex : 'rgba(140,155,175,0.25)' }}/>
+              <span style={{ color: c > 0 ? 'var(--text-secondary)' : 'var(--text-faint)', fontSize: 10, fontFamily: FF }}>{m}</span>
+              {c > 0 && <span style={{ color: getHeat(c).hex, fontSize: 9, fontFamily: FF, fontWeight: 700 }}>{c}</span>}
             </button>
           )
         })}

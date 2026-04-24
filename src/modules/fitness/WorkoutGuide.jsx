@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 // ─── Muscle Database ─────────────────────────────────────────────────────────
-const DB = {
+export const DB = {
   // ── Front ──
   chest: {
     label: 'Chest', scientific: 'Pectoralis Major & Pectoralis Minor',
