@@ -209,10 +209,10 @@ export default function Login2() {
         <div style={{
           position: 'fixed', inset: 0, zIndex: 0,
           backgroundImage: `url(${BG})`,
-          backgroundSize: 'cover',
-          backgroundPosition: '28% top',
+          backgroundSize: 'auto 58%',
+          backgroundPosition: '18% 4%',
           backgroundRepeat: 'no-repeat',
-          filter: 'blur(0.4px) contrast(1.1) brightness(0.78) saturate(0.88)',
+          filter: 'contrast(1.14) brightness(0.8) saturate(0.88)',
         }} />
 
         {/* ── Starfield ── */}
