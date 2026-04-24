@@ -231,11 +231,11 @@ export const DB = {
   },
 }
 
-export const FRONT_ZONES = ['chest','shoulders','biceps','forearms','core','obliques','quads','calves']
-export const BACK_ZONES  = ['traps','upper_back','lats','triceps','lower_back','glutes','hamstrings','calves']
+const FRONT_ZONES = ['chest','shoulders','biceps','forearms','core','obliques','quads','calves']
+const BACK_ZONES  = ['traps','upper_back','lats','triceps','lower_back','glutes','hamstrings','calves']
 
 // Zone SVG shape data
-export const FRONT_ZONE_SHAPES = {
+const FRONT_ZONE_SHAPES = {
   chest:     [
     { d:'M82 96 Q100 90 120 92 Q100 98 84 110 Q76 120 76 140 Q76 154 86 160 Q102 166 120 163 Q102 156 88 148 Q80 140 80 126 Z' },
     { d:'M158 96 Q140 90 120 92 Q140 98 156 110 Q164 120 164 140 Q164 154 154 160 Q138 166 120 163 Q138 156 152 148 Q160 140 160 126 Z' },
@@ -274,7 +274,7 @@ export const FRONT_ZONE_SHAPES = {
   ],
 }
 
-export const BACK_ZONE_SHAPES = {
+const BACK_ZONE_SHAPES = {
   traps:      [
     { d:'M82 84 Q96 76 110 70 L120 72 L130 70 Q144 76 158 84 Q142 90 120 91 Q98 90 82 84 Z' },
   ],
@@ -306,7 +306,7 @@ export const BACK_ZONE_SHAPES = {
   ],
 }
 
-export const FRONT_LABELS = [
+const FRONT_LABELS = [
   { id:'shoulders', x:2,   y:101, a:'start', sci:'Deltoid'            },
   { id:'biceps',    x:2,   y:127, a:'start', sci:'Biceps Brachii'     },
   { id:'forearms',  x:2,   y:189, a:'start', sci:'Brachioradialis'    },
@@ -317,7 +317,7 @@ export const FRONT_LABELS = [
   { id:'calves',    x:2,   y:405, a:'start', sci:'Gastrocnemius'      },
 ]
 
-export const BACK_LABELS = [
+const BACK_LABELS = [
   { id:'traps',      x:238, y:83,  a:'end',   sci:'Trapezius'         },
   { id:'upper_back', x:2,   y:115, a:'start', sci:'Rhomboids'         },
   { id:'lats',       x:238, y:145, a:'end',   sci:'Latissimus Dorsi'  },
@@ -329,7 +329,7 @@ export const BACK_LABELS = [
 ]
 
 // ─── Base Body SVGs ───────────────────────────────────────────────────────────
-export function FrontBase() {
+function FrontBase() {
   return (
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', filter:'drop-shadow(0 0 7px rgba(255,255,255,0.22)) drop-shadow(0 0 2px rgba(255,255,255,0.38))' }}>
       <defs>
@@ -425,7 +425,7 @@ export function FrontBase() {
 
 
 // ─── Bone Overlay ─────────────────────────────────────────────────────────────
-export function BoneOverlay({ view }) {
+function BoneOverlay({ view }) {
   return (
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}>
       <defs>
@@ -721,7 +721,7 @@ function VeinOverlay({ view }) {
   )
 }
 
-export function BackBase() {
+function BackBase() {
   return (
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', filter:'drop-shadow(0 0 7px rgba(255,255,255,0.22)) drop-shadow(0 0 2px rgba(255,255,255,0.38))' }}>
       <defs>
