@@ -54,6 +54,28 @@ const GROUP_TO_DB = {
   Calves:     'calves',
 }
 
+// Labels positioned in the model's 0 0 100 200 coordinate space.
+// x < 0 or x > 100 renders outside body (requires overflow:visible on parent).
+// ex = x-coordinate of the leader line's body-side endpoint.
+const LABELS = {
+  anterior: [
+    { group: 'Shoulders', x: 103, y: 43,  anchor: 'start', ex: 79 },
+    { group: 'Chest',     x: 103, y: 51,  anchor: 'start', ex: 70 },
+    { group: 'Biceps',    x: -3,  y: 61,  anchor: 'end',   ex: 17 },
+    { group: 'Core',      x: 103, y: 83,  anchor: 'start', ex: 59 },
+    { group: 'Quads',     x: -3,  y: 118, anchor: 'end',   ex: 29 },
+    { group: 'Calves',    x: 103, y: 175, anchor: 'start', ex: 74 },
+  ],
+  posterior: [
+    { group: 'Shoulders', x: -3,  y: 44,  anchor: 'end',   ex: 29 },
+    { group: 'Back',      x: 103, y: 57,  anchor: 'start', ex: 66 },
+    { group: 'Triceps',   x: -3,  y: 65,  anchor: 'end',   ex: 27 },
+    { group: 'Glutes',    x: 103, y: 111, anchor: 'start', ex: 69 },
+    { group: 'Hamstrings',x: -3,  y: 140, anchor: 'end',   ex: 29 },
+    { group: 'Calves',    x: 103, y: 178, anchor: 'start', ex: 71 },
+  ],
+}
+
 function getHeat(n) {
   if (n === 0) return { label: 'Cold',  hex: 'rgba(140,155,175,0.4)' }
   if (n === 1) return { label: '×1',    hex: '#7a8fa8' }
@@ -163,15 +185,17 @@ export default function MuscleMapView({ workouts = [] }) {
     return lw
   }, [workouts])
 
-  const modelData = useMemo(() =>
-    MUSCLES
+  // Include selected muscle at full brightness so it always lights up on tap
+  const modelData = useMemo(() => {
+    const entries = MUSCLES
       .filter(m => (counts[m] || 0) > 0)
-      .map(m => ({
-        name:      m,
-        muscles:   SLUG_MAP[m],
-        frequency: Math.min(counts[m], 3),
-      }))
-  , [counts])
+      .map(m => ({ name: m, muscles: SLUG_MAP[m], frequency: Math.min(counts[m], 3) }))
+
+    if (selected && !entries.find(e => e.name === selected)) {
+      entries.push({ name: selected, muscles: SLUG_MAP[selected], frequency: 3 })
+    }
+    return entries
+  }, [counts, selected])
 
   useEffect(() => {
     if (selected) {
@@ -200,10 +224,15 @@ export default function MuscleMapView({ workouts = [] }) {
   const heat   = getHeat(n)
   const rec    = selected ? getRecovery(n) : null
   const dbData = selected ? DB[GROUP_TO_DB[selected]] : null
+  const labels = LABELS[view] || []
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <style>{`@keyframes mmFadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      <style>{`
+        @keyframes mmFadeUp { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+        @keyframes mmGlow   { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
+        .mm-label-glow { filter: drop-shadow(0 0 3px currentColor) }
+      `}</style>
 
       {/* Front / Back toggle */}
       <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
@@ -230,17 +259,83 @@ export default function MuscleMapView({ workouts = [] }) {
         ))}
       </div>
 
-      {/* Body model */}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Model
-          data={modelData}
-          type={view}
-          highlightedColors={['#7a8fa8', '#a8b8cc', '#d8e0ee']}
-          bodyColor="#0c0c12"
-          onClick={handleClick}
-          style={{ width: '100%', maxWidth: 240 }}
-          svgStyle={{ borderRadius: 8, overflow: 'visible' }}
-        />
+      {/* Body model + label overlay */}
+      <div style={{ display: 'flex', justifyContent: 'center', overflow: 'visible' }}>
+        <div style={{ position: 'relative', width: '100%', maxWidth: 240, overflow: 'visible' }}>
+          <Model
+            data={modelData}
+            type={view}
+            highlightedColors={['#7a8fa8', '#a8b8cc', '#d8e0ee']}
+            bodyColor="#0c0c12"
+            onClick={handleClick}
+            style={{ width: '100%', display: 'block' }}
+            svgStyle={{ borderRadius: 8, overflow: 'visible' }}
+          />
+
+          {/* Label overlay — viewBox matches model's 0 0 100 200 space */}
+          <svg
+            viewBox="0 0 100 200"
+            preserveAspectRatio="xMidYMid meet"
+            style={{
+              position: 'absolute', top: 0, left: 0,
+              width: '100%', height: '100%',
+              overflow: 'visible', pointerEvents: 'none',
+            }}
+          >
+            <defs>
+              <filter id="mm-label-glow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+                <feFlood floodColor="#ffffff" floodOpacity="1" result="white"/>
+                <feComposite in="white" in2="blur" operator="in" result="wb"/>
+                <feMerge><feMergeNode in="wb"/><feMergeNode in="wb"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            {labels.map(l => {
+              const isActive  = selected === l.group
+              const dbKey     = GROUP_TO_DB[l.group]
+              const color     = isActive ? (DB[dbKey]?.color || '#d8e0ee') : 'rgba(200,210,230,0.30)'
+              const lineX1    = l.anchor === 'start' ? 101 : -1
+              const dotX      = l.ex
+
+              return (
+                <g key={l.group} style={{ transition: 'opacity 0.2s' }}>
+                  {/* Leader line */}
+                  <line
+                    x1={lineX1} y1={l.y}
+                    x2={dotX}   y2={l.y}
+                    stroke={color}
+                    strokeWidth={isActive ? 0.5 : 0.3}
+                    strokeDasharray={isActive ? 'none' : '2 2'}
+                    style={{ transition: 'stroke 0.2s, stroke-width 0.2s' }}
+                  />
+                  {/* Endpoint dot on muscle */}
+                  <circle cx={dotX} cy={l.y} r={isActive ? 1.4 : 0.8}
+                    fill={color}
+                    style={{ transition: 'fill 0.2s, r 0.2s' }}
+                  />
+                  {/* Label text */}
+                  <text
+                    x={l.x} y={l.y + 1.5}
+                    textAnchor={l.anchor}
+                    fontSize="4.8"
+                    fontFamily={FF}
+                    fontWeight={isActive ? '700' : '400'}
+                    fill={color}
+                    filter={isActive ? 'url(#mm-label-glow)' : undefined}
+                    letterSpacing="0.04em"
+                    style={{
+                      transition: 'fill 0.2s, font-weight 0.2s',
+                      animation: isActive ? 'mmGlow 2.4s ease-in-out infinite' : undefined,
+                    }}
+                  >
+                    {l.group}
+                  </text>
+                </g>
+              )
+            })}
+          </svg>
+        </div>
       </div>
 
       {/* Detail panel */}
