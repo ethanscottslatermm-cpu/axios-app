@@ -225,11 +225,11 @@ export default function Login2() {
   return (
     <>
       <style>{styles}</style>
-      <div style={{ position: 'fixed', inset: 0, background: '#000' }}>
+      <div style={{ position: 'fixed', top: 0, bottom: 0, left: 'max(0px, calc(50vw - 215px))', right: 'max(0px, calc(50vw - 215px))', background: '#000', overflow: 'hidden' }}>
 
         {/* ── Background image ── */}
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 0,
+          position: 'absolute', inset: 0, zIndex: 0,
           backgroundImage: `url(${BG})`,
           backgroundSize: 'cover',
           backgroundPosition: '38% top',
@@ -239,7 +239,7 @@ export default function Login2() {
 
         {/* ── Cinematic gradient frame (top + bottom) ── */}
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none',
+          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background: `linear-gradient(to bottom,
             rgba(0,0,0,0.78) 0%,
             rgba(0,0,0,0.22) 18%,
@@ -251,7 +251,7 @@ export default function Login2() {
 
         {/* ── Radial edge vignette ── */}
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none',
+          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background: 'radial-gradient(ellipse at 38% 45%, transparent 40%, rgba(0,0,0,0.55) 100%)',
         }} />
 
@@ -304,7 +304,7 @@ export default function Login2() {
 
         {/* ── Horizontal edge vignette (sides) ── */}
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none',
+          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background: 'linear-gradient(to right, rgba(0,0,0,0.32) 0%, transparent 18%, transparent 82%, rgba(0,0,0,0.32) 100%)',
         }} />
 
@@ -329,7 +329,7 @@ export default function Login2() {
 
         {/* Scanline traveling down */}
         <div style={{
-          position:'fixed', width:'100%', height:'1px', top:0, zIndex:3,
+          position:'absolute', width:'100%', height:'1px', top:0, zIndex:3,
           background:'linear-gradient(90deg,transparent 0%,rgba(220,220,255,0.07) 30%,rgba(212,212,232,0.14) 50%,rgba(220,220,255,0.07) 70%,transparent 100%)',
           animation:'l2-scan 8s ease-in-out infinite',
           pointerEvents:'none',
