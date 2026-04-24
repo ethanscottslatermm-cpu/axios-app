@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="UTF-8">
+  <title>Axios — Technical Setup</title>
+  <!--[if gte mso 9]>
+  <xml>
+    <w:WordDocument>
+      <w:View>Print</w:View>
+      <w:Zoom>90</w:Zoom>
+      <w:DoNotOptimizeForBrowser/>
+    </w:WordDocument>
+  </xml>
+  <![endif]-->
+  <style>
+    body {
+      font-family: 'Calibri', sans-serif;
+      font-size: 11pt;
+      color: #1a1a1a;
+      margin: 1in;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 22pt;
+      font-weight: bold;
+      color: #0d0d0d;
+      border-bottom: 3px solid #0d0d0d;
+      padding-bottom: 6pt;
+      margin-top: 0;
+    }
+    h2 {
+      font-size: 14pt;
+      font-weight: bold;
+      color: #1a1a1a;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 4pt;
+      margin-top: 22pt;
+    }
+    h3 {
+      font-size: 11pt;
+      font-weight: bold;
+      color: #333333;
+      margin-top: 14pt;
+      margin-bottom: 4pt;
+    }
+    p {
+      margin: 4pt 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 10pt 0;
+      font-size: 10.5pt;
+    }
+    th {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 7pt 10pt;
+      text-align: left;
+      font-weight: bold;
+    }
+    td {
+      padding: 6pt 10pt;
+      border: 1px solid #cccccc;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td {
+      background-color: #f5f5f5;
+    }
+    .badge {
+      display: inline-block;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 1pt 6pt;
+      border-radius: 3pt;
+      font-size: 8.5pt;
+      font-weight: bold;
+      margin-right: 4pt;
+    }
+    .badge-gray {
+      background: #888888;
+    }
+    .badge-green {
+      background: #2e7d32;
+    }
+    .badge-red {
+      background: #b71c1c;
+    }
+    .badge-blue {
+      background: #1565c0;
+    }
+    .note {
+      background: #fff8e1;
+      border-left: 4px solid #f9a825;
+      padding: 6pt 10pt;
+      margin: 8pt 0;
+      font-size: 10pt;
+    }
+    .section-label {
+      font-size: 8pt;
+      font-weight: bold;
+      letter-spacing: 1.5pt;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 2pt;
+    }
+    ul {
+      margin: 4pt 0 8pt 18pt;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 3pt;
+    }
+    .cover {
+      text-align: center;
+      padding: 40pt 0 20pt;
+    }
+    .cover h1 {
+      border: none;
+      font-size: 32pt;
+      letter-spacing: 6pt;
+    }
+    .cover p {
+      color: #666;
+      font-size: 10pt;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 20pt 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <h1>AXIOS</h1>
+  <p style="font-size:13pt; font-weight:bold; color:#333;">Technical Setup &amp; Architecture Overview</p>
+  <p>Prepared: April 18, 2026</p>
+  <p>Repository: <strong>ethanscottslatermm-cpu/axios-app</strong></p>
+  <p>Hosting: <strong>Netlify</strong> &nbsp;|&nbsp; Database: <strong>Supabase</strong> &nbsp;|&nbsp; Version: <strong>0.1.0</strong></p>
+</div>
+
+<hr class="divider">
+
+<!-- TABLE OF CONTENTS -->
+<h2>Table of Contents</h2>
+<ol>
+  <li>Application Overview</li>
+  <li>Frontend Tech Stack</li>
+  <li>Backend &amp; Serverless Functions</li>
+  <li>Database (Supabase)</li>
+  <li>Authentication &amp; Security</li>
+  <li>API Integrations &amp; Vendors</li>
+  <li>Environment Variables Reference</li>
+  <li>Third-Party Libraries</li>
+  <li>Hosting &amp; Deployment</li>
+  <li>Module Breakdown</li>
+</ol>
+
+<hr class="divider">
+
+<!-- 1. OVERVIEW -->
+<h2>1. Application Overview</h2>
+<p>
+  Axios is a mobile-first personal wellness and finance platform built as a React Single Page Application (SPA).
+  It is designed for a 430px-wide mobile viewport, centered in the browser on desktop. The app tracks health
+  (food, water, weight, fitness), spiritual life (prayer, devotionals, scripture), finances (bills, bank accounts,
+  stock watchlist), and a personal calendar — all under a single authenticated user account.
+</p>
+<p>The app is deployed on Netlify and uses Supabase as its database and authentication backend.</p>
+
+<hr class="divider">
+
+<!-- 2. FRONTEND -->
+<h2>2. Frontend Tech Stack</h2>
+<table>
+  <tr>
+    <th>Technology</th>
+    <th>Version</th>
+    <th>Role</th>
+  </tr>
+  <tr>
+    <td><strong>React</strong></td>
+    <td>18.2</td>
+    <td>Core UI framework. Functional components, hooks, context.</td>
+  </tr>
+  <tr>
+    <td><strong>Vite</strong></td>
+    <td>5.0</td>
+    <td>Build tool and dev server. Fast HMR, ESM-native.</td>
+  </tr>
+  <tr>
+    <td><strong>React Router DOM</strong></td>
+    <td>6.21</td>
+    <td>Client-side routing. Handles protected routes, onboarding, and module navigation.</td>
+  </tr>
+  <tr>
+    <td><strong>TanStack React Query</strong></td>
+    <td>5.17</td>
+    <td>Server-state caching and async data fetching. Used across modules.</td>
+  </tr>
+  <tr>
+    <td><strong>Tailwind CSS</strong></td>
+    <td>3.4</td>
+    <td>Utility-first CSS. Used for layout helpers; most styling is inline for mobile precision.</td>
+  </tr>
+  <tr>
+    <td><strong>PostCSS + Autoprefixer</strong></td>
+    <td>8.4 / 10.4</td>
+    <td>CSS transformation pipeline, vendor prefix support.</td>
+  </tr>
+  <tr>
+    <td><strong>Google Fonts (EB Garamond)</strong></td>
+    <td>—</td>
+    <td>Primary serif typeface for headings and display text.</td>
+  </tr>
+</table>
+
+<h3>State Management</h3>
+<p>
+  Axios uses a combination of <strong>React Context</strong> (global auth, theme, app state) and
+  <strong>TanStack Query</strong> (remote data). There is no Redux or external state library.
+</p>
+<ul>
+  <li><strong>AuthContext</strong> — user session, sign-in/out, inactivity lock, heartbeat</li>
+  <li><strong>AppContext</strong> — global UI state</li>
+  <li><strong>ThemeContext</strong> — theme switching (Axios Platinum default + alternate themes via CSS variables)</li>
+</ul>
+
+<hr class="divider">
+
+<!-- 3. BACKEND -->
+<h2>3. Backend &amp; Serverless Functions</h2>
+<p>
+  There is no traditional backend server. All server-side logic runs as <strong>Netlify Functions</strong>
+  (Node.js 18, bundled with esbuild). These functions handle anything that requires secret API credentials,
+  keeping keys off the client.
+</p>
+<table>
+  <tr>
+    <th>Function File</th>
+    <th>Route</th>
+    <th>Purpose</th>
+    <th>External Call</th>
+  </tr>
+  <tr>
+    <td>plaid-link-token.js</td>
+    <td>/api/plaid-link-token</td>
+    <td>Creates a Plaid Link token to initiate bank connection UI</td>
+    <td>Plaid API</td>
+  </tr>
+  <tr>
+    <td>plaid-exchange.js</td>
+    <td>/api/plaid-exchange</td>
+    <td>Exchanges Plaid public token for access token; stores in Supabase</td>
+    <td>Plaid API + Supabase (service role)</td>
+  </tr>
+  <tr>
+    <td>plaid-balances.js</td>
+    <td>/api/plaid-balances</td>
+    <td>Fetches live bank account balances for authenticated user</td>
+    <td>Plaid API + Supabase (service role)</td>
+  </tr>
+  <tr>
+    <td>plaid-transactions.js</td>
+    <td>/api/plaid-transactions</td>
+    <td>Fetches last 30 days of bank transactions</td>
+    <td>Plaid API + Supabase (service role)</td>
+  </tr>
+  <tr>
+    <td>stocks.js</td>
+    <td>/api/stocks</td>
+    <td>Returns live quotes for DOW, S&amp;P 500, NASDAQ, BTC, Gold</td>
+    <td>Finnhub API</td>
+  </tr>
+  <tr>
+    <td>news.js</td>
+    <td>/api/news</td>
+    <td>Aggregates headlines from CNN, BBC, NPR RSS feeds. Cached 5 min.</td>
+    <td>RSS feeds (no key)</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>Note:</strong> All routes are mapped via Netlify's redirect rule: <code>/api/*</code> → <code>/.netlify/functions/:splat</code>.
+  The SPA fallback (<code>/* → /index.html</code>) ensures React Router handles all client-side navigation.
+</div>
+
+<hr class="divider">
+
+<!-- 4. DATABASE -->
+<h2>4. Database (Supabase / PostgreSQL)</h2>
+<p>
+  Supabase hosts a managed PostgreSQL database. Row Level Security (RLS) is enabled on every table —
+  users can only read and write their own rows. Admin-only tables use a role check against the
+  <code>profiles</code> table.
+</p>
+
+<table>
+  <tr>
+    <th>Table</th>
+    <th>Purpose</th>
+    <th>RLS Policy</th>
+  </tr>
+  <tr>
+    <td>profiles</td>
+    <td>User profile: name, role, avatar, status, last_login, last_seen</td>
+    <td>User owns row; admin can read all</td>
+  </tr>
+  <tr>
+    <td>food_logs</td>
+    <td>Daily food / calorie entries with macros</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>water_logs</td>
+    <td>Water intake log (oz per entry)</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>weight_logs</td>
+    <td>Daily weight check-ins in lbs</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>workouts</td>
+    <td>Workout sessions (date, type, duration)</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>exercises</td>
+    <td>Individual exercises tied to a workout (sets, reps, weight)</td>
+    <td>Nested: workout must belong to auth.uid()</td>
+  </tr>
+  <tr>
+    <td>prayer_logs</td>
+    <td>Prayer journal entries (category, text, answered status)</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>devotionals</td>
+    <td>Daily devotional reflections with scripture</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>stock_watchlist</td>
+    <td>User's saved stock ticker symbols</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>calendar_events</td>
+    <td>Events with type, date, time, recurring flag, email reminder</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>bills</td>
+    <td>Recurring bill tracker (payee, amount, due day, autopay, paid status)</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>plaid_items</td>
+    <td>Plaid bank connection tokens (access_token, item_id, institution)</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>webauthn_credentials</td>
+    <td>Biometric (Face ID / Touch ID) credential IDs per user</td>
+    <td>auth.uid() = user_id</td>
+  </tr>
+  <tr>
+    <td>login_history</td>
+    <td>Login timestamps and device type per user</td>
+    <td>Insert: own rows only. Select: admin only.</td>
+  </tr>
+  <tr>
+    <td>verse_pool</td>
+    <td>Admin-managed pool of scripture references for rotating display</td>
+    <td>Read: any authenticated user. Write: admin only.</td>
+  </tr>
+  <tr>
+    <td>app_settings</td>
+    <td>Global key/value settings (e.g. maintenance mode, app version)</td>
+    <td>Read: anyone. Write: admin only.</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- 5. AUTH & SECURITY -->
+<h2>5. Authentication &amp; Security</h2>
+
+<h3>Supabase Auth (Primary)</h3>
+<ul>
+  <li>Email + password sign-in via <code>supabase.auth.signInWithPassword()</code></li>
+  <li>Session persisted via Supabase's built-in session management</li>
+  <li>Checks user <code>status</code> field on login — blocks <em>inactive</em>, <em>deleted</em>, and <em>suspended</em> accounts</li>
+  <li>Records <code>last_login</code>, <code>last_seen</code>, and <code>login_history</code> entries on each sign-in</li>
+  <li>Heartbeat updates <code>last_seen</code> every 5 minutes while the app is open</li>
+</ul>
+
+<h3>Biometric Lock (WebAuthn)</h3>
+<ul>
+  <li>Face ID / Touch ID via the browser's native <code>navigator.credentials</code> API</li>
+  <li>Credential IDs stored in <code>webauthn_credentials</code> table</li>
+  <li>App automatically locks after 3 minutes of inactivity — biometric required to re-enter</li>
+  <li>Requires HTTPS (secure context)</li>
+</ul>
+
+<h3>Role-Based Access</h3>
+<ul>
+  <li>Two roles: <code>user</code> (default) and <code>admin</code></li>
+  <li>Admin role gates: admin dashboard, maintenance mode toggle, verse pool management, user management, login history</li>
+  <li>Finance module additionally gated behind biometric re-authentication (FinanceGuard component)</li>
+</ul>
+
+<h3>Secrets Handling</h3>
+<ul>
+  <li>Client-only keys are <code>VITE_</code>-prefixed and safe to expose (anon key, public API keys)</li>
+  <li>Plaid credentials and Supabase Service Role Key are <strong>Netlify-only environment variables</strong> — never shipped to the browser</li>
+  <li>All tables protected by Row Level Security — no raw database access possible via the anon key beyond a user's own data</li>
+</ul>
+
+<hr class="divider">
+
+<!-- 6. API INTEGRATIONS -->
+<h2>6. API Integrations &amp; Vendors</h2>
+
+<h3>6.1 Supabase</h3>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Vendor</td><td>Supabase (supabase.com)</td></tr>
+  <tr><td>Purpose</td><td>PostgreSQL database, user authentication, real-time, storage</td></tr>
+  <tr><td>SDK</td><td>@supabase/supabase-js v2.39</td></tr>
+  <tr><td>Project URL</td><td>https://ykfqhtzpxtmaaspxznhp.supabase.co</td></tr>
+  <tr><td>Client Key (public)</td><td>VITE_SUPABASE_ANON_KEY (JWT anon key — safe to expose)</td></tr>
+  <tr><td>Server Key (secret)</td><td>SUPABASE_SERVICE_ROLE_KEY (Netlify env only)</td></tr>
+  <tr><td>Status</td><td><span class="badge badge-green">CONFIGURED</span></td></tr>
+</table>
+
+<h3>6.2 Plaid</h3>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Vendor</td><td>Plaid (plaid.com)</td></tr>
+  <tr><td>Purpose</td><td>Bank account connection, balance retrieval, transaction history</td></tr>
+  <tr><td>SDK</td><td>plaid v41.4 (server), react-plaid-link v4.1 (client)</td></tr>
+  <tr><td>Environment</td><td>Sandbox (testing) → set PLAID_ENV=production to go live</td></tr>
+  <tr><td>Client ID</td><td>PLAID_CLIENT_ID (Netlify env only)</td></tr>
+  <tr><td>Secret</td><td>PLAID_SECRET (Netlify env only)</td></tr>
+  <tr><td>Status</td><td><span class="badge badge-blue">REQUIRES NETLIFY ENV VARS</span></td></tr>
+</table>
+
+<h3>6.3 Finnhub</h3>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Vendor</td><td>Finnhub (finnhub.io)</td></tr>
+  <tr><td>Purpose</td><td>Real-time stock quotes, market news, crypto news, symbol search</td></tr>
+  <tr><td>Tracked Instruments</td><td>DOW (DIA), S&amp;P 500 (SPY), NASDAQ (QQQ), Bitcoin (BINANCE:BTCUSDT), Gold (GLD)</td></tr>
+  <tr><td>Client Key</td><td>VITE_FINNHUB_KEY (also used server-side in stocks.js function)</td></tr>
+  <tr><td>Status</td><td><span class="badge badge-green">CONFIGURED</span></td></tr>
+</table>
+
+<h3>6.4 Gmail (Google Identity Services)</h3>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Vendor</td><td>Google (accounts.google.com)</td></tr>
+  <tr><td>Purpose</td><td>Send calendar event reminder emails from the user's own Gmail account</td></tr>
+  <tr><td>Auth Flow</td><td>OAuth 2.0 implicit token flow (Google Identity Services library)</td></tr>
+  <tr><td>Scopes</td><td>gmail.send, userinfo.email</td></tr>
+  <tr><td>API Endpoint</td><td>https://gmail.googleapis.com/gmail/v1/users/me/messages/send</td></tr>
+  <tr><td>Required Key</td><td>VITE_GOOGLE_CLIENT_ID (OAuth 2.0 Web Client ID)</td></tr>
+  <tr><td>Where to Create</td><td>console.cloud.google.com → Credentials → OAuth 2.0 Client IDs</td></tr>
+  <tr><td>Status</td><td><span class="badge badge-red">NOT CONFIGURED — key missing from .env.local</span></td></tr>
+</table>
+
+<h3>6.5 USDA FoodData Central</h3>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Vendor</td><td>U.S. Department of Agriculture (api.nal.usda.gov)</td></tr>
+  <tr><td>Purpose</td><td>Food nutrition search — calories, protein, carbs, fat by food name</td></tr>
+  <tr><td>Data Types</td><td>Foundation, SR Legacy, Survey (FNDDS), Branded foods</td></tr>
+  <tr><td>API Key</td><td>VITE_USDA_KEY (falls back to DEMO_KEY if not set)</td></tr>
+  <tr><td>Cost</td><td>Free with registration</td></tr>
+  <tr><td>Status</td><td><span class="badge badge-gray">RUNNING ON DEMO KEY — register for higher rate limits</span></td></tr>
+</table>
+
+<h3>6.6 Open Food Facts</h3>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Vendor</td><td>Open Food Facts (openfoodfacts.org)</td></tr>
+  <tr><td>Purpose</td><td>Barcode / UPC product lookup for nutrition data</td></tr>
+  <tr><td>API Key</td><td>None — fully open and free</td></tr>
+  <tr><td>Endpoint</td><td>https://world.openfoodfacts.org/api/v0/product/{barcode}.json</td></tr>
+  <tr><td>Status</td><td><span class="badge badge-green">ACTIVE — no setup required</span></td></tr>
+</table>
+
+<h3>6.7 Bible API</h3>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Vendor</td><td>bible-api.com</td></tr>
+  <tr><td>Purpose</td><td>Fetch scripture text for daily verse (KJV translation) and devotional module</td></tr>
+  <tr><td>API Key</td><td>None — fully free</td></tr>
+  <tr><td>Status</td><td><span class="badge badge-green">ACTIVE — no setup required</span></td></tr>
+</table>
+
+<h3>6.8 News RSS Feeds</h3>
+<table>
+  <tr><th>Source</th><th>Feed URL</th><th>Color Code</th></tr>
+  <tr><td>CNN</td><td>https://rss.cnn.com/rss/cnn_topstories.rss</td><td style="color:#ef4444;">Red</td></tr>
+  <tr><td>BBC</td><td>https://feeds.bbci.co.uk/news/rss.xml</td><td style="color:#60a5fa;">Blue</td></tr>
+  <tr><td>NPR</td><td>https://feeds.npr.org/1001/rss.xml</td><td style="color:#4ade80;">Green</td></tr>
+</table>
+<p>Parsed server-side by the <code>news.js</code> Netlify function. No API keys required. Cached 5 minutes on CDN.</p>
+
+<hr class="divider">
+
+<!-- 7. ENV VARS -->
+<h2>7. Environment Variables Reference</h2>
+
+<h3>Client-Side (.env.local + Netlify)</h3>
+<table>
+  <tr>
+    <th>Variable</th>
+    <th>Used In</th>
+    <th>Status</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td>VITE_SUPABASE_URL</td>
+    <td>src/lib/supabase.js</td>
+    <td><span class="badge badge-green">SET</span></td>
+    <td>Supabase project URL</td>
+  </tr>
+  <tr>
+    <td>VITE_SUPABASE_ANON_KEY</td>
+    <td>src/lib/supabase.js</td>
+    <td><span class="badge badge-green">SET</span></td>
+    <td>Public anon JWT — safe to expose</td>
+  </tr>
+  <tr>
+    <td>VITE_FINNHUB_KEY</td>
+    <td>src/lib/finnhub.js</td>
+    <td><span class="badge badge-green">SET</span></td>
+    <td>Finnhub API key for stock data</td>
+  </tr>
+  <tr>
+    <td>VITE_GOOGLE_CLIENT_ID</td>
+    <td>src/lib/gmail.js</td>
+    <td><span class="badge badge-red">MISSING</span></td>
+    <td>Required for Gmail send feature. Get from Google Cloud Console.</td>
+  </tr>
+  <tr>
+    <td>VITE_USDA_KEY</td>
+    <td>src/lib/foodSearch.js</td>
+    <td><span class="badge badge-gray">OPTIONAL</span></td>
+    <td>Falls back to DEMO_KEY. Register at api.nal.usda.gov for full access.</td>
+  </tr>
+</table>
+
+<h3>Server-Side (Netlify Environment Variables Only — never in .env.local)</h3>
+<table>
+  <tr>
+    <th>Variable</th>
+    <th>Used In</th>
+    <th>Status</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td>PLAID_CLIENT_ID</td>
+    <td>All plaid-*.js functions</td>
+    <td><span class="badge badge-blue">NETLIFY ONLY</span></td>
+    <td>From Plaid dashboard</td>
+  </tr>
+  <tr>
+    <td>PLAID_SECRET</td>
+    <td>All plaid-*.js functions</td>
+    <td><span class="badge badge-blue">NETLIFY ONLY</span></td>
+    <td>From Plaid dashboard — keep secret</td>
+  </tr>
+  <tr>
+    <td>PLAID_ENV</td>
+    <td>All plaid-*.js functions</td>
+    <td><span class="badge badge-blue">NETLIFY ONLY</span></td>
+    <td>sandbox | development | production</td>
+  </tr>
+  <tr>
+    <td>SUPABASE_URL</td>
+    <td>plaid-exchange.js, plaid-balances.js, plaid-transactions.js</td>
+    <td><span class="badge badge-blue">NETLIFY ONLY</span></td>
+    <td>Same URL as VITE_SUPABASE_URL but server-side</td>
+  </tr>
+  <tr>
+    <td>SUPABASE_SERVICE_ROLE_KEY</td>
+    <td>plaid-exchange.js, plaid-balances.js, plaid-transactions.js</td>
+    <td><span class="badge badge-blue">NETLIFY ONLY</span></td>
+    <td>Full DB access — never expose to client</td>
+  </tr>
+  <tr>
+    <td>FINNHUB_KEY</td>
+    <td>netlify/functions/stocks.js</td>
+    <td><span class="badge badge-blue">NETLIFY ONLY</span></td>
+    <td>Same value as VITE_FINNHUB_KEY</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- 8. LIBRARIES -->
+<h2>8. Third-Party Libraries</h2>
+<table>
+  <tr>
+    <th>Library</th>
+    <th>Version</th>
+    <th>Purpose</th>
+  </tr>
+  <tr>
+    <td>@supabase/supabase-js</td>
+    <td>2.39</td>
+    <td>Supabase client — auth, database queries, realtime</td>
+  </tr>
+  <tr>
+    <td>@tanstack/react-query</td>
+    <td>5.17</td>
+    <td>Data fetching, caching, background refetch</td>
+  </tr>
+  <tr>
+    <td>react-router-dom</td>
+    <td>6.21</td>
+    <td>Client-side routing and navigation</td>
+  </tr>
+  <tr>
+    <td>react-plaid-link</td>
+    <td>4.1</td>
+    <td>Plaid Link UI component for bank connection flow</td>
+  </tr>
+  <tr>
+    <td>plaid</td>
+    <td>41.4</td>
+    <td>Plaid Node.js SDK — server-side token exchange and data fetch</td>
+  </tr>
+  <tr>
+    <td>html5-qrcode</td>
+    <td>2.3</td>
+    <td>Barcode / QR scanning via device camera (used in food logging)</td>
+  </tr>
+  <tr>
+    <td>react-easy-crop</td>
+    <td>5.5</td>
+    <td>Avatar image cropping UI</td>
+  </tr>
+  <tr>
+    <td>sharp</td>
+    <td>0.34 (dev)</td>
+    <td>Image processing (build-time, used by Vite)</td>
+  </tr>
+  <tr>
+    <td>tailwindcss</td>
+    <td>3.4 (dev)</td>
+    <td>Utility CSS classes</td>
+  </tr>
+  <tr>
+    <td>vite + @vitejs/plugin-react</td>
+    <td>5.0 / 4.2 (dev)</td>
+    <td>Build system and React fast refresh</td>
+  </tr>
+</table>
+
+<h3>Browser APIs Used (No Library)</h3>
+<table>
+  <tr>
+    <th>API</th>
+    <th>Purpose</th>
+  </tr>
+  <tr>
+    <td>navigator.credentials (WebAuthn)</td>
+    <td>Biometric registration and verification (Face ID / Touch ID)</td>
+  </tr>
+  <tr>
+    <td>crypto.getRandomValues()</td>
+    <td>Generates WebAuthn challenge bytes — requires HTTPS</td>
+  </tr>
+  <tr>
+    <td>localStorage</td>
+    <td>Gmail OAuth token and email persistence across sessions</td>
+  </tr>
+  <tr>
+    <td>navigator.vibrate (haptics)</td>
+    <td>Tactile feedback on mobile interactions</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- 9. HOSTING -->
+<h2>9. Hosting &amp; Deployment</h2>
+<table>
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Platform</td><td>Netlify</td></tr>
+  <tr><td>Build Command</td><td>npm run build</td></tr>
+  <tr><td>Publish Directory</td><td>dist/</td></tr>
+  <tr><td>Functions Directory</td><td>netlify/functions/</td></tr>
+  <tr><td>Node Version</td><td>18 (set in netlify.toml)</td></tr>
+  <tr><td>Function Bundler</td><td>esbuild</td></tr>
+  <tr><td>SPA Routing</td><td>/* → /index.html (200 redirect for React Router)</td></tr>
+  <tr><td>API Proxy</td><td>/api/* → /.netlify/functions/:splat</td></tr>
+  <tr><td>Repository</td><td>github.com/ethanscottslatermm-cpu/axios-app (main branch)</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- 10. MODULES -->
+<h2>10. Module Breakdown</h2>
+<table>
+  <tr>
+    <th>Module</th>
+    <th>Path</th>
+    <th>Features</th>
+    <th>Data Source</th>
+  </tr>
+  <tr>
+    <td><strong>Dashboard</strong></td>
+    <td>/dashboard</td>
+    <td>Daily stat overview (calories, water, weight, module progress), upcoming events, rotating quotes, sticky header</td>
+    <td>Supabase (aggregated)</td>
+  </tr>
+  <tr>
+    <td><strong>Food</strong></td>
+    <td>/food</td>
+    <td>Calorie and macro tracking, food search by name, barcode scan, meal type breakdown</td>
+    <td>USDA FoodData Central, Open Food Facts, Supabase</td>
+  </tr>
+  <tr>
+    <td><strong>Water</strong></td>
+    <td>/water</td>
+    <td>Water intake log in glasses/oz, daily goal tracking</td>
+    <td>Supabase</td>
+  </tr>
+  <tr>
+    <td><strong>Weight</strong></td>
+    <td>/weight (fitness)</td>
+    <td>Daily weight check-ins, goal tracking, history chart</td>
+    <td>Supabase</td>
+  </tr>
+  <tr>
+    <td><strong>Fitness</strong></td>
+    <td>/fitness</td>
+    <td>Workout sessions, exercise sets/reps/weight logging, muscle group tracking</td>
+    <td>Supabase</td>
+  </tr>
+  <tr>
+    <td><strong>Finance</strong></td>
+    <td>/finance</td>
+    <td>Bank account balances &amp; transactions (Plaid), bill tracker, stock watchlist, market ticker, news feed</td>
+    <td>Plaid, Finnhub, Supabase, RSS</td>
+  </tr>
+  <tr>
+    <td><strong>Prayer</strong></td>
+    <td>/prayer</td>
+    <td>Prayer journal with categories (gratitude, request, intercession, praise, confession), answered tracking</td>
+    <td>Supabase</td>
+  </tr>
+  <tr>
+    <td><strong>Devotional</strong></td>
+    <td>/devotional</td>
+    <td>Daily scripture verse, reflection and application journaling, streak tracking</td>
+    <td>Bible API, Supabase</td>
+  </tr>
+  <tr>
+    <td><strong>Calendar</strong></td>
+    <td>/calendar</td>
+    <td>Personal events by type, recurring events, Gmail email reminders</td>
+    <td>Supabase, Gmail API</td>
+  </tr>
+  <tr>
+    <td><strong>Admin</strong></td>
+    <td>/admin</td>
+    <td>User management, maintenance mode toggle, verse pool editor, login history, app settings</td>
+    <td>Supabase (service role)</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<p style="font-size:9pt; color:#888; text-align:center;">
+  Axios Technical Setup · Generated April 18, 2026 · Repository: ethanscottslatermm-cpu/axios-app
+</p>
+
+</body>
+</html>
