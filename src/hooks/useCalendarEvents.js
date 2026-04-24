@@ -45,7 +45,13 @@ export function useCalendarEvents(year, month) {
       const { error } = await supabase.from('calendar_events').delete().eq('id', id)
       if (error) throw error
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['calendar_events', user?.id] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['calendar_events',       user?.id] })
+      qc.invalidateQueries({ queryKey: ['calendar_upcoming_ext', user?.id] })
+      qc.invalidateQueries({ queryKey: ['calendar_upcoming',     user?.id] })
+      qc.invalidateQueries({ queryKey: ['calendar_past',         user?.id] })
+      qc.invalidateQueries({ queryKey: ['calendar_year',         user?.id] })
+    },
   })
 
   const markReminderSent = useMutation({

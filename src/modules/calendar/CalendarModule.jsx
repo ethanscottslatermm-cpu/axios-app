@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import CALENDAR_BG from './calendarBg'
 import {
   useCalendarEvents, usePendingReminders,
   useUpcomingEventsExtended, usePastEvents,
@@ -20,11 +21,11 @@ const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
 const TYPE_CFG = {
-  general: { label:'General',  color:'var(--btn-bg)' },
-  workout: { label:'Workout',  color:'var(--accent-fitness,#dc4f3a)' },
-  prayer:  { label:'Prayer',   color:'var(--accent-prayer,#c8a000)' },
-  meal:    { label:'Meal',     color:'var(--accent-food,#c8853a)' },
-  finance: { label:'Finance',  color:'var(--accent-finance,#4db891)' },
+  general: { label:'General',  icon:'🗓',  color:'var(--btn-bg)' },
+  workout: { label:'Workout',  icon:'💪',  color:'var(--accent-fitness,#dc4f3a)' },
+  prayer:  { label:'Prayer',   icon:'🙏',  color:'var(--accent-prayer,#c8a000)' },
+  meal:    { label:'Meal',     icon:'🥗',  color:'var(--accent-food,#c8853a)' },
+  finance: { label:'Finance',  icon:'💰',  color:'var(--accent-finance,#4db891)' },
 }
 
 const FF = 'Helvetica Neue,Arial,sans-serif'
@@ -131,7 +132,9 @@ function EventRow({ event, onDelete, deleting }) {
   const timeStr = event.time ? new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : null
   return (
     <div style={{ display:'flex', alignItems:'center', gap:10, padding:'11px 14px', background:'var(--stat-bg)', border:`1px solid ${cfg.color}22`, borderRadius:10, boxShadow:'var(--card-shadow)' }}>
-      <EventDot type={event.type} size={8}/>
+      <div style={{ width:32, height:32, borderRadius:9, background:`${cfg.color}18`, border:`1px solid ${cfg.color}33`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:15 }}>
+        {cfg.icon}
+      </div>
       <div style={{ flex:1, minWidth:0 }}>
         <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:FF, margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{event.title}</p>
         <div style={{ display:'flex', gap:8, alignItems:'center', marginTop:2 }}>
@@ -266,13 +269,14 @@ function CreateModal({ defaultDate, onClose, onSave, gmailConnected, saving }) {
           <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
             {Object.entries(TYPE_CFG).map(([k, cfg]) => (
               <button key={k} onClick={() => set('type', k)} style={{
+                display:'flex', alignItems:'center', gap:5,
                 padding:'5px 12px', borderRadius:99, fontSize:10, fontFamily:FF, fontWeight:700,
                 letterSpacing:'0.1em', textTransform:'uppercase', cursor:'pointer',
                 border:`1px solid ${cfg.color}${form.type===k?'':'44'}`,
                 background: form.type===k ? `${cfg.color}22` : 'transparent',
                 color: form.type===k ? cfg.color : 'var(--text-muted)',
                 transition:'all 0.15s',
-              }}>{cfg.label}</button>
+              }}><span>{cfg.icon}</span>{cfg.label}</button>
             ))}
           </div>
 
@@ -438,21 +442,24 @@ export default function CalendarModule() {
   }
 
   const VIEW_TABS = [
-    { key:'month',   label:'Month'  },
-    { key:'week',    label:'Week'   },
-    { key:'agenda',  label:'Agenda' },
-    { key:'year',    label:'Year'   },
-    { key:'routine', label:'Routines'},
+    { key:'month',   label:'Month',    icon:'📅' },
+    { key:'week',    label:'Week',     icon:'🗓' },
+    { key:'agenda',  label:'Agenda',   icon:'📋' },
+    { key:'year',    label:'Year',     icon:'🌿' },
+    { key:'routine', label:'Routines', icon:'⚡' },
   ]
 
   const showsCalendar  = activeView === 'month'
   const showsMonthNav  = activeView === 'month'
 
   return (
-    <div style={{ minHeight:'100dvh', background:'var(--bg-primary)', paddingBottom:40 }}>
+    <div style={{ minHeight:'100dvh', background:'var(--bg-primary)', paddingBottom:40, position:'relative' }}>
+      {/* Background image */}
+      <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${CALENDAR_BG})`, backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.13, filter:'grayscale(100%) contrast(1.2) brightness(0.9)', pointerEvents:'none' }}/>
+      <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.15) 35%, rgba(8,8,8,0.85) 100%)', pointerEvents:'none' }}/>
 
       {/* ── Sticky Header ── */}
-      <div style={{ position:'sticky', top:0, zIndex:10, background:'var(--header-bg)', borderBottom:'1px solid var(--border)', padding:'14px 18px 10px' }}>
+      <div style={{ position:'sticky', top:0, zIndex:10, background:'rgba(8,8,8,0.82)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderBottom:'1px solid var(--border)', padding:'14px 18px 10px' }}>
         <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:10 }}>
           <button onClick={() => navigate('/dashboard')} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:20, lineHeight:1, padding:'2px 6px 2px 0' }}>‹</button>
           <div style={{ flex:1 }}>
@@ -487,13 +494,16 @@ export default function CalendarModule() {
             const active = activeView === key
             return (
               <button key={key} onClick={() => setActiveView(key)} style={{
+                display:'flex', alignItems:'center', gap:5,
                 padding:'6px 13px', borderRadius:99, flexShrink:0,
                 background: active ? 'rgba(200,212,200,0.12)' : 'transparent',
                 border:`1px solid ${active ? 'rgba(200,212,200,0.35)' : 'rgba(212,212,232,0.1)'}`,
                 color: active ? '#c8d4c8' : 'rgba(212,212,232,0.35)',
                 fontSize:11, fontFamily:FF, fontWeight: active ? 700 : 400,
                 cursor:'pointer', transition:'all 0.15s',
-              }}>{label}</button>
+              }}>
+                <span style={{ fontSize:12 }}>{icon}</span>{label}
+              </button>
             )
           })}
         </div>

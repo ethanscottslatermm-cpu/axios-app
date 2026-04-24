@@ -3,11 +3,11 @@ import { useState } from 'react'
 const FF = 'Helvetica Neue,Arial,sans-serif'
 const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 const TYPE_CFG = {
-  general: { color:'var(--btn-bg)' },
-  workout: { color:'var(--accent-fitness,#dc4f3a)' },
-  prayer:  { color:'var(--accent-prayer,#c8a000)' },
-  meal:    { color:'var(--accent-food,#c8853a)' },
-  finance: { color:'var(--accent-finance,#4db891)' },
+  general: { icon:'🗓',  color:'var(--btn-bg)' },
+  workout: { icon:'💪',  color:'var(--accent-fitness,#dc4f3a)' },
+  prayer:  { icon:'🙏',  color:'var(--accent-prayer,#c8a000)' },
+  meal:    { icon:'🥗',  color:'var(--accent-food,#c8853a)' },
+  finance: { icon:'💰',  color:'var(--accent-finance,#4db891)' },
 }
 
 export default function WeekView({ events, healthEvents = [], today, weekStart, weekOffset, onChangeWeek, onAddEvent, onDeleteEvent }) {
@@ -126,29 +126,31 @@ export default function WeekView({ events, healthEvents = [], today, weekStart, 
       ) : (
         <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
           {selectedEvents.map(ev => {
-            const color = TYPE_CFG[ev.type]?.color || 'var(--btn-bg)'
+            const cfg = TYPE_CFG[ev.type] || TYPE_CFG.general
             const timeStr = ev.time
               ? new Date(`2000-01-01T${ev.time}`).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
               : 'All day'
             const isHealth = ev._health
             return (
               <div key={ev.id} style={{
-                display:'flex', gap:12, padding:'12px 14px', alignItems:'flex-start',
-                background:'var(--stat-bg)', border:`1px solid ${color}22`,
+                display:'flex', gap:10, padding:'12px 14px', alignItems:'center',
+                background:'var(--stat-bg)', border:`1px solid ${cfg.color}22`,
                 borderRadius:10, boxShadow:'var(--card-shadow)',
                 opacity: isHealth ? 0.7 : 1,
               }}>
-                <div style={{ display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0, minWidth:44, paddingTop:1 }}>
-                  <span style={{ color, fontSize:10, fontFamily:FF, fontWeight:700, whiteSpace:'nowrap' }}>{timeStr}</span>
-                  <div style={{ width:1, flex:1, background:`${color}33`, margin:'4px 0' }}/>
+                <div style={{ width:36, height:36, borderRadius:10, background:`${cfg.color}18`, border:`1px solid ${cfg.color}33`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:17 }}>
+                  {isHealth ? { workout:'💪', meal:'🥗', prayer:'🙏' }[ev.type] || '⭐' : cfg.icon}
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:FF, margin:0, lineHeight:1.3 }}>{ev.title}</p>
-                  {ev.notes && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:FF, margin:'3px 0 0', lineHeight:1.4 }}>{ev.notes}</p>}
-                  {isHealth && <p style={{ color:'var(--text-faint)', fontSize:10, fontFamily:FF, margin:'2px 0 0' }}>auto-logged</p>}
+                  <div style={{ display:'flex', gap:8, alignItems:'center', marginTop:2 }}>
+                    <span style={{ color:cfg.color, fontSize:9, fontFamily:FF, fontWeight:700 }}>{timeStr}</span>
+                    {ev.notes && <span style={{ color:'var(--text-muted)', fontSize:10, fontFamily:FF, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:140 }}>{ev.notes}</span>}
+                    {isHealth && <span style={{ color:'var(--text-faint)', fontSize:9, fontFamily:FF }}>auto-logged</span>}
+                  </div>
                 </div>
                 {!isHealth && (
-                  <button onClick={() => onDeleteEvent(ev.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(200,80,80,0.4)', fontSize:18, flexShrink:0, lineHeight:1 }}>×</button>
+                  <button onClick={() => onDeleteEvent(ev.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(200,80,80,0.4)', fontSize:18, flexShrink:0, lineHeight:1, padding:'4px 6px' }}>×</button>
                 )}
               </div>
             )

@@ -1,10 +1,10 @@
 const FF = 'Helvetica Neue,Arial,sans-serif'
 const TYPE_CFG = {
-  general: { label:'General',  color:'var(--btn-bg)' },
-  workout: { label:'Workout',  color:'var(--accent-fitness,#dc4f3a)' },
-  prayer:  { label:'Prayer',   color:'var(--accent-prayer,#c8a000)' },
-  meal:    { label:'Meal',     color:'var(--accent-food,#c8853a)' },
-  finance: { label:'Finance',  color:'var(--accent-finance,#4db891)' },
+  general: { label:'General',  icon:'🗓',  color:'var(--btn-bg)' },
+  workout: { label:'Workout',  icon:'💪',  color:'var(--accent-fitness,#dc4f3a)' },
+  prayer:  { label:'Prayer',   icon:'🙏',  color:'var(--accent-prayer,#c8a000)' },
+  meal:    { label:'Meal',     icon:'🥗',  color:'var(--accent-food,#c8853a)' },
+  finance: { label:'Finance',  icon:'💰',  color:'var(--accent-finance,#4db891)' },
 }
 
 function getCountdown(dateStr, timeStr) {
@@ -64,14 +64,16 @@ export default function AgendaView({ upcoming = [], past = [], today, onDelete }
             Missed ({overdue.length})
           </p>
           {overdue.map(ev => {
-            const color = TYPE_CFG[ev.type]?.color || 'var(--btn-bg)'
+            const cfg = TYPE_CFG[ev.type] || TYPE_CFG.general
             return (
               <div key={ev.id} style={{
                 display:'flex', alignItems:'center', gap:10, padding:'11px 14px', marginBottom:8,
                 background:'rgba(220,79,58,0.06)', border:'1px solid rgba(220,79,58,0.15)',
                 borderRadius:10,
               }}>
-                <div style={{ width:3, height:32, background:'rgba(220,79,58,0.4)', borderRadius:2, flexShrink:0 }}/>
+                <div style={{ width:32, height:32, borderRadius:9, background:'rgba(220,79,58,0.12)', border:'1px solid rgba(220,79,58,0.25)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:15 }}>
+                  {cfg.icon}
+                </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:FF, margin:0 }}>{ev.title}</p>
                   <p style={{ color:'rgba(212,212,232,0.35)', fontSize:10, fontFamily:FF, margin:'2px 0 0' }}>
@@ -79,7 +81,7 @@ export default function AgendaView({ upcoming = [], past = [], today, onDelete }
                     {ev.time ? ' · ' + new Date(`2000-01-01T${ev.time}`).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : ''}
                   </p>
                 </div>
-                <button onClick={() => onDelete(ev.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(200,80,80,0.4)', fontSize:18, lineHeight:1 }}>×</button>
+                <button onClick={() => onDelete(ev.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(200,80,80,0.5)', fontSize:18, lineHeight:1, padding:'4px 6px' }}>×</button>
               </div>
             )
           })}
@@ -104,34 +106,37 @@ export default function AgendaView({ upcoming = [], past = [], today, onDelete }
 
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {evs.map(ev => {
-                const color    = TYPE_CFG[ev.type]?.color || 'var(--btn-bg)'
                 const timeStr  = ev.time ? new Date(`2000-01-01T${ev.time}`).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : null
                 const countdown = getCountdown(dateStr, ev.time)
+                const cfg = TYPE_CFG[ev.type] || TYPE_CFG.general
                 return (
                   <div key={ev.id} style={{
                     display:'flex', alignItems:'center', gap:10, padding:'12px 14px',
-                    background:'var(--stat-bg)', border:`1px solid ${color}22`,
+                    background:'var(--stat-bg)', border:`1px solid ${cfg.color}22`,
                     borderRadius:10, boxShadow:'var(--card-shadow)',
                   }}>
-                    <div style={{ width:3, height:38, background:color, borderRadius:2, flexShrink:0, opacity:0.7 }}/>
+                    <div style={{ width:34, height:34, borderRadius:9, background:`${cfg.color}18`, border:`1px solid ${cfg.color}33`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:16 }}>
+                      {cfg.icon}
+                    </div>
                     <div style={{ flex:1, minWidth:0 }}>
                       <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:FF, margin:0 }}>{ev.title}</p>
                       <div style={{ display:'flex', gap:8, marginTop:2, alignItems:'center', flexWrap:'wrap' }}>
+                        <span style={{ color:cfg.color, fontSize:9, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:FF, fontWeight:700 }}>{cfg.label}</span>
                         {timeStr && <span style={{ color:'var(--text-muted)', fontSize:10, fontFamily:FF }}>{timeStr}</span>}
-                        {ev.notes && <span style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:FF, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:160 }}>{ev.notes}</span>}
+                        {ev.notes && <span style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:FF, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:140 }}>{ev.notes}</span>}
                       </div>
                     </div>
                     {countdown && (
                       <div style={{
                         padding:'3px 8px', borderRadius:99, flexShrink:0,
-                        background: countdown === 'Tomorrow' || countdown.endsWith('d') && parseInt(countdown) <= 3
+                        background: countdown === 'Tomorrow' || (countdown.endsWith('d') && parseInt(countdown) <= 3)
                           ? 'rgba(200,212,200,0.1)' : 'rgba(212,212,232,0.06)',
                         border:'1px solid rgba(212,212,232,0.08)',
                       }}>
                         <span style={{ color:'var(--text-muted)', fontSize:10, fontFamily:FF, fontWeight:700 }}>{countdown}</span>
                       </div>
                     )}
-                    <button onClick={() => onDelete(ev.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(200,80,80,0.35)', fontSize:18, lineHeight:1, flexShrink:0 }}>×</button>
+                    <button onClick={() => onDelete(ev.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(200,80,80,0.45)', fontSize:18, lineHeight:1, flexShrink:0, padding:'4px 6px' }}>×</button>
                   </div>
                 )
               })}
