@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
 import { searchFood, lookupBarcode } from '../../lib/foodSearch'
+import RoutineChecklist from './RoutineChecklist'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 
@@ -987,6 +988,9 @@ export default function FoodJournal() {
         </div>
       </div>
 
+
+              {/* Daily Routine */}
+              <RoutineChecklist today={todayStr} />
 
               {/* Calorie Trend */}
               {foodHistory.length >= 2 && (

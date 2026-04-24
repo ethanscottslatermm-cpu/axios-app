@@ -294,3 +294,40 @@ alter table calendar_events enable row level security;
 create policy "Users manage own calendar events"
   on calendar_events for all using (auth.uid() = user_id);
 create index if not exists idx_calendar_events_user_date on calendar_events(user_id, date);
+
+-- ─────────────────────────────────────────
+-- ROUTINE ITEMS
+-- ─────────────────────────────────────────
+create table if not exists routine_items (
+  id                 uuid primary key default uuid_generate_v4(),
+  user_id            uuid references auth.users(id) on delete cascade not null,
+  title              text not null,
+  routine_type       text check (routine_type in ('morning','night')) not null,
+  position           integer default 0,
+  reminder_time      time,
+  reminder_enabled   boolean default false,
+  calendar_event_id  uuid,
+  created_at         timestamptz default now()
+);
+alter table routine_items enable row level security;
+create policy "Users manage own routine items"
+  on routine_items for all using (auth.uid() = user_id);
+create index if not exists idx_routine_items_user on routine_items(user_id, routine_type, position);
+
+-- ─────────────────────────────────────────
+-- ROUTINE LOGS (daily completion tracking)
+-- ─────────────────────────────────────────
+create table if not exists routine_logs (
+  id           uuid primary key default uuid_generate_v4(),
+  user_id      uuid references auth.users(id) on delete cascade not null,
+  item_id      uuid references routine_items(id) on delete cascade not null,
+  date         date not null,
+  completed    boolean default false,
+  completed_at timestamptz,
+  created_at   timestamptz default now(),
+  unique (user_id, item_id, date)
+);
+alter table routine_logs enable row level security;
+create policy "Users manage own routine logs"
+  on routine_logs for all using (auth.uid() = user_id);
+create index if not exists idx_routine_logs_user_date on routine_logs(user_id, date);
