@@ -145,6 +145,10 @@ const styles = `
     to   { opacity: 1; transform: translateY(0); }
   }
   .l2-enter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  @keyframes l2-logo-bar {
+    0%   { background-position: -300% center; transform: translateX(-200%); }
+    60%, 100% { transform: translateX(500%); }
+  }
   @keyframes starTwinkle {
     0%, 100% { opacity: 0.08; transform: scale(0.7); }
     50%       { opacity: 0.75; transform: scale(1.15); }
@@ -294,6 +298,43 @@ export default function Login2() {
           animation:'l2-scan 8s ease-in-out infinite',
           pointerEvents:'none',
         }}/>
+
+        {/* ── AXIOS logo — top of page ── */}
+        <div style={{
+          position: 'absolute', zIndex: 10,
+          top: '6%', left: 0, right: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+          pointerEvents: 'none',
+        }}>
+          <svg viewBox="0 0 380 70" xmlns="http://www.w3.org/2000/svg"
+            style={{ width: 220, height: 'auto', overflow: 'visible' }}>
+            <defs>
+              <linearGradient id="ax-login-sg" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stopColor="#3a3a42"/>
+                <stop offset="42%"  stopColor="#8a8a96"/>
+                <stop offset="50%"  stopColor="#ffffff"/>
+                <stop offset="58%"  stopColor="#8a8a96"/>
+                <stop offset="100%" stopColor="#3a3a42"/>
+                <animate attributeName="x1" from="-380" to="380" dur="2.8s" repeatCount="indefinite"/>
+                <animate attributeName="x2" from="0"    to="760" dur="2.8s" repeatCount="indefinite"/>
+              </linearGradient>
+            </defs>
+            <polygon points="10,62 45,4 80,62"   fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+            <polygon points="22,62 45,20 68,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+            <text x="100" y="52" fontFamily="Georgia,'Times New Roman',serif" fontSize="42" fontWeight="700" letterSpacing="5" fill="url(#ax-login-sg)">AXIOS</text>
+            <polygon points="300,62 335,4 370,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+            <polygon points="312,62 335,20 358,62" fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+          </svg>
+
+          {/* Shimmer bar */}
+          <div style={{ width: 90, height: 1, background: 'rgba(200,200,220,0.08)', borderRadius: 1, overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', width: '40%',
+              background: 'linear-gradient(90deg,transparent,rgba(220,220,240,0.85),transparent)',
+              animation: 'l2-logo-bar 2.4s ease-in-out infinite',
+            }}/>
+          </div>
+        </div>
 
         {/* Closed — SECURE ACCESS only */}
         {!open && (
