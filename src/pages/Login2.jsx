@@ -18,6 +18,16 @@ const styles = `
     0%,100% { box-shadow: none; border-color: transparent; }
     50%     { box-shadow: none; border-color: transparent; }
   }
+  @keyframes iamworthy {
+    0%, 100% {
+      opacity: 0.65;
+      text-shadow: 0 0 6px rgba(212,212,232,0.5), 0 0 16px rgba(212,212,232,0.25), 0 0 32px rgba(200,210,255,0.12);
+    }
+    50% {
+      opacity: 1;
+      text-shadow: 0 0 12px rgba(212,212,232,0.95), 0 0 28px rgba(212,212,232,0.6), 0 0 55px rgba(200,210,255,0.35), 0 0 90px rgba(200,210,255,0.15);
+    }
+  }
   @keyframes l2-shimmer {
     0%   { background-position: -250% center; }
     100% { background-position: 250% center; }
@@ -363,12 +373,14 @@ export default function Login2() {
 
           {/* Tagline */}
           <p style={{
-            color: 'rgba(212,212,232,0.28)',
             fontSize: '0.6rem',
             letterSpacing: '0.38em',
             textTransform: 'uppercase',
             fontFamily: '"The Seasons", Georgia, serif',
             margin: 0,
+            color: 'rgba(212,212,232,0.9)',
+            textShadow: '0 0 8px rgba(212,212,232,0.7), 0 0 20px rgba(212,212,232,0.4), 0 0 40px rgba(200,210,255,0.2)',
+            animation: 'iamworthy 3.2s ease-in-out infinite',
           }}>I Am Worthy</p>
         </div>
 
