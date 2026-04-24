@@ -335,3 +335,26 @@ alter table routine_logs enable row level security;
 create policy "Users manage own routine logs"
   on routine_logs for all using (auth.uid() = user_id);
 create index if not exists idx_routine_logs_user_date on routine_logs(user_id, date);
+
+-- ─────────────────────────────────────────
+-- MONTHLY INTENTIONS
+-- ─────────────────────────────────────────
+create table if not exists monthly_intentions (
+  id         uuid primary key default uuid_generate_v4(),
+  user_id    uuid references auth.users(id) on delete cascade not null,
+  year       integer not null,
+  month      integer not null,
+  intention  text not null,
+  created_at timestamptz default now(),
+  unique (user_id, year, month)
+);
+alter table monthly_intentions enable row level security;
+create policy "Users manage own monthly intentions"
+  on monthly_intentions for all using (auth.uid() = user_id);
+
+-- ─────────────────────────────────────────
+-- Update calendar_events recurring options
+-- ─────────────────────────────────────────
+alter table calendar_events drop constraint if exists calendar_events_recurring_check;
+alter table calendar_events add constraint calendar_events_recurring_check
+  check (recurring in ('none','daily','weekly','biweekly','monthly'));
