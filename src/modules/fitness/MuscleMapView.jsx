@@ -1,12 +1,15 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Model from 'react-body-highlighter'
 import { DB } from './WorkoutGuide'
 
 const FF = 'Helvetica Neue,Arial,sans-serif'
 
-const MUSCLES = ['Chest','Shoulders','Traps','Biceps','Triceps','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
+const MIND_COLOR = '#a78bfa'
+
+const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
 
 const SLUG_MAP = {
+  Head:           ['head'],
   Chest:          ['chest'],
   Shoulders:      ['front-deltoids', 'back-deltoids'],
   Traps:          ['trapezius', 'neck'],  // neck polygon covers upper traps on anterior view
@@ -22,6 +25,7 @@ const SLUG_MAP = {
 }
 
 const GROUP_FROM_SLUG = {
+  head:            'Head',
   chest:           'Chest',
   'front-deltoids':'Shoulders',
   'back-deltoids': 'Shoulders',
@@ -45,6 +49,7 @@ const GROUP_FROM_SLUG = {
 }
 
 const GROUP_TO_DB = {
+  Head:           null,
   Chest:          'chest',
   Shoulders:      'shoulders',
   Traps:          'traps',
@@ -60,6 +65,7 @@ const GROUP_TO_DB = {
 }
 
 const SCI_SHORT = {
+  Head:           'Mind & Recovery',
   Chest:          'Pectoralis',
   Shoulders:      'Deltoideus',
   Traps:          'Trapezius',
@@ -215,8 +221,41 @@ const DEFINITION_LINES = {
 // Labels positioned in the model's 0 0 100 200 coordinate space.
 // x < 0 or x > 100 renders outside body (requires overflow:visible on parent).
 // ex = x-coordinate of the leader line's body-side endpoint.
+const MIND_DATA = {
+  color:      MIND_COLOR,
+  scientific: 'Mind–Body Recovery',
+  desc:       'Controlled breathing activates the parasympathetic nervous system, lowering cortisol and heart rate within minutes. Use these techniques between sets or post-workout.',
+  breathing: [
+    {
+      name:  'Box Breathing',
+      tag:   'Focus & Calm',
+      desc:  'Equal 4-count phases. Used by Navy SEALs to reset the nervous system under pressure.',
+      phases: [{ label: 'Inhale', s: 4 }, { label: 'Hold', s: 4 }, { label: 'Exhale', s: 4 }, { label: 'Hold', s: 4 }],
+    },
+    {
+      name:  '4 · 7 · 8',
+      tag:   'Deep Relaxation',
+      desc:  'Extended exhale stimulates the vagus nerve. Ideal for winding down post-training.',
+      phases: [{ label: 'Inhale', s: 4 }, { label: 'Hold', s: 7 }, { label: 'Exhale', s: 8 }],
+    },
+    {
+      name:  'Physiological Sigh',
+      tag:   'Fastest Reset',
+      desc:  'Double nasal inhale + long exhale. Deflates air sacs and drops CO₂ fastest.',
+      phases: [{ label: 'Inhale', s: 2 }, { label: '+Inhale', s: 2 }, { label: 'Exhale', s: 6 }],
+    },
+    {
+      name:  'Resonant Breathing',
+      tag:   'HRV Optimise',
+      desc:  '5.5-second cycles synchronise heart rate variability for peak recovery.',
+      phases: [{ label: 'Inhale', s: 5.5 }, { label: 'Exhale', s: 5.5 }],
+    },
+  ],
+}
+
 const LABELS = {
   anterior: [
+    { group: 'Head',        x: 103, y: 11,  anchor: 'start', ex: 57 },
     { group: 'Shoulders',   x: 103, y: 42,  anchor: 'start', ex: 79 },
     { group: 'Chest',       x: 103, y: 51,  anchor: 'start', ex: 70 },
     { group: 'Biceps',      x: -3,  y: 61,  anchor: 'end',   ex: 17 },
@@ -225,6 +264,7 @@ const LABELS = {
     { group: 'Calves',      x: 103, y: 175, anchor: 'start', ex: 74 },
   ],
   posterior: [
+    { group: 'Head',        x: 103, y: 10,  anchor: 'start', ex: 57 },
     { group: 'Traps',       x: 103, y: 38,  anchor: 'start', ex: 64 },
     { group: 'Shoulders',   x: -3,  y: 46,  anchor: 'end',   ex: 29 },
     { group: 'Upper Back',  x: 103, y: 57,  anchor: 'start', ex: 66 },
@@ -264,6 +304,70 @@ function pickFour(pool) {
   return arr.slice(0, 4)
 }
 
+function BreathingGuide({ exercise, onStop }) {
+  const [tick, setTick] = useState(0)
+  const totalCycle = exercise.phases.reduce((s, p) => s + p.s, 0)
+
+  useEffect(() => {
+    setTick(0)
+    const t = setInterval(() => setTick(n => n + 1), 1000)
+    return () => clearInterval(t)
+  }, [exercise])
+
+  // Derive current phase from elapsed seconds
+  const elapsed = tick % totalCycle
+  let acc = 0, phase = exercise.phases[0], remaining = phase.s
+  for (const ph of exercise.phases) {
+    if (elapsed < acc + ph.s) {
+      phase = ph
+      remaining = Math.ceil(acc + ph.s - elapsed)
+      break
+    }
+    acc += ph.s
+  }
+  const isInhale = phase.label.toLowerCase().startsWith('inhale') || phase.label.startsWith('+')
+  const isHold   = phase.label.toLowerCase().startsWith('hold')
+  const progress = 1 - (remaining / phase.s)
+  const ringSize = isInhale ? 54 + progress * 30 : isHold ? 84 : 84 - progress * 30
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '4px 0 8px' }}>
+      <p style={{ color: MIND_COLOR, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: FF, margin: 0 }}>
+        {exercise.name}
+      </p>
+
+      {/* Animated breathing ring */}
+      <div style={{ position: 'relative', width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: `1px solid ${MIND_COLOR}20` }}/>
+        <div style={{
+          width: ringSize, height: ringSize, borderRadius: '50%',
+          background: `radial-gradient(circle, ${MIND_COLOR}38 0%, ${MIND_COLOR}0a 70%)`,
+          border: `1.5px solid ${MIND_COLOR}${isHold ? 'cc' : '77'}`,
+          boxShadow: `0 0 ${isHold ? 24 : 10}px ${MIND_COLOR}${isHold ? '55' : '28'}`,
+          transition: `width ${remaining}s linear, height ${remaining}s linear, box-shadow 0.6s ease`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <span style={{ color: MIND_COLOR, fontSize: 20, fontWeight: 900, fontFamily: FF, lineHeight: 1 }}>{remaining}</span>
+        </div>
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: MIND_COLOR, fontSize: 15, fontWeight: 800, fontFamily: FF, margin: '0 0 3px' }}>{phase.label}</p>
+        <p style={{ color: 'var(--text-faint)', fontSize: 8.5, fontFamily: FF, margin: 0, letterSpacing: '0.06em' }}>
+          {exercise.phases.map(p => `${p.label} ${p.s}s`).join(' · ')}
+        </p>
+      </div>
+
+      <button onClick={onStop} style={{
+        padding: '5px 18px', borderRadius: 99, cursor: 'pointer',
+        background: `${MIND_COLOR}14`, border: `1px solid ${MIND_COLOR}40`,
+        color: MIND_COLOR, fontSize: 10, fontFamily: FF, fontWeight: 700,
+        letterSpacing: '0.08em',
+      }}>Stop</button>
+    </div>
+  )
+}
+
 function ExCard({ ex, accent }) {
   const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(ex.yt)}`
   return (
@@ -301,10 +405,11 @@ function ExCard({ ex, accent }) {
 }
 
 export default function MuscleMapView({ workouts = [] }) {
-  const [selected,  setSelected]  = useState(null)
-  const [view,      setView]      = useState('anterior')
-  const [exercises, setExercises] = useState([])
-  const [spinning,  setSpinning]  = useState(false)
+  const [selected,     setSelected]    = useState(null)
+  const [view,         setView]        = useState('anterior')
+  const [exercises,    setExercises]   = useState([])
+  const [spinning,     setSpinning]    = useState(false)
+  const [breathingEx,  setBreathingEx] = useState(null)
 
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
@@ -340,12 +445,13 @@ export default function MuscleMapView({ workouts = [] }) {
   }, [workouts])
 
   useEffect(() => {
-    if (selected) {
+    if (selected && selected !== 'Head') {
       const dbKey = GROUP_TO_DB[selected]
       if (dbKey && DB[dbKey]) setExercises(pickFour(DB[dbKey].exercises))
     } else {
       setExercises([])
     }
+    setBreathingEx(null)
   }, [selected])
 
   function handleClick({ muscle }) {
@@ -362,9 +468,10 @@ export default function MuscleMapView({ workouts = [] }) {
     setTimeout(() => setSpinning(false), 460)
   }
 
-  const n      = selected ? (counts[selected] || 0) : 0
-  const rec    = selected ? getRecovery(n) : null
-  const dbData = selected ? DB[GROUP_TO_DB[selected]] : null
+  const isHead = selected === 'Head'
+  const n      = selected && !isHead ? (counts[selected] || 0) : 0
+  const rec    = selected && !isHead ? getRecovery(n) : null
+  const dbData = selected && !isHead ? DB[GROUP_TO_DB[selected]] : null
   const labels = LABELS[view] || []
 
   return (
@@ -418,7 +525,7 @@ export default function MuscleMapView({ workouts = [] }) {
           {/* Per-muscle DB-colored overlays */}
           {MUSCLES.map(m => {
             const dbKey = GROUP_TO_DB[m]
-            const color = DB[dbKey]?.color || '#b4bccc'
+            const color = m === 'Head' ? MIND_COLOR : (DB[dbKey]?.color || '#b4bccc')
             const c     = counts[m] || 0
             const isSel = selected === m
             const op    = isSel ? 1.0 : c === 0 ? 0.38 : c === 1 ? 0.60 : c === 2 ? 0.80 : 0.95
@@ -589,6 +696,76 @@ export default function MuscleMapView({ workouts = [] }) {
           <p style={{ color: 'rgba(220,225,245,0.78)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
             Tap a muscle on the model<br/>to see activation details
           </p>
+        </div>
+      ) : isHead ? (
+        /* ── Mind & Recovery panel ── */
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, animation: 'mmFadeUp 0.22s ease both' }}>
+          {/* Header */}
+          <div style={{
+            background: 'var(--bg-card)',
+            border: `1px solid ${MIND_COLOR}35`,
+            borderRadius: 14, overflow: 'hidden',
+          }}>
+            <div style={{
+              background: `linear-gradient(90deg, ${MIND_COLOR}18 0%, transparent 100%)`,
+              borderBottom: `1px solid ${MIND_COLOR}22`,
+              padding: '11px 14px',
+              display: 'flex', alignItems: 'center', gap: 9,
+            }}>
+              {/* Brain icon */}
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={MIND_COLOR} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M9.5 2a3.5 3.5 0 0 1 3 1.7A3.5 3.5 0 0 1 18 7v1a3 3 0 0 1 1 5.74V15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-1.26A3 3 0 0 1 6 8V7a3.5 3.5 0 0 1 3.5-5z"/>
+                <path d="M12 12v5M9 15h6"/>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <p style={{ color: MIND_COLOR, fontSize: 14, fontWeight: 800, fontFamily: FF, margin: 0, lineHeight: 1.2 }}>Mind & Recovery</p>
+                <p style={{ color: `${MIND_COLOR}99`, fontSize: 8.5, fontFamily: FF, fontStyle: 'italic', margin: 0 }}>Stress Relief · Breathing Techniques</p>
+              </div>
+            </div>
+            <div style={{ padding: '10px 14px 12px' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, lineHeight: 1.68, margin: 0 }}>{MIND_DATA.desc}</p>
+            </div>
+          </div>
+
+          {/* Active breathing guide */}
+          {breathingEx ? (
+            <div style={{
+              background: 'var(--bg-card)', border: `1px solid ${MIND_COLOR}30`,
+              borderRadius: 14, padding: '14px 16px',
+              animation: 'mmFadeUp 0.18s ease both',
+            }}>
+              <BreathingGuide exercise={breathingEx} onStop={() => setBreathingEx(null)} />
+            </div>
+          ) : (
+            /* Breathing exercise cards */
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+              <p style={{ color: `${MIND_COLOR}88`, fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: FF, fontWeight: 700, margin: '0 0 2px 2px' }}>
+                Breathing Exercises
+              </p>
+              {MIND_DATA.breathing.map(ex => (
+                <button key={ex.name} onClick={() => setBreathingEx(ex)} style={{
+                  display: 'flex', flexDirection: 'column', gap: 4, textAlign: 'left',
+                  background: `${MIND_COLOR}08`, border: `1px solid ${MIND_COLOR}28`,
+                  borderRadius: 11, padding: '11px 13px', cursor: 'pointer',
+                  transition: 'background 0.15s, border-color 0.15s',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: MIND_COLOR, boxShadow: `0 0 6px ${MIND_COLOR}`, flexShrink: 0 }}/>
+                    <p style={{ color: MIND_COLOR, fontSize: 12, fontWeight: 700, fontFamily: FF, margin: 0, flex: 1 }}>{ex.name}</p>
+                    <span style={{
+                      background: `${MIND_COLOR}18`, border: `1px solid ${MIND_COLOR}38`,
+                      color: `${MIND_COLOR}cc`, fontSize: 8, fontFamily: FF, fontWeight: 600,
+                      padding: '2px 7px', borderRadius: 99, letterSpacing: '0.04em',
+                    }}>{ex.tag}</span>
+                  </div>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: 10.5, fontFamily: FF, margin: '0 0 0 13px', lineHeight: 1.55 }}>{ex.desc}</p>
+                  <p style={{ color: `${MIND_COLOR}77`, fontSize: 8.5, fontFamily: FF, margin: '0 0 0 13px', letterSpacing: '0.04em' }}>
+                    {ex.phases.map(p => `${p.label} ${p.s}s`).join(' · ')}
+                  </p>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, animation: 'mmFadeUp 0.22s ease both' }}>
