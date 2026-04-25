@@ -9,7 +9,7 @@ const MUSCLES = ['Chest','Shoulders','Traps','Biceps','Triceps','Core','Upper Ba
 const SLUG_MAP = {
   Chest:          ['chest'],
   Shoulders:      ['front-deltoids', 'back-deltoids'],
-  Traps:          ['trapezius'],
+  Traps:          ['trapezius', 'neck'],  // neck polygon covers upper traps on anterior view
   Biceps:         ['biceps', 'forearm'],
   Triceps:        ['triceps'],
   Core:           ['abs', 'obliques'],
@@ -31,6 +31,7 @@ const GROUP_FROM_SLUG = {
   abs:             'Core',
   obliques:        'Core',
   trapezius:       'Traps',
+  neck:            'Traps',
   'upper-back':    'Upper Back',
   'lower-back':    'Lower Back',
   quadriceps:      'Quads',
@@ -77,6 +78,10 @@ const SCI_SHORT = {
 // Based on actual polygon data extracted from react-body-highlighter source.
 const DEFINITION_LINES = {
   anterior: {
+    Traps: [
+      { d: 'M 44 24 Q 40 30 38 35',            type: 'muscle' }, // left upper trap (anterior)
+      { d: 'M 56 24 Q 60 30 62 35',            type: 'muscle' }, // right upper trap (anterior)
+    ],
     Chest: [
       { d: 'M 49.5 34 L 49.5 58',             type: 'bone'   }, // sternum
       { d: 'M 49 34 L 22 31',                  type: 'bone'   }, // left clavicle
@@ -85,22 +90,30 @@ const DEFINITION_LINES = {
       { d: 'M 68 54 Q 59 61 50.5 58',          type: 'muscle' }, // right pec lower arch
       { d: 'M 49.5 41 Q 38 47 30 53',          type: 'muscle' }, // left pec fiber
       { d: 'M 50.5 41 Q 62 47 70 53',          type: 'muscle' }, // right pec fiber
+      { d: 'M 49 38 Q 47.5 48 48.5 57',        type: 'vein'   }, // left sternal vein
+      { d: 'M 51 38 Q 52.5 48 51.5 57',        type: 'vein'   }, // right sternal vein
     ],
     Shoulders: [
       { d: 'M 22 32 Q 18.5 38 20 45',          type: 'muscle' }, // left delt groove
       { d: 'M 78 32 Q 81.5 38 80 45',          type: 'muscle' }, // right delt groove
       { d: 'M 20 45 Q 24 51 28 56',            type: 'muscle' }, // left delt/bi junction
       { d: 'M 80 45 Q 76 51 72 56',            type: 'muscle' }, // right delt/bi junction
+      { d: 'M 21 38 Q 19 44 20 52',            type: 'vein'   }, // left cephalic vein (shoulder)
+      { d: 'M 79 38 Q 81 44 80 52',            type: 'vein'   }, // right cephalic vein (shoulder)
     ],
     Biceps: [
       { d: 'M 23 52 Q 21 61 19 71',            type: 'muscle' }, // left bicep split
       { d: 'M 77 52 Q 79 61 81 71',            type: 'muscle' }, // right bicep split
-      { d: 'M 22 54 Q 19.5 64 17 74',          type: 'vein'   }, // left bicep vein
-      { d: 'M 78 54 Q 80.5 64 83 74',          type: 'vein'   }, // right bicep vein
-      { d: 'M 16 77 Q 11 88 8 97',             type: 'vein'   }, // left forearm vein 1
-      { d: 'M 18 78 Q 14 89 11 98',            type: 'vein'   }, // left forearm vein 2
-      { d: 'M 84 77 Q 89 88 92 97',            type: 'vein'   }, // right forearm vein 1
-      { d: 'M 82 78 Q 86 89 89 98',            type: 'vein'   }, // right forearm vein 2
+      { d: 'M 21 54 Q 19 65 17 75',            type: 'vein'   }, // left cephalic vein (bicep)
+      { d: 'M 79 54 Q 81 65 83 75',            type: 'vein'   }, // right cephalic vein (bicep)
+      { d: 'M 24 56 Q 22 66 20 74',            type: 'vein'   }, // left basilic vein
+      { d: 'M 76 56 Q 78 66 80 74',            type: 'vein'   }, // right basilic vein
+      { d: 'M 15 78 Q 10 89 7 98',             type: 'vein'   }, // left forearm vein 1
+      { d: 'M 17 79 Q 13 90 10 99',            type: 'vein'   }, // left forearm vein 2
+      { d: 'M 19 78 Q 16 89 14 98',            type: 'vein'   }, // left forearm vein 3
+      { d: 'M 85 78 Q 90 89 93 98',            type: 'vein'   }, // right forearm vein 1
+      { d: 'M 83 79 Q 87 90 90 99',            type: 'vein'   }, // right forearm vein 2
+      { d: 'M 81 78 Q 84 89 86 98',            type: 'vein'   }, // right forearm vein 3
     ],
     Triceps: [
       { d: 'M 25 57 Q 23 64 22 72',            type: 'muscle' }, // left tricep line
@@ -108,12 +121,19 @@ const DEFINITION_LINES = {
     ],
     Core: [
       { d: 'M 50 58 L 50 95',                  type: 'muscle' }, // ab midline
+      { d: 'M 42 63 Q 50 62 58 63',            type: 'muscle' }, // subcostal arch
       { d: 'M 42 65 L 58 65',                  type: 'muscle' }, // cut 1
       { d: 'M 41 72 L 59 72',                  type: 'muscle' }, // cut 2
       { d: 'M 41 79 L 59 79',                  type: 'muscle' }, // cut 3
       { d: 'M 40 86 L 60 86',                  type: 'muscle' }, // cut 4
+      { d: 'M 44 65 L 44 72',                  type: 'muscle' }, // left inner col 1
+      { d: 'M 56 65 L 56 72',                  type: 'muscle' }, // right inner col 1
+      { d: 'M 43 72 L 43 79',                  type: 'muscle' }, // left inner col 2
+      { d: 'M 57 72 L 57 79',                  type: 'muscle' }, // right inner col 2
       { d: 'M 38 64 Q 33 77 35 91',            type: 'muscle' }, // left oblique edge
       { d: 'M 62 64 Q 67 77 65 91',            type: 'muscle' }, // right oblique edge
+      { d: 'M 49 65 Q 48 72 49 79',            type: 'muscle' }, // left ab cell line
+      { d: 'M 51 65 Q 52 72 51 79',            type: 'muscle' }, // right ab cell line
     ],
     Quads: [
       { d: 'M 40 101 Q 37 123 36 144',         type: 'muscle' }, // left RF/VL cut
@@ -122,12 +142,16 @@ const DEFINITION_LINES = {
       { d: 'M 71 112 Q 73 129 73 147',         type: 'muscle' }, // right outer VL
       { d: 'M 39 136 Q 37 143 40 151',         type: 'muscle' }, // left VMO bulge
       { d: 'M 61 136 Q 63 143 60 151',         type: 'muscle' }, // right VMO bulge
+      { d: 'M 44 102 Q 42 128 42 148',         type: 'vein'   }, // left great saphenous vein
+      { d: 'M 56 102 Q 58 128 58 148',         type: 'vein'   }, // right great saphenous vein
     ],
     Calves: [
       { d: 'M 30 165 Q 29 176 30 187',         type: 'muscle' }, // left medial/lateral split
       { d: 'M 70 165 Q 71 176 70 187',         type: 'muscle' }, // right medial/lateral split
       { d: 'M 27 168 Q 26 179 28 187',         type: 'muscle' }, // left lateral head line
       { d: 'M 73 168 Q 74 179 72 187',         type: 'muscle' }, // right lateral head line
+      { d: 'M 33 163 Q 32 176 33 188',         type: 'vein'   }, // left anterior tibial vein
+      { d: 'M 67 163 Q 68 176 67 188',         type: 'vein'   }, // right anterior tibial vein
     ],
   },
   posterior: {
@@ -161,6 +185,10 @@ const DEFINITION_LINES = {
       { d: 'M 78 56 Q 81 67 82 77',            type: 'muscle' }, // right long head
       { d: 'M 25 59 Q 22 69 21 79',            type: 'muscle' }, // left lateral head
       { d: 'M 75 59 Q 78 69 79 79',            type: 'muscle' }, // right lateral head
+      { d: 'M 19 60 Q 17 70 16 80',            type: 'vein'   }, // left posterior vein
+      { d: 'M 81 60 Q 83 70 84 80',            type: 'vein'   }, // right posterior vein
+      { d: 'M 16 82 Q 13 90 11 100',           type: 'vein'   }, // left forearm posterior vein
+      { d: 'M 84 82 Q 87 90 89 100',           type: 'vein'   }, // right forearm posterior vein
     ],
     Glutes: [
       { d: 'M 50 100 L 50 123',                type: 'muscle' }, // glute cleft
@@ -178,6 +206,8 @@ const DEFINITION_LINES = {
       { d: 'M 70 168 Q 71 180 70 193',         type: 'muscle' }, // right lateral/medial split
       { d: 'M 26 169 Q 25 181 27 193',         type: 'muscle' }, // left lateral head
       { d: 'M 74 169 Q 75 181 73 193',         type: 'muscle' }, // right lateral head
+      { d: 'M 34 166 Q 33 179 34 193',         type: 'vein'   }, // left small saphenous vein
+      { d: 'M 66 166 Q 67 179 66 193',         type: 'vein'   }, // right small saphenous vein
     ],
   },
 }
@@ -206,12 +236,6 @@ const LABELS = {
   ],
 }
 
-function getHeat(n) {
-  if (n === 0) return { label: 'Cold',  hex: 'rgba(140,155,175,0.4)' }
-  if (n === 1) return { label: '×1',    hex: '#7a8fa8' }
-  if (n === 2) return { label: '×2',    hex: '#a8b8cc' }
-  return             { label: '×3+',   hex: '#d8e0ee' }
-}
 
 function getRecovery(n) {
   return [
@@ -339,7 +363,6 @@ export default function MuscleMapView({ workouts = [] }) {
   }
 
   const n      = selected ? (counts[selected] || 0) : 0
-  const heat   = getHeat(n)
   const rec    = selected ? getRecovery(n) : null
   const dbData = selected ? DB[GROUP_TO_DB[selected]] : null
   const labels = LABELS[view] || []
@@ -438,6 +461,19 @@ export default function MuscleMapView({ workouts = [] }) {
               </filter>
             </defs>
 
+            {/* Facial definition — anterior only, always visible */}
+            {view === 'anterior' && (
+              <g opacity="0.32" pointerEvents="none">
+                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.35"/>
+                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.35"/>
+                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.28" strokeLinecap="round"/>
+              </g>
+            )}
+
             {/* Definition lines — bone landmarks, muscle cuts, veins */}
             {Object.entries(DEFINITION_LINES[view] || {}).map(([group, lines]) => {
               const isActive = selected === group
@@ -446,23 +482,23 @@ export default function MuscleMapView({ workouts = [] }) {
               return lines.map((line, i) => {
                 const isVein   = line.type === 'vein'
                 const isBone   = line.type === 'bone'
-                const baseOp   = isBone ? 0.24 : isVein ? 0.14 : 0.20
-                const activeOp = isBone ? 0.88 : isVein ? 0.78 : 0.82
-                const stroke   = isVein ? 'rgba(140,195,240,1)' : isBone ? 'rgba(228,234,255,1)' : color
-                const sw       = isBone ? 0.5 : isVein ? 0.32 : 0.42
+                const baseOp   = isBone ? 0.26 : isVein ? 0.28 : 0.22
+                const activeOp = isBone ? 0.90 : isVein ? 0.92 : 0.86
+                const stroke   = isVein ? 'rgba(80,185,255,1)' : isBone ? 'rgba(228,234,255,1)' : color
+                const sw       = isBone ? 0.5 : isVein ? 0.45 : 0.42
                 const glowF    = isActive
                   ? (isVein
-                      ? 'drop-shadow(0 0 1.5px rgba(140,195,240,0.9))'
+                      ? 'drop-shadow(0 0 2px rgba(80,185,255,0.95)) drop-shadow(0 0 1px rgba(120,210,255,0.7))'
                       : isBone
-                      ? 'drop-shadow(0 0 2px rgba(255,255,255,0.75))'
-                      : `drop-shadow(0 0 1.5px ${color})`)
+                      ? 'drop-shadow(0 0 2px rgba(255,255,255,0.8))'
+                      : `drop-shadow(0 0 1.8px ${color})`)
                   : undefined
                 return (
                   <path
                     key={`def-${group}-${i}`}
                     d={line.d}
                     stroke={stroke}
-                    strokeWidth={isActive ? sw * 1.7 : sw}
+                    strokeWidth={isActive ? sw * 1.8 : sw}
                     fill="none"
                     strokeLinecap="round"
                     opacity={isActive ? activeOp : baseOp}
@@ -537,61 +573,80 @@ export default function MuscleMapView({ workouts = [] }) {
       {/* Detail panel */}
       {!selected ? (
         <div style={{
-          background: 'var(--stat-bg)', border: '1px solid var(--border)',
-          borderRadius: 12, padding: '16px 18px',
+          background: 'rgba(212,212,232,0.04)',
+          border: '1px dashed rgba(212,212,232,0.14)',
+          borderRadius: 12, padding: '18px',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 9,
         }}>
-          <p style={{ color: 'var(--text-faint)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', textAlign: 'center', margin: 0 }}>
-            Tap a muscle group to see your stats
+          <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="rgba(212,212,232,0.45)" strokeWidth="1.4" strokeLinecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="3.5"/>
+            <line x1="12" y1="2" x2="12" y2="5.5"/>
+            <line x1="12" y1="18.5" x2="12" y2="22"/>
+            <line x1="2" y1="12" x2="5.5" y2="12"/>
+            <line x1="18.5" y1="12" x2="22" y2="12"/>
+          </svg>
+          <p style={{ color: 'rgba(220,225,245,0.78)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
+            Tap a muscle on the model<br/>to see activation details
           </p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, animation: 'mmFadeUp 0.22s ease both' }}>
 
-          {/* Workout stats strip */}
-          <div style={{
-            background: 'var(--stat-bg)',
-            border: `1px solid ${n > 0 && dbData ? dbData.color + '40' : 'var(--border)'}`,
-            borderRadius: 12, padding: '12px 16px',
-            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8,
-          }}>
-            <div>
-              <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Sessions / 7d</p>
-              <p style={{ color: n > 0 && dbData ? dbData.color : 'var(--text-muted)', fontSize: 22, fontWeight: 900, fontFamily: FF, margin: 0, lineHeight: 1 }}>{n}</p>
-            </div>
-            <div>
-              <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Last Trained</p>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, margin: '3px 0 0' }}>{fmtDate(lastWorked[selected], todayStr)}</p>
-            </div>
-            <div>
-              <p style={{ color: 'var(--text-faint)', fontSize: 8, fontFamily: FF, margin: '0 0 4px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Status</p>
-              {rec && <p style={{ color: rec.color, fontSize: 11, fontFamily: FF, margin: '3px 0 0' }}>{rec.status}</p>}
-            </div>
-          </div>
-
-          {/* Muscle info */}
+          {/* Muscle activation card */}
           {dbData && (
             <div style={{
-              background: 'var(--bg-card)', border: `1px solid ${dbData.color}30`,
-              borderRadius: 12, padding: '13px 15px',
+              background: 'var(--bg-card)',
+              border: `1px solid ${dbData.color}35`,
+              borderRadius: 14, overflow: 'hidden',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: dbData.color, boxShadow: `0 0 8px ${dbData.color}` }}/>
-                <p style={{ color: dbData.color, fontSize: 14, fontWeight: 800, fontFamily: FF, margin: 0 }}>{selected}</p>
+              {/* Header row */}
+              <div style={{
+                background: `linear-gradient(90deg, ${dbData.color}18 0%, transparent 100%)`,
+                borderBottom: `1px solid ${dbData.color}22`,
+                padding: '11px 14px',
+                display: 'flex', alignItems: 'center', gap: 9,
+              }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', flexShrink: 0, background: dbData.color, boxShadow: `0 0 10px ${dbData.color}` }}/>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ color: dbData.color, fontSize: 14, fontWeight: 800, fontFamily: FF, margin: 0, lineHeight: 1.2 }}>{selected}</p>
+                  <p style={{ color: `${dbData.color}99`, fontSize: 8.5, fontFamily: FF, fontStyle: 'italic', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{dbData.scientific}</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                  {[1,2,3,4,5].map(i => (
+                    <div key={i} style={{
+                      width: 5, height: 5, borderRadius: '50%',
+                      background: i <= dbData.intensity ? dbData.color : 'rgba(212,212,232,0.10)',
+                      boxShadow: i <= dbData.intensity ? `0 0 4px ${dbData.color}` : 'none',
+                    }}/>
+                  ))}
+                </div>
               </div>
-              <p style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF, letterSpacing: '0.06em', fontStyle: 'italic', margin: '0 0 8px' }}>
-                {dbData.scientific}
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 9 }}>
-                <span style={{ color: 'var(--text-faint)', fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: FF }}>Intensity</span>
-                {[1,2,3,4,5].map(i => (
-                  <div key={i} style={{
-                    width: 6, height: 6, borderRadius: '50%',
-                    background: i <= dbData.intensity ? dbData.color : 'rgba(212,212,232,0.08)',
-                    boxShadow: i <= dbData.intensity ? `0 0 5px ${dbData.color}88` : 'none',
-                  }}/>
-                ))}
+
+              {/* Body */}
+              <div style={{ padding: '10px 14px 12px', display: 'flex', flexDirection: 'column', gap: 9 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, lineHeight: 1.68, margin: 0 }}>{dbData.desc}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+                  {n > 0 && (
+                    <span style={{
+                      background: `${dbData.color}18`, border: `1px solid ${dbData.color}44`,
+                      color: dbData.color, fontSize: 9, fontFamily: FF, fontWeight: 700,
+                      padding: '3px 8px', borderRadius: 99, letterSpacing: '0.06em',
+                    }}>{n}× this week</span>
+                  )}
+                  {rec && (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: rec.color, fontSize: 9, fontFamily: FF, fontWeight: 600 }}>
+                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: rec.color, display: 'inline-block', boxShadow: `0 0 4px ${rec.color}` }}/>
+                      {rec.status}
+                    </span>
+                  )}
+                  {lastWorked[selected] && (
+                    <span style={{ color: 'var(--text-faint)', fontSize: 9, fontFamily: FF }}>
+                      Last: {fmtDate(lastWorked[selected], todayStr)}
+                    </span>
+                  )}
+                </div>
               </div>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: FF, lineHeight: 1.65, margin: 0 }}>{dbData.desc}</p>
             </div>
           )}
 
@@ -627,30 +682,6 @@ export default function MuscleMapView({ workouts = [] }) {
         </div>
       )}
 
-      {/* Muscle pill row */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-        {MUSCLES.map(m => {
-          const c     = counts[m] || 0
-          const isSel = selected === m
-          const color = DB[GROUP_TO_DB[m]]?.color || '#b4bccc'
-          return (
-            <button key={m} onClick={() => setSelected(s => s === m ? null : m)} style={{
-              display: 'flex', alignItems: 'center', gap: 4,
-              padding: '4px 10px', borderRadius: 99, cursor: 'pointer',
-              background: isSel ? `${color}22` : 'var(--bg-card)',
-              border: `1px solid ${isSel ? color + '66' : c > 0 ? color + '33' : 'var(--border)'}`,
-              transition: 'all 0.15s',
-            }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-                background: c > 0 ? color : 'rgba(140,155,175,0.25)',
-                boxShadow: isSel ? `0 0 6px ${color}` : 'none',
-              }}/>
-              <span style={{ color: isSel ? color : c > 0 ? 'var(--text-secondary)' : 'var(--text-faint)', fontSize: 10, fontFamily: FF, fontWeight: isSel ? 700 : 400 }}>{m}</span>
-              {c > 0 && <span style={{ color, fontSize: 9, fontFamily: FF, fontWeight: 700 }}>{c}</span>}
-            </button>
-          )
-        })}
-      </div>
     </div>
   )
 }
