@@ -347,22 +347,6 @@ function FrontBase() {
       <path d="M98 50 Q120 62 142 50" fill="none" stroke="#221e30" strokeWidth="1"/>
       <path d="M96 40 Q102 44 100 50" fill="none" stroke="#221e30" strokeWidth="0.8"/>
       <path d="M144 40 Q138 44 140 50" fill="none" stroke="#221e30" strokeWidth="0.8"/>
-      {/* ── Facial features ── */}
-      {/* Eyebrows */}
-      <path d="M102 22 Q109 17 116 20" fill="none" stroke="rgba(255,255,255,0.62)" strokeWidth="1.5" strokeLinecap="round"/>
-      <path d="M124 20 Q131 17 138 22" fill="none" stroke="rgba(255,255,255,0.62)" strokeWidth="1.5" strokeLinecap="round"/>
-      {/* Eyes — open ellipse + iris dot */}
-      <ellipse cx="109" cy="28" rx="5" ry="3" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.2"/>
-      <circle cx="109" cy="28" r="1.8" fill="rgba(255,255,255,0.58)"/>
-      <ellipse cx="131" cy="28" rx="5" ry="3" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.2"/>
-      <circle cx="131" cy="28" r="1.8" fill="rgba(255,255,255,0.58)"/>
-      {/* Nose — bridge sides + soft nostril base */}
-      <path d="M116 31 Q115 37 114 41 Q113 44 111 45" fill="none" stroke="rgba(255,255,255,0.38)" strokeWidth="1.0" strokeLinecap="round"/>
-      <path d="M124 31 Q125 37 126 41 Q127 44 129 45" fill="none" stroke="rgba(255,255,255,0.38)" strokeWidth="1.0" strokeLinecap="round"/>
-      <path d="M111 45 Q116 48 120 47 Q124 48 129 45" fill="none" stroke="rgba(255,255,255,0.30)" strokeWidth="0.9" strokeLinecap="round"/>
-      {/* Mouth — cupid's bow upper + gentle lower lip */}
-      <path d="M113 52 Q117 49 120 51 Q123 49 127 52" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.2" strokeLinecap="round"/>
-      <path d="M113 52 Q120 57 127 52" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.1" strokeLinecap="round"/>
       {/* Neck */}
       <path d="M109 62 Q106 70 106 80 L134 80 Q134 70 131 62 Z" fill="#1a1626" stroke="#24203a" strokeWidth="1"/>
       <path d="M112 63 Q108 72 108 78" fill="none" stroke="#20183a" strokeWidth="1.5"/>
@@ -439,6 +423,29 @@ function FrontBase() {
 }
 
 
+
+// ─── Face Overlay ─────────────────────────────────────────────────────────────
+function FaceOverlay() {
+  return (
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}>
+      {/* Eyebrows */}
+      <path d="M102 22 Q109 17 116 20" fill="none" stroke="rgba(255,255,255,0.62)" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M124 20 Q131 17 138 22" fill="none" stroke="rgba(255,255,255,0.62)" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Eyes — almond outline + iris dot */}
+      <ellipse cx="109" cy="28" rx="5" ry="3" fill="none" stroke="rgba(255,255,255,0.68)" strokeWidth="1.2"/>
+      <circle cx="109" cy="28" r="1.8" fill="rgba(255,255,255,0.62)"/>
+      <ellipse cx="131" cy="28" rx="5" ry="3" fill="none" stroke="rgba(255,255,255,0.68)" strokeWidth="1.2"/>
+      <circle cx="131" cy="28" r="1.8" fill="rgba(255,255,255,0.62)"/>
+      {/* Nose — bridge sides + nostril base */}
+      <path d="M116 31 Q115 37 114 41 Q113 44 111 45" fill="none" stroke="rgba(255,255,255,0.40)" strokeWidth="1.0" strokeLinecap="round"/>
+      <path d="M124 31 Q125 37 126 41 Q127 44 129 45" fill="none" stroke="rgba(255,255,255,0.40)" strokeWidth="1.0" strokeLinecap="round"/>
+      <path d="M111 45 Q116 48 120 47 Q124 48 129 45" fill="none" stroke="rgba(255,255,255,0.32)" strokeWidth="0.9" strokeLinecap="round"/>
+      {/* Mouth — cupid's bow upper + lower arc */}
+      <path d="M113 52 Q117 49 120 51 Q123 49 127 52" fill="none" stroke="rgba(255,255,255,0.58)" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d="M113 52 Q120 57 127 52" fill="none" stroke="rgba(255,255,255,0.48)" strokeWidth="1.1" strokeLinecap="round"/>
+    </svg>
+  )
+}
 
 // ─── Bone Overlay ─────────────────────────────────────────────────────────────
 function BoneOverlay({ view }) {
@@ -1174,6 +1181,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
           </svg>
 
           {view === 'front' ? <FrontBase/> : <BackBase/>}
+          {view === 'front' && <FaceOverlay />}
           <BoneOverlay view={view} />
           <VeinOverlay view={view} />
           <ZoneOverlay
