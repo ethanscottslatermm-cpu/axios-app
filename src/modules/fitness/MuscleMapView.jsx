@@ -526,7 +526,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout }) {
           {MUSCLES.map(m => {
             if (m === 'Head') return null  // Head rendered as SVG outline, no fill
             const isSel = selected === m
-            const op    = isSel ? 0.92 : 0.13
+            const op    = isSel ? 0.92 : 0.24
             return (
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',

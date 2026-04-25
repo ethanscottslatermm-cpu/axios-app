@@ -812,10 +812,10 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
 
   const strokeOp = (id) => {
     if (id === selected) return 1.0
-    if (id === hovered)  return 0.80
-    return 0.45
+    if (id === hovered)  return 0.90
+    return 0.60
   }
-  const sw = (id) => (id === selected ? 2.5 : id === hovered ? 1.8 : 1.2)
+  const sw = (id) => (id === selected ? 3.5 : id === hovered ? 2.6 : 2.0)
 
   const renderShape = (s, isSel, strokeW, sOp) => {
     const stroke = `rgba(255,255,255,${sOp})`
