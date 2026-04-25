@@ -839,11 +839,14 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
-        {/* Heart glow */}
+        {/* Heart glow — white */}
         <filter id="heart-glow" x="-120%" y="-120%" width="340%" height="340%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+          <feFlood floodColor="#ffffff" floodOpacity="0.9" result="white"/>
+          <feComposite in="white" in2="blur" operator="in" result="whiteglow"/>
           <feMerge>
-            <feMergeNode in="blur"/>
+            <feMergeNode in="whiteglow"/>
+            <feMergeNode in="whiteglow"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
@@ -931,8 +934,8 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
           style={{ transformBox:'fill-box', transformOrigin:'center', animation:'heartbeat 1.5s ease-in-out infinite' }}>
           <path
             d="M106,126 C106,126 97,119 97,113 C97,108 101,106 104,107 C105,107.5 106,109 106,109 C106,109 107,107.5 108,107 C111,106 115,108 115,113 C115,119 106,126 106,126 Z"
-            fill="#e8525a"
-            opacity={0.8}
+            fill="#ffffff"
+            opacity={0.72}
           />
         </g>
       )}
