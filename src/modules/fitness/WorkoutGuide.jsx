@@ -5,7 +5,7 @@ export const DB = {
   // ── Front ──
   chest: {
     label: 'Chest', scientific: 'Pectoralis Major & Pectoralis Minor',
-    color: '#e24b4a', intensity: 4,
+    color: '#ff2244', intensity: 4,
     desc: 'Primary horizontal pushing muscle. Controls arm adduction and internal rotation across the chest. The pectoralis minor lies beneath, stabilising the scapula and assisting shoulder-blade protraction.',
     exercises: [
       { name: 'Barbell Bench Press',    eq: 'Barbell',    sets: '4 × 6–8',     yt: 'barbell bench press form tutorial' },
@@ -20,7 +20,7 @@ export const DB = {
   },
   shoulders: {
     label: 'Shoulders', scientific: 'Deltoid — Anterior · Lateral · Posterior',
-    color: '#f59e0b', intensity: 3,
+    color: '#ff6600', intensity: 3,
     desc: 'Three-headed deltoid controlling all planes of arm elevation. The anterior head presses; the lateral head builds width; the posterior head and rotator cuff sustain joint health under heavy load.',
     exercises: [
       { name: 'Overhead Press',       eq: 'Barbell',   sets: '4 × 8',   yt: 'overhead press form tutorial barbell' },
@@ -35,7 +35,7 @@ export const DB = {
   },
   biceps: {
     label: 'Biceps', scientific: 'Biceps Brachii (Long & Short Head) & Brachialis',
-    color: '#10b981', intensity: 2,
+    color: '#00ff7f', intensity: 2,
     desc: 'Controls elbow flexion and forearm supination. Full stretch at the bottom of each rep drives hypertrophy. The brachialis beneath adds overall arm thickness and improves peak height.',
     exercises: [
       { name: 'Barbell Curl',        eq: 'Barbell',   sets: '4 × 10',  yt: 'barbell curl form bicep tutorial' },
@@ -50,7 +50,7 @@ export const DB = {
   },
   forearms: {
     label: 'Forearms', scientific: 'Brachioradialis · Flexor Carpi Radialis · Extensor Carpi Group',
-    color: '#6ee7b7', intensity: 2,
+    color: '#00e06e', intensity: 2,
     desc: 'Grip strength and wrist stability — critical for every pulling and carrying movement. Often neglected, but forearm resilience directly limits every curl, row, and deadlift you ever pull.',
     exercises: [
       { name: "Farmer's Carry",  eq: 'Dumbbells',   sets: '3 × 40 m',  yt: 'farmers carry grip forearm tutorial' },
@@ -65,7 +65,7 @@ export const DB = {
   },
   core: {
     label: 'Core', scientific: 'Rectus Abdominis & Transverse Abdominis',
-    color: '#8b5cf6', intensity: 3,
+    color: '#ff9900', intensity: 3,
     desc: 'Rectus abdominis flexes the spine and creates the visible "six-pack". The deep transverse abdominis compresses the abdomen like a natural weightlifting belt — essential protection under every heavy compound lift.',
     exercises: [
       { name: 'Hanging Leg Raise', eq: 'Pull-up Bar', sets: '4 × 12',   yt: 'hanging leg raise core form tutorial' },
@@ -80,7 +80,7 @@ export const DB = {
   },
   obliques: {
     label: 'Obliques', scientific: 'External Obliques & Internal Obliques',
-    color: '#ec4899', intensity: 2,
+    color: '#ff0099', intensity: 2,
     desc: 'Control trunk rotation and lateral flexion — the source of rotational power and the V-taper silhouette. Anti-rotation exercises build the stiffest, most force-resistant core structure.',
     exercises: [
       { name: 'Russian Twist',      eq: 'Plate/DB',   sets: '3 × 20',        yt: 'russian twist obliques form tutorial' },
@@ -95,7 +95,7 @@ export const DB = {
   },
   quads: {
     label: 'Quads', scientific: 'Quadriceps Femoris — Vastus Lateralis · Medialis · Intermedius · Rectus Femoris',
-    color: '#22d3ee', intensity: 5,
+    color: '#ffe000', intensity: 5,
     desc: "Four muscles extending the knee — the body's single largest muscle group. The engine of squatting, jumping, and sprinting. The vastus medialis 'teardrop' is critical for kneecap tracking and stability.",
     exercises: [
       { name: 'Back Squat',            eq: 'Barbell',   sets: '4 × 5–6',    yt: 'back squat form proper technique tutorial' },
@@ -110,7 +110,7 @@ export const DB = {
   },
   calves: {
     label: 'Calves', scientific: 'Gastrocnemius (Medial & Lateral Head) & Soleus',
-    color: '#d8d8e8', intensity: 3,
+    color: '#00eeff', intensity: 3,
     desc: 'Gastrocnemius provides the visible shape and explosive plantarflexion power. The soleus lies beneath and dominates endurance work. Both demand full range of motion — heel completely below the platform.',
     exercises: [
       { name: 'Standing Calf Raise',   eq: 'Machine',    sets: '5 × 20',     yt: 'standing calf raise form tutorial' },
@@ -126,7 +126,7 @@ export const DB = {
   // ── Back ──
   traps: {
     label: 'Traps', scientific: 'Trapezius — Upper · Middle · Lower Fibres',
-    color: '#f59e0b', intensity: 3,
+    color: '#ffd000', intensity: 3,
     desc: 'Upper fibres elevate and upwardly rotate the scapula; middle fibres retract it; lower fibres depress it. All three need balanced work to prevent the rounded-shoulder posture that plagues desk workers.',
     exercises: [
       { name: 'Barbell Shrug',       eq: 'Barbell',   sets: '4 × 12',   yt: 'barbell shrug traps form tutorial' },
@@ -141,7 +141,7 @@ export const DB = {
   },
   upper_back: {
     label: 'Upper Back', scientific: 'Rhomboids · Infraspinatus · Teres Major',
-    color: '#22d3ee', intensity: 3,
+    color: '#0088ff', intensity: 3,
     desc: 'The rhomboids retract and downwardly rotate the scapula — the direct antagonist to tight, overdeveloped pecs. The infraspinatus and teres major externally rotate the shoulder and protect the rotator cuff under heavy pressing loads. Neglecting this region causes rounded shoulders and eventual impingement.',
     exercises: [
       { name: 'Seated Cable Row',      eq: 'Cable',      sets: '4 × 10',       yt: 'seated cable row upper back form tutorial' },
@@ -156,7 +156,7 @@ export const DB = {
   },
   lats: {
     label: 'Lats', scientific: 'Latissimus Dorsi',
-    color: '#b4bccc', intensity: 4,
+    color: '#4466ff', intensity: 4,
     desc: "The widest muscle in the body — the architect of the V-taper silhouette. Pulls the arm down and back into extension and adduction. A full stretch at the top of every rep is non-negotiable for width.",
     exercises: [
       { name: 'Pull-Up',                eq: 'Bodyweight', sets: '4 × failure',  yt: 'pull up lat form tutorial' },
@@ -171,7 +171,7 @@ export const DB = {
   },
   triceps: {
     label: 'Triceps', scientific: 'Triceps Brachii — Long Head · Lateral Head · Medial Head',
-    color: '#b8b8cc', intensity: 2,
+    color: '#cc00ff', intensity: 2,
     desc: 'Three-headed muscle making up roughly ⅔ of total upper-arm mass. The long head requires overhead position for full stretch. The lateral head creates the horseshoe shape visible when the arm is extended.',
     exercises: [
       { name: 'Close-Grip Bench',   eq: 'Barbell',    sets: '4 × 8',   yt: 'close grip bench press tricep form' },
@@ -186,7 +186,7 @@ export const DB = {
   },
   lower_back: {
     label: 'Lower Back', scientific: 'Erector Spinae (Iliocostalis · Longissimus · Spinalis) & Multifidus',
-    color: '#f97316', intensity: 3,
+    color: '#ff4400', intensity: 3,
     desc: "The erector spinae group extends the spine under load — the safety cable of every deadlift and squat. The deep multifidus provides segmental stability. The single most important injury-prevention target in strength training.",
     exercises: [
       { name: 'Conventional Deadlift', eq: 'Barbell',    sets: '4 × 5',   yt: 'conventional deadlift form tutorial' },
@@ -201,7 +201,7 @@ export const DB = {
   },
   glutes: {
     label: 'Glutes', scientific: 'Gluteus Maximus · Gluteus Medius · Gluteus Minimus',
-    color: '#f43f5e', intensity: 4,
+    color: '#ff0066', intensity: 4,
     desc: "Gluteus maximus is the body's largest muscle and the primary driver of hip extension and power output. Medius and minimus control hip abduction and stabilise the pelvis on every single-leg step, squat, and sprint.",
     exercises: [
       { name: 'Hip Thrust',           eq: 'Barbell',    sets: '4 × 10',      yt: 'hip thrust barbell glute form tutorial' },
@@ -216,7 +216,7 @@ export const DB = {
   },
   hamstrings: {
     label: 'Hamstrings', scientific: 'Biceps Femoris · Semitendinosus · Semimembranosus',
-    color: '#84cc16', intensity: 3,
+    color: '#aaff00', intensity: 3,
     desc: 'Three muscles spanning the back of the thigh — knee flexors and hip extensors in one. Direct antagonists to the quads. Eccentric-focused training (Nordic curls) is the single best intervention against hamstring strains.',
     exercises: [
       { name: 'Romanian Deadlift',   eq: 'Barbell',    sets: '4 × 10', yt: 'romanian deadlift hamstring form tutorial' },

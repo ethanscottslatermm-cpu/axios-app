@@ -215,11 +215,11 @@ function InputField({ label, value, onChange, type='text', placeholder='' }) {
 }
 
 // ── Log Workout Sheet ──────────────────────────────────────────────────────────
-function LogWorkoutSheet({ onSave, onClose }) {
+function LogWorkoutSheet({ onSave, onClose, prefillMuscle }) {
   const [visible,  setVisible]  = useState(false)
-  const [step,     setStep]     = useState('workout') // 'workout' | 'exercises'
-  const [workout,  setWorkout]  = useState({ label:'', type:'Strength', duration:'' })
-  const [exercises,setExercises]= useState([])
+  const [step,     setStep]     = useState(prefillMuscle ? 'exercises' : 'workout')
+  const [workout,  setWorkout]  = useState({ label: prefillMuscle ? `${prefillMuscle} Session` : '', type:'Strength', duration:'' })
+  const [exercises,setExercises]= useState(prefillMuscle ? [{ name:'', sets:'', reps:'', weight:'', muscle_group: prefillMuscle }] : [])
   const [saving,   setSaving]   = useState(false)
   const [error,    setError]    = useState('')
 
@@ -512,9 +512,10 @@ export default function FitnessTracker() {
 
   const [visible,      setVisible]      = useState(false)
   const [workouts,     setWorkouts]     = useState([])
-  const [showWorkout,  setShowWorkout]  = useState(false)
-  const [showWeight,   setShowWeight]   = useState(false)
-  const [activeTab,    setActiveTab]    = useState('workouts') // 'workouts' | 'weight'
+  const [showWorkout,   setShowWorkout]   = useState(false)
+  const [showWeight,    setShowWeight]    = useState(false)
+  const [activeTab,     setActiveTab]     = useState('body')
+  const [quickLogMuscle,setQuickLogMuscle]= useState(null)
   const [loadingW,     setLoadingW]     = useState(false)
   const todayWorkouts = (workouts || []).filter(w => (w.workout_date || w.created_at?.split('T')[0]) === todayStr)
 
@@ -674,20 +675,29 @@ export default function FitnessTracker() {
 
           {/* Tab switcher */}
           <div style={{ display:'flex', gap:8, ...anim(80) }}>
-            {[['body','Body Map'],['workouts','Workouts'],['weight','Weight Log']].map(([key,label]) => {
+            {[['workouts','Workouts'],['body','Fit Guide'],['weight','Weight Log']].map(([key,label]) => {
               const isActive = activeTab === key
+              const isFitGuide = key === 'body'
               return (
                 <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
                   style={{
-                    flex: 1,
+                    flex: isFitGuide ? 1.15 : 1,
                     padding:'10px',
                     borderRadius:10,
-                    border: isActive ? '1px solid rgba(248,113,113,0.55)' : 'rgba(212,212,232,0.08)',
-                    background: isActive ? 'rgba(248,113,113,0.12)' : 'rgba(212,212,232,0.03)',
-                    color: isActive ? '#f87171' : 'rgba(212,212,232,0.35)',
+                    border: isActive
+                      ? '1px solid rgba(248,113,113,0.55)'
+                      : isFitGuide
+                      ? '1px solid rgba(212,212,232,0.14)'
+                      : '1px solid rgba(212,212,232,0.06)',
+                    background: isActive
+                      ? 'rgba(248,113,113,0.12)'
+                      : isFitGuide
+                      ? 'rgba(212,212,232,0.05)'
+                      : 'rgba(212,212,232,0.03)',
+                    color: isActive ? '#f87171' : isFitGuide ? 'rgba(212,212,232,0.6)' : 'rgba(212,212,232,0.35)',
                     boxShadow: isActive ? '0 0 12px rgba(248,113,113,0.18)' : 'none',
                     fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
-                    fontWeight: isActive ? 700 : 400,
+                    fontWeight: isActive ? 700 : isFitGuide ? 600 : 400,
                     cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
                   }}>
                   {label}
@@ -798,7 +808,10 @@ export default function FitnessTracker() {
 
           {activeTab === 'body' && (
             <div style={anim(80)}>
-              <MuscleMapView workouts={workouts} />
+              <MuscleMapView
+                workouts={workouts}
+                onLogWorkout={muscle => setQuickLogMuscle(muscle)}
+              />
             </div>
           )}
 
@@ -806,6 +819,7 @@ export default function FitnessTracker() {
       </div>
 
       {showWorkout && <LogWorkoutSheet onSave={handleSaveWorkout} onClose={() => setShowWorkout(false)} />}
+      {quickLogMuscle && <LogWorkoutSheet onSave={handleSaveWorkout} onClose={() => setQuickLogMuscle(null)} prefillMuscle={quickLogMuscle} />}
       {showWeight  && <LogWeightSheet  onSave={handleSaveWeight}  onClose={() => setShowWeight(false)} current={latest} todayStr={todayStr} />}
 
       <BottomNav />

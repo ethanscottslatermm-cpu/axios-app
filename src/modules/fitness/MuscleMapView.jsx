@@ -823,6 +823,22 @@ export default function MuscleMapView({ workouts = [] }) {
                     </span>
                   )}
                 </div>
+                {onLogWorkout && (
+                  <button onClick={() => onLogWorkout(selected)} style={{
+                    width: '100%', padding: '10px',
+                    background: `${dbData.color}18`, border: `1px solid ${dbData.color}55`,
+                    borderRadius: 10, cursor: 'pointer',
+                    color: dbData.color, fontSize: 11, fontWeight: 700,
+                    fontFamily: FF, letterSpacing: '0.08em',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                    marginTop: 2,
+                  }}>
+                    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Log {selected} Workout
+                  </button>
+                )}
               </div>
             </div>
           )}
