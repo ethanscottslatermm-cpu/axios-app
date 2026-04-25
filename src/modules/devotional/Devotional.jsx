@@ -38,14 +38,20 @@ function getDailyRefFromPool(pool) {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-function SectionHead({ title, sub }) {
+function SectionHead({ title, sub, onToggle, collapsed }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:`linear-gradient(to bottom,var(--accent-devotional),transparent)`, borderRadius:2, boxShadow:`0 0 8px var(--accent-devotional)` }} />
         <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
+      {onToggle
+        ? <button onClick={onToggle} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', display:'flex', alignItems:'center', gap:5 }}>
+            {sub}
+            <span style={{ display:'inline-block', transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition:'transform 0.2s' }}>›</span>
+          </button>
+        : sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+      }
     </div>
   )
 }
@@ -408,10 +414,11 @@ export default function Devotional() {
   const [verseLoading,setVerseLoading]= useState(true)
   const [today,       setToday]       = useState(null)   // today's devotional entry from DB
   const [history,     setHistory]     = useState([])
-  const [showJournal, setShowJournal] = useState(false)
-  const [showBible,   setShowBible]   = useState(false)
-  const [loadingDB,   setLoadingDB]   = useState(true)
-  const [streak,      setStreak]      = useState(0)
+  const [showJournal,  setShowJournal]  = useState(false)
+  const [showBible,    setShowBible]    = useState(false)
+  const [loadingDB,    setLoadingDB]    = useState(true)
+  const [streak,       setStreak]       = useState(0)
+  const [historyOpen,  setHistoryOpen]  = useState(false)
 
   // Fetch verse — pool comes from DB, falls back to hardcoded VERSE_REFS
   useEffect(() => {
@@ -637,12 +644,14 @@ export default function Devotional() {
           {/* History */}
           {history.length > 0 && (
             <div style={anim(300)}>
-              <SectionHead title="Past Devotionals" sub={`${history.length} entries`} />
+              <SectionHead title="Past Devotionals" sub={`${history.length} entries`} onToggle={() => setHistoryOpen(o => !o)} collapsed={!historyOpen} />
+              {historyOpen && (
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                 {history.map((entry, i) => (
                   <PastEntry key={entry.id} entry={entry} delay={i*40} visible={visible} />
                 ))}
               </div>
+              )}
             </div>
           )}
 

@@ -75,7 +75,7 @@ function Card({ children, style={} }) {
   )
 }
 
-function SectionHead({ title, action, actionLabel, color }) {
+function SectionHead({ title, action, actionLabel, color, onToggle, collapsed }) {
   const c = color || 'rgba(212,212,232,0.8)'
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
@@ -83,7 +83,13 @@ function SectionHead({ title, action, actionLabel, color }) {
         <div style={{ width:2, height:14, background:`linear-gradient(to bottom,${c},${c}22)`, borderRadius:2, boxShadow:`0 0 6px ${c}88` }} />
         <p style={{ color: color || 'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {action && <button onClick={action} style={{ background:'none', border:'none', cursor:'pointer', color: color ? `${color}99` : 'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</button>}
+      {onToggle
+        ? <button onClick={onToggle} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', display:'flex', alignItems:'center', gap:5 }}>
+            {actionLabel}
+            <span style={{ display:'inline-block', transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition:'transform 0.2s' }}>›</span>
+          </button>
+        : action && <button onClick={action} style={{ background:'none', border:'none', cursor:'pointer', color: color ? `${color}99` : 'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</button>
+      }
     </div>
   )
 }
@@ -140,6 +146,7 @@ export default function Dashboard() {
   const { user }  = useAuth()
   const [profile, setProfile] = useState(null)
   const [visible, setVisible] = useState(false)
+  const [modulesOpen, setModulesOpen] = useState(true)
 
   const { totals, logs: foodLogs } = useFoodLog(todayStr)
   const { count: waterCount }      = useWaterLog(todayStr)
@@ -292,7 +299,8 @@ export default function Dashboard() {
 
           {/* Modules */}
           <Card style={anim(160)}>
-            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} />
+            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} onToggle={() => setModulesOpen(o => !o)} collapsed={!modulesOpen} />
+            {modulesOpen && (
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {modules.map(({ key, label, path, icon }, i) => {
                 const done  = loggedModules[key]
@@ -322,6 +330,7 @@ export default function Dashboard() {
                 )
               })}
             </div>
+            )}
           </Card>
 
           {/* Food */}

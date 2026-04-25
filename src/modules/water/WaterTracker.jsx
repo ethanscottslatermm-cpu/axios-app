@@ -35,14 +35,20 @@ function GlowBar({ pct, h=5 }) {
   )
 }
 
-function SectionHead({ title, sub }) {
+function SectionHead({ title, sub, onToggle, collapsed }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:`linear-gradient(to bottom,var(--accent-water),transparent)`, borderRadius:2, boxShadow:`0 0 8px var(--accent-water)` }} />
         <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
       </div>
-      {sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>}
+      {onToggle
+        ? <button onClick={onToggle} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', display:'flex', alignItems:'center', gap:5 }}>
+            {sub}
+            <span style={{ display:'inline-block', transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition:'transform 0.2s' }}>›</span>
+          </button>
+        : sub && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+      }
     </div>
   )
 }
@@ -156,9 +162,12 @@ export default function WaterTracker() {
   const { logs, count, addGlass, removeGlass, isLoading: loading } = useWaterLog(todayStr)
   const { history: waterHistory } = useWaterHistory()
 
-  const [visible,   setVisible]   = useState(false)
-  const [showCustom,setShowCustom]= useState(false)
-  const [justAdded, setJustAdded] = useState(false)
+  const [visible,      setVisible]      = useState(false)
+  const [showCustom,   setShowCustom]   = useState(false)
+  const [justAdded,    setJustAdded]    = useState(false)
+  const [trendOpen,    setTrendOpen]    = useState(false)
+  const [pastDaysOpen, setPastDaysOpen] = useState(false)
+  const [logOpen,      setLogOpen]      = useState(false)
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 60)
@@ -326,7 +335,8 @@ export default function WaterTracker() {
           {/* Today's log */}
           {(logs || []).length > 0 && (
             <Card style={anim(280)}>
-              <SectionHead title="Today's Log" sub={`${logs.length} entries`} />
+              <SectionHead title="Today's Log" sub={`${logs.length} entries`} onToggle={() => setLogOpen(o => !o)} collapsed={!logOpen} />
+              {logOpen && (
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                 {[...(logs||[])].reverse().map((log, i) => {
                   const time = log.created_at ? new Date(log.created_at).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) : ''
@@ -351,6 +361,7 @@ export default function WaterTracker() {
                   )
                 })}
               </div>
+              )}
             </Card>
           )}
 
@@ -375,10 +386,8 @@ export default function WaterTracker() {
               {/* Water Trend */}
               {waterHistory.length >= 2 && (
                 <div style={{ marginBottom:28 }}>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
-                    <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>14-Day Trend</p>
-                    <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>glasses / day</p>
-                  </div>
+                  <SectionHead title="14-Day Trend" sub="glasses / day" onToggle={() => setTrendOpen(o => !o)} collapsed={!trendOpen} />
+                  {trendOpen && (
                   <LineChart
                     data={[...waterHistory].reverse().slice(-14).map(d => ({
                       label: new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { month:'numeric', day:'numeric' }),
@@ -386,16 +395,15 @@ export default function WaterTracker() {
                     }))}
                     height={90}
                   />
+                  )}
                 </div>
               )}
 
-                            {/* Past Days */}
+              {/* Past Days */}
               {waterHistory.length > 0 && (
                 <div style={{ marginTop: 32 }}>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
-                    <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Past Days</p>
-                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{waterHistory.length} days logged</p>
-                  </div>
+                  <SectionHead title="Past Days" sub={`${waterHistory.length} days logged`} onToggle={() => setPastDaysOpen(o => !o)} collapsed={!pastDaysOpen} />
+                  {pastDaysOpen && (
                   <div style={{ maxHeight:320, overflowY:'auto', display:'flex', flexDirection:'column', gap:8, paddingRight:4, scrollbarWidth:'thin', scrollbarColor:'var(--scrollbar) transparent' }}>
                     {waterHistory.map((day) => (
                       <div key={day.date} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10 }}>
@@ -411,6 +419,7 @@ export default function WaterTracker() {
                       </div>
                     ))}
                   </div>
+                  )}
                 </div>
               )}
 
