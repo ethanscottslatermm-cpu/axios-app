@@ -404,7 +404,7 @@ function ExCard({ ex, accent }) {
   )
 }
 
-export default function MuscleMapView({ workouts = [] }) {
+export default function MuscleMapView({ workouts = [], onLogWorkout }) {
   const [selected,     setSelected]    = useState(null)
   const [view,         setView]        = useState('anterior')
   const [exercises,    setExercises]   = useState([])
