@@ -78,18 +78,27 @@ function Card({ children, style={} }) {
 function SectionHead({ title, action, actionLabel, color, onToggle, collapsed }) {
   const c = color || 'rgba(212,212,232,0.8)'
   return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+    <div
+      onClick={onToggle}
+      style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14, cursor: onToggle ? 'pointer' : 'default', userSelect:'none' }}
+    >
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:`linear-gradient(to bottom,${c},${c}22)`, borderRadius:2, boxShadow:`0 0 6px ${c}88` }} />
         <p style={{ color: color || 'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        {onToggle && (
+          <span style={{ display:'inline-block', color:'var(--text-muted)', fontSize:14, lineHeight:1, transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition:'transform 0.22s ease' }}>›</span>
+        )}
       </div>
-      {onToggle
-        ? <button onClick={onToggle} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', display:'flex', alignItems:'center', gap:5 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        {actionLabel && !action && (
+          <span style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</span>
+        )}
+        {action && (
+          <button onClick={e => { e.stopPropagation(); action() }} style={{ background:'none', border:'none', cursor:'pointer', color: color ? `${color}99` : 'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
             {actionLabel}
-            <span style={{ display:'inline-block', transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition:'transform 0.2s' }}>›</span>
           </button>
-        : action && <button onClick={action} style={{ background:'none', border:'none', cursor:'pointer', color: color ? `${color}99` : 'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</button>
-      }
+        )}
+      </div>
     </div>
   )
 }
@@ -146,7 +155,8 @@ export default function Dashboard() {
   const { user }  = useAuth()
   const [profile, setProfile] = useState(null)
   const [visible, setVisible] = useState(false)
-  const [modulesOpen, setModulesOpen] = useState(true)
+  const [activeSection, setActiveSection] = useState(null)
+  const toggleSection = (key) => setActiveSection(prev => prev === key ? null : key)
 
   const { totals, logs: foodLogs } = useFoodLog(todayStr)
   const { count: waterCount }      = useWaterLog(todayStr)
@@ -299,8 +309,8 @@ export default function Dashboard() {
 
           {/* Modules */}
           <Card style={anim(160)}>
-            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} onToggle={() => setModulesOpen(o => !o)} collapsed={!modulesOpen} />
-            {modulesOpen && (
+            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} onToggle={() => toggleSection('modules')} collapsed={activeSection !== 'modules'} />
+            {activeSection === 'modules' && (
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {modules.map(({ key, label, path, icon }, i) => {
                 const done  = loggedModules[key]
@@ -335,69 +345,81 @@ export default function Dashboard() {
 
           {/* Food */}
           <Card style={anim(280)}>
-            <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" color={MODULE_COLORS.food} />
-            {recentFood.length === 0
-              ? <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'14px 0' }}>Nothing logged yet today.</p>
-              : recentFood.map((e, i) => (
-                <div key={e.id} className="ax-log-row" style={{ display:'flex', justifyContent:'space-between', padding:'10px 6px', borderBottom: i < recentFood.length-1 ? '1px solid rgba(212,212,232,0.05)' : 'none', transition:'background 0.15s' }}>
-                  <span style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.food_name}</span>
-                  <span style={{ color:`${MODULE_COLORS.food}88`, fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.calories} cal</span>
+            <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" color={MODULE_COLORS.food} onToggle={() => toggleSection('food')} collapsed={activeSection !== 'food'} />
+            {activeSection === 'food' && (
+            <>
+              {recentFood.length === 0
+                ? <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'14px 0' }}>Nothing logged yet today.</p>
+                : recentFood.map((e, i) => (
+                  <div key={e.id} className="ax-log-row" style={{ display:'flex', justifyContent:'space-between', padding:'10px 6px', borderBottom: i < recentFood.length-1 ? '1px solid rgba(212,212,232,0.05)' : 'none', transition:'background 0.15s' }}>
+                    <span style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.food_name}</span>
+                    <span style={{ color:`${MODULE_COLORS.food}88`, fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.calories} cal</span>
+                  </div>
+                ))
+              }
+              <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(212,212,232,0.06)', display:'flex', alignItems:'center', gap:14 }}>
+                <div>
+                  <p style={{ color:`${MODULE_COLORS.food}88`, fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
+                  <p style={{ color:MODULE_COLORS.food, fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
                 </div>
-              ))
-            }
-            <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(212,212,232,0.06)', display:'flex', alignItems:'center', gap:14 }}>
-              <div>
-                <p style={{ color:`${MODULE_COLORS.food}88`, fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
-                <p style={{ color:MODULE_COLORS.food, fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
+                <div style={{ flex:1 }}>
+                  <GlowBar pct={calPct} h={4} color={MODULE_COLORS.food} glow="rgba(200,212,200,0.5)" />
+                  <p style={{ color:`${MODULE_COLORS.food}99`, fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
+                </div>
               </div>
-              <div style={{ flex:1 }}>
-                <GlowBar pct={calPct} h={4} color={MODULE_COLORS.food} glow="rgba(200,212,200,0.5)" />
-                <p style={{ color:`${MODULE_COLORS.food}99`, fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
-              </div>
-            </div>
+            </>
+            )}
           </Card>
 
           {/* Water */}
           <Card style={anim(340)}>
-            <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" color={MODULE_COLORS.water} />
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-              {Array.from({ length: WATER_GOAL }).map((_,i) => {
-                const full = i < waterCount
-                return (
-                  <svg key={i} width={26} height={26} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ transition:'all 0.3s', filter: full ? '0 0 6px rgba(154,180,204,0.5)' : 'none' }}>
-                    <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(154,180,204,0.7)' : 'rgba(212,212,232,0.04)'} stroke="none"/>
-                    <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
-                    <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
-                    <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
-                  </svg>
-                )
-              })}
-            </div>
-            <p style={{ color: waterCount >= WATER_GOAL ? '#9ab4cc' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
-              {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
-            </p>
-            <GlowBar pct={waterPct} color={MODULE_COLORS.water} glow="rgba(154,180,204,0.5)" />
+            <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" color={MODULE_COLORS.water} onToggle={() => toggleSection('water')} collapsed={activeSection !== 'water'} />
+            {activeSection === 'water' && (
+            <>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
+                {Array.from({ length: WATER_GOAL }).map((_,i) => {
+                  const full = i < waterCount
+                  return (
+                    <svg key={i} width={26} height={26} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ transition:'all 0.3s', filter: full ? '0 0 6px rgba(154,180,204,0.5)' : 'none' }}>
+                      <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(154,180,204,0.7)' : 'rgba(212,212,232,0.04)'} stroke="none"/>
+                      <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                      <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                      <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                    </svg>
+                  )
+                })}
+              </div>
+              <p style={{ color: waterCount >= WATER_GOAL ? '#9ab4cc' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
+                {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
+              </p>
+              <GlowBar pct={waterPct} color={MODULE_COLORS.water} glow="rgba(154,180,204,0.5)" />
+            </>
+            )}
           </Card>
 
           {/* Prayer */}
           <Card style={anim(400)}>
-            <SectionHead title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} />
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
-              {[{ label:'Today', value: todayPrayers, sub:'logged' },{ label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
-                <div key={label} style={{ background:'var(--stat-bg)', border:`1px solid ${MODULE_COLORS.prayer}22`, boxShadow:'var(--card-shadow)', borderRadius:10, padding:'13px 14px' }}>
-                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
-                  <p style={{ color:MODULE_COLORS.prayer, fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
-                  <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => navigate('/prayer')}
-              style={{ width:'100%', padding:'11px', borderRadius:8, background:'transparent', border:`1px solid ${MODULE_COLORS.prayer}44`, color:`${MODULE_COLORS.prayer}99`, fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor=MODULE_COLORS.prayer;e.currentTarget.style.color=MODULE_COLORS.prayer}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor=`${MODULE_COLORS.prayer}44`;e.currentTarget.style.color=`${MODULE_COLORS.prayer}99`}}
-            >
-              + Log a prayer
-            </button>
+            <SectionHead title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} onToggle={() => toggleSection('prayer')} collapsed={activeSection !== 'prayer'} />
+            {activeSection === 'prayer' && (
+            <>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
+                {[{ label:'Today', value: todayPrayers, sub:'logged' },{ label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
+                  <div key={label} style={{ background:'var(--stat-bg)', border:`1px solid ${MODULE_COLORS.prayer}22`, boxShadow:'var(--card-shadow)', borderRadius:10, padding:'13px 14px' }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
+                    <p style={{ color:MODULE_COLORS.prayer, fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
+                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                  </div>
+                ))}
+              </div>
+              <button onClick={() => navigate('/prayer')}
+                style={{ width:'100%', padding:'11px', borderRadius:8, background:'transparent', border:`1px solid ${MODULE_COLORS.prayer}44`, color:`${MODULE_COLORS.prayer}99`, fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor=MODULE_COLORS.prayer;e.currentTarget.style.color=MODULE_COLORS.prayer}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=`${MODULE_COLORS.prayer}44`;e.currentTarget.style.color=`${MODULE_COLORS.prayer}99`}}
+              >
+                + Log a prayer
+              </button>
+            </>
+            )}
           </Card>
 
         </div>
