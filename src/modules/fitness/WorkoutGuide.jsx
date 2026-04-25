@@ -810,28 +810,32 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
   const labels = view === 'front' ? FRONT_LABELS : BACK_LABELS
   const zones  = view === 'front' ? FRONT_ZONES : BACK_ZONES
 
-  const opacity = (id) => {
-    if (!selected && !hovered) return 0.32
-    if (id === selected) return 0.88
-    if (id === hovered)  return 0.62
-    return 0.07
+  const strokeOp = (id) => {
+    if (id === selected) return 1.0
+    if (id === hovered)  return 0.80
+    return 0.45
   }
-  const sw = (id) => (id === selected ? 2.5 : id === hovered ? 1.5 : 0.8)
+  const sw = (id) => (id === selected ? 2.5 : id === hovered ? 1.8 : 1.2)
 
-  const renderShape = (s, color, op, strokeW) => {
-    if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
-    if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
-    return <path d={s.d} fill={color} fillOpacity={op} stroke={color} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
+  const renderShape = (s, isSel, strokeW, sOp) => {
+    const stroke = `rgba(255,255,255,${sOp})`
+    const fill = isSel ? 'rgba(255,255,255,0.82)' : 'none'
+    if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={fill} stroke={stroke} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
+    if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={fill} stroke={stroke} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
+    return <path d={s.d} fill={fill} stroke={stroke} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
   }
 
   return (
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
       <defs>
-        {/* Muscle zone glow — colour-matched halo around the selected shape */}
+        {/* Muscle zone glow — white halo around the selected shape */}
         <filter id="zone-glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+          <feFlood floodColor="#ffffff" floodOpacity="0.9" result="white"/>
+          <feComposite in="white" in2="blur" operator="in" result="whiteglow"/>
           <feMerge>
-            <feMergeNode in="blur"/>
+            <feMergeNode in="whiteglow"/>
+            <feMergeNode in="whiteglow"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
@@ -870,9 +874,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
       `}</style>
 
       {zones.map(id => {
-        const data    = DB[id]
-        const color   = data?.color || '#b4bccc'
-        const op      = opacity(id)
+        const op      = strokeOp(id)
         const strokeW = sw(id)
         const isSel   = id === selected
         return (
@@ -885,7 +887,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
               ...(isSel ? { filter:'url(#zone-glow)', animation:'muscleGlow 2.6s ease-in-out infinite' } : {}),
             }}>
             {(shapes[id] || []).map((s, i) => (
-              <g key={i}>{renderShape(s, color, op, strokeW)}</g>
+              <g key={i}>{renderShape(s, isSel, strokeW, op)}</g>
             ))}
           </g>
         )
@@ -1079,8 +1081,8 @@ export default function WorkoutGuide({ onClose, inline = false }) {
           <div style={{
             position:'absolute', inset:0, zIndex:0, borderRadius:16, pointerEvents:'none',
             background: selectedDB
-              ? `radial-gradient(ellipse 65% 55% at 50% 44%, ${selectedDB.color}30 0%, transparent 68%)`
-              : 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(180,188,204,0.12) 0%, transparent 68%)',
+              ? 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(255,255,255,0.10) 0%, transparent 68%)'
+              : 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(180,188,204,0.06) 0%, transparent 68%)',
             transition:'background 0.7s ease',
             animation:'bgPulse 3.5s ease-in-out infinite',
           }} />
@@ -1110,7 +1112,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
             {/* Inner ellipse — faster CW, tints to muscle color */}
             <ellipse cx="120" cy="248" rx="66" ry="148"
               fill="none"
-              stroke={selectedDB ? `${selectedDB.color}66` : 'rgba(212,212,232,0.08)'}
+              stroke={selectedDB ? 'rgba(255,255,255,0.22)' : 'rgba(212,212,232,0.08)'}
               strokeWidth="1" strokeDasharray="5 13"
               style={{ transformOrigin:'120px 248px', animation:'scanCW 8s linear infinite', transition:'stroke 0.7s ease' }}
             />
@@ -1152,9 +1154,9 @@ export default function WorkoutGuide({ onClose, inline = false }) {
             return (
               <button key={id} onClick={() => handleSelect(sel ? null : id)} style={{
                 flexShrink:0, padding:'6px 12px', borderRadius:99,
-                background: sel ? `${d?.color}22` : 'var(--stat-bg)',
-                border: `1px solid ${sel ? d?.color+'66' : 'var(--border)'}`,
-                color: sel ? d?.color : 'var(--text-muted)',
+                background: sel ? 'rgba(255,255,255,0.10)' : 'var(--stat-bg)',
+                border: `1px solid ${sel ? 'rgba(255,255,255,0.45)' : 'var(--border)'}`,
+                color: sel ? '#ffffff' : 'var(--text-muted)',
                 fontSize:11, fontWeight: sel ? 700 : 400,
                 fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
                 letterSpacing:'0.04em', transition:'all 0.15s',
@@ -1171,14 +1173,14 @@ export default function WorkoutGuide({ onClose, inline = false }) {
 
             {/* Muscle header */}
             <div style={{
-              background:'var(--bg-card)', border:`1px solid ${selectedDB.color}33`,
+              background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.18)',
               borderRadius:14, padding:'14px 16px', marginBottom:12,
             }}>
               <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-                <div style={{ width:10, height:10, borderRadius:'50%', background:selectedDB.color, boxShadow:`0 0 10px ${selectedDB.color}` }}/>
-                <p style={{ color:selectedDB.color, fontSize:15, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>{selectedDB.label}</p>
+                <div style={{ width:10, height:10, borderRadius:'50%', background:'#ffffff', boxShadow:'0 0 10px rgba(255,255,255,0.8)' }}/>
+                <p style={{ color:'#ffffff', fontSize:15, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em', textShadow:'0 0 12px rgba(255,255,255,0.9), 0 0 24px rgba(255,255,255,0.5)' }}>{selectedDB.label}</p>
               </div>
-              <p style={{ color:'rgba(212,212,232,0.38)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', fontStyle:'italic', marginBottom:10 }}>
+              <p style={{ color:'rgba(255,255,255,0.50)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', fontStyle:'italic', marginBottom:10 }}>
                 {selectedDB.scientific}
               </p>
               {/* Intensity */}
@@ -1187,25 +1189,25 @@ export default function WorkoutGuide({ onClose, inline = false }) {
                 {[1,2,3,4,5].map(i => (
                   <div key={i} style={{
                     width:7, height:7, borderRadius:'50%',
-                    background: i <= selectedDB.intensity ? selectedDB.color : 'rgba(212,212,232,0.08)',
-                    boxShadow: i <= selectedDB.intensity ? `0 0 6px ${selectedDB.color}88` : 'none',
+                    background: i <= selectedDB.intensity ? '#ffffff' : 'rgba(212,212,232,0.08)',
+                    boxShadow: i <= selectedDB.intensity ? '0 0 6px rgba(255,255,255,0.65)' : 'none',
                   }}/>
                 ))}
               </div>
-              <p style={{ color:'rgba(212,212,232,0.52)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.65 }}>{selectedDB.desc}</p>
+              <p style={{ color:'rgba(255,255,255,0.72)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.65, textShadow:'0 0 8px rgba(255,255,255,0.3)' }}>{selectedDB.desc}</p>
             </div>
 
             {/* Exercise list */}
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
-              <div style={{ width:3, height:14, background:selectedDB.color, borderRadius:2, boxShadow:`0 0 8px ${selectedDB.color}` }}/>
-              <p style={{ color:selectedDB.color, fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, flex:1 }}>
+              <div style={{ width:3, height:14, background:'#ffffff', borderRadius:2, boxShadow:'0 0 8px rgba(255,255,255,0.7)' }}/>
+              <p style={{ color:'rgba(255,255,255,0.85)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, flex:1 }}>
                 Exercises
               </p>
               <button onClick={handleRefresh} style={{
                 display:'flex', alignItems:'center', gap:5,
                 padding:'5px 10px', borderRadius:8,
-                background:`${selectedDB.color}18`, border:`1px solid ${selectedDB.color}44`,
-                color:selectedDB.color, fontSize:10, fontWeight:700,
+                background:'rgba(255,255,255,0.10)', border:'1px solid rgba(255,255,255,0.35)',
+                color:'rgba(255,255,255,0.85)', fontSize:10, fontWeight:700,
                 fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
                 letterSpacing:'0.08em',
               }}>
