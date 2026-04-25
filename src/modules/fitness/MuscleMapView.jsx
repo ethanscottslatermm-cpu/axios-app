@@ -524,8 +524,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout }) {
 
           {/* Per-muscle DB-colored overlays */}
           {MUSCLES.map(m => {
+            if (m === 'Head') return null  // Head rendered as SVG outline, no fill
             const dbKey = GROUP_TO_DB[m]
-            const color = m === 'Head' ? MIND_COLOR : (DB[dbKey]?.color || '#b4bccc')
+            const color = DB[dbKey]?.color || '#b4bccc'
             const c     = counts[m] || 0
             const isSel = selected === m
             const op    = isSel ? 1.0 : c === 0 ? 0.38 : c === 1 ? 0.60 : c === 2 ? 0.80 : 0.95
@@ -568,16 +569,52 @@ export default function MuscleMapView({ workouts = [], onLogWorkout }) {
               </filter>
             </defs>
 
-            {/* Facial definition — anterior only, always visible */}
+            {/* Head outline — exact polygon from react-body-highlighter source, no fill, white illuminated */}
+            <polygon
+              points={view === 'anterior'
+                ? '42.4489796 2.85714286 40 11.8367347 42.0408163 19.5918367 46.122449 23.2653061 49.7959184 25.3061224 54.6938776 22.4489796 57.5510204 19.1836735 59.1836735 10.2040816 57.1428571 2.44897959 49.7959184 0'
+                : '50.6382979 0 45.9574468 0.85106383 40.8510638 5.53191489 40.4255319 12.7659574 45.106383 20 55.7446809 20 59.1489362 13.6170213 59.5744681 4.68085106 55.7446809 1.27659574'
+              }
+              fill="none"
+              stroke="rgba(255,255,255,1)"
+              strokeWidth={selected === 'Head' ? 0.9 : 0.42}
+              strokeLinejoin="round"
+              opacity={selected === 'Head' ? 1.0 : 0.42}
+              style={{
+                filter: selected === 'Head' ? 'drop-shadow(0 0 4px rgba(255,255,255,0.95)) drop-shadow(0 0 8px rgba(255,255,255,0.5))' : undefined,
+                transition: 'stroke-width 0.3s, opacity 0.3s',
+                animation: selected === 'Head' ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
+              }}
+            />
+
+            {/* Facial definition — anterior only */}
             {view === 'anterior' && (
-              <g opacity="0.32" pointerEvents="none">
-                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.35"/>
-                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.35"/>
-                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.3" strokeLinecap="round"/>
-                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.42" strokeLinecap="round"/>
-                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.28" strokeLinecap="round"/>
-                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.28" strokeLinecap="round"/>
-                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(155,168,195,1)" strokeWidth="0.28" strokeLinecap="round"/>
+              <g
+                opacity={selected === 'Head' ? 0.92 : 0.32}
+                pointerEvents="none"
+                style={{
+                  filter: selected === 'Head' ? 'drop-shadow(0 0 1.5px rgba(255,255,255,0.65))' : undefined,
+                  transition: 'opacity 0.3s',
+                }}
+              >
+                {/* Eyes */}
+                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.35"/>
+                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.35"/>
+                {/* Nose */}
+                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                {/* Mouth */}
+                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                {/* Jaw lines */}
+                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                {/* Chin cleft */}
+                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                {/* Cheekbones — zygomatic arch */}
+                <path d="M 43.5 12.2 Q 38.8 13.8 39.8 17.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                <path d="M 56.5 12.2 Q 61.2 13.8 60.2 17.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                {/* Zygomatic frontal process (vertical at outer eye corner) */}
+                <path d="M 44 10.2 L 43 13.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                <path d="M 56 10.2 L 57 13.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.3" strokeLinecap="round"/>
               </g>
             )}
 
@@ -619,7 +656,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout }) {
             {labels.map(l => {
               const isActive  = selected === l.group
               const dbKey     = GROUP_TO_DB[l.group]
-              const color     = isActive ? (DB[dbKey]?.color || '#d8e0ee') : 'rgba(200,210,230,0.30)'
+              const isHeadLbl = l.group === 'Head'
+              const color     = isActive ? (isHeadLbl ? '#ffffff' : (DB[dbKey]?.color || '#d8e0ee')) : 'rgba(200,210,230,0.30)'
               const lineX1    = l.anchor === 'start' ? 101 : -1
               const dotX      = l.ex
 
