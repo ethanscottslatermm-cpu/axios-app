@@ -839,16 +839,22 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
-        {/* Heart glow — white */}
-        <filter id="heart-glow" x="-120%" y="-120%" width="340%" height="340%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
-          <feFlood floodColor="#ffffff" floodOpacity="0.9" result="white"/>
-          <feComposite in="white" in2="blur" operator="in" result="whiteglow"/>
+        {/* Heart glow — white, strong bloom */}
+        <filter id="heart-glow" x="-150%" y="-150%" width="400%" height="400%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
+          <feFlood floodColor="#ffffff" floodOpacity="1" result="white"/>
+          <feComposite in="white" in2="blur" operator="in" result="wb"/>
           <feMerge>
-            <feMergeNode in="whiteglow"/>
-            <feMergeNode in="whiteglow"/>
+            <feMergeNode in="wb"/>
+            <feMergeNode in="wb"/>
+            <feMergeNode in="wb"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
+        </filter>
+        {/* Pulse ring glow */}
+        <filter id="ring-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         {/* White text glow */}
         <filter id="label-glow" x="-60%" y="-60%" width="220%" height="220%">
@@ -868,11 +874,16 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
           50%       { opacity: 0.62; }
         }
         @keyframes heartbeat {
-          0%,  100% { transform: scale(1);    opacity: 0.68; }
-          12%        { transform: scale(1.28); opacity: 1;    }
-          24%        { transform: scale(1);    opacity: 0.68; }
-          38%        { transform: scale(1.16); opacity: 0.88; }
-          60%        { transform: scale(1);    opacity: 0.68; }
+          0%   { transform: scale(1);    opacity: 0.82; }
+          8%   { transform: scale(1.58); opacity: 1;    }
+          18%  { transform: scale(1.18); opacity: 0.88; }
+          28%  { transform: scale(1.48); opacity: 1;    }
+          48%  { transform: scale(1);    opacity: 0.82; }
+          100% { transform: scale(1);    opacity: 0.82; }
+        }
+        @keyframes pulseRing {
+          0%   { transform: scale(0.85); opacity: 0.65; }
+          100% { transform: scale(3.2);  opacity: 0;    }
         }
       `}</style>
 
@@ -929,15 +940,30 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
 
       {/* Glowing heartbeat — front view only */}
       {view === 'front' && (
-        <g
-          filter="url(#heart-glow)"
-          style={{ transformBox:'fill-box', transformOrigin:'center', animation:'heartbeat 1.5s ease-in-out infinite' }}>
-          <path
-            d="M106,126 C106,126 97,119 97,113 C97,108 101,106 104,107 C105,107.5 106,109 106,109 C106,109 107,107.5 108,107 C111,106 115,108 115,113 C115,119 106,126 106,126 Z"
-            fill="#ffffff"
-            opacity={0.72}
+        <>
+          {/* Expanding pulse ring — layer 1 */}
+          <circle cx="108" cy="121" r="15"
+            fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5"
+            filter="url(#ring-glow)"
+            style={{ transformBox:'fill-box', transformOrigin:'center', animation:'pulseRing 1.5s ease-out infinite' }}
           />
-        </g>
+          {/* Expanding pulse ring — layer 2, offset */}
+          <circle cx="108" cy="121" r="15"
+            fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1"
+            filter="url(#ring-glow)"
+            style={{ transformBox:'fill-box', transformOrigin:'center', animation:'pulseRing 1.5s ease-out 0.28s infinite' }}
+          />
+          {/* Heart — sized ~38×42 units, centered at (108,121) */}
+          <g
+            filter="url(#heart-glow)"
+            style={{ transformBox:'fill-box', transformOrigin:'center', animation:'heartbeat 1.5s ease-in-out infinite' }}>
+            <path
+              d="M108,142 C108,142 89,128 89,115 C89,103 97,99 103,100 C105,101 108,105 108,105 C108,105 111,101 113,100 C119,99 127,103 127,115 C127,128 108,142 108,142 Z"
+              fill="#ffffff"
+              opacity={0.90}
+            />
+          </g>
+        </>
       )}
     </svg>
   )
