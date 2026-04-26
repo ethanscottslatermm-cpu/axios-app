@@ -832,6 +832,11 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
   const shapes = view === 'front' ? FRONT_ZONE_SHAPES : BACK_ZONE_SHAPES
   const labels = view === 'front' ? FRONT_LABELS : BACK_LABELS
   const zones  = view === 'front' ? FRONT_ZONES : BACK_ZONES
+  const [selKeys, setSelKeys] = useState({})
+
+  useEffect(() => {
+    if (selected) setSelKeys(k => ({ ...k, [selected]: (k[selected] || 0) + 1 }))
+  }, [selected])
 
   const strokeOp = (id) => {
     if (id === selected) return 1.0
@@ -841,24 +846,25 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
   const sw = (id) => (id === selected ? 3.5 : id === hovered ? 2.6 : 2.0)
 
   const renderShape = (s, isSel, strokeW, sOp) => {
-    const stroke = `rgba(255,255,255,${sOp})`
-    const fill = isSel ? 'rgba(255,255,255,0.82)' : 'none'
-    if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={fill} stroke={stroke} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
-    if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={fill} stroke={stroke} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
-    return <path d={s.d} fill={fill} stroke={stroke} strokeWidth={strokeW} style={{ transition:'all 0.3s' }}/>
+    const stroke = isSel ? 'rgba(255,255,255,1.0)' : `rgba(255,255,255,${sOp})`
+    const fill   = isSel ? 'rgba(255,255,255,0.85)' : 'none'
+    const style  = isSel
+      ? { animation: 'zoneColorShift 2.2s ease-out forwards' }
+      : { transition: 'all 0.3s' }
+    if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={fill} stroke={stroke} strokeWidth={strokeW} style={style}/>
+    if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={fill} stroke={stroke} strokeWidth={strokeW} style={style}/>
+    return <path d={s.d} fill={fill} stroke={stroke} strokeWidth={strokeW} style={style}/>
   }
 
   return (
     <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%' }}>
       <defs>
-        {/* Muscle zone glow — white halo around the selected shape */}
+        {/* Muscle zone glow — color follows the shape so it shifts white → red */}
         <filter id="zone-glow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
-          <feFlood floodColor="#ffffff" floodOpacity="0.9" result="white"/>
-          <feComposite in="white" in2="blur" operator="in" result="whiteglow"/>
           <feMerge>
-            <feMergeNode in="whiteglow"/>
-            <feMergeNode in="whiteglow"/>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="blur"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
@@ -896,6 +902,10 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0.62; }
         }
+        @keyframes zoneColorShift {
+          0%, 20% { fill: rgba(255,255,255,0.85); stroke: rgba(255,255,255,1.0); }
+          100%    { fill: rgba(239,68,68,0.65);   stroke: rgba(239,68,68,0.95); }
+        }
         @keyframes heartbeat {
           0%   { transform: scale(1);    opacity: 0.82; }
           8%   { transform: scale(1.58); opacity: 1;    }
@@ -924,7 +934,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
               ...(isSel ? { filter:'url(#zone-glow)', animation:'muscleGlow 2.6s ease-in-out infinite' } : {}),
             }}>
             {(shapes[id] || []).map((s, i) => (
-              <g key={i}>{renderShape(s, isSel, strokeW, op)}</g>
+              <g key={isSel ? `${i}-${selKeys[id] || 0}` : i}>{renderShape(s, isSel, strokeW, op)}</g>
             ))}
           </g>
         )
