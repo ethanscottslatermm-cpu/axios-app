@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
-import LineChart from '../../components/LineChart'
 import { useHaptic } from '../../hooks/useHaptic'
-import { useFoodHistory } from '../../hooks/useFoodLog'
 import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
@@ -613,7 +611,6 @@ export default function FoodJournal() {
 
   const [activeTab, setActiveTab] = useState('food')
   const { logs, totals, addEntry, deleteEntry, isLoading: loading } = useFoodLog(todayStr)
-  const { history: foodHistory } = useFoodHistory()
   const { count: waterCount } = useWaterLog(todayStr)
   const waterPct = Math.min(100, Math.round((waterCount / WATER_GOAL) * 100))
 
@@ -1045,48 +1042,6 @@ export default function FoodJournal() {
       </div>
 
 
-              {/* Calorie Trend */}
-              {foodHistory.length >= 2 && (
-                <div style={{ marginBottom:28 }}>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
-                    <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>14-Day Trend</p>
-                    <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>calories</p>
-                  </div>
-                  <LineChart
-                    data={[...foodHistory].reverse().slice(-14).map(d => ({
-                      label: new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { month:'numeric', day:'numeric' }),
-                      value: Math.round(d.calories),
-                    }))}
-                    height={90}
-                  />
-                </div>
-              )}
-
-                            {/* Past Days */}
-              {foodHistory.length > 0 && (
-                <div style={{ marginTop: 32 }}>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
-                    <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Past Days</p>
-                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{foodHistory.length} days logged</p>
-                  </div>
-                  <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                    {foodHistory.map((day) => (
-                      <div key={day.date} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10 }}>
-                        <div>
-                          <p style={{ color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginBottom:2 }}>
-                            {new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' })}
-                          </p>
-                          <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{day.entries} {day.entries === 1 ? 'item' : 'items'}</p>
-                        </div>
-                        <div style={{ textAlign:'right' }}>
-                          <p style={{ color:'var(--text-primary)', fontSize:14, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{Math.round(day.calories)} cal</p>
-                          <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>P {Math.round(day.protein)}g · C {Math.round(day.carbs)}g · F {Math.round(day.fat)}g</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
             {/* Overlays */}
       {showAI  && <AISearchPanel onSelect={handleAISelect} onClose={() => setShowAI(false)} />}
