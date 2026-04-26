@@ -232,7 +232,7 @@ export const DB = {
 }
 
 const FRONT_ZONES = ['chest','shoulders','biceps','forearms','core','obliques','quads','calves']
-const BACK_ZONES  = ['traps','upper_back','lats','triceps','lower_back','glutes','hamstrings','calves']
+const BACK_ZONES  = ['traps','upper_back','lats','triceps','forearms','lower_back','glutes','hamstrings','calves']
 
 // Zone SVG shape data
 const FRONT_ZONE_SHAPES = {
@@ -289,6 +289,10 @@ const BACK_ZONE_SHAPES = {
     { e:true, cx:50,  cy:132, rx:11, ry:24 },
     { e:true, cx:190, cy:132, rx:11, ry:24 },
   ],
+  forearms:  [
+    { e:true, cx:44,  cy:196, rx:10, ry:22 },
+    { e:true, cx:196, cy:196, rx:10, ry:22 },
+  ],
   lower_back:[
     { d:'M100 168 Q110 164 120 166 Q130 164 140 168 Q145 184 140 202 Q130 208 120 208 Q110 208 100 202 Q95 184 100 168 Z' },
   ],
@@ -322,6 +326,7 @@ const BACK_LABELS = [
   { id:'upper_back', x:2,   y:115, a:'start', sci:'Rhomboids'         },
   { id:'lats',       x:238, y:145, a:'end',   sci:'Latissimus Dorsi'  },
   { id:'triceps',    x:2,   y:125, a:'start', sci:'Triceps Brachii'   },
+  { id:'forearms',   x:238, y:193, a:'end',   sci:'Brachioradialis'  },
   { id:'lower_back', x:2,   y:181, a:'start', sci:'Erector Spinae'    },
   { id:'glutes',     x:238, y:241, a:'end',   sci:'Gluteus Maximus'   },
   { id:'hamstrings', x:2,   y:301, a:'start', sci:'Biceps Femoris'    },
@@ -443,6 +448,24 @@ function FaceOverlay() {
       {/* Mouth — cupid's bow upper + lower arc */}
       <path d="M113 52 Q117 49 120 51 Q123 49 127 52" fill="none" stroke="rgba(255,255,255,0.58)" strokeWidth="1.2" strokeLinecap="round"/>
       <path d="M113 52 Q120 57 127 52" fill="none" stroke="rgba(255,255,255,0.48)" strokeWidth="1.1" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+// ─── Back Head Overlay ────────────────────────────────────────────────────────
+function BackHeadOverlay() {
+  return (
+    <svg viewBox="0 0 240 500" style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}>
+      {/* Hair lines */}
+      <path d="M98 28 Q120 20 142 28" fill="none" stroke="rgba(255,255,255,0.38)" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d="M97 35 Q109 26 120 24 Q131 26 143 35" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="0.9" strokeLinecap="round"/>
+      {/* Occipital protuberance */}
+      <circle cx="120" cy="40" r="2.5" fill="rgba(255,255,255,0.14)"/>
+      {/* Post-auricular curves */}
+      <path d="M96 38 Q98 44 97 50" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="0.9" strokeLinecap="round"/>
+      <path d="M144 38 Q142 44 143 50" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="0.9" strokeLinecap="round"/>
+      {/* Occipital base arc */}
+      <path d="M98 50 Q120 58 142 50" fill="none" stroke="rgba(255,255,255,0.38)" strokeWidth="1.1" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -760,6 +783,10 @@ function BackBase() {
       {/* Head (back) */}
       <ellipse cx="120" cy="36" rx="25" ry="30" fill="url(#bg-rg1)" stroke="#2a243c" strokeWidth="1.5"/>
       <path d="M98 28 Q120 20 142 28" fill="none" stroke="#221e30" strokeWidth="0.8"/>
+      {/* Occipital base — mirrors front jaw/chin for matching visual weight */}
+      <path d="M96 40 Q100 44 98 50" fill="none" stroke="#221e30" strokeWidth="0.8"/>
+      <path d="M144 40 Q140 44 142 50" fill="none" stroke="#221e30" strokeWidth="0.8"/>
+      <path d="M98 50 Q120 58 142 50" fill="none" stroke="#221e30" strokeWidth="1.0"/>
       {/* Neck */}
       <path d="M109 62 Q106 70 106 80 L134 80 Q134 70 131 62 Z" fill="#1a1626" stroke="#24203a" strokeWidth="1"/>
       {/* Upper trapezius */}
@@ -1220,6 +1247,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
 
           {view === 'front' ? <FrontBase/> : <BackBase/>}
           {view === 'front' && <FaceOverlay />}
+          {view === 'back'  && <BackHeadOverlay />}
           <BoneOverlay view={view} />
           <VeinOverlay view={view} />
           <ZoneOverlay

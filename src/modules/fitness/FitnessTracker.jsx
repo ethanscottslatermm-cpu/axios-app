@@ -502,6 +502,118 @@ function WeightSparkline({ logs }) {
   )
 }
 
+// ── Weight Body Figure ─────────────────────────────────────────────────────────
+function WeightBodyFigure({ weight, goal }) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setMounted(true), 280); return () => clearTimeout(t) }, [])
+
+  const numW = parseFloat(weight) || 0
+  const numG = parseFloat(goal)   || 0
+  const hasData = numW > 0
+  const svgH = 460
+
+  const absDiff  = numW && numG ? Math.abs(numW - numG) : 0
+  const maxRange = Math.max(numW * 0.18, 10)
+  const progress = numW && numG ? Math.max(0, Math.min(1, 1 - absDiff / maxRange)) : 0.3
+
+  const col    = !hasData ? '#b4bccc' : progress >= 0.85 ? '#10b981' : progress >= 0.45 ? '#f59e0b' : '#ef4444'
+  const colRgb = !hasData ? '180,188,204' : progress >= 0.85 ? '16,185,129' : progress >= 0.45 ? '245,158,11' : '239,68,68'
+
+  const fillPct = mounted ? (hasData ? 0.15 + progress * 0.7 : 0.28) : 0
+
+  const BODY = `M120 8 C99 8 97 58 97 66 Q93 70 92 76 C82 80 70 90 64 106 Q58 126 56 152 Q54 176 58 198 Q60 212 70 218 L74 218 Q64 228 62 256 Q60 278 64 306 Q68 328 76 350 Q80 360 82 366 L88 390 Q82 408 82 432 Q82 450 90 460 L102 460 Q108 456 110 448 Q112 432 110 416 Q108 400 110 386 L116 364 Q118 366 120 366 Q122 366 124 364 L130 386 Q132 400 130 416 Q128 432 130 448 Q132 456 138 460 L150 460 Q158 450 158 432 Q158 408 152 390 L158 366 Q160 360 164 350 Q172 328 176 306 Q180 278 178 256 Q176 228 166 218 L170 218 Q180 212 182 198 Q186 176 184 152 Q182 126 176 106 Q170 90 148 76 C147 70 143 66 143 66 C143 58 141 8 120 8 Z`
+
+  return (
+    <svg viewBox="0 0 240 468" style={{ width:'100%', height:'100%' }}>
+      <defs>
+        <clipPath id="wt-clip">
+          <path d={BODY}/>
+        </clipPath>
+        <linearGradient id="wt-fill-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stopColor={col} stopOpacity="0.82"/>
+          <stop offset="100%" stopColor={col} stopOpacity="0.22"/>
+        </linearGradient>
+        <filter id="wt-body-glow" x="-35%" y="-10%" width="170%" height="120%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="wt-text-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <style>{`
+        @keyframes wtBodyPulse { 0%,100%{opacity:0.75} 50%{opacity:1} }
+        @keyframes wtGlowPulse { 0%,100%{opacity:0.45} 50%{opacity:0.85} }
+      `}</style>
+
+      {/* Ambient glow behind figure */}
+      <ellipse cx="120" cy="234" rx="88" ry="215"
+        fill={`rgba(${colRgb},0.055)`}
+        style={{ animation:'wtBodyPulse 3.2s ease-in-out infinite' }}
+      />
+
+      {/* Liquid fill inside body silhouette */}
+      <g clipPath="url(#wt-clip)">
+        <rect x="0" y="0" width="240" height={svgH} fill={`rgba(${colRgb},0.04)`}/>
+        <rect x="0" y="0" width="240" height={svgH}
+          fill="url(#wt-fill-grad)"
+          style={{
+            transformOrigin:`120px ${svgH}px`,
+            transform:`scaleY(${fillPct})`,
+            transition:'transform 1.5s cubic-bezier(0.34,1.15,0.64,1)',
+          }}
+        />
+      </g>
+
+      {/* Glow outline */}
+      <path d={BODY} fill="none"
+        stroke={`rgba(${colRgb},0.42)`} strokeWidth="3"
+        filter="url(#wt-body-glow)"
+        style={{ animation:'wtGlowPulse 2.8s ease-in-out infinite' }}
+      />
+      {/* Crisp outline */}
+      <path d={BODY} fill="none" stroke={`rgba(${colRgb},0.72)`} strokeWidth="1.5"/>
+
+      {/* Head */}
+      <ellipse cx="120" cy="30" rx="24" ry="26"
+        fill={`rgba(${colRgb},0.07)`}
+        stroke={`rgba(${colRgb},0.58)`} strokeWidth="1.5"
+        style={{ animation:'wtBodyPulse 3.2s ease-in-out infinite' }}
+      />
+
+      {/* Spine */}
+      <line x1="120" y1="76" x2="120" y2="215"
+        stroke={`rgba(${colRgb},0.18)`} strokeWidth="1" strokeDasharray="3 3"
+      />
+
+      {/* Weight readout */}
+      {hasData && (
+        <g filter="url(#wt-text-glow)"
+          style={{ opacity: mounted ? 1 : 0, transition:'opacity 0.7s ease 0.9s' }}>
+          <text x="120" y="168" textAnchor="middle"
+            fill={col} fontSize="30" fontWeight="900"
+            fontFamily="Helvetica Neue,sans-serif" letterSpacing="-1">
+            {weight}
+          </text>
+          <text x="120" y="185" textAnchor="middle"
+            fill={`rgba(${colRgb},0.6)`} fontSize="10"
+            fontFamily="Helvetica Neue,sans-serif" letterSpacing="4">
+            LBS
+          </text>
+        </g>
+      )}
+      {!hasData && (
+        <text x="120" y="175" textAnchor="middle"
+          fill="rgba(212,212,232,0.15)" fontSize="11"
+          fontFamily="Helvetica Neue,sans-serif">
+          log weight to track
+        </text>
+      )}
+    </svg>
+  )
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function FitnessTracker() {
   const todayStr = useToday()
@@ -514,7 +626,7 @@ export default function FitnessTracker() {
   const [workouts,     setWorkouts]     = useState([])
   const [showWorkout,   setShowWorkout]   = useState(false)
   const [showWeight,    setShowWeight]    = useState(false)
-  const [activeTab,     setActiveTab]     = useState('body')
+  const [activeTab,     setActiveTab]     = useState('workouts')
   const [quickLogMuscle,setQuickLogMuscle]= useState(null)
   const [loadingW,     setLoadingW]     = useState(false)
   const todayWorkouts = (workouts || []).filter(w => (w.workout_date || w.created_at?.split('T')[0]) === todayStr)
@@ -714,11 +826,20 @@ export default function FitnessTracker() {
               {loadingW && <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'24px 0', fontStyle:'italic' }}>Loading…</p>}
 
               {!loadingW && todayWorkouts.length === 0 && (
-                <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'40px 20px', textAlign:'center' }}>
-                  <div style={{ color:'rgba(212,212,232,0.15)', marginBottom:12, display:'flex', justifyContent:'center' }}>{Ico.dumbbell(32)}</div>
-                  <p style={{ color:'var(--text-muted)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:16 }}>No workouts logged yet.<br/>Start with today's session.</p>
+                <div style={{ position:'relative', overflow:'hidden', background:'linear-gradient(135deg,rgba(248,113,113,0.09) 0%,rgba(251,146,60,0.06) 55%,rgba(248,113,113,0.04) 100%)', border:'1px solid rgba(248,113,113,0.22)', borderRadius:14, padding:'40px 20px', textAlign:'center' }}>
+                  {/* Dot grid */}
+                  <div style={{ position:'absolute', inset:0, pointerEvents:'none', backgroundImage:'radial-gradient(circle,rgba(248,113,113,0.18) 1px,transparent 1px)', backgroundSize:'18px 18px', opacity:0.45 }}/>
+                  {/* Corner reticles */}
+                  <svg style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }} viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <g stroke="rgba(248,113,113,0.3)" strokeWidth="0.8" fill="none">
+                      <polyline points="4,12 4,4 12,4"/><polyline points="88,4 96,4 96,12"/>
+                      <polyline points="4,88 4,96 12,96"/><polyline points="88,96 96,96 96,88"/>
+                    </g>
+                  </svg>
+                  <div style={{ position:'relative', color:'rgba(248,113,113,0.7)', marginBottom:12, display:'flex', justifyContent:'center', filter:'drop-shadow(0 0 10px rgba(248,113,113,0.45))' }}>{Ico.dumbbell(36)}</div>
+                  <p style={{ position:'relative', color:'rgba(248,200,200,0.82)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:18 }}>No workouts logged yet.<br/>Start with today's session.</p>
                   <button onClick={() => setShowWorkout(true)}
-                    style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:9, background:'rgba(212,212,232,0.07)', border:'1px solid rgba(212,212,232,0.12)', color:'var(--text-secondary)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer' }}>
+                    style={{ position:'relative', display:'inline-flex', alignItems:'center', gap:6, padding:'10px 22px', borderRadius:9, background:'rgba(248,113,113,0.18)', border:'1px solid rgba(248,113,113,0.42)', color:'#f87171', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', cursor:'pointer', boxShadow:'0 0 18px rgba(248,113,113,0.14)' }}>
                     {Ico.plus(12)} Log first workout
                   </button>
                 </div>
@@ -750,40 +871,49 @@ export default function FitnessTracker() {
           {activeTab === 'weight' && (
             <div style={anim(140)}>
 
-              {/* Scale card */}
-              <Card style={{ marginBottom:14 }}>
-                <SectionHead title="Body Weight" />
-                <ScaleDial weight={latest} goal={weightGoal} />
-
-                {diff && (
-                  <p style={{ textAlign:'center', color: parseFloat(diff) < 0 ? 'rgba(212,212,232,0.6)' : 'rgba(212,212,232,0.35)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:10 }}>
-                    {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs from last entry
+              {/* Stats row */}
+              <div style={{ display:'flex', gap:10, marginBottom:14 }}>
+                <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
+                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Current</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
+                    {latest || '—'}<span style={{ fontSize:11, fontWeight:400, color:'var(--text-muted)', marginLeft:4 }}>lbs</span>
                   </p>
-                )}
-
-                {weightGoal && latest && (
-                  <div style={{ marginTop:14 }}>
-                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8 }}>
-                      <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Goal: {weightGoal} lbs</p>
-                      <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{toGoal > 0 ? `${toGoal} lbs to go` : 'Goal reached!'}</p>
-                    </div>
-                    <GlowBar pct={Math.min(100, (1 - Math.max(0,parseFloat(latest)-parseFloat(weightGoal)) / (parseFloat(latest)-parseFloat(weightGoal)+1))*100)} />
+                  {diff && <p style={{ color: parseFloat(diff) < 0 ? '#10b981' : '#f59e0b', fontSize:11, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginTop:5 }}>
+                    {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs
+                  </p>}
+                </div>
+                {weightGoal && (
+                  <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
+                    <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Goal</p>
+                    <p style={{ color:'var(--text-muted)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
+                      {weightGoal}<span style={{ fontSize:11, fontWeight:400, marginLeft:4 }}>lbs</span>
+                    </p>
+                    {toGoal && <p style={{ color: parseFloat(toGoal) <= 0 ? '#10b981' : 'rgba(212,212,232,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:5 }}>
+                      {parseFloat(toGoal) > 0 ? `${toGoal} lbs to go` : '✓ Goal reached'}
+                    </p>}
                   </div>
                 )}
+              </div>
 
-                {(weightLogs||[]).length >= 2 && (
-                  <div style={{ marginTop:14 }}>
-                    <WeightSparkline logs={weightLogs} />
-                  </div>
-                )}
+              {/* Animated body figure */}
+              <div style={{ position:'relative', width:160, height:320, margin:'0 auto 14px' }}>
+                <WeightBodyFigure weight={latest} goal={weightGoal} />
+              </div>
 
-                <button onClick={() => setShowWeight(true)}
-                  style={{ width:'100%', marginTop:14, padding:'11px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(212,212,232,0.4)', fontSize:11, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s' }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.3)';e.currentTarget.style.color='rgba(212,212,232,0.7)'}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.1)';e.currentTarget.style.color='rgba(212,212,232,0.4)'}}>
-                  + Log Today's Weight
-                </button>
-              </Card>
+              {/* Sparkline */}
+              {(weightLogs||[]).length >= 2 && (
+                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'14px 16px', marginBottom:14 }}>
+                  <WeightSparkline logs={weightLogs} />
+                </div>
+              )}
+
+              {/* Log button */}
+              <button onClick={() => setShowWeight(true)}
+                style={{ width:'100%', marginBottom:14, padding:'11px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(212,212,232,0.4)', fontSize:11, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s' }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.3)';e.currentTarget.style.color='rgba(212,212,232,0.7)'}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.1)';e.currentTarget.style.color='rgba(212,212,232,0.4)'}}>
+                + Log Today's Weight
+              </button>
 
               {/* Weight history */}
               <SectionHead title="Weight History" sub={`${(weightLogs||[]).length} entries`} />
