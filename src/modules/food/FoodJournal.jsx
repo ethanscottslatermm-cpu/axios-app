@@ -95,32 +95,39 @@ function BarcodeScanner({ onResult, onClose }) {
   const [status, setStatus] = useState('starting') // starting | scanning | found | error
   const [msg,    setMsg]    = useState('')
   const scannerRef = useRef(null)
-  const handledRef = useRef(false) // prevent multiple firings
+  const handledRef = useRef(false)
+  const startedRef = useRef(false) // true only after .start() resolves
 
   useEffect(() => {
-    let html5Qrcode
+    let mounted = true
+
     import('html5-qrcode').then(({ Html5Qrcode }) => {
-      html5Qrcode = new Html5Qrcode('barcode-reader')
+      if (!mounted) return
+
+      // Clear any leftover DOM injected by a previous render
+      const el = document.getElementById('barcode-reader')
+      if (el) el.innerHTML = ''
+
+      const html5Qrcode = new Html5Qrcode('barcode-reader')
       scannerRef.current = html5Qrcode
 
       const onSuccess = (decodedText) => {
-        // Guard: only handle the first successful scan
         if (handledRef.current) return
         handledRef.current = true
+        if (mounted) { setStatus('found'); setMsg('Looking up product…') }
 
-        setStatus('found')
-        setMsg('Looking up product…')
-
-        // Stop scanner asynchronously outside this callback to avoid deadlock
         setTimeout(async () => {
-          try { await html5Qrcode.stop() } catch {}
           try {
+            if (startedRef.current) await html5Qrcode.stop().catch(() => {})
+            startedRef.current = false
             const food = await lookupBarcode(decodedText)
-            onResult(food)
+            if (mounted) onResult(food)
           } catch {
-            setStatus('error')
-            setMsg('Product not found in database. Try searching manually.')
-            handledRef.current = false // allow retry
+            if (mounted) {
+              setStatus('error')
+              setMsg('Product not found in database. Try searching manually.')
+              handledRef.current = false
+            }
           }
         }, 0)
       }
@@ -129,15 +136,28 @@ function BarcodeScanner({ onResult, onClose }) {
         { facingMode: 'environment' },
         { fps: 10, qrbox: { width: 240, height: 140 } },
         onSuccess,
-        () => {} // ignore per-frame errors
-      ).then(() => setStatus('scanning')).catch(() => {
-        setStatus('error')
-        setMsg('Camera access denied. Please allow camera permissions.')
+        () => {}
+      ).then(() => {
+        startedRef.current = true
+        if (mounted) setStatus('scanning')
+      }).catch(() => {
+        if (mounted) {
+          setStatus('error')
+          setMsg('Camera access denied. Please allow camera permissions.')
+        }
       })
+    }).catch(() => {
+      if (mounted) {
+        setStatus('error')
+        setMsg('Scanner failed to load. Try searching manually.')
+      }
     })
+
     return () => {
-      if (scannerRef.current) {
+      mounted = false
+      if (scannerRef.current && startedRef.current) {
         scannerRef.current.stop().catch(() => {})
+        startedRef.current = false
       }
     }
   }, [])
