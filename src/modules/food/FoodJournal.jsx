@@ -8,6 +8,7 @@ import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
 import { searchFood, lookupBarcode } from '../../lib/foodSearch'
 import { useWaterLog } from '../../hooks/useWaterLog'
+import WaterPanel from './WaterPanel'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 
@@ -613,7 +614,7 @@ export default function FoodJournal() {
   const [activeTab, setActiveTab] = useState('food')
   const { logs, totals, addEntry, deleteEntry, isLoading: loading } = useFoodLog(todayStr)
   const { history: foodHistory } = useFoodHistory()
-  const { logs: waterLogs, count: waterCount, addGlass, removeGlass } = useWaterLog(todayStr)
+  const { count: waterCount } = useWaterLog(todayStr)
   const waterPct = Math.min(100, Math.round((waterCount / WATER_GOAL) * 100))
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t) }, [])
@@ -795,56 +796,8 @@ export default function FoodJournal() {
 
         {/* ── Water Body ── */}
         {activeTab === 'water' && (
-          <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1, ...anim(80) }}>
-            {/* Glass grid */}
-            <div style={{ background:'var(--bg-card)', border:'1px solid rgba(154,180,204,0.22)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'20px 18px' }}>
-              <p style={{ color:'rgba(154,180,204,0.6)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:16 }}>Glasses Today</p>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:10, marginBottom:18 }}>
-                {Array.from({ length: WATER_GOAL }).map((_, i) => {
-                  const filled = i < waterCount
-                  const last   = filled && i === waterCount - 1
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => last ? removeGlass.mutate(waterLogs[waterLogs.length - 1]?.id) : (!filled && addGlass.mutate())}
-                      style={{
-                        width: 48, height: 54, borderRadius: 10,
-                        border: filled ? '1px solid rgba(154,180,204,0.55)' : '1px solid rgba(154,180,204,0.15)',
-                        background: filled ? 'rgba(154,180,204,0.18)' : 'rgba(154,180,204,0.04)',
-                        display:'flex', alignItems:'center', justifyContent:'center',
-                        cursor: filled && !last ? 'default' : 'pointer',
-                        transition:'all 0.22s',
-                        boxShadow: filled ? '0 0 10px rgba(154,180,204,0.25)' : 'none',
-                      }}>
-                      <svg width={22} height={26} viewBox="0 0 24 28" fill={filled ? '#9ab4cc' : 'none'} stroke={filled ? '#9ab4cc' : 'rgba(154,180,204,0.25)'} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 4h14l-2 20H7L5 4z"/>
-                        <path d="M5 4a2 2 0 0 1 14 0"/>
-                      </svg>
-                    </button>
-                  )
-                })}
-              </div>
-              <p style={{ color: waterCount >= WATER_GOAL ? '#9ab4cc' : 'rgba(154,180,204,0.45)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>
-                {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} to go`}
-              </p>
-              <GlowBar pct={waterPct} h={5} color="#9ab4cc" />
-            </div>
-
-            {/* Quick add */}
-            <button
-              onClick={() => addGlass.mutate()}
-              disabled={waterCount >= WATER_GOAL || addGlass.isPending}
-              style={{
-                width:'100%', padding:'14px', borderRadius:12,
-                border:'1px solid rgba(154,180,204,0.35)',
-                background: waterCount >= WATER_GOAL ? 'rgba(154,180,204,0.06)' : 'rgba(154,180,204,0.12)',
-                color: waterCount >= WATER_GOAL ? 'rgba(154,180,204,0.3)' : '#9ab4cc',
-                fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700,
-                letterSpacing:'0.1em', textTransform:'uppercase', cursor: waterCount >= WATER_GOAL ? 'default' : 'pointer',
-                transition:'all 0.2s',
-              }}>
-              {waterCount >= WATER_GOAL ? 'Goal Reached' : '+ Log a Glass'}
-            </button>
+          <div style={{ padding:'16px', maxWidth:600, margin:'0 auto' }}>
+            <WaterPanel todayStr={todayStr} visible={visible} />
           </div>
         )}
 

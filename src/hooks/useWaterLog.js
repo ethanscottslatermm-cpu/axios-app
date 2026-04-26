@@ -53,16 +53,19 @@ export function useWaterLog(date) {
   })
 
   const addGlass = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (oz = 8) => {
       const { data, error } = await supabase
         .from('water_logs')
-        .insert({ user_id: user.id, date, oz: 8 })
+        .insert({ user_id: user.id, date, oz })
         .select()
         .single()
       if (error) throw error
       return data
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: key }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: key })
+      qc.invalidateQueries({ queryKey: ['water_history', user?.id] })
+    },
   })
 
   const removeGlass = useMutation({
@@ -70,7 +73,10 @@ export function useWaterLog(date) {
       const { error } = await supabase.from('water_logs').delete().eq('id', id)
       if (error) throw error
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: key }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: key })
+      qc.invalidateQueries({ queryKey: ['water_history', user?.id] })
+    },
   })
 
   return { logs, count: logs.length, isLoading, addGlass, removeGlass }
