@@ -388,57 +388,126 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
   const [weight,  setWeight]  = useState('')
   const [note,    setNote]    = useState('')
   const [saving,  setSaving]  = useState(false)
+  const [saved,   setSaved]   = useState(false)
   const [error,   setError]   = useState('')
   const [visible, setVisible] = useState(false)
+  const [focused, setFocused] = useState(false)
 
-  useEffect(() => { setTimeout(() => setVisible(true), 30) }, [])
+  useEffect(() => { const t = setTimeout(() => setVisible(true), 30); return () => clearTimeout(t) }, [])
+
+  const numVal   = parseFloat(weight)
+  const numCur   = parseFloat(current)
+  const delta    = weight && !isNaN(numVal) && current ? (numVal - numCur).toFixed(1) : null
+  const deltaPos = delta !== null ? parseFloat(delta) > 0 : null
+  const hasVal   = weight && !isNaN(numVal)
 
   const handleSave = async () => {
-    if (!weight || isNaN(weight)) { setError('Please enter a valid weight.'); return }
+    if (!hasVal) { setError('Please enter a valid weight.'); return }
     setError(''); setSaving(true)
     try {
-      await onSave({ weight_lbs: parseFloat(weight), note: note.trim(), date: todayStr })
-      onClose()
+      await onSave({ weight_lbs: numVal, note: note.trim(), date: todayStr })
+      setSaved(true)
+      setTimeout(onClose, 520)
     } catch(e) {
       setError(e.message || 'Failed to save.')
       setSaving(false)
     }
   }
 
+  const ringColor = !hasVal ? 'rgba(212,212,232,0.12)'
+    : delta === null       ? 'rgba(180,188,204,0.45)'
+    : deltaPos             ? 'rgba(245,158,11,0.55)'
+    :                        'rgba(16,185,129,0.55)'
+  const ringGlow = !hasVal ? 'none'
+    : delta === null       ? '0 0 22px rgba(180,188,204,0.18)'
+    : deltaPos             ? '0 0 22px rgba(245,158,11,0.22)'
+    :                        '0 0 22px rgba(16,185,129,0.22)'
+
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}>
-      <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'18px 18px 0 0', padding:'20px 18px max(28px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.35s cubic-bezier(.16,1,.3,1)' }}>
-        <div style={{ width:36, height:4, background:'rgba(212,212,232,0.13)', borderRadius:99, margin:'0 auto 20px' }} />
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:22 }}>
-          <h2 style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>Log Weight</h2>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.4)' }}>{Ico.close(18)}</button>
+    <div style={{ position:'fixed', inset:0, zIndex:200, background:'var(--overlay-bg)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <style>{`
+        @keyframes lwSheetPulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+        @keyframes lwSavedScale { 0%{transform:scale(0.88);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
+        @keyframes lwTickIn { 0%{stroke-dashoffset:24} 100%{stroke-dashoffset:0} }
+      `}</style>
+      <div style={{ width:'100%', maxWidth:520, margin:'0 auto', background:'var(--sheet-bg)', borderTop:'1px solid var(--border)', borderRadius:'20px 20px 0 0', padding:'20px 20px max(32px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition:'transform 0.38s cubic-bezier(.16,1,.3,1)' }}>
+
+        {/* Handle bar */}
+        <div style={{ width:36, height:4, background:'rgba(212,212,232,0.13)', borderRadius:99, margin:'0 auto 22px' }} />
+
+        {/* Header */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
+          <div>
+            <h2 style={{ color:'var(--text-primary)', fontSize:19, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Log Weight</h2>
+            {current && <p style={{ color:'rgba(212,212,232,0.32)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>Last: <span style={{ color:'rgba(212,212,232,0.55)' }}>{current} lbs</span></p>}
+          </div>
+          <button onClick={onClose} style={{ background:'rgba(212,212,232,0.05)', border:'1px solid rgba(212,212,232,0.09)', borderRadius:99, width:32, height:32, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'rgba(212,212,232,0.4)' }}>{Ico.close(14)}</button>
         </div>
 
-        {current && <p style={{ color:'var(--text-muted)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:18 }}>Last logged: <span style={{ color:'rgba(212,212,232,0.6)' }}>{current} lbs</span></p>}
-
         {/* Big weight input */}
-        <div style={{ textAlign:'center', marginBottom:22 }}>
-          <div style={{ display:'inline-flex', alignItems:'baseline', gap:8, background:'var(--stat-bg)', border:'1px solid rgba(212,212,232,0.12)', borderRadius:16, padding:'18px 28px' }}>
-            <input type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="185"
-              style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:120, textAlign:'center' }} />
-            <span style={{ color:'var(--text-muted)', fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>lbs</span>
+        <div style={{ textAlign:'center', marginBottom: delta !== null ? 10 : 24 }}>
+          <div style={{
+            display:'inline-flex', alignItems:'baseline', gap:10,
+            background: hasVal ? 'rgba(10,8,22,0.9)' : 'var(--stat-bg)',
+            border:`1.5px solid ${focused ? ringColor : hasVal ? ringColor : 'rgba(212,212,232,0.1)'}`,
+            borderRadius:18, padding:'20px 32px',
+            boxShadow: focused || hasVal ? ringGlow : 'none',
+            transition:'border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease',
+          }}>
+            <input
+              type="number"
+              value={weight}
+              onChange={e => { setWeight(e.target.value); setError('') }}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              placeholder="185"
+              autoFocus
+              style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:52, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:130, textAlign:'center', letterSpacing:'-0.03em' }}
+            />
+            <span style={{ color: hasVal ? 'rgba(212,212,232,0.5)' : 'var(--text-muted)', fontSize:17, fontFamily:'Helvetica Neue,sans-serif', transition:'color 0.3s' }}>lbs</span>
           </div>
         </div>
 
+        {/* Live delta */}
+        <div style={{ textAlign:'center', height:28, marginBottom:18, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          {delta !== null && (
+            <div style={{ display:'inline-flex', alignItems:'center', gap:5, background: deltaPos ? 'rgba(245,158,11,0.08)' : 'rgba(16,185,129,0.08)', border:`1px solid ${deltaPos ? 'rgba(245,158,11,0.25)' : 'rgba(16,185,129,0.25)'}`, borderRadius:99, padding:'4px 12px', animation:'lwSavedScale 0.3s ease' }}>
+              <span style={{ color: deltaPos ? '#f59e0b' : '#10b981', fontSize:12, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif' }}>
+                {deltaPos ? '▲' : '▼'} {Math.abs(delta)} lbs {deltaPos ? 'gain' : 'lost'} vs last
+              </span>
+            </div>
+          )}
+        </div>
+
         {/* Note */}
-        <div style={{ marginBottom:16 }}>
-          <label style={{ display:'block', color:'rgba(212,212,232,0.32)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:7 }}>Note <span style={{ color:'rgba(212,212,232,0.18)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span></label>
+        <div style={{ marginBottom:18 }}>
+          <label style={{ display:'block', color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Note <span style={{ color:'rgba(212,212,232,0.14)', fontWeight:400, textTransform:'none', letterSpacing:0 }}>(optional)</span></label>
           <input value={note} onChange={e => setNote(e.target.value)} placeholder="Morning weigh-in, post-workout…"
-            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'12px 14px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none' }}
-            onFocus={e => e.target.style.borderColor='rgba(212,212,232,0.25)'}
+            style={{ width:'100%', background:'var(--stat-bg)', border:'1px solid rgba(212,212,232,0.09)', borderRadius:11, padding:'13px 15px', color:'var(--text-primary)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', outline:'none', transition:'border-color 0.2s', boxSizing:'border-box' }}
+            onFocus={e => e.target.style.borderColor='rgba(212,212,232,0.22)'}
             onBlur={e => e.target.style.borderColor='rgba(212,212,232,0.09)'} />
         </div>
 
         {error && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>{error}</p>}
 
-        <button onClick={handleSave} disabled={saving}
-          style={{ width:'100%', padding:'15px', background:'rgba(180,188,204,0.15)', color:'#b4bccc', border:'1px solid rgba(180,188,204,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'all 0.2s', boxShadow:'0 0 14px rgba(180,188,204,0.1)' }}>
-          {saving ? 'Saving…' : <>{Ico.check()} Log Weight</>}
+        <button onClick={handleSave} disabled={saving || saved}
+          style={{
+            width:'100%', padding:'16px',
+            background: saved ? 'rgba(16,185,129,0.18)' : hasVal ? 'rgba(180,188,204,0.18)' : 'rgba(180,188,204,0.07)',
+            color: saved ? '#10b981' : hasVal ? '#d4d4e8' : 'rgba(212,212,232,0.28)',
+            border:`1px solid ${saved ? 'rgba(16,185,129,0.45)' : hasVal ? 'rgba(180,188,204,0.38)' : 'rgba(212,212,232,0.09)'}`,
+            borderRadius:12, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase',
+            fontFamily:'Helvetica Neue,sans-serif', cursor: saving || saved || !hasVal ? 'not-allowed' : 'pointer',
+            display:'flex', alignItems:'center', justifyContent:'center', gap:8,
+            transition:'all 0.3s cubic-bezier(.16,1,.3,1)',
+            boxShadow: saved ? '0 0 20px rgba(16,185,129,0.2)' : hasVal ? '0 0 18px rgba(180,188,204,0.12)' : 'none',
+          }}>
+          {saved ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ animation:'lwSavedScale 0.35s ease' }}>
+              <polyline points="3,8 7,12 13,4" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="24" style={{ animation:'lwTickIn 0.35s ease forwards' }}/>
+            </svg>
+          ) : saving ? 'Saving…' : <>{Ico.check()} Log Weight</>}
         </button>
       </div>
     </div>
@@ -523,6 +592,7 @@ export default function FitnessTracker() {
   const [quickLogMuscle,setQuickLogMuscle]= useState(null)
   const [loadingW,     setLoadingW]     = useState(false)
   const [chartRange,   setChartRange]   = useState('1M')
+  const [historyOpen,  setHistoryOpen]  = useState(false)
   const todayWorkouts = (workouts || []).filter(w => (w.workout_date || w.created_at?.split('T')[0]) === todayStr)
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t) }, [])
@@ -889,30 +959,42 @@ export default function FitnessTracker() {
                 {Ico.plus(12)} Log Today's Weight
               </button>
 
-              {/* Weight history */}
-              <SectionHead title="Weight History" sub={`${(weightLogs||[]).length} entries`} />
-              {(weightLogs||[]).length === 0 && (
-                <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'32px 20px', textAlign:'center' }}>
-                  <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>No weight entries yet.</p>
+              {/* Weight history — collapsible */}
+              <button onClick={() => setHistoryOpen(o => !o)} style={{ width:'100%', background:'none', border:'none', cursor:'pointer', padding:0, marginBottom: historyOpen ? 12 : 0 }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+                    <div style={{ width:2, height:14, background:'linear-gradient(to bottom,var(--accent-fitness),transparent)', borderRadius:2, boxShadow:'0 0 8px var(--accent-fitness)' }} />
+                    <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Weight History</p>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{(weightLogs||[]).length} entries</p>
+                    <span style={{ color:'rgba(212,212,232,0.35)', fontSize:12, display:'inline-block', transform: historyOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.25s cubic-bezier(.16,1,.3,1)' }}>▾</span>
+                  </div>
                 </div>
-              )}
-              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                {[...(weightLogs||[])].sort((a,b)=>new Date(b.logged_date||b.date)-new Date(a.logged_date||a.date)).map((log, i, arr) => {
-                  const prev = arr[i+1]
-                  const delta = prev ? (parseFloat(log.weight_lbs) - parseFloat(prev.weight_lbs)).toFixed(1) : null
-                  return (
-                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:11, opacity:visible?1:0, transform:visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*30}ms, transform 0.4s ease ${i*30}ms` }}>
-                      <div>
-                        <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
-                        {log.note && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{log.note}</p>}
+              </button>
+              <div style={{ overflow:'hidden', maxHeight: historyOpen ? 2000 : 0, transition:'max-height 0.4s cubic-bezier(.16,1,.3,1)', display:'flex', flexDirection:'column', gap:8 }}>
+                {(weightLogs||[]).length === 0 ? (
+                  <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'32px 20px', textAlign:'center' }}>
+                    <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>No weight entries yet.</p>
+                  </div>
+                ) : (
+                  [...(weightLogs||[])].sort((a,b)=>new Date(b.logged_date||b.date)-new Date(a.logged_date||a.date)).map((log, i, arr) => {
+                    const prev = arr[i+1]
+                    const delta = prev ? (parseFloat(log.weight_lbs) - parseFloat(prev.weight_lbs)).toFixed(1) : null
+                    return (
+                      <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:11 }}>
+                        <div>
+                          <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
+                          {log.note && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{log.note}</p>}
+                        </div>
+                        <div style={{ textAlign:'right' }}>
+                          <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{log.weight_lbs}<span style={{ fontSize:11, color:'var(--text-muted)', fontWeight:400, marginLeft:3 }}>lbs</span></p>
+                          {delta && <p style={{ color: parseFloat(delta) < 0 ? '#10b981' : '#f59e0b', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{parseFloat(delta) > 0 ? '+' : ''}{delta}</p>}
+                        </div>
                       </div>
-                      <div style={{ textAlign:'right' }}>
-                        <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{log.weight_lbs}<span style={{ fontSize:11, color:'var(--text-muted)', fontWeight:400, marginLeft:3 }}>lbs</span></p>
-                        {delta && <p style={{ color: parseFloat(delta) < 0 ? '#10b981' : '#f59e0b', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{parseFloat(delta) > 0 ? '+' : ''}{delta}</p>}
-                      </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })
+                )}
               </div>
             </div>
           )}
