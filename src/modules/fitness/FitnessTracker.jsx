@@ -650,6 +650,34 @@ export default function FitnessTracker() {
     setWorkouts(w => w.filter(x => x.id !== id))
   }
 
+  const handleQuickLogExercise = async ({ name, sets, reps, weight, muscleLabel }) => {
+    const { data: existing } = await supabase
+      .from('workouts')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('workout_date', todayStr)
+      .order('created_at', { ascending: false })
+      .limit(1)
+    let workoutId = existing?.[0]?.id
+    if (!workoutId) {
+      const { data: newW } = await supabase
+        .from('workouts')
+        .insert({ label: `${todayStr} Session`, type: 'Strength', user_id: user.id, workout_date: todayStr })
+        .select().single()
+      workoutId = newW.id
+    }
+    await supabase.from('exercises').insert({
+      workout_id: workoutId,
+      user_id: user.id,
+      name,
+      sets: parseInt(sets) || null,
+      reps: parseInt(reps) || null,
+      weight: parseFloat(weight) || null,
+      muscle_group: muscleLabel || null,
+    })
+    await loadWorkouts()
+  }
+
   const handleSaveWeight = async ({ weight_lbs, note, date }) => {
     haptic.bump()
     await addWeightEntry.mutateAsync({ weight_lbs, logged_date: date, note })
@@ -1123,6 +1151,7 @@ export default function FitnessTracker() {
               <MuscleMapView
                 workouts={workouts}
                 onLogWorkout={muscle => setQuickLogMuscle(muscle)}
+                onSaveExercise={handleQuickLogExercise}
               />
             </div>
           )}
