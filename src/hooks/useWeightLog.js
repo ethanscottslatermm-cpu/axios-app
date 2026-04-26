@@ -36,7 +36,6 @@ export function useWeightLog() {
   })
 
   const latest = logs.at(-1)?.weight_lbs ?? null
-  const goal = 175.0
 
-  return { logs, latest, goal, isLoading, addEntry }
+  return { logs, latest, isLoading, addEntry }
 }

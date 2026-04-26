@@ -3,6 +3,7 @@ import { useToday } from '../../hooks/useToday'
 import { useHaptic } from '../../hooks/useHaptic'
 import { useNavigate } from 'react-router-dom'
 import { useWeightLog } from '../../hooks/useWeightLog'
+import { useProfile } from '../../hooks/useProfile'
 import { BottomNav } from '../../pages/Dashboard'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -45,135 +46,166 @@ function GlowBar({ pct, h=3 }) {
   )
 }
 
-// ── Scale Dial ─────────────────────────────────────────────────────────────────
-function ScaleDial({ weight, goal }) {
-  const val = parseFloat(weight) || 0
-  const mid = parseFloat(goal) || val || 150
-  const deg = val ? Math.max(-78, Math.min(78, ((val - mid) / 50) * 78)) : 0
-  const toRad = a => a * Math.PI / 180
-  const cx = 100, cy = 84, r = 62
+// ── Weight Chart ───────────────────────────────────────────────────────────────
+function WeightChart({ logs, goal, range, onRange }) {
+  const RANGES = [['1M',30],['3M',90],['ALL',Infinity]]
+  const days   = RANGES.find(r => r[0] === range)?.[1] ?? 30
+  const cutoff = days === Infinity ? null : new Date(Date.now() - days * 864e5)
+  const filtered = [...(logs||[])]
+    .sort((a,b) => new Date(a.logged_date) - new Date(b.logged_date))
+    .filter(l => !cutoff || new Date(l.logged_date) >= cutoff)
 
-  // ── Color based on distance from goal ──────────────────────────────────────
-  // deg < 0 = under goal (green), 0–15 = close (amber), >15 = over (red)
-  const needleColor = !val ? '#c8cce0'
-    : deg <= 0  ? '#4ade80'
-    : deg <= 15 ? '#fbbf24'
-    :              '#f87171'
-  const needleGlow = !val ? 'rgba(200,204,224,0.5)'
-    : deg <= 0  ? 'rgba(74,222,128,0.6)'
-    : deg <= 15 ? 'rgba(251,191,36,0.6)'
-    :              'rgba(248,113,113,0.6)'
+  if (!filtered.length) return (
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'32px 16px', textAlign:'center', marginBottom:12 }}>
+      <p style={{ color:'rgba(212,212,232,0.18)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic' }}>Log weight to see your chart</p>
+    </div>
+  )
 
-  const arcStart = { x: cx + r * Math.cos(toRad(215)), y: cy + r * Math.sin(toRad(215)) }
-  const arcEnd   = { x: cx + r * Math.cos(toRad(325)), y: cy + r * Math.sin(toRad(325)) }
+  const W=300, H=120, PL=30, PR=32, PT=8, PB=20
+  const pw = W-PL-PR, ph = H-PT-PB
+  const vals  = filtered.map(l => parseFloat(l.weight_lbs))
+  const times = filtered.map(l => new Date(l.logged_date).getTime())
+  const numG  = parseFloat(goal) || 0
+  const allVs = numG ? [...vals, numG] : vals
+  const yMin  = Math.floor(Math.min(...allVs) - 2)
+  const yMax  = Math.ceil(Math.max(...allVs) + 2)
+  const xMin  = times[0], xMax = times[times.length-1]
+  const spanX = Math.max(xMax - xMin, 864e5)
+  const toX = ms => PL + ((ms - xMin) / spanX) * pw
+  const toY = v  => PT + ph - ((v - yMin) / (yMax - yMin)) * ph
+  const pts = filtered.map(l =>
+    `${toX(new Date(l.logged_date).getTime()).toFixed(1)},${toY(parseFloat(l.weight_lbs)).toFixed(1)}`
+  ).join(' ')
+  const yStep = Math.ceil((yMax - yMin) / 3)
+  const yLabels = []
+  for (let v = Math.ceil(yMin/yStep)*yStep; v <= yMax; v += yStep) yLabels.push(v)
+  const xSamples = filtered.length >= 3
+    ? [filtered[0], filtered[Math.floor(filtered.length/2)], filtered[filtered.length-1]]
+    : filtered
+  const fmtD = s => { const d = new Date(s+'T12:00:00'); return `${d.getMonth()+1}/${d.getDate()}` }
 
-  // ── Animated arc fill ──────────────────────────────────────────────────────
-  // Arc spans 215°→325° (110°). Needle center = 270°. Clamp needle to arc range.
-  const totalArc = r * (110 * Math.PI / 180)           // ≈ 119px
-  const clampedDeg = Math.max(-55, Math.min(55, deg))  // keep within arc bounds
-  const filledArc = ((55 + clampedDeg) / 110) * totalArc
-  const [arcOffset, setArcOffset] = useState(totalArc) // start fully hidden
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setArcOffset(totalArc - filledArc))
-    return () => cancelAnimationFrame(id)
-  }, [filledArc, totalArc])
-
-  const ticks = Array.from({ length: 9 }, (_, i) => {
-    const angle = toRad(215 + i * 13.75)
-    const inner = i === 4 ? r - 14 : i % 2 === 0 ? r - 10 : r - 6
-    return {
-      x1: cx + inner * Math.cos(angle), y1: cy + inner * Math.sin(angle),
-      x2: cx + r * Math.cos(angle),     y2: cy + r * Math.sin(angle),
-      major: i === 4, mid: i % 2 === 0,
+  let trend = null
+  if (filtered.length >= 4) {
+    const n  = filtered.length
+    const xs = filtered.map(l => (new Date(l.logged_date) - new Date(filtered[0].logged_date)) / 864e5)
+    const sx = xs.reduce((a,b)=>a+b,0), sy = vals.reduce((a,b)=>a+b,0)
+    const sxy = xs.reduce((a,x,i)=>a+x*vals[i],0), sx2 = xs.reduce((a,x)=>a+x*x,0)
+    const den = n*sx2 - sx*sx
+    if (den) {
+      const m = (n*sxy-sx*sy)/den, b0 = (sy-m*sx)/n
+      trend = { x1:toX(times[0]), y1:toY(b0), x2:toX(times[n-1]), y2:toY(b0+m*xs[n-1]) }
     }
-  })
-  const cornerStyle = (pos) => ({
-    position: 'absolute', width: 10, height: 10, ...pos,
-    borderTop:    pos.top    !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
-    borderBottom: pos.bottom !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
-    borderLeft:   pos.left   !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
-    borderRight:  pos.right  !== undefined ? '1px solid rgba(212,212,232,0.22)' : 'none',
-  })
+  }
+
   return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', marginBottom:4 }}>
-      {/* Inject goal-tick pulse keyframes once */}
-      <style>{`@keyframes sdGoalPulse{0%,100%{opacity:0.72}50%{opacity:1}}`}</style>
-      <div style={{
-        position:'relative', width:'100%', maxWidth:250,
-        background:'linear-gradient(170deg,rgba(22,20,34,0.96) 0%,rgba(10,8,16,0.99) 100%)',
-        border:'1px solid rgba(212,212,232,0.26)',
-        borderRadius:22,
-        boxShadow:'0 0 0 1px rgba(212,212,232,0.06), 0 8px 28px rgba(0,0,0,0.55), inset 0 1px 0 rgba(212,212,232,0.1)',
-        padding:'14px 14px 10px',
-      }}>
-        <div style={cornerStyle({ top:6, left:6 })} />
-        <div style={cornerStyle({ top:6, right:6 })} />
-        <div style={cornerStyle({ bottom:6, left:6 })} />
-        <div style={cornerStyle({ bottom:6, right:6 })} />
-
-        <svg width="100%" viewBox="0 0 200 106" style={{ display:'block', overflow:'visible' }}>
-          <defs>
-            <filter id="ndl-glow" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="goal-tick-glow" x="-100%" y="-100%" width="300%" height="300%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-
-          {/* Arc track */}
-          <path d={`M${arcStart.x},${arcStart.y} A${r},${r} 0 0,1 ${arcEnd.x},${arcEnd.y}`}
-            fill="none" stroke="rgba(212,212,232,0.13)" strokeWidth="2"/>
-
-          {/* Active arc — animates from 0 to needle position */}
-          <path d={`M${arcStart.x},${arcStart.y} A${r},${r} 0 0,1 ${arcEnd.x},${arcEnd.y}`}
-            fill="none" stroke={needleColor} strokeWidth="1.5" opacity="0.55"
-            strokeDasharray={totalArc}
-            strokeDashoffset={arcOffset}
-            style={{ transition:'stroke-dashoffset 1.4s cubic-bezier(0.16,1,0.3,1), stroke 0.6s ease' }}
-          />
-
-          {/* Ticks */}
-          {ticks.map((t, i) => {
-            const isGoal = i === 4
-            return (
-              <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
-                stroke={isGoal ? needleColor : t.mid ? 'rgba(212,212,232,0.38)' : 'rgba(212,212,232,0.16)'}
-                strokeWidth={isGoal ? 2.5 : 1} strokeLinecap="round"
-                filter={isGoal ? 'url(#goal-tick-glow)' : undefined}
-                style={isGoal ? { animation:'sdGoalPulse 2.4s ease-in-out infinite', transition:'stroke 0.6s ease' } : undefined}
-              />
-            )
-          })}
-
-          {/* Needle */}
-          <g style={{ transformOrigin:`${cx}px ${cy}px`, transform:`rotate(${deg}deg)`, transition:'transform 1.4s cubic-bezier(0.16,1,0.3,1)' }}>
-            <line x1={cx} y1={cy + 9} x2={cx} y2={cy - r + 14}
-              stroke={needleColor} strokeWidth="1.8" strokeLinecap="round" filter="url(#ndl-glow)"
-              style={{ transition:'stroke 0.6s ease' }}/>
-            <line x1={cx} y1={cy + 9} x2={cx} y2={cy + 4}
-              stroke="rgba(212,212,232,0.3)" strokeWidth="3" strokeLinecap="round"/>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 14px 8px', marginBottom:12 }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
+        <p style={{ color:'rgba(212,212,232,0.35)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>WEIGHT CHART</p>
+        <div style={{ display:'flex', gap:4 }}>
+          {RANGES.map(([lbl]) => (
+            <button key={lbl} onClick={() => onRange(lbl)} style={{
+              padding:'3px 8px', borderRadius:6, cursor:'pointer', fontSize:10,
+              fontFamily:'Helvetica Neue,sans-serif', fontWeight: range===lbl ? 700 : 400,
+              transition:'all 0.15s',
+              border:`1px solid ${range===lbl ? 'rgba(180,188,204,0.45)' : 'rgba(212,212,232,0.09)'}`,
+              background: range===lbl ? 'rgba(180,188,204,0.15)' : 'transparent',
+              color: range===lbl ? '#b4bccc' : 'rgba(212,212,232,0.28)',
+            }}>{lbl}</button>
+          ))}
+        </div>
+      </div>
+      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow:'visible', display:'block' }}>
+        <defs>
+          <linearGradient id="wc-area" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(180,188,204,0.14)"/>
+            <stop offset="100%" stopColor="rgba(180,188,204,0)"/>
+          </linearGradient>
+        </defs>
+        {yLabels.map(v => (
+          <g key={v}>
+            <line x1={PL} y1={toY(v)} x2={W-PR} y2={toY(v)} stroke="rgba(212,212,232,0.05)" strokeWidth="1"/>
+            <text x={PL-4} y={toY(v)+3.5} textAnchor="end" fill="rgba(212,212,232,0.2)" fontSize="7" fontFamily="Helvetica Neue,sans-serif">{v}</text>
           </g>
+        ))}
+        {numG > 0 && toY(numG) > PT-6 && toY(numG) < PT+ph+6 && (
+          <g>
+            <line x1={PL} y1={toY(numG)} x2={W-PR} y2={toY(numG)} stroke="rgba(16,185,129,0.45)" strokeWidth="1" strokeDasharray="5 3"/>
+            <text x={W-PR+3} y={toY(numG)+3.5} fill="rgba(16,185,129,0.6)" fontSize="7" fontFamily="Helvetica Neue,sans-serif">Goal</text>
+          </g>
+        )}
+        {trend && (
+          <line x1={trend.x1} y1={trend.y1} x2={trend.x2} y2={trend.y2}
+            stroke="rgba(245,158,11,0.35)" strokeWidth="1" strokeDasharray="4 3"/>
+        )}
+        {filtered.length >= 2 && (
+          <polygon
+            points={`${toX(times[0]).toFixed(1)},${(PT+ph).toFixed(1)} ${pts} ${toX(times[times.length-1]).toFixed(1)},${(PT+ph).toFixed(1)}`}
+            fill="url(#wc-area)"/>
+        )}
+        <polyline points={pts} fill="none" stroke="rgba(180,188,204,0.72)" strokeWidth="1.8"
+          strokeLinejoin="round" strokeLinecap="round"/>
+        {filtered.slice(-12).map((l, i) => (
+          <circle key={i}
+            cx={toX(new Date(l.logged_date).getTime())}
+            cy={toY(parseFloat(l.weight_lbs))}
+            r="2.5" fill="rgba(212,212,232,0.85)" stroke="var(--bg-card)" strokeWidth="1.2"/>
+        ))}
+        {xSamples.map((l, i) => (
+          <text key={i} x={toX(new Date(l.logged_date).getTime())} y={H-3}
+            textAnchor="middle" fill="rgba(212,212,232,0.2)" fontSize="7" fontFamily="Helvetica Neue,sans-serif">
+            {fmtD(l.logged_date)}
+          </text>
+        ))}
+      </svg>
+      <div style={{ display:'flex', gap:16, marginTop:6 }}>
+        <span style={{ color:'rgba(16,185,129,0.55)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', display:'flex', alignItems:'center', gap:4 }}>
+          <svg width="16" height="1" style={{ display:'inline-block' }}><line x1="0" y1="0.5" x2="16" y2="0.5" stroke="rgba(16,185,129,0.5)" strokeWidth="1" strokeDasharray="5 3"/></svg>
+          goal
+        </span>
+        {trend && (
+          <span style={{ color:'rgba(245,158,11,0.5)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', display:'flex', alignItems:'center', gap:4 }}>
+            <svg width="16" height="1" style={{ display:'inline-block' }}><line x1="0" y1="0.5" x2="16" y2="0.5" stroke="rgba(245,158,11,0.4)" strokeWidth="1" strokeDasharray="4 3"/></svg>
+            trend
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
 
-          {/* Pivot */}
-          <circle cx={cx} cy={cy} r={5} fill={needleGlow} style={{ transition:'fill 0.6s ease' }}/>
-          <circle cx={cx} cy={cy} r={2.5} fill="#0a0810"/>
-        </svg>
-
-        {/* Weight readout */}
-        <div style={{ textAlign:'center', marginTop:-2, paddingBottom:2 }}>
-          <p style={{ color:'var(--text-primary)', fontSize:34, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>
-            {weight || '—'}
-            <span style={{ fontSize:12, color:'var(--text-muted)', fontWeight:400, marginLeft:4 }}>lbs</span>
-          </p>
+// ── Goal Progress Bar ──────────────────────────────────────────────────────────
+function GoalBar({ current, goal, start }) {
+  const c = parseFloat(current)||0, g = parseFloat(goal)||0, s = parseFloat(start)||c
+  if (!c || !g || Math.abs(g - s) < 0.1) return null
+  const losing = g < s
+  const pct    = losing
+    ? Math.max(0, Math.min(1, (s - c) / (s - g)))
+    : Math.max(0, Math.min(1, (c - s) / (g - s)))
+  const done   = pct >= 0.99
+  const left   = Math.abs(c - g).toFixed(1)
+  const barW   = Math.round(pct * 100)
+  return (
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 16px', marginBottom:12 }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:10 }}>
+        <p style={{ color:'rgba(212,212,232,0.35)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>GOAL PROGRESS</p>
+        <div style={{ display:'flex', gap:10, alignItems:'baseline' }}>
+          <span style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{s} start</span>
+          <span style={{ color:'var(--text-primary)', fontSize:14, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>{g} lbs goal</span>
         </div>
-
-        {/* Base platform line */}
-        <div style={{ height:3, marginTop:10, borderRadius:2, background:'rgba(212,212,232,0.07)' }}>
-          <div style={{ height:'100%', width:'100%', background:'linear-gradient(90deg,transparent,rgba(212,212,232,0.18),transparent)', borderRadius:2 }}/>
-        </div>
+      </div>
+      <div style={{ background:'rgba(212,212,232,0.07)', borderRadius:99, height:8, overflow:'hidden' }}>
+        <div style={{
+          height:'100%', borderRadius:99, width:`${barW}%`,
+          background: done ? 'linear-gradient(90deg,#10b981,#34d399)' : barW > 65 ? 'linear-gradient(90deg,#f59e0b,#fcd34d)' : 'linear-gradient(90deg,rgba(140,148,164,0.55),rgba(180,188,204,0.85))',
+          transition:'width 1.2s cubic-bezier(0.34,1.15,0.64,1)',
+          boxShadow: done ? '0 0 10px rgba(16,185,129,0.5)' : undefined,
+        }}/>
+      </div>
+      <div style={{ display:'flex', justifyContent:'space-between', marginTop:7 }}>
+        <span style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>
+          {done ? '✓ Goal reached!' : `${left} lbs to go`}
+        </span>
+        <span style={{ color: done ? '#10b981' : 'rgba(212,212,232,0.4)', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{Math.round(pct*100)}%</span>
       </div>
     </div>
   )
@@ -473,154 +505,15 @@ function WorkoutCard({ workout, delay, visible, onDelete }) {
   )
 }
 
-// ── Mini Sparkline ─────────────────────────────────────────────────────────────
-function WeightSparkline({ logs }) {
-  if (!logs || logs.length < 2) return null
-  const sorted = [...logs].sort((a,b) => new Date(a.date)-new Date(b.date)).slice(-10)
-  const vals   = sorted.map(l => parseFloat(l.weight_lbs || l.weight))
-  const min    = Math.min(...vals) - 1
-  const max    = Math.max(...vals) + 1
-  const W = 300, H = 44
-  const pts = vals.map((v,i) => `${(i/(vals.length-1))*W},${H - ((v-min)/(max-min))*(H-6)+3}`)
-  return (
-    <div>
-      <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>Trend</p>
-      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow:'visible', display:'block' }}>
-        <defs>
-          <linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(180,188,204,0.18)"/>
-            <stop offset="100%" stopColor="rgba(180,188,204,0)"/>
-          </linearGradient>
-        </defs>
-        <polyline points={pts.join(' ')} fill="none" stroke="rgba(212,212,232,0.5)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
-        {pts.map((pt,i) => {
-          const [x,y] = pt.split(',')
-          return <circle key={i} cx={x} cy={y} r="2.5" fill="rgba(212,212,232,0.75)" />
-        })}
-      </svg>
-    </div>
-  )
-}
-
-// ── Weight Body Figure ─────────────────────────────────────────────────────────
-function WeightBodyFigure({ weight, goal }) {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setMounted(true), 280); return () => clearTimeout(t) }, [])
-
-  const numW = parseFloat(weight) || 0
-  const numG = parseFloat(goal)   || 0
-  const hasData = numW > 0
-  const svgH = 460
-
-  const absDiff  = numW && numG ? Math.abs(numW - numG) : 0
-  const maxRange = Math.max(numW * 0.18, 10)
-  const progress = numW && numG ? Math.max(0, Math.min(1, 1 - absDiff / maxRange)) : 0.3
-
-  const col    = !hasData ? '#b4bccc' : progress >= 0.85 ? '#10b981' : progress >= 0.45 ? '#f59e0b' : '#ef4444'
-  const colRgb = !hasData ? '180,188,204' : progress >= 0.85 ? '16,185,129' : progress >= 0.45 ? '245,158,11' : '239,68,68'
-
-  const fillPct = mounted ? (hasData ? 0.15 + progress * 0.7 : 0.28) : 0
-
-  const BODY = `M120 8 C99 8 97 58 97 66 Q93 70 92 76 C82 80 70 90 64 106 Q58 126 56 152 Q54 176 58 198 Q60 212 70 218 L74 218 Q64 228 62 256 Q60 278 64 306 Q68 328 76 350 Q80 360 82 366 L88 390 Q82 408 82 432 Q82 450 90 460 L102 460 Q108 456 110 448 Q112 432 110 416 Q108 400 110 386 L116 364 Q118 366 120 366 Q122 366 124 364 L130 386 Q132 400 130 416 Q128 432 130 448 Q132 456 138 460 L150 460 Q158 450 158 432 Q158 408 152 390 L158 366 Q160 360 164 350 Q172 328 176 306 Q180 278 178 256 Q176 228 166 218 L170 218 Q180 212 182 198 Q186 176 184 152 Q182 126 176 106 Q170 90 148 76 C147 70 143 66 143 66 C143 58 141 8 120 8 Z`
-
-  return (
-    <svg viewBox="0 0 240 468" style={{ width:'100%', height:'100%' }}>
-      <defs>
-        <clipPath id="wt-clip">
-          <path d={BODY}/>
-        </clipPath>
-        <linearGradient id="wt-fill-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor={col} stopOpacity="0.82"/>
-          <stop offset="100%" stopColor={col} stopOpacity="0.22"/>
-        </linearGradient>
-        <filter id="wt-body-glow" x="-35%" y="-10%" width="170%" height="120%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="wt-text-glow" x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <style>{`
-        @keyframes wtBodyPulse { 0%,100%{opacity:0.75} 50%{opacity:1} }
-        @keyframes wtGlowPulse { 0%,100%{opacity:0.45} 50%{opacity:0.85} }
-      `}</style>
-
-      {/* Ambient glow behind figure */}
-      <ellipse cx="120" cy="234" rx="88" ry="215"
-        fill={`rgba(${colRgb},0.055)`}
-        style={{ animation:'wtBodyPulse 3.2s ease-in-out infinite' }}
-      />
-
-      {/* Liquid fill inside body silhouette */}
-      <g clipPath="url(#wt-clip)">
-        <rect x="0" y="0" width="240" height={svgH} fill={`rgba(${colRgb},0.04)`}/>
-        <rect x="0" y="0" width="240" height={svgH}
-          fill="url(#wt-fill-grad)"
-          style={{
-            transformOrigin:`120px ${svgH}px`,
-            transform:`scaleY(${fillPct})`,
-            transition:'transform 1.5s cubic-bezier(0.34,1.15,0.64,1)',
-          }}
-        />
-      </g>
-
-      {/* Glow outline */}
-      <path d={BODY} fill="none"
-        stroke={`rgba(${colRgb},0.42)`} strokeWidth="3"
-        filter="url(#wt-body-glow)"
-        style={{ animation:'wtGlowPulse 2.8s ease-in-out infinite' }}
-      />
-      {/* Crisp outline */}
-      <path d={BODY} fill="none" stroke={`rgba(${colRgb},0.72)`} strokeWidth="1.5"/>
-
-      {/* Head */}
-      <ellipse cx="120" cy="30" rx="24" ry="26"
-        fill={`rgba(${colRgb},0.07)`}
-        stroke={`rgba(${colRgb},0.58)`} strokeWidth="1.5"
-        style={{ animation:'wtBodyPulse 3.2s ease-in-out infinite' }}
-      />
-
-      {/* Spine */}
-      <line x1="120" y1="76" x2="120" y2="215"
-        stroke={`rgba(${colRgb},0.18)`} strokeWidth="1" strokeDasharray="3 3"
-      />
-
-      {/* Weight readout */}
-      {hasData && (
-        <g filter="url(#wt-text-glow)"
-          style={{ opacity: mounted ? 1 : 0, transition:'opacity 0.7s ease 0.9s' }}>
-          <text x="120" y="168" textAnchor="middle"
-            fill={col} fontSize="30" fontWeight="900"
-            fontFamily="Helvetica Neue,sans-serif" letterSpacing="-1">
-            {weight}
-          </text>
-          <text x="120" y="185" textAnchor="middle"
-            fill={`rgba(${colRgb},0.6)`} fontSize="10"
-            fontFamily="Helvetica Neue,sans-serif" letterSpacing="4">
-            LBS
-          </text>
-        </g>
-      )}
-      {!hasData && (
-        <text x="120" y="175" textAnchor="middle"
-          fill="rgba(212,212,232,0.15)" fontSize="11"
-          fontFamily="Helvetica Neue,sans-serif">
-          log weight to track
-        </text>
-      )}
-    </svg>
-  )
-}
-
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function FitnessTracker() {
   const todayStr = useToday()
   const haptic = useHaptic()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { logs: weightLogs, latest, goal: weightGoal, addEntry: addWeightEntry } = useWeightLog()
+  const { logs: weightLogs, latest, addEntry: addWeightEntry } = useWeightLog()
+  const { profile } = useProfile()
+  const weightGoal = profile?.goal_weight || null
 
   const [visible,      setVisible]      = useState(false)
   const [workouts,     setWorkouts]     = useState([])
@@ -629,6 +522,7 @@ export default function FitnessTracker() {
   const [activeTab,     setActiveTab]     = useState('workouts')
   const [quickLogMuscle,setQuickLogMuscle]= useState(null)
   const [loadingW,     setLoadingW]     = useState(false)
+  const [chartRange,   setChartRange]   = useState('1M')
   const todayWorkouts = (workouts || []).filter(w => (w.workout_date || w.created_at?.split('T')[0]) === todayStr)
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t) }, [])
@@ -690,9 +584,47 @@ export default function FitnessTracker() {
 
   // Weight stats
   const sortedWeight = [...(weightLogs||[])].sort((a,b)=>new Date(a.logged_date||a.date)-new Date(b.logged_date||b.date))
-  const prevWeight   = sortedWeight.length >= 2 ? sortedWeight[sortedWeight.length-2]?.weight : null
+  const prevWeight   = sortedWeight.length >= 2 ? sortedWeight[sortedWeight.length-2]?.weight_lbs : null
   const diff         = latest && prevWeight ? (parseFloat(latest) - parseFloat(prevWeight)).toFixed(1) : null
   const toGoal       = latest && weightGoal ? (parseFloat(latest) - parseFloat(weightGoal)).toFixed(1) : null
+
+  const lowestEntry  = sortedWeight.length ? sortedWeight.reduce((mn,l) => parseFloat(l.weight_lbs) < parseFloat(mn.weight_lbs) ? l : mn) : null
+  const lowestW      = lowestEntry ? parseFloat(lowestEntry.weight_lbs).toFixed(1) : null
+  const lowestDate   = lowestEntry ? formatDate(lowestEntry.logged_date) : null
+  const avg30        = (() => {
+    const cut = new Date(Date.now() - 30*864e5)
+    const recent = (weightLogs||[]).filter(l => new Date(l.logged_date) >= cut)
+    if (!recent.length) return null
+    return (recent.reduce((s,l) => s + parseFloat(l.weight_lbs), 0) / recent.length).toFixed(1)
+  })()
+  const netChange    = sortedWeight.length >= 2
+    ? (parseFloat(sortedWeight[sortedWeight.length-1].weight_lbs) - parseFloat(sortedWeight[0].weight_lbs)).toFixed(1)
+    : null
+  const streak       = (() => {
+    if (!(weightLogs||[]).length) return 0
+    const dateSet = new Set(weightLogs.map(l => l.logged_date))
+    let count = 0
+    const d = new Date()
+    if (!dateSet.has(d.toISOString().split('T')[0])) d.setDate(d.getDate()-1)
+    while (dateSet.has(d.toISOString().split('T')[0])) { count++; d.setDate(d.getDate()-1) }
+    return count
+  })()
+  const trendLbsWk   = (() => {
+    const sl = [...sortedWeight].slice(-14)
+    if (sl.length < 4) return null
+    const n  = sl.length
+    const xs = sl.map(l => (new Date(l.logged_date) - new Date(sl[0].logged_date)) / 864e5)
+    const ys = sl.map(l => parseFloat(l.weight_lbs))
+    const sx = xs.reduce((a,b)=>a+b,0), sy = ys.reduce((a,b)=>a+b,0)
+    const sxy = xs.reduce((a,x,i)=>a+x*ys[i],0), sx2 = xs.reduce((a,x)=>a+x*x,0)
+    const den = n*sx2 - sx*sx
+    if (!den) return null
+    return ((n*sxy-sx*sy)/den * 7).toFixed(1)
+  })()
+  const heightIn     = (profile?.height_ft||0)*12 + (profile?.height_in||0)
+  const bmi          = heightIn > 0 && latest ? ((parseFloat(latest)*703)/(heightIn*heightIn)).toFixed(1) : null
+  const bmiLabel     = !bmi ? '' : bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese'
+  const bmiColor     = !bmi ? '' : bmi < 18.5 ? '#60a5fa' : bmi < 25 ? '#10b981' : bmi < 30 ? '#f59e0b' : '#ef4444'
 
   // Weekly workout count
   const weekAgo      = new Date(); weekAgo.setDate(weekAgo.getDate()-7)
@@ -871,48 +803,90 @@ export default function FitnessTracker() {
           {activeTab === 'weight' && (
             <div style={anim(140)}>
 
-              {/* Stats row */}
-              <div style={{ display:'flex', gap:10, marginBottom:14 }}>
-                <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Current</p>
-                  <p style={{ color:'var(--text-primary)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
-                    {latest || '—'}<span style={{ fontSize:11, fontWeight:400, color:'var(--text-muted)', marginLeft:4 }}>lbs</span>
-                  </p>
-                  {diff && <p style={{ color: parseFloat(diff) < 0 ? '#10b981' : '#f59e0b', fontSize:11, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginTop:5 }}>
-                    {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs
-                  </p>}
-                </div>
-                {weightGoal && (
-                  <div style={{ flex:1, background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                    <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Goal</p>
-                    <p style={{ color:'var(--text-muted)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
-                      {weightGoal}<span style={{ fontSize:11, fontWeight:400, marginLeft:4 }}>lbs</span>
+              {/* Headline: current weight + trend + streak */}
+              <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'16px', marginBottom:12 }}>
+                <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between' }}>
+                  <div>
+                    <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>CURRENT WEIGHT</p>
+                    <p style={{ color:'var(--text-primary)', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.03em' }}>
+                      {latest || '—'}<span style={{ fontSize:14, fontWeight:400, color:'var(--text-muted)', marginLeft:5 }}>lbs</span>
                     </p>
-                    {toGoal && <p style={{ color: parseFloat(toGoal) <= 0 ? '#10b981' : 'rgba(212,212,232,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:5 }}>
-                      {parseFloat(toGoal) > 0 ? `${toGoal} lbs to go` : '✓ Goal reached'}
-                    </p>}
+                    {diff && (
+                      <p style={{ color: parseFloat(diff) < 0 ? '#10b981' : '#f59e0b', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginTop:6 }}>
+                        {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs since last log
+                      </p>
+                    )}
                   </div>
-                )}
-              </div>
-
-              {/* Animated body figure */}
-              <div style={{ position:'relative', width:160, height:320, margin:'0 auto 14px' }}>
-                <WeightBodyFigure weight={latest} goal={weightGoal} />
-              </div>
-
-              {/* Sparkline */}
-              {(weightLogs||[]).length >= 2 && (
-                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'14px 16px', marginBottom:14 }}>
-                  <WeightSparkline logs={weightLogs} />
+                  <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:7 }}>
+                    {trendLbsWk !== null && (
+                      <div style={{ background: parseFloat(trendLbsWk) <= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)', border:`1px solid ${parseFloat(trendLbsWk) <= 0 ? 'rgba(16,185,129,0.28)' : 'rgba(245,158,11,0.28)'}`, borderRadius:8, padding:'5px 10px' }}>
+                        <p style={{ color: parseFloat(trendLbsWk) <= 0 ? '#10b981' : '#f59e0b', fontSize:11, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', whiteSpace:'nowrap' }}>
+                          {parseFloat(trendLbsWk) <= 0 ? '▼' : '▲'} {Math.abs(trendLbsWk)} lbs/wk
+                        </p>
+                      </div>
+                    )}
+                    {streak > 0 && (
+                      <div style={{ background:'rgba(245,158,11,0.08)', border:'1px solid rgba(245,158,11,0.22)', borderRadius:8, padding:'5px 10px' }}>
+                        <p style={{ color:'#f59e0b', fontSize:11, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>🔥 {streak}d streak</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
+              </div>
+
+              {/* Goal progress bar */}
+              <GoalBar current={latest} goal={weightGoal} start={sortedWeight[0]?.weight_lbs} />
+
+              {/* Chart */}
+              <WeightChart logs={weightLogs} goal={weightGoal} range={chartRange} onRange={setChartRange} />
+
+              {/* Stats grid */}
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
+                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
+                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>BMI</p>
+                  {bmi ? (
+                    <>
+                      <p style={{ color:'var(--text-primary)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:3 }}>{bmi}</p>
+                      <p style={{ color:bmiColor, fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{bmiLabel}</p>
+                    </>
+                  ) : (
+                    <p style={{ color:'rgba(212,212,232,0.2)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>Add height in profile</p>
+                  )}
+                </div>
+                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
+                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>LOWEST</p>
+                  <p style={{ color:'#10b981', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:3 }}>
+                    {lowestW || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:3 }}>lbs</span>
+                  </p>
+                  {lowestDate && <p style={{ color:'rgba(212,212,232,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{lowestDate}</p>}
+                </div>
+                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
+                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>30-DAY AVG</p>
+                  <p style={{ color:'var(--text-secondary)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
+                    {avg30 || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:3 }}>lbs</span>
+                  </p>
+                </div>
+                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
+                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>NET CHANGE</p>
+                  {netChange !== null ? (
+                    <>
+                      <p style={{ color: parseFloat(netChange) < 0 ? '#10b981' : '#f59e0b', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
+                        {parseFloat(netChange) > 0 ? '+' : ''}{netChange}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:3 }}>lbs</span>
+                      </p>
+                      <p style={{ color:'rgba(212,212,232,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>since first log</p>
+                    </>
+                  ) : (
+                    <p style={{ color:'rgba(212,212,232,0.2)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>—</p>
+                  )}
+                </div>
+              </div>
 
               {/* Log button */}
               <button onClick={() => setShowWeight(true)}
-                style={{ width:'100%', marginBottom:14, padding:'11px', borderRadius:9, background:'transparent', border:'1px solid var(--border)', color:'rgba(212,212,232,0.4)', fontSize:11, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s' }}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.3)';e.currentTarget.style.color='rgba(212,212,232,0.7)'}}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(212,212,232,0.1)';e.currentTarget.style.color='rgba(212,212,232,0.4)'}}>
-                + Log Today's Weight
+                style={{ width:'100%', marginBottom:16, padding:'13px', borderRadius:10, background:'rgba(180,188,204,0.1)', border:'1px solid rgba(180,188,204,0.22)', color:'rgba(212,212,232,0.6)', fontSize:12, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}
+                onMouseEnter={e=>{e.currentTarget.style.background='rgba(180,188,204,0.18)';e.currentTarget.style.color='rgba(212,212,232,0.85)'}}
+                onMouseLeave={e=>{e.currentTarget.style.background='rgba(180,188,204,0.1)';e.currentTarget.style.color='rgba(212,212,232,0.6)'}}>
+                {Ico.plus(12)} Log Today's Weight
               </button>
 
               {/* Weight history */}
@@ -923,15 +897,22 @@ export default function FitnessTracker() {
                 </div>
               )}
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                {[...(weightLogs||[])].sort((a,b)=>new Date(b.logged_date||b.date)-new Date(a.logged_date||a.date)).map((log, i) => (
-                  <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:11, opacity: visible?1:0, transform: visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*35}ms, transform 0.4s ease ${i*35}ms` }}>
-                    <div>
-                      <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
-                      {log.note && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{log.note}</p>}
+                {[...(weightLogs||[])].sort((a,b)=>new Date(b.logged_date||b.date)-new Date(a.logged_date||a.date)).map((log, i, arr) => {
+                  const prev = arr[i+1]
+                  const delta = prev ? (parseFloat(log.weight_lbs) - parseFloat(prev.weight_lbs)).toFixed(1) : null
+                  return (
+                    <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:11, opacity:visible?1:0, transform:visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*30}ms, transform 0.4s ease ${i*30}ms` }}>
+                      <div>
+                        <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
+                        {log.note && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{log.note}</p>}
+                      </div>
+                      <div style={{ textAlign:'right' }}>
+                        <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{log.weight_lbs}<span style={{ fontSize:11, color:'var(--text-muted)', fontWeight:400, marginLeft:3 }}>lbs</span></p>
+                        {delta && <p style={{ color: parseFloat(delta) < 0 ? '#10b981' : '#f59e0b', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{parseFloat(delta) > 0 ? '+' : ''}{delta}</p>}
+                      </div>
                     </div>
-                    <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{log.weight_lbs} <span style={{ fontSize:11, color:'var(--text-muted)', fontWeight:400 }}>lbs</span></p>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}
