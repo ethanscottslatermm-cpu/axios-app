@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
 import { getLinkToken, exchangeToken, fetchBalances, fetchTransactions } from '../../lib/plaidClient'
-import { getQuote, getMarketNews, getCryptoNews, searchSymbol, getCandles } from '../../lib/finnhub'
+import { getQuote, getMarketNews, getCryptoNews, searchSymbol } from '../../lib/finnhub'
 import { BottomNav } from '../../pages/Dashboard'
 import BillsTab from './BillsTab'
 import { useWatchlist } from '../../hooks/useWatchlist'
@@ -251,7 +251,7 @@ function fmtHistLabel(ts, range) {
 }
 
 // ── Stock Detail Sheet ─────────────────────────────────────────────────────────
-function StockDetailSheet({ symbol, displaySymbol, isCrypto = false, onClose }) {
+function StockDetailSheet({ symbol, displaySymbol, onClose }) {
   const [range,   setRange]   = useState('1mo')
   const [hist,    setHist]    = useState(null)
   const [loading, setLoading] = useState(true)
@@ -263,11 +263,12 @@ function StockDetailSheet({ symbol, displaySymbol, isCrypto = false, onClose }) 
   useEffect(() => {
     let cancelled = false
     setLoading(true); setError(false); setHist(null)
-    getCandles(symbol, range, isCrypto)
+    fetch(`/api/history?symbol=${encodeURIComponent(symbol)}&range=${range}`)
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json() })
       .then(d => { if (!cancelled) { setHist(d); setLoading(false) } })
       .catch(() => { if (!cancelled) { setError(true); setLoading(false) } })
     return () => { cancelled = true }
-  }, [symbol, range, isCrypto])
+  }, [symbol, range])
 
   const rawPoints = hist?.points || []
   // Reduce density: max ~60 points on screen
@@ -1124,10 +1125,10 @@ export default function FinanceTracker() {
             <div style={{ marginBottom:24 }}>
               <SectionHead title="Top Crypto" sub="Live prices" />
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
-                <CryptoTopCard coin="BTC" fhSymbol={CRYPTO_MAP.BTC} onClick={() => setDetailSymbol({ symbol: CRYPTO_MAP.BTC, display: 'BTC', isCrypto: true })} />
-                <CryptoTopCard coin="ETH" fhSymbol={CRYPTO_MAP.ETH} onClick={() => setDetailSymbol({ symbol: CRYPTO_MAP.ETH, display: 'ETH', isCrypto: true })} />
+                <CryptoTopCard coin="BTC" fhSymbol={CRYPTO_MAP.BTC} onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO.BTC, display: 'BTC' })} />
+                <CryptoTopCard coin="ETH" fhSymbol={CRYPTO_MAP.ETH} onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO.ETH, display: 'ETH' })} />
                 {rotatingCoin
-                  ? <CryptoTopCard coin={rotatingCoin} fhSymbol={CRYPTO_MAP[rotatingCoin]} badge="hot" onClick={() => setDetailSymbol({ symbol: CRYPTO_MAP[rotatingCoin], display: rotatingCoin, isCrypto: true })} />
+                  ? <CryptoTopCard coin={rotatingCoin} fhSymbol={CRYPTO_MAP[rotatingCoin]} badge="hot" onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO[rotatingCoin] || (rotatingCoin + '-USD'), display: rotatingCoin })} />
                   : <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 12px', display:'flex', alignItems:'center', justifyContent:'center' }}><p style={{ color:'var(--text-faint)', fontSize:11 }}>—</p></div>
                 }
               </div>
@@ -1141,7 +1142,7 @@ export default function FinanceTracker() {
                   <CryptoWatchCard
                     key={coin}
                     coin={coin}
-                    onClick={() => setDetailSymbol({ symbol: CRYPTO_MAP[coin], display: coin, isCrypto: true })}
+                    onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO[coin] || (coin + '-USD'), display: coin })}
                     onRemove={coin => {
                       const updated = cryptoWatchlist.filter(c => c !== coin)
                       setCryptoWatchlist(updated)
@@ -1202,7 +1203,6 @@ export default function FinanceTracker() {
         <StockDetailSheet
           symbol={detailSymbol.symbol}
           displaySymbol={detailSymbol.display}
-          isCrypto={!!detailSymbol.isCrypto}
           onClose={() => setDetailSymbol(null)}
         />
       )}
