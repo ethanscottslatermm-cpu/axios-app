@@ -874,10 +874,8 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
 
   const renderShape = (s, isSel, strokeW, sOp) => {
     const stroke = isSel ? 'rgba(239,68,68,1.0)' : `rgba(239,68,68,${sOp})`
-    const fill   = isSel ? 'rgba(239,68,68,0.65)' : 'none'
-    const style  = isSel
-      ? { animation: 'zoneColorShift 2.2s ease-out forwards' }
-      : { transition: 'all 0.3s' }
+    const fill   = isSel ? 'rgba(255,255,255,0.82)' : 'none'
+    const style  = { transition: 'all 0.3s' }
     if (s.e) return <ellipse cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} fill={fill} stroke={stroke} strokeWidth={strokeW} style={style}/>
     if (s.r) return <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={s.rx} fill={fill} stroke={stroke} strokeWidth={strokeW} style={style}/>
     return <path d={s.d} fill={fill} stroke={stroke} strokeWidth={strokeW} style={style}/>
@@ -912,14 +910,14 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
           <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
           <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        {/* Red text glow */}
+        {/* White text glow */}
         <filter id="label-glow" x="-60%" y="-60%" width="220%" height="220%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-          <feFlood floodColor="#ef4444" floodOpacity="1" result="redBlur"/>
-          <feComposite in="redBlur" in2="blur" operator="in" result="redGlow"/>
+          <feFlood floodColor="#ffffff" floodOpacity="1" result="wBlur"/>
+          <feComposite in="wBlur" in2="blur" operator="in" result="wGlow"/>
           <feMerge>
-            <feMergeNode in="redGlow"/>
-            <feMergeNode in="redGlow"/>
+            <feMergeNode in="wGlow"/>
+            <feMergeNode in="wGlow"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
@@ -974,7 +972,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
         const sel   = selected === l.id || hovered === l.id
         return (
           <text key={l.id} x={l.x} y={l.y}
-            fill="rgba(239,100,100,0.92)"
+            fill="#ffffff"
             fontSize="7.5"
             fontFamily="Helvetica Neue,Arial,sans-serif"
             fontWeight={sel ? '700' : '500'}
@@ -989,7 +987,7 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
                 fontSize="5.8"
                 fontWeight="400"
                 letterSpacing="0.06em"
-                fill="rgba(239,100,100,0.7)"
+                fill="#ffffff"
                 style={{ fontStyle:'italic' }}>
                 {l.sci}
               </tspan>
@@ -1198,7 +1196,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
           <div style={{
             position:'absolute', inset:0, zIndex:0, borderRadius:16, pointerEvents:'none',
             background: selectedDB
-              ? 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(239,68,68,0.10) 0%, transparent 68%)'
+              ? 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(255,255,255,0.10) 0%, transparent 68%)'
               : 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(180,188,204,0.06) 0%, transparent 68%)',
             transition:'background 0.7s ease',
             animation:'bgPulse 3.5s ease-in-out infinite',
