@@ -408,8 +408,8 @@ export default function FinanceTracker() {
   })
 
   return (
-    <>
-      <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:'url(' + FINANCE_IMG + ')', backgroundSize:'cover', backgroundPosition:'center 20%', opacity:0.17, filter:'grayscale(100%) contrast(1.3) brightness(1.1)', backgroundRepeat:'no-repeat', opacity:0.08, pointerEvents:'none', filter:'grayscale(100%)' }} />
+    <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', position:'relative' }}>
+      <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:'url(' + FINANCE_IMG + ')', backgroundSize:'cover', backgroundPosition:'center 20%', opacity:0.08, filter:'grayscale(100%) contrast(1.3) brightness(1.1)', backgroundRepeat:'no-repeat', pointerEvents:'none' }} />
       <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.6) 0%, rgba(8,8,8,0.25) 40%, rgba(8,8,8,0.92) 100%)', pointerEvents:'none' }} />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@1&display=swap');
@@ -418,35 +418,39 @@ export default function FinanceTracker() {
         .ax-sym-result:hover { background: var(--bg-card-hover) !important; }
       `}</style>
 
-      <div style={{ padding:'24px 16px 120px', maxWidth:480, margin:'0 auto', position:'relative', zIndex:1 }}>
-
-        {/* Header */}
-        <div style={{ ...anim(0), display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
-          <div>
-            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <h1 style={{ color:'#4ade80', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
-              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 10v4M18 10v4"/></svg>
+      {/* ── Sticky Header ── */}
+      <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px' }}>
+        <div style={{ maxWidth:480, margin:'0 auto' }}>
+          {/* Title row */}
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+            <div>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <h1 style={{ color:'#4ade80', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 10v4M18 10v4"/></svg>
+              </div>
+              <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
             </div>
-            <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
+            <button onClick={refresh} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'8px 12px', color:'var(--text-secondary)', cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
+              {Ico.refresh()} Refresh
+            </button>
           </div>
-          <button onClick={refresh} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:10, padding:'8px 12px', color:'var(--text-secondary)', cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
-            {Ico.refresh()} Refresh
-          </button>
+          {/* Tabs */}
+          <div style={{ display:'flex', gap:8 }}>
+            {[['markets','Stocks'],['crypto','Crypto'],['bank','Bank'],['bills','Bills']].map(([key, label]) => (
+              <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
+                flex:1, padding:'9px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(74,222,128,0.5)' : 'var(--border)'}`,
+                background: activeTab===key ? 'rgba(74,222,128,0.12)' : 'transparent',
+                color: activeTab===key ? '#4ade80' : 'var(--text-muted)',
+                fontSize:12, fontWeight: activeTab===key ? 700 : 400,
+                fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
+                letterSpacing:'0.08em', textTransform:'uppercase',
+              }}>{label}</button>
+            ))}
+          </div>
         </div>
+      </div>
 
-        {/* Tabs */}
-        <div style={{ ...anim(40), display:'flex', gap:8, marginBottom:20 }}>
-          {[['markets','Stocks'],['crypto','Crypto'],['bank','Bank'],['bills','Bills']].map(([key, label]) => (
-            <button key={key} className="ax-tab-fin" onClick={() => setActiveTab(key)} style={{
-              flex:1, padding:'10px', borderRadius:10, border:`1px solid ${activeTab===key ? 'rgba(74,222,128,0.5)' : 'var(--border)'}`,
-              background: activeTab===key ? 'rgba(74,222,128,0.12)' : 'transparent',
-              color: activeTab===key ? '#4ade80' : 'var(--text-muted)',
-              fontSize:12, fontWeight: activeTab===key ? 700 : 400,
-              fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
-              letterSpacing:'0.08em', textTransform:'uppercase',
-            }}>{label}</button>
-          ))}
-        </div>
+      <div style={{ padding:'16px 16px 120px', maxWidth:480, margin:'0 auto', position:'relative', zIndex:1 }}>
 
         {/* Markets Tab */}
         {activeTab === 'markets' && (
@@ -695,6 +699,6 @@ export default function FinanceTracker() {
         )}
       </div>
       <BottomNav />
-    </>
+    </div>
   )
 }
