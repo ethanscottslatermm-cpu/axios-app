@@ -14,6 +14,7 @@ import { useHaptic } from '../../hooks/useHaptic'
 
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
+import LineChart from '../../components/LineChart'
 function fmt(n)    { return n == null ? '—' : Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
 function fmtPct(n) { return n == null ? '—' : `${n > 0 ? '+' : ''}${Number(n).toFixed(2)}%` }
 function timeAgo(ts) {
@@ -42,7 +43,7 @@ function SectionHead({ title, sub }) {
   )
 }
 
-function QuoteCard({ symbol, onRemove, canRemove }) {
+function QuoteCard({ symbol, onRemove, canRemove, onClick }) {
   const [quote,   setQuote]   = useState(null)
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState(false)
@@ -62,10 +63,10 @@ function QuoteCard({ symbol, onRemove, canRemove }) {
   const color   = error ? 'var(--text-muted)' : up ? '#86efac' : '#fca5a5'
 
   return (
-    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12 }}>
+    <div onClick={onClick} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, cursor: onClick ? 'pointer' : 'default' }}>
       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
         {canRemove && (
-          <button onClick={() => onRemove(symbol)} style={{ background:'none', border:'none', color:'var(--text-faint)', cursor:'pointer', padding:0, display:'flex', alignItems:'center' }}>
+          <button onClick={e => { e.stopPropagation(); onRemove(symbol) }} style={{ background:'none', border:'none', color:'var(--text-faint)', cursor:'pointer', padding:0, display:'flex', alignItems:'center' }}>
             {Ico.x()}
           </button>
         )}
@@ -94,7 +95,7 @@ function QuoteCard({ symbol, onRemove, canRemove }) {
   )
 }
 
-function IndexCard({ label, symbol }) {
+function IndexCard({ label, symbol, onClick }) {
   const [quote,   setQuote]   = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -107,7 +108,7 @@ function IndexCard({ label, symbol }) {
   const up     = change >= 0
 
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px 12px', textAlign:'center' }}>
+    <div onClick={onClick} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px 12px', textAlign:'center', cursor: onClick ? 'pointer' : 'default' }}>
       <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
       {loading ? (
         <p style={{ color:'var(--text-faint)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>—</p>
@@ -145,7 +146,7 @@ function fmtCrypto(n) {
   return n.toLocaleString('en-US', { minimumFractionDigits:4, maximumFractionDigits:6 })
 }
 
-function CryptoTopCard({ coin, fhSymbol, badge }) {
+function CryptoTopCard({ coin, fhSymbol, badge, onClick }) {
   const [quote,   setQuote]   = useState(null)
   const [loading, setLoading] = useState(true)
   useEffect(() => {
@@ -155,7 +156,7 @@ function CryptoTopCard({ coin, fhSymbol, badge }) {
   const pct    = quote ? ((change / quote.pc) * 100) : null
   const up     = change >= 0
   return (
-    <div style={{ background:'var(--bg-card)', border:`1px solid ${badge === 'hot' ? 'rgba(251,146,60,0.35)' : 'var(--border)'}`, boxShadow:'var(--card-shadow)', borderRadius:14, padding:'14px 12px', textAlign:'center', position:'relative', overflow:'hidden' }}>
+    <div onClick={onClick} style={{ background:'var(--bg-card)', border:`1px solid ${badge === 'hot' ? 'rgba(251,146,60,0.35)' : 'var(--border)'}`, boxShadow:'var(--card-shadow)', borderRadius:14, padding:'14px 12px', textAlign:'center', position:'relative', overflow:'hidden', cursor: onClick ? 'pointer' : 'default' }}>
       {badge === 'hot' && (
         <span style={{ position:'absolute', top:6, right:8, fontSize:7, fontWeight:800, letterSpacing:'0.18em', color:'#fb923c', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>TOP</span>
       )}
@@ -172,7 +173,7 @@ function CryptoTopCard({ coin, fhSymbol, badge }) {
   )
 }
 
-function CryptoWatchCard({ coin, onRemove }) {
+function CryptoWatchCard({ coin, onRemove, onClick }) {
   const fhSym = CRYPTO_MAP[coin]
   const [quote,   setQuote]   = useState(null)
   const [loading, setLoading] = useState(true)
@@ -191,9 +192,9 @@ function CryptoWatchCard({ coin, onRemove }) {
   const up     = change >= 0
   const color  = error ? 'var(--text-muted)' : up ? '#86efac' : '#fca5a5'
   return (
-    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12 }}>
+    <div onClick={onClick} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, cursor: onClick ? 'pointer' : 'default' }}>
       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-        <button onClick={() => onRemove(coin)} style={{ background:'none', border:'none', color:'var(--text-faint)', cursor:'pointer', padding:0, display:'flex', alignItems:'center' }}>{Ico.x()}</button>
+        <button onClick={e => { e.stopPropagation(); onRemove(coin) }} style={{ background:'none', border:'none', color:'var(--text-faint)', cursor:'pointer', padding:0, display:'flex', alignItems:'center' }}>{Ico.x()}</button>
         <div>
           <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{coin}</p>
           {loading && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Loading…</p>}
@@ -212,6 +213,181 @@ function CryptoWatchCard({ coin, onRemove }) {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function fmtVol(n) {
+  if (!n) return '—'
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B'
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M'
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K'
+  return String(n)
+}
+
+const RANGES = [
+  { key: '1d',  label: '1D', desc: 'Today'    },
+  { key: '5d',  label: '1W', desc: '1 Week'   },
+  { key: '1mo', label: '1M', desc: '1 Month'  },
+  { key: '3mo', label: '3M', desc: '3 Months' },
+  { key: '6mo', label: '6M', desc: '6 Months' },
+  { key: '1y',  label: '1Y', desc: '1 Year'   },
+]
+
+// Yahoo Finance symbols for crypto (Finnhub uses BINANCE:X format)
+const CRYPTO_YAHOO = {
+  BTC:'BTC-USD', ETH:'ETH-USD', XRP:'XRP-USD', SOL:'SOL-USD',
+  BNB:'BNB-USD', DOGE:'DOGE-USD', ADA:'ADA-USD', AVAX:'AVAX-USD',
+  LINK:'LINK-USD', DOT:'DOT-USD', MATIC:'MATIC-USD', LTC:'LTC-USD',
+}
+
+function fmtHistLabel(ts, range) {
+  const d = new Date(ts * 1000)
+  if (range === '1d')  return d.toLocaleTimeString('en-US', { hour:'numeric', hour12:true })
+  if (range === '5d')  return d.toLocaleDateString('en-US', { weekday:'short' })
+  if (range === '1mo') return d.toLocaleDateString('en-US', { month:'short', day:'numeric' })
+  if (range === '3mo') return d.toLocaleDateString('en-US', { month:'short', day:'numeric' })
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' })
+}
+
+// ── Stock Detail Sheet ─────────────────────────────────────────────────────────
+function StockDetailSheet({ symbol, displaySymbol, onClose }) {
+  const [range,   setRange]   = useState('1mo')
+  const [hist,    setHist]    = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error,   setError]   = useState(false)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => { setTimeout(() => setVisible(true), 20) }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true); setError(false)
+    fetch(`/api/history?symbol=${encodeURIComponent(symbol)}&range=${range}`)
+      .then(r => { if (!r.ok) throw new Error(); return r.json() })
+      .then(d => { if (!cancelled) { setHist(d); setLoading(false) } })
+      .catch(() => { if (!cancelled) { setError(true); setLoading(false) } })
+    return () => { cancelled = true }
+  }, [symbol, range])
+
+  const rawPoints = hist?.points || []
+  // Reduce density: max ~60 points on screen
+  const step = rawPoints.length > 60 ? Math.ceil(rawPoints.length / 60) : 1
+  const chartData = rawPoints
+    .filter((_, i) => i % step === 0 || i === rawPoints.length - 1)
+    .map(p => ({ label: fmtHistLabel(p.ts, range), value: p.close }))
+
+  const firstClose = rawPoints[0]?.close
+  const lastClose  = rawPoints[rawPoints.length - 1]?.close
+  const rangeChange = firstClose && lastClose ? lastClose - firstClose : null
+  const rangePct    = firstClose && rangeChange != null ? (rangeChange / firstClose) * 100 : null
+  const up    = (rangeChange ?? 0) >= 0
+  const color = up ? '#86efac' : '#fca5a5'
+
+  const close = () => { setVisible(false); setTimeout(onClose, 320) }
+
+  return (
+    <div
+      onClick={e => { if (e.target === e.currentTarget) close() }}
+      style={{ position:'fixed', inset:0, zIndex:500, background:'rgba(0,0,0,0.72)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end' }}
+    >
+      <div style={{
+        width:'100%', maxWidth:520, margin:'0 auto',
+        background:'var(--bg-primary)', borderTop:'1px solid var(--border)', borderRadius:'20px 20px 0 0',
+        padding:'0 0 max(28px,env(safe-area-inset-bottom))', maxHeight:'90vh', overflowY:'auto',
+        transform: visible ? 'translateY(0)' : 'translateY(100%)',
+        transition:'transform 0.32s cubic-bezier(.16,1,.3,1)',
+      }}>
+        {/* Drag handle */}
+        <div style={{ padding:'14px 0 0', display:'flex', justifyContent:'center' }}>
+          <div style={{ width:36, height:4, borderRadius:99, background:'rgba(212,212,232,0.15)' }} />
+        </div>
+
+        {/* Header */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 18px 0' }}>
+          <div>
+            <p style={{ color:'var(--text-primary)', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>{displaySymbol}</p>
+            {hist?.displayName && hist.displayName !== displaySymbol && (
+              <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:2 }}>{hist.displayName}</p>
+            )}
+          </div>
+          <button onClick={close} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:99, padding:'7px 9px', cursor:'pointer', color:'var(--text-muted)', display:'flex' }}>{Ico.x(15)}</button>
+        </div>
+
+        {/* Price block */}
+        <div style={{ padding:'16px 18px 10px' }}>
+          {hist ? (
+            <>
+              <p style={{ color:'var(--text-primary)', fontSize:36, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.03em', lineHeight:1 }}>
+                ${fmt(hist.regularMarketPrice)}
+              </p>
+              {rangeChange != null && (
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginTop:6 }}>
+                  <p style={{ color, fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>
+                    {rangeChange >= 0 ? '+' : ''}{fmt(rangeChange)} ({rangePct >= 0 ? '+' : ''}{rangePct?.toFixed(2)}%)
+                  </p>
+                  <span style={{ color:'var(--text-faint)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
+                    {RANGES.find(r => r.key === range)?.desc}
+                  </span>
+                </div>
+              )}
+            </>
+          ) : (
+            <div style={{ height:52 }} />
+          )}
+        </div>
+
+        {/* Range tabs */}
+        <div style={{ display:'flex', gap:6, padding:'0 18px 14px', overflowX:'auto' }}>
+          {RANGES.map(r => {
+            const active = r.key === range
+            return (
+              <button key={r.key} onClick={() => setRange(r.key)} style={{
+                flexShrink:0, padding:'6px 15px', borderRadius:8,
+                border:`1px solid ${active ? color : 'var(--border)'}`,
+                background: active ? `${color}1a` : 'transparent',
+                color: active ? color : 'var(--text-muted)',
+                fontSize:12, fontWeight: active ? 700 : 400,
+                fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.15s',
+              }}>{r.label}</button>
+            )
+          })}
+        </div>
+
+        {/* Chart */}
+        <div style={{ padding:'0 12px 20px' }}>
+          {loading ? (
+            <div style={{ height:160, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <p style={{ color:'var(--text-faint)', fontFamily:'Helvetica Neue,sans-serif', fontSize:12 }}>Loading…</p>
+            </div>
+          ) : error ? (
+            <div style={{ height:160, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <p style={{ color:'var(--text-faint)', fontFamily:'Helvetica Neue,sans-serif', fontSize:12, fontStyle:'italic' }}>Chart data unavailable</p>
+            </div>
+          ) : (
+            <LineChart data={chartData} height={160} color={color} showDots={chartData.length <= 25} showLabels={true} fillOpacity={0.14} />
+          )}
+        </div>
+
+        {/* Stats grid */}
+        {hist && (
+          <div style={{ padding:'0 18px' }}>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:8 }}>
+              {[
+                { label:'Prev Close', val: hist.previousClose      != null ? '$' + fmt(hist.previousClose)           : '—' },
+                { label:'Day High',   val: hist.regularMarketDayHigh != null ? '$' + fmt(hist.regularMarketDayHigh)   : '—' },
+                { label:'Day Low',    val: hist.regularMarketDayLow  != null ? '$' + fmt(hist.regularMarketDayLow)    : '—' },
+                { label:'Volume',     val: fmtVol(hist.regularMarketVolume) },
+              ].map(({ label, val }) => (
+                <div key={label} style={{ background:'var(--stat-bg)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 12px' }}>
+                  <p style={{ color:'var(--text-faint)', fontSize:9, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>{label}</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{val}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -546,6 +722,7 @@ export default function FinanceTracker() {
   const [cryptoNewsLoad,  setCryptoNewsLoad]  = useState(false)
   const [showCryptoAdd,   setShowCryptoAdd]   = useState(false)
   const [cryptoInput,     setCryptoInput]     = useState('')
+  const [detailSymbol,    setDetailSymbol]    = useState(null)
   // Bills state
   const [bills,       setBills]       = useState(() => {
     try { return JSON.parse(localStorage.getItem('axios-bills') || '[]') } catch { return [] }
@@ -776,9 +953,9 @@ export default function FinanceTracker() {
             <div style={{ marginBottom:24 }}>
               <SectionHead title="Indices" sub="ETF proxies" />
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
-                <IndexCard label="DOW"    symbol="DIA" />
-                <IndexCard label="S&P 500" symbol="SPY" />
-                <IndexCard label="NASDAQ" symbol="QQQ" />
+                <IndexCard label="DOW"     symbol="DIA" onClick={() => setDetailSymbol({ symbol: 'DIA', display: 'DOW' })} />
+                <IndexCard label="S&P 500" symbol="SPY" onClick={() => setDetailSymbol({ symbol: 'SPY', display: 'S&P 500' })} />
+                <IndexCard label="NASDAQ"  symbol="QQQ" onClick={() => setDetailSymbol({ symbol: 'QQQ', display: 'NASDAQ' })} />
               </div>
             </div>
 
@@ -787,7 +964,7 @@ export default function FinanceTracker() {
               <SectionHead title="Watchlist" sub={`${custom.length} stocks`} />
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                 {watchlist.filter(s => !['DIA','SPY','QQQ'].includes(s)).map(s => (
-                  <QuoteCard key={s} symbol={s} onRemove={removeSymbol} canRemove={!DEFAULT_SYMBOLS.includes(s)} />
+                  <QuoteCard key={s} symbol={s} onRemove={removeSymbol} canRemove={!DEFAULT_SYMBOLS.includes(s)} onClick={() => setDetailSymbol({ symbol: s, display: s })} />
                 ))}
               </div>
             </div>
@@ -948,10 +1125,10 @@ export default function FinanceTracker() {
             <div style={{ marginBottom:24 }}>
               <SectionHead title="Top Crypto" sub="Live prices" />
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
-                <CryptoTopCard coin="BTC" fhSymbol={CRYPTO_MAP.BTC} />
-                <CryptoTopCard coin="ETH" fhSymbol={CRYPTO_MAP.ETH} />
+                <CryptoTopCard coin="BTC" fhSymbol={CRYPTO_MAP.BTC} onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO.BTC, display: 'BTC' })} />
+                <CryptoTopCard coin="ETH" fhSymbol={CRYPTO_MAP.ETH} onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO.ETH, display: 'ETH' })} />
                 {rotatingCoin
-                  ? <CryptoTopCard coin={rotatingCoin} fhSymbol={CRYPTO_MAP[rotatingCoin]} badge="hot" />
+                  ? <CryptoTopCard coin={rotatingCoin} fhSymbol={CRYPTO_MAP[rotatingCoin]} badge="hot" onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO[rotatingCoin] || (rotatingCoin + '-USD'), display: rotatingCoin })} />
                   : <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 12px', display:'flex', alignItems:'center', justifyContent:'center' }}><p style={{ color:'var(--text-faint)', fontSize:11 }}>—</p></div>
                 }
               </div>
@@ -965,6 +1142,7 @@ export default function FinanceTracker() {
                   <CryptoWatchCard
                     key={coin}
                     coin={coin}
+                    onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO[coin] || (coin + '-USD'), display: coin })}
                     onRemove={coin => {
                       const updated = cryptoWatchlist.filter(c => c !== coin)
                       setCryptoWatchlist(updated)
@@ -1021,6 +1199,13 @@ export default function FinanceTracker() {
           </div>
         )}
       </div>
+      {detailSymbol && (
+        <StockDetailSheet
+          symbol={detailSymbol.symbol}
+          displaySymbol={detailSymbol.display}
+          onClose={() => setDetailSymbol(null)}
+        />
+      )}
       <BottomNav />
     </div>
   )

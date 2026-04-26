@@ -1,13 +1,16 @@
 // Reusable SVG line chart — theme-aware, no dependencies
+import { useRef } from 'react'
+
+let _chartId = 0
 
 function trendColor(data) {
   if (data.length < 2) return 'var(--glow-bar)'
   const first = data[0].value
   const last  = data[data.length - 1].value
   const delta = ((last - first) / (Math.abs(first) || 1)) * 100
-  if (delta >  3) return '#4ade80'  // green — increasing
-  if (delta < -3) return '#f87171'  // red   — decreasing
-  return '#fbbf24'                   // yellow — stagnant
+  if (delta >  3) return '#86efac'
+  if (delta < -3) return '#fca5a5'
+  return '#fbbf24'
 }
 
 export default function LineChart({
@@ -18,6 +21,10 @@ export default function LineChart({
   showLabels = true,
   fillOpacity = 0.12,
 }) {
+  const idRef = useRef(null)
+  if (!idRef.current) idRef.current = `cf${++_chartId}`
+  const gradId = idRef.current
+
   if (!color) color = trendColor(data)
   if (data.length < 2) {
     return (
@@ -45,20 +52,26 @@ export default function LineChart({
 
   const points = data.map((d, i) => ({ x: xScale(i), y: yScale(d.value), ...d }))
 
-  const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
+  // Smooth cubic bezier path
+  const linePath = points.reduce((path, p, i) => {
+    if (i === 0) return `M ${p.x} ${p.y}`
+    const prev = points[i - 1]
+    const cpx  = (prev.x + p.x) / 2
+    return `${path} C ${cpx} ${prev.y} ${cpx} ${p.y} ${p.x} ${p.y}`
+  }, '')
   const fillPath = `${linePath} L ${points[points.length-1].x} ${H - pad.bottom} L ${points[0].x} ${H - pad.bottom} Z`
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height, overflow: 'visible' }}>
       <defs>
-        <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity={fillOpacity * 3} />
           <stop offset="100%" stopColor={color} stopOpacity={0} />
         </linearGradient>
       </defs>
 
       {/* Fill area */}
-      <path d={fillPath} fill="url(#chartFill)" />
+      <path d={fillPath} fill={`url(#${gradId})`} />
 
       {/* Line */}
       <path d={linePath} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
