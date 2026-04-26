@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
 import { searchFood, lookupBarcode } from '../../lib/foodSearch'
+import { useWaterLog } from '../../hooks/useWaterLog'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 
@@ -14,6 +15,7 @@ const FOOD_IMG = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4QAqRXhpZgA
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 const CALORIE_GOAL = 2200
+const WATER_GOAL   = 8
 const MEAL_TYPES   = ['Breakfast', 'Lunch', 'Dinner', 'Snack']
 
 const HEALTHY_MEALS = [
@@ -608,8 +610,11 @@ export default function FoodJournal() {
   const [suggestCat,   setSuggestCat]   = useState('All')
   const [showSuggest,  setShowSuggest]  = useState(false)
 
+  const [activeTab, setActiveTab] = useState('food')
   const { logs, totals, addEntry, deleteEntry, isLoading: loading } = useFoodLog(todayStr)
   const { history: foodHistory } = useFoodHistory()
+  const { logs: waterLogs, count: waterCount, addGlass, removeGlass } = useWaterLog(todayStr)
+  const waterPct = Math.min(100, Math.round((waterCount / WATER_GOAL) * 100))
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t) }, [])
 
@@ -680,6 +685,7 @@ export default function FoodJournal() {
         .ax-ai-btn:hover{background:rgba(212,212,232,0.07)!important;border-color:rgba(212,212,232,0.22)!important;}
         .ax-add-btn:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
         .ax-meal-tab:hover{background:rgba(212,212,232,0.05)!important;}
+        .ax-tab:hover{background:rgba(212,212,232,0.05)!important;}
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:'calc(env(safe-area-inset-bottom) + 160px)', position:'relative' }}>
@@ -727,25 +733,123 @@ export default function FoodJournal() {
             </div>
           </div>
 
-          {/* Calorie ring summary */}
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
-            <div>
-              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Consumed</p>
-              <p style={{ color:'var(--text-primary)', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>{calories.toLocaleString()} <span style={{ fontSize:13, fontWeight:400, color:'var(--text-muted)' }}>cal</span></p>
-              <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>{calLeft.toLocaleString()} remaining of {CALORIE_GOAL.toLocaleString()}</p>
-            </div>
-            <div style={{ textAlign:'right' }}>
-              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Progress</p>
-              <p style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{calPct}<span style={{ fontSize:13, color:'var(--text-muted)', fontWeight:400 }}>%</span></p>
-            </div>
-          </div>
-          <div style={{ marginTop:10 }}>
-            <GlowBar pct={calPct} h={5} />
+          {/* Summary row — changes per tab */}
+          {activeTab === 'food' ? (
+            <>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+                <div>
+                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Consumed</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>{calories.toLocaleString()} <span style={{ fontSize:13, fontWeight:400, color:'var(--text-muted)' }}>cal</span></p>
+                  <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>{calLeft.toLocaleString()} remaining of {CALORIE_GOAL.toLocaleString()}</p>
+                </div>
+                <div style={{ textAlign:'right' }}>
+                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Progress</p>
+                  <p style={{ color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{calPct}<span style={{ fontSize:13, color:'var(--text-muted)', fontWeight:400 }}>%</span></p>
+                </div>
+              </div>
+              <div style={{ marginTop:10 }}>
+                <GlowBar pct={calPct} h={5} />
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+                <div>
+                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Today</p>
+                  <p style={{ color:'#9ab4cc', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.02em' }}>{waterCount} <span style={{ fontSize:13, fontWeight:400, color:'var(--text-muted)' }}>glasses</span></p>
+                  <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>{Math.max(0, WATER_GOAL - waterCount)} remaining of {WATER_GOAL}</p>
+                </div>
+                <div style={{ textAlign:'right' }}>
+                  <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Progress</p>
+                  <p style={{ color:'#9ab4cc', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{waterPct}<span style={{ fontSize:13, color:'var(--text-muted)', fontWeight:400 }}>%</span></p>
+                </div>
+              </div>
+              <div style={{ marginTop:10 }}>
+                <GlowBar pct={waterPct} h={5} color="#9ab4cc" />
+              </div>
+            </>
+          )}
+
+          {/* Tab switcher */}
+          <div style={{ display:'flex', gap:8, marginTop:14 }}>
+            {[['food','Food Journal'],['water','Water']].map(([key, label]) => {
+              const isActive = activeTab === key
+              return (
+                <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
+                  style={{
+                    flex:1, padding:'10px', borderRadius:10,
+                    border: isActive ? '1px solid rgba(200,212,200,0.55)' : '1px solid rgba(212,212,232,0.06)',
+                    background: isActive ? 'rgba(200,212,200,0.12)' : 'rgba(212,212,232,0.03)',
+                    color: isActive ? '#c8d4c8' : 'rgba(212,212,232,0.35)',
+                    boxShadow: isActive ? '0 0 12px rgba(200,212,200,0.18)' : 'none',
+                    fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
+                    fontWeight: isActive ? 700 : 400,
+                    cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
+                  }}>
+                  {label}
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        {/* ── Body ── */}
-        <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
+        {/* ── Water Body ── */}
+        {activeTab === 'water' && (
+          <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1, ...anim(80) }}>
+            {/* Glass grid */}
+            <div style={{ background:'var(--bg-card)', border:'1px solid rgba(154,180,204,0.22)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'20px 18px' }}>
+              <p style={{ color:'rgba(154,180,204,0.6)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:16 }}>Glasses Today</p>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:10, marginBottom:18 }}>
+                {Array.from({ length: WATER_GOAL }).map((_, i) => {
+                  const filled = i < waterCount
+                  const last   = filled && i === waterCount - 1
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => last ? removeGlass.mutate(waterLogs[waterLogs.length - 1]?.id) : (!filled && addGlass.mutate())}
+                      style={{
+                        width: 48, height: 54, borderRadius: 10,
+                        border: filled ? '1px solid rgba(154,180,204,0.55)' : '1px solid rgba(154,180,204,0.15)',
+                        background: filled ? 'rgba(154,180,204,0.18)' : 'rgba(154,180,204,0.04)',
+                        display:'flex', alignItems:'center', justifyContent:'center',
+                        cursor: filled && !last ? 'default' : 'pointer',
+                        transition:'all 0.22s',
+                        boxShadow: filled ? '0 0 10px rgba(154,180,204,0.25)' : 'none',
+                      }}>
+                      <svg width={22} height={26} viewBox="0 0 24 28" fill={filled ? '#9ab4cc' : 'none'} stroke={filled ? '#9ab4cc' : 'rgba(154,180,204,0.25)'} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 4h14l-2 20H7L5 4z"/>
+                        <path d="M5 4a2 2 0 0 1 14 0"/>
+                      </svg>
+                    </button>
+                  )
+                })}
+              </div>
+              <p style={{ color: waterCount >= WATER_GOAL ? '#9ab4cc' : 'rgba(154,180,204,0.45)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>
+                {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} to go`}
+              </p>
+              <GlowBar pct={waterPct} h={5} color="#9ab4cc" />
+            </div>
+
+            {/* Quick add */}
+            <button
+              onClick={() => addGlass.mutate()}
+              disabled={waterCount >= WATER_GOAL || addGlass.isPending}
+              style={{
+                width:'100%', padding:'14px', borderRadius:12,
+                border:'1px solid rgba(154,180,204,0.35)',
+                background: waterCount >= WATER_GOAL ? 'rgba(154,180,204,0.06)' : 'rgba(154,180,204,0.12)',
+                color: waterCount >= WATER_GOAL ? 'rgba(154,180,204,0.3)' : '#9ab4cc',
+                fontSize:13, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700,
+                letterSpacing:'0.1em', textTransform:'uppercase', cursor: waterCount >= WATER_GOAL ? 'default' : 'pointer',
+                transition:'all 0.2s',
+              }}>
+              {waterCount >= WATER_GOAL ? 'Goal Reached' : '+ Log a Glass'}
+            </button>
+          </div>
+        )}
+
+        {/* ── Food Body ── */}
+        <div style={{ padding:'16px', display: activeTab === 'food' ? 'flex' : 'none', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
           {/* Macro summary */}
           <div style={{ display:'flex', gap:10, ...anim(80) }}>

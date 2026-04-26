@@ -51,12 +51,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',       label:'Food Journal', path:'/food',       icon: Ico.food },
-  { key:'water',      label:'Water',        path:'/water',      icon: Ico.water },
-  { key:'prayer',     label:'Prayer',       path:'/prayer',     icon: Ico.prayer },
-  { key:'devotional', label:'Devotional',   path:'/devotional', icon: Ico.book },
-  { key:'fitness',    label:'Fitness Center', path:'/fitness',    icon: Ico.fitness },
-  { key:'finance',    label:'Finance',      path:'/finance',    icon: Ico.finance },
+  { key:'food',    label:'Food & Water',   path:'/food',    icon: Ico.food },
+  { key:'prayer',  label:'Prayer',         path:'/prayer',  icon: Ico.prayer },
+  { key:'fitness', label:'Fitness Center', path:'/fitness', icon: Ico.fitness },
+  { key:'finance', label:'Finance',        path:'/finance', icon: Ico.finance },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -127,14 +125,12 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',      path:'/dashboard',  icon: Ico.home,    color: '#c8c8d8', activeColor: '#d8d8f0' },
-    { label:'Food',      path:'/food',       icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
-    { label:'Water',     path:'/water',      icon: Ico.water,   color: '#9ab4cc', activeColor: '#38bdf8' },
-    { label:'Fitness',   path:'/fitness',    icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
-    { label:'Prayer',    path:'/prayer',     icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
-    { label:'Devotion',  path:'/devotional', icon: Ico.book,    color: '#a8b4c0', activeColor: '#f472b6' },
-    { label:'Finance',   path:'/finance',    icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
-    { label:'Settings',  path:'/settings',   icon: Ico.settings,color: '#7a7a8a', activeColor: '#a0a0b8' },
+    { label:'Home',     path:'/dashboard', icon: Ico.home,    color: '#c8c8d8', activeColor: '#d8d8f0' },
+    { label:'Food',     path:'/food',      icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
+    { label:'Fitness',  path:'/fitness',   icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
+    { label:'Prayer',   path:'/prayer',    icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
+    { label:'Finance',  path:'/finance',   icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
+    { label:'Settings', path:'/settings',  icon: Ico.settings,color: '#7a7a8a', activeColor: '#a0a0b8' },
   ]
   return (
     <nav className="ax-bottom-nav" style={{
@@ -201,11 +197,10 @@ export default function Dashboard() {
   const answeredCount = (prayers || []).filter(p => p.answered).length
 
   const loggedModules = {
-    food:       calories > 0,
-    water:      waterCount > 0,
-    prayer:     todayPrayers > 0,
-    devotional: false,
-    fitness:    false,
+    food:    calories > 0,
+    water:   waterCount > 0,
+    prayer:  todayPrayers > 0,
+    fitness: false,
   }
   const loggedCount = Object.values(loggedModules).filter(Boolean).length
   const recentFood  = (foodLogs || []).slice(-3).reverse()
@@ -282,7 +277,7 @@ export default function Dashboard() {
               { label:'Weight',   value: latest ? `${latest}` : '—',    sub: latest ? 'lb' : 'not logged',
                 pct: weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal/latest)*100)) : 0,
                 color:'#b8b8cc', path:'/fitness', valSize:17 },
-              { label:'Today',    value:`${loggedCount}/5`,              sub:'logged',                           pct: Math.round((loggedCount/5)*100), color:'#d8d8e8', valSize:17 },
+              { label:'Today',    value:`${loggedCount}/4`,              sub:'logged',                           pct: Math.round((loggedCount/4)*100), color:'#d8d8e8', valSize:17 },
             ].map(({ label, value, sub, pct, color, path, valSize }) => (
               <div key={label} onClick={path ? () => navigate(path) : undefined}
                 style={{ background:'var(--bg-card)', border:`1px solid ${color}33`, boxShadow:`var(--card-shadow), 0 0 12px ${color}11`, borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
@@ -333,7 +328,7 @@ export default function Dashboard() {
 
           {/* Modules */}
           <Card style={anim(160)}>
-            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 5`} onToggle={() => toggleSection('modules')} collapsed={activeSection !== 'modules'} />
+            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 4`} onToggle={() => toggleSection('modules')} collapsed={activeSection !== 'modules'} />
             {activeSection === 'modules' && (
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {modules.map(({ key, label, path, icon }, i) => {

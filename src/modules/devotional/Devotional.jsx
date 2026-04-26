@@ -402,7 +402,7 @@ function BibleReader({ onClose }) {
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────────
-export default function Devotional() {
+export default function Devotional({ embedded = false }) {
   const todayStr = useToday()
   const todayLabel = new Date(todayStr + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' })
   const navigate  = useNavigate()
@@ -520,12 +520,12 @@ export default function Devotional() {
         }
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
-        <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${PRAYER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 20%', opacity:0.17, filter:'grayscale(100%) contrast(1.3) brightness(1.1)', backgroundRepeat:'no-repeat', opacity:0.1, pointerEvents:'none', filter:'grayscale(100%)' }} />
-        <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.45) 0%, rgba(8,8,8,0.15) 35%, rgba(8,8,8,0.9) 100%)', pointerEvents:'none' }} />
+      <div style={{ ...(!embedded && { minHeight:'100vh', background:'var(--bg-primary)', paddingBottom:90 }), WebkitFontSmoothing:'antialiased', position:'relative' }}>
+        {!embedded && <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${PRAYER_IMG})`, backgroundSize:'cover', backgroundPosition:'center 20%', opacity:0.1, filter:'grayscale(100%)', backgroundRepeat:'no-repeat', pointerEvents:'none' }} />}
+        {!embedded && <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(to bottom, rgba(8,8,8,0.45) 0%, rgba(8,8,8,0.15) 35%, rgba(8,8,8,0.9) 100%)', pointerEvents:'none' }} />}
 
-        {/* ── Sticky Header ── */}
-        <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px' }}>
+        {/* ── Sticky Header (standalone only) ── */}
+        {!embedded && <div style={{ position:'sticky', top:0, zIndex:50, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
             <button onClick={() => navigate('/dashboard')} className="ax-back"
               style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', transition:'background 0.2s', flexShrink:0 }}>
@@ -559,7 +559,7 @@ export default function Devotional() {
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* ── Body ── */}
         <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
@@ -676,7 +676,7 @@ export default function Devotional() {
 
       {showBible && <BibleReader onClose={() => setShowBible(false)} />}
 
-      <BottomNav />
+      {!embedded && <BottomNav />}
     </>
   )
 }

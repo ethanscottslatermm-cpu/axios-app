@@ -12,11 +12,11 @@ import Settings   from './pages/Settings'
 import Onboarding from './pages/Onboarding'
 import Widget     from './pages/Widget'
 import FoodJournal    from './modules/food/FoodJournal'
-import WaterTracker   from './modules/water/WaterTracker'
+// WaterTracker consolidated into FoodJournal tab
 import WeightTracker  from './modules/weight/WeightTracker'
 import FitnessTracker from './modules/fitness/FitnessTracker'
 import PrayerTracker  from './modules/prayer/PrayerTracker'
-import Devotional     from './modules/devotional/Devotional'
+// Devotional consolidated into PrayerTracker tab
 import FinanceTracker from './modules/finance/FinanceTracker'
 import CalendarModule from './modules/calendar/CalendarModule'
 import Admin       from './pages/Admin'
@@ -56,9 +56,7 @@ export default function App() {
                 <Route path="/food" element={
                   <ProtectedRoute><OnboardingRoute><FoodJournal /></OnboardingRoute></ProtectedRoute>
                 } />
-                <Route path="/water" element={
-                  <ProtectedRoute><OnboardingRoute><WaterTracker /></OnboardingRoute></ProtectedRoute>
-                } />
+                <Route path="/water" element={<Navigate to="/food" replace />} />
                 <Route path="/weight" element={
                   <ProtectedRoute><OnboardingRoute><WeightTracker /></OnboardingRoute></ProtectedRoute>
                 } />
@@ -68,9 +66,7 @@ export default function App() {
                 <Route path="/prayer" element={
                   <ProtectedRoute><OnboardingRoute><PrayerTracker /></OnboardingRoute></ProtectedRoute>
                 } />
-                <Route path="/devotional" element={
-                  <ProtectedRoute><OnboardingRoute><Devotional /></OnboardingRoute></ProtectedRoute>
-                } />
+                <Route path="/devotional" element={<Navigate to="/prayer" replace />} />
                 <Route path="/finance" element={
                   <ProtectedRoute><OnboardingRoute><FinanceGuard><FinanceTracker /></FinanceGuard></OnboardingRoute></ProtectedRoute>
                 } />

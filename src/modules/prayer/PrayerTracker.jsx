@@ -4,6 +4,7 @@ import { useHaptic } from '../../hooks/useHaptic'
 import { useNavigate } from 'react-router-dom'
 import { usePrayers } from '../../hooks/usePrayers'
 import { BottomNav } from '../../pages/Dashboard'
+import Devotional from '../devotional/Devotional'
 import { supabase } from '../../lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
 import DailyPrayer from './DailyPrayer'
@@ -251,8 +252,9 @@ export default function PrayerTracker() {
 
   const [visible,   setVisible]   = useState(false)
   const [showAdd,   setShowAdd]   = useState(false)
-  const [filter,    setFilter]    = useState('Today')    // All | Today | Answered | Unanswered
+  const [filter,    setFilter]    = useState('Today')
   const [catFilter, setCatFilter] = useState('All')
+  const [activeTab, setActiveTab] = useState('prayer')
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t) }, [])
 
@@ -328,6 +330,7 @@ export default function PrayerTracker() {
           </div>
 
           {/* Stat row */}
+          {activeTab === 'prayer' && (
           <div style={{ display:'flex', gap:10 }}>
             {[
               { label:'Today',    value: todayPrayers.length },
@@ -341,10 +344,36 @@ export default function PrayerTracker() {
               </div>
             ))}
           </div>
+          )}
+
+          {/* Tab switcher */}
+          <div style={{ display:'flex', gap:8, marginTop: activeTab === 'prayer' ? 12 : 0 }}>
+            {[['prayer','Prayer'],['devotional','Devotional']].map(([key, label]) => {
+              const isActive = activeTab === key
+              return (
+                <button key={key} onClick={() => setActiveTab(key)} className="ax-filter-tab"
+                  style={{
+                    flex:1, padding:'10px', borderRadius:10,
+                    border: isActive ? '1px solid rgba(200,160,0,0.55)' : '1px solid rgba(212,212,232,0.06)',
+                    background: isActive ? 'rgba(200,160,0,0.12)' : 'rgba(212,212,232,0.03)',
+                    color: isActive ? '#c8a000' : 'rgba(212,212,232,0.35)',
+                    boxShadow: isActive ? '0 0 12px rgba(200,160,0,0.18)' : 'none',
+                    fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
+                    fontWeight: isActive ? 700 : 400,
+                    cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
+                  }}>
+                  {label}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
-        {/* ── Body ── */}
-        <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
+        {/* ── Devotional Tab ── */}
+        {activeTab === 'devotional' && <Devotional embedded />}
+
+        {/* ── Prayer Body ── */}
+        <div style={{ padding:'16px', display: activeTab === 'prayer' ? 'flex' : 'none', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
           {/* ── Daily Prayer ── */}
           <DailyPrayer anim={anim} visible={visible} />
