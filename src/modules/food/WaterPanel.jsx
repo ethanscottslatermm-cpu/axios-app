@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useHaptic } from '../../hooks/useHaptic'
-import { useWaterLog, useWaterHistory } from '../../hooks/useWaterLog'
-import LineChart from '../../components/LineChart'
+import { useWaterLog } from '../../hooks/useWaterLog'
 
 const WATER_GOAL = 8
 const WATER_BLUE = '#9ab4cc'
@@ -160,12 +159,9 @@ const quickSizes = [
 export default function WaterPanel({ todayStr, visible }) {
   const haptic = useHaptic()
   const { logs, count, addGlass, removeGlass, isLoading: loading } = useWaterLog(todayStr)
-  const { history: waterHistory } = useWaterHistory()
 
-  const [showCustom,   setShowCustom]   = useState(false)
-  const [trendOpen,    setTrendOpen]    = useState(false)
-  const [pastDaysOpen, setPastDaysOpen] = useState(false)
-  const [logOpen,      setLogOpen]      = useState(false)
+  const [showCustom, setShowCustom] = useState(false)
+  const [logOpen,    setLogOpen]    = useState(false)
 
   const pct       = Math.min(100, Math.round((count / WATER_GOAL) * 100))
   const remaining = Math.max(0, WATER_GOAL - count)
@@ -283,46 +279,6 @@ export default function WaterPanel({ todayStr, visible }) {
               {Ico.plus(12)} Log first glass
             </button>
           </div>
-        )}
-
-        {/* 14-Day Trend */}
-        {waterHistory.length >= 2 && (
-          <Card style={anim(300)}>
-            <SectionHead title="14-Day Trend" sub="glasses / day" onToggle={() => setTrendOpen(o => !o)} collapsed={!trendOpen} />
-            {trendOpen && (
-              <LineChart
-                data={[...waterHistory].reverse().slice(-14).map(d => ({
-                  label: new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }),
-                  value: d.glasses,
-                }))}
-                height={90}
-              />
-            )}
-          </Card>
-        )}
-
-        {/* Past Days */}
-        {waterHistory.length > 0 && (
-          <Card style={anim(340)}>
-            <SectionHead title="Past Days" sub={`${waterHistory.length} days`} onToggle={() => setPastDaysOpen(o => !o)} collapsed={!pastDaysOpen} />
-            {pastDaysOpen && (
-              <div style={{ maxHeight: 320, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, paddingRight: 4 }}>
-                {waterHistory.map(day => (
-                  <div key={day.date} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', borderRadius: 10 }}>
-                    <div>
-                      <p style={{ color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600, marginBottom: 2 }}>
-                        {new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                      </p>
-                      <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>{day.glasses} glasses</p>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <p style={{ color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 700 }}>{day.oz} oz</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
         )}
 
       </div>
