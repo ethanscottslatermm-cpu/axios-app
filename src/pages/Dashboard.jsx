@@ -65,6 +65,19 @@ function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232
   )
 }
 
+function ringColor(rawPct, isCalories = false) {
+  if (isCalories) {
+    if (rawPct >= 100) return '#fca5a5'  // over goal
+    if (rawPct >= 85)  return '#fb923c'  // close to limit
+    if (rawPct >= 60)  return '#fbbf24'  // halfway there
+    return '#b8b0c8'                      // low usage
+  }
+  if (rawPct >= 100) return '#86efac'    // complete
+  if (rawPct >= 75)  return '#fbbf24'    // almost there
+  if (rawPct >= 40)  return '#9ab4cc'    // making progress
+  return '#b8b8cc'                        // just started
+}
+
 function CircleRing({ pct = 0, color = '#fff', size = 88, stroke = 5, children }) {
   const r = (size - stroke * 2) / 2
   const circ = 2 * Math.PI * r
@@ -75,7 +88,7 @@ function CircleRing({ pct = 0, color = '#fff', size = 88, stroke = 5, children }
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={`${color}18`} strokeWidth={stroke} />
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
           strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
-          style={{ transition:'stroke-dasharray 0.9s cubic-bezier(.16,1,.3,1)', filter:`drop-shadow(0 0 4px ${color}88)` }}
+          style={{ transition:'stroke-dasharray 0.9s cubic-bezier(.16,1,.3,1), stroke 0.6s ease', filter:`drop-shadow(0 0 4px ${color}88)` }}
         />
       </svg>
       <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
@@ -190,8 +203,10 @@ export default function Dashboard() {
 
   const displayName   = profile?.name || 'Ethan'
   const calories      = totals?.calories || 0
-  const calPct        = Math.min(100, Math.round((calories / CALORIE_GOAL) * 100))
-  const waterPct      = Math.min(100, Math.round((waterCount / WATER_GOAL) * 100))
+  const calRawPct     = Math.round((calories / CALORIE_GOAL) * 100)
+  const waterRawPct   = Math.round((waterCount / WATER_GOAL) * 100)
+  const calPct        = Math.min(100, calRawPct)
+  const waterPct      = Math.min(100, waterRawPct)
   const calLeft       = Math.max(0, CALORIE_GOAL - calories)
   const todayPrayers  = (prayers || []).filter(p => p.date === todayStr).length
   const answeredCount = (prayers || []).filter(p => p.answered).length
@@ -271,14 +286,16 @@ export default function Dashboard() {
 
           {/* 2×2 Stat Grid */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(60) }}>
-            {[
-              { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,      pct: calPct,  color:'#b8b0c8', path:'/food',    valSize:14 },
-              { label:'Water',    value:`${waterCount}/${WATER_GOAL}`,   sub:'glasses',                          pct: waterPct, color:'#9ab4cc', path:'/water',   valSize:17 },
-              { label:'Weight',   value: latest ? `${latest}` : '—',    sub: latest ? 'lb' : 'not logged',
-                pct: weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal/latest)*100)) : 0,
-                color:'#b8b8cc', path:'/fitness', valSize:17 },
-              { label:'Today',    value:`${loggedCount}/4`,              sub:'logged',                           pct: Math.round((loggedCount/4)*100), color:'#d8d8e8', valSize:17 },
-            ].map(({ label, value, sub, pct, color, path, valSize }) => (
+            {(() => {
+              const weightRawPct = weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal / latest) * 100)) : 0
+              const todayRawPct  = Math.round((loggedCount / 4) * 100)
+              return [
+                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,        color: ringColor(calRawPct, true),   path:'/food',    valSize:14 },
+                { label:'Water',    value:`${waterCount}/${WATER_GOAL}`, sub:'glasses',                        pct: waterPct,      color: ringColor(waterRawPct),       path:'/water',   valSize:17 },
+                { label:'Weight',   value: latest ? `${latest}` : '—',  sub: latest ? 'lb' : 'not logged',    pct: weightRawPct,  color: ringColor(weightRawPct),      path:'/fitness', valSize:17 },
+                { label:'Today',    value:`${loggedCount}/4`,            sub:'logged',                         pct: todayRawPct,   color: ringColor(todayRawPct),       valSize:17 },
+              ]
+            })().map(({ label, value, sub, pct, color, path, valSize }) => (
               <div key={label} onClick={path ? () => navigate(path) : undefined}
                 style={{ background:'var(--bg-card)', border:`1px solid ${color}33`, boxShadow:`var(--card-shadow), 0 0 12px ${color}11`, borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
                 <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>{label}</p>
