@@ -395,7 +395,7 @@ export default function Login() {
                 }}>AXIOS</span>
               </div>
               <p style={{ color: 'rgba(200,200,220,0.70)', fontSize: '0.6rem', letterSpacing: '0.42em', textTransform: 'uppercase', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
-                I Am Worthy
+                The Worthy
               </p>
             </div>
 
@@ -464,7 +464,7 @@ export default function Login() {
             </form>
 
             <p style={{ color: 'rgba(212,212,232,0.15)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '1.5rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
-              "Axios" — I am worthy
+              "Axios" — The Worthy
             </p>
           </div>
         )}

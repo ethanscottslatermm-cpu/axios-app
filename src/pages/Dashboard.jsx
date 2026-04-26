@@ -67,6 +67,26 @@ function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232
   )
 }
 
+function CircleRing({ pct = 0, color = '#fff', size = 88, stroke = 5, children }) {
+  const r = (size - stroke * 2) / 2
+  const circ = 2 * Math.PI * r
+  const dash = Math.max(0, Math.min(1, pct / 100)) * circ
+  return (
+    <div style={{ position:'relative', width:size, height:size, flexShrink:0 }}>
+      <svg width={size} height={size} style={{ transform:'rotate(-90deg)', display:'block' }}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={`${color}18`} strokeWidth={stroke} />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+          strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
+          style={{ transition:'stroke-dasharray 0.9s cubic-bezier(.16,1,.3,1)', filter:`drop-shadow(0 0 4px ${color}88)` }}
+        />
+      </svg>
+      <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+        {children}
+      </div>
+    </div>
+  )
+}
+
 function Card({ children, style={} }) {
   return (
     <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'18px 16px', ...style }}>
@@ -257,17 +277,21 @@ export default function Dashboard() {
           {/* 2×2 Stat Grid */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(60) }}>
             {[
-              { label:'Calories', value: calories.toLocaleString(), sub:`of ${CALORIE_GOAL.toLocaleString()} goal`, pct: calPct,  color:'#b8b0c8', path:'/food' },
-              { label:'Water',    value:`${waterCount} / ${WATER_GOAL}`, sub:'glasses today', pct: waterPct,                     color:'#9ab4cc', path:'/water' },
-              { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest && weightGoal ? `${Math.max(0,latest-weightGoal).toFixed(1)} lb from goal` : 'not logged', pct: null, color:'#b8b8cc', path:'/fitness' },
-              { label:'Today',    value:`${loggedCount} / 5`, sub:'modules logged', pct: Math.round((loggedCount/5)*100),        color:'#d8d8e8' },
-            ].map(({ label, value, sub, pct, color, path }) => (
-              <div key={label} onClick={path ? () => navigate(path) : undefined} style={{ background:'var(--bg-card)', border:`1px solid ${color}33`, boxShadow:`var(--card-shadow), 0 0 12px ${color}11`, borderRadius:14, padding:'14px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default' }}>
-                <div style={{ position:'absolute', top:0, right:0, width:50, height:50, background:`radial-gradient(circle at top right,${color}18,transparent 70%)`, pointerEvents:'none' }} />
-                <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
-                <p style={{ color, fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
-                <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginBottom: pct != null ? 10 : 0 }}>{sub}</p>
-                {pct != null && <GlowBar pct={pct} color={color} glow={`${color}66`} />}
+              { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,      pct: calPct,  color:'#b8b0c8', path:'/food',    valSize:14 },
+              { label:'Water',    value:`${waterCount}/${WATER_GOAL}`,   sub:'glasses',                          pct: waterPct, color:'#9ab4cc', path:'/water',   valSize:17 },
+              { label:'Weight',   value: latest ? `${latest}` : '—',    sub: latest ? 'lb' : 'not logged',
+                pct: weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal/latest)*100)) : 0,
+                color:'#b8b8cc', path:'/fitness', valSize:17 },
+              { label:'Today',    value:`${loggedCount}/5`,              sub:'logged',                           pct: Math.round((loggedCount/5)*100), color:'#d8d8e8', valSize:17 },
+            ].map(({ label, value, sub, pct, color, path, valSize }) => (
+              <div key={label} onClick={path ? () => navigate(path) : undefined}
+                style={{ background:'var(--bg-card)', border:`1px solid ${color}33`, boxShadow:`var(--card-shadow), 0 0 12px ${color}11`, borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>{label}</p>
+                <CircleRing pct={pct} color={color} size={84} stroke={5}>
+                  <p style={{ color, fontSize:valSize, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{value}</p>
+                  <p style={{ color:`${color}66`, fontSize:8, fontFamily:'Helvetica Neue,sans-serif', marginTop:2, textAlign:'center' }}>{Math.round(pct)}%</p>
+                </CircleRing>
+                <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center' }}>{sub}</p>
               </div>
             ))}
           </div>
