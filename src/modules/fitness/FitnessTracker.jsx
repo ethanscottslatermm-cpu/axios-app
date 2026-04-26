@@ -662,7 +662,7 @@ export default function FitnessTracker() {
     if (!workoutId) {
       const { data: newW } = await supabase
         .from('workouts')
-        .insert({ label: `${todayStr} Session`, type: 'Strength', user_id: user.id, workout_date: todayStr })
+        .insert({ label: 'Today\'s Session', type: 'Strength', user_id: user.id, workout_date: todayStr })
         .select().single()
       workoutId = newW.id
     }
@@ -676,6 +676,7 @@ export default function FitnessTracker() {
       muscle_group: muscleLabel || null,
     })
     await loadWorkouts()
+    setWorkoutHistOpen(true)
   }
 
   const handleSaveWeight = async ({ weight_lbs, note, date }) => {
@@ -750,25 +751,43 @@ export default function FitnessTracker() {
 
   // ── Muscle Readiness ──────────────────────────────────────────────────────
   const muscleReadiness = useMemo(() => {
-    const GROUPS = ['Chest','Back','Shoulders','Biceps','Triceps','Core','Quads','Hamstrings','Glutes','Calves']
-    const now = Date.now()
-    const lastTrained = {}
+    // Map display groups → all DB muscle_group labels that roll up to them
+    const GROUP_MAP = {
+      'Chest':      ['Chest'],
+      'Back':       ['Lats','Upper Back','Lower Back','Traps'],
+      'Shoulders':  ['Shoulders'],
+      'Biceps':     ['Biceps','Forearms'],
+      'Triceps':    ['Triceps'],
+      'Core':       ['Core','Obliques'],
+      'Quads':      ['Quads'],
+      'Hamstrings': ['Hamstrings'],
+      'Glutes':     ['Glutes'],
+      'Calves':     ['Calves'],
+    }
+    // Use calendar-date strings to avoid UTC-midnight timezone drift
+    const lastTrainedDate = {}
     ;(workouts||[]).forEach(w => {
-      const wDate = new Date(w.workout_date || w.created_at?.split('T')[0] || w.created_at).getTime()
+      const wDateStr = w.workout_date || w.created_at?.split('T')[0]
+      if (!wDateStr) return
       ;(w.exercises||[]).forEach(e => {
         if (!e.muscle_group) return
-        if (!lastTrained[e.muscle_group] || wDate > lastTrained[e.muscle_group]) lastTrained[e.muscle_group] = wDate
+        if (!lastTrainedDate[e.muscle_group] || wDateStr > lastTrainedDate[e.muscle_group])
+          lastTrainedDate[e.muscle_group] = wDateStr
       })
     })
-    return GROUPS.map(g => {
-      const last = lastTrained[g]
-      if (!last) return { group: g, status: 'fresh', hrs: null, label: 'Fresh' }
-      const hrs = (now - last) / 3_600_000
-      const status = hrs < 24 ? 'fatigued' : hrs < 48 ? 'recovering' : hrs < 72 ? 'ready' : 'fresh'
-      const label  = hrs < 24 ? 'Fatigued' : hrs < 48 ? 'Recovering' : hrs < 72 ? 'Ready' : 'Fresh'
-      return { group: g, status, hrs: Math.round(hrs), label }
+    const msPerDay = 86_400_000
+    const todayMs  = new Date(todayStr).getTime()
+    return Object.entries(GROUP_MAP).map(([group, labels]) => {
+      const best = labels.reduce((acc, lbl) => {
+        const d = lastTrainedDate[lbl]; return d && (!acc || d > acc) ? d : acc
+      }, null)
+      if (!best) return { group, status: 'fresh', days: null, label: 'Fresh' }
+      const days = Math.round((todayMs - new Date(best).getTime()) / msPerDay)
+      const status = days === 0 ? 'fatigued' : days === 1 ? 'recovering' : days <= 3 ? 'ready' : 'fresh'
+      const label  = days === 0 ? 'Fatigued'  : days === 1 ? 'Recovering'  : days <= 3 ? 'Ready'  : 'Fresh'
+      return { group, status, days, label }
     })
-  }, [workouts])
+  }, [workouts, todayStr])
 
   const anim = (d=0) => ({
     opacity: visible?1:0,
@@ -897,15 +916,16 @@ export default function FitnessTracker() {
               {/* ── Muscle Readiness ── */}
               <SectionHead title="Muscle Readiness" sub="Based on recent sessions" />
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:18 }}>
-                {muscleReadiness.map(({ group, status, hrs, label }) => {
+                {muscleReadiness.map(({ group, status, days, label }) => {
                   const clr = status === 'fatigued' ? '#f87171' : status === 'recovering' ? '#f59e0b' : status === 'ready' ? '#10b981' : '#60a5fa'
                   const bg  = status === 'fatigued' ? 'rgba(248,113,113,0.07)' : status === 'recovering' ? 'rgba(245,158,11,0.07)' : status === 'ready' ? 'rgba(16,185,129,0.07)' : 'rgba(96,165,250,0.05)'
                   const br  = status === 'fatigued' ? 'rgba(248,113,113,0.22)' : status === 'recovering' ? 'rgba(245,158,11,0.22)' : status === 'ready' ? 'rgba(16,185,129,0.22)' : 'rgba(96,165,250,0.15)'
+                  const sub = days === null ? 'Not trained' : days === 0 ? 'Trained today' : days === 1 ? 'Yesterday' : `${days}d ago`
                   return (
                     <div key={group} style={{ background:bg, border:`1px solid ${br}`, borderRadius:12, padding:'11px 13px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                       <div>
                         <p style={{ color:'rgba(212,212,232,0.75)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{group}</p>
-                        <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>{hrs !== null ? `${hrs}h ago` : 'Not trained'}</p>
+                        <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
                       </div>
                       <span style={{ color:clr, fontSize:9, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', background:`${bg}`, border:`1px solid ${br}`, borderRadius:6, padding:'3px 7px' }}>{label}</span>
                     </div>
