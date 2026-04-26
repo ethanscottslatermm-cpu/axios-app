@@ -994,14 +994,23 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
 
 // ─── Exercise Card ────────────────────────────────────────────────────────────
 function ExerciseCard({ ex }) {
+  const [open, setOpen] = useState(false)
   const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(ex.yt)}`
   return (
     <div style={{
       background:'var(--bg-card)', border:'1px solid var(--border)',
-      borderRadius:12, padding:'13px 14px 11px',
-      display:'flex', flexDirection:'column', gap:7,
+      borderRadius:12, overflow:'hidden',
     }}>
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:10 }}>
+      {/* Always-visible header — tap to toggle */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width:'100%', display:'flex', alignItems:'center',
+          justifyContent:'space-between', gap:10,
+          padding:'13px 14px 11px', background:'transparent', border:'none',
+          cursor:'pointer', textAlign:'left',
+        }}
+      >
         <div style={{ flex:1 }}>
           <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{ex.name}</p>
           <div style={{ display:'flex', gap:6 }}>
@@ -1009,22 +1018,41 @@ function ExerciseCard({ ex }) {
             <span style={{ color:'#b4bccc', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, background:'rgba(180,188,204,0.1)', padding:'2px 7px', borderRadius:5 }}>{ex.sets}</span>
           </div>
         </div>
-        <a href={ytUrl} target="_blank" rel="noopener noreferrer"
-          style={{
-            display:'flex', alignItems:'center', gap:5, flexShrink:0,
-            padding:'7px 11px', borderRadius:8,
-            background:'rgba(239,68,68,0.12)', border:'1px solid rgba(239,68,68,0.3)',
-            color:'#ef4444', fontSize:10, fontWeight:700,
-            fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em',
-            textDecoration:'none',
-          }}
-          onClick={e => e.stopPropagation()}>
-          <svg width={12} height={12} viewBox="0 0 24 24" fill="#ef4444">
-            <path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/>
-            <polygon fill="white" points="10,8.5 16,12 10,15.5"/>
-          </svg>
-          Watch
-        </a>
+        {/* Chevron — rotates 180° when open */}
+        <svg
+          width={14} height={14} viewBox="0 0 24 24" fill="none"
+          stroke="rgba(212,212,232,0.4)" strokeWidth="2.5"
+          strokeLinecap="round" strokeLinejoin="round"
+          style={{ flexShrink:0, transition:'transform 250ms ease-in-out', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        >
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+
+      {/* Collapsible detail — hidden by default */}
+      <div style={{
+        overflow:'hidden',
+        maxHeight: open ? 72 : 0,
+        transition:'max-height 250ms ease-in-out',
+      }}>
+        <div style={{ padding:'0 14px 12px', display:'flex', justifyContent:'flex-end' }}>
+          <a href={ytUrl} target="_blank" rel="noopener noreferrer"
+            style={{
+              display:'flex', alignItems:'center', gap:5,
+              padding:'7px 11px', borderRadius:8,
+              background:'rgba(239,68,68,0.12)', border:'1px solid rgba(239,68,68,0.3)',
+              color:'#ef4444', fontSize:10, fontWeight:700,
+              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em',
+              textDecoration:'none',
+            }}
+            onClick={e => e.stopPropagation()}>
+            <svg width={12} height={12} viewBox="0 0 24 24" fill="#ef4444">
+              <path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/>
+              <polygon fill="white" points="10,8.5 16,12 10,15.5"/>
+            </svg>
+            Watch
+          </a>
+        </div>
       </div>
     </div>
   )
