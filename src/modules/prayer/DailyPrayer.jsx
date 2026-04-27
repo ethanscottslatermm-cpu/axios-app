@@ -1,154 +1,154 @@
-// Daily prayer card — cycles through 30 prayers seeded by calendar day
-const PRAYERS = [
+// Daily reflection card — cycles through 30 entries seeded by calendar day
+const REFLECTIONS = [
   {
-    theme: 'Morning',
-    scripture: 'Psalm 143:8',
-    text: `Lord, before the noise of the day fills my mind, let Your peace fill me first. I do not know what today holds. You do. Guide my steps, guard my words, and remind me — when I forget — that I am not walking this alone. Let my first thought today be of You.`,
-  },
-  {
-    theme: 'Strength',
-    scripture: 'Isaiah 40:31',
-    text: `Father, I am tired in ways I cannot always explain. Renew me today. Not just physically — renew my resolve, my faith, the quiet conviction that what I am doing matters. When I want to stop, be the reason I continue. I wait on You.`,
-  },
-  {
-    theme: 'Gratitude',
-    scripture: '1 Thessalonians 5:18',
-    text: `God, I am grateful. For breath. For the people in my life who stay. For small mercies I have taken for granted. Teach me to hold what I have with open hands — generous, present, aware. Not everything will last. Help me love it while it does.`,
-  },
-  {
-    theme: 'Peace',
-    scripture: 'Philippians 4:7',
-    text: `Lord, quiet the anxious thoughts today. The ones that spiral before I sleep and the ones that meet me before I rise. You have said Your peace surpasses understanding — I am asking for exactly that. Not explanation. Not control. Just peace that doesn't make sense and doesn't need to.`,
-  },
-  {
-    theme: 'Wisdom',
-    scripture: 'James 1:5',
-    text: `Father, I face decisions today I am not sure I am equipped to make. Give me wisdom — not cleverness, not strategy, but wisdom rooted in what is right and true. Let me be slow to speak, slow to react, and quick to listen for You.`,
-  },
-  {
-    theme: 'Healing',
-    scripture: 'Psalm 147:3',
-    text: `Lord, You heal what doctors cannot reach and mend what time alone cannot fix. I bring to You what is broken in me today — the grief I've been carrying, the wounds I keep reopening. I am not asking for the absence of pain. I am asking for Your presence inside it.`,
-  },
-  {
-    theme: 'Purpose',
-    scripture: 'Jeremiah 29:11',
-    text: `God, remind me today that my life is not an accident. That the story You are writing through my days has meaning — even in the chapters I would not have chosen. Use what I have. Use where I am. I am available.`,
-  },
-  {
-    theme: 'Courage',
-    scripture: 'Joshua 1:9',
-    text: `Father, I need courage today — not the absence of fear, but the willingness to move through it. The conversation I've been avoiding. The step I've been delaying. The truth I need to speak. You go before me. Let me remember that.`,
-  },
-  {
-    theme: 'Humility',
-    scripture: 'Micah 6:8',
-    text: `Lord, keep my pride in check today. When I am tempted to make things about myself — my image, my recognition, my comfort — redirect me. There is freedom in smallness, in serving without credit, in doing good that no one sees but You.`,
-  },
-  {
-    theme: 'Family',
-    scripture: 'Psalm 127:3',
-    text: `God, I pray for the people I love most. The ones who know me fully and stay anyway. Protect them. Strengthen what holds us together. Where there is distance — heal it. Where there is hurt — give us both the grace to bridge it. Let my home be a place of peace.`,
-  },
-  {
-    theme: 'Focus',
-    scripture: 'Colossians 3:2',
-    text: `Father, there is so much competing for my attention today. Help me filter noise from signal, urgent from important. Fix my mind on what is true, what is honorable, what actually matters. Don't let me spend a whole day on things that mean nothing.`,
-  },
-  {
-    theme: 'Forgiveness',
-    scripture: 'Ephesians 4:32',
-    text: `Lord, is there someone I need to release today? I lay down the grievance I've been rehearsing. Not because they were right. Not because it didn't hurt. But because carrying it costs me more than releasing it. Forgive me as I choose to forgive. Free me.`,
-  },
-  {
-    theme: 'Faith',
-    scripture: 'Hebrews 11:1',
-    text: `God, grow my faith today. Not the kind that only rises in easy seasons — the kind that holds in the dark, the kind that trusts Your goodness even when I cannot see the outcome. You have been faithful before. You will be again. Help me believe that.`,
-  },
-  {
-    theme: 'Provision',
-    scripture: 'Matthew 6:33',
-    text: `Father, I bring my needs to You honestly. The financial pressure. The uncertainty I wake up with. You have said You know what I need before I ask. I am asking anyway — not because You forgot, but because I need the act of trusting You with it. Provide in Your way, Your timing.`,
-  },
-  {
-    theme: 'Discipline',
-    scripture: 'Proverbs 25:28',
-    text: `Lord, help me govern myself today. My words before I speak them. My reactions before they leave me. My time before I waste it. Self-control is a fruit of Your Spirit — I cannot manufacture it. Produce it in me. Let me become someone I am proud to be.`,
+    theme: 'Stillness',
+    scripture: 'Psalm 46:10',
+    text: `Before the day layers itself with noise and obligation, take one deliberate breath. Not everything that demands your attention today deserves it. Some of the most important things you'll do today will look like doing nothing at all.`,
   },
   {
     theme: 'Perspective',
     scripture: '2 Corinthians 4:17',
-    text: `God, put today in eternal context for me. What feels enormous from the inside of it may look very small from the outside of it. Help me grieve real losses without losing hope. Help me celebrate small wins without losing humility. Give me the long view.`,
+    text: `Whatever feels heavy right now has a weight to it that is real but not final. Trouble that is temporary is still trouble — but it is worth something on the other side. Hold today loosely, and let the larger story speak louder than the present one.`,
   },
   {
-    theme: 'Service',
-    scripture: 'Mark 10:45',
-    text: `Father, who can I serve today? Not in a way that earns recognition — in a way that quietly, genuinely helps. Open my eyes to the person right in front of me who needs something I can give. Let me be useful in someone's day.`,
+    theme: 'Purpose',
+    scripture: 'Jeremiah 29:11',
+    text: `You are not behind. The life you have is not the lesser version of some ideal you missed. You are exactly in the middle of a story that is still being written — and the Author has not lost the thread.`,
   },
   {
-    theme: 'Anxiety',
-    scripture: '1 Peter 5:7',
-    text: `Lord, I cast this anxiety on You — not because it isn't real, but because You said to. The what-ifs are loud today. Remind me that You are in every outcome I fear. There is no version of tomorrow that surprises You or falls outside Your reach.`,
+    theme: 'Gratitude',
+    scripture: '1 Thessalonians 5:18',
+    text: `Make a short list today — three things that exist in your life that you did not earn and could not have arranged on your own. Gratitude is not naïve. It is a disciplined refusal to let what is hard erase what is good.`,
   },
   {
-    theme: 'Integrity',
-    scripture: 'Proverbs 11:3',
-    text: `God, make me a person whose private life matches my public one. Who says what they mean. Who keeps commitments even when it costs something. I want my character to be something I've built carefully, not just claimed. Search me. Refine me where I need it.`,
+    theme: 'Courage',
+    scripture: 'Joshua 1:9',
+    text: `There is one thing you've been circling. You know what it is. Courage is not the absence of fear — it is movement in spite of it. Do one thing today that the lesser version of you would have talked yourself out of.`,
+  },
+  {
+    theme: 'Identity',
+    scripture: 'Psalm 139:14',
+    text: `How you see yourself shapes everything downstream — what you attempt, what you accept, how you treat others. You are not your worst week, your most persistent failure, or the label someone else gave you. You are more than the story fear tells about you.`,
   },
   {
     theme: 'Rest',
     scripture: 'Matthew 11:28',
-    text: `Father, I am worn. Not just tired — soul tired. You invite me to come as I am and find rest. I accept. I stop striving for a moment. I let the weight down. Restore what has been depleted. You made rest. You made it good. Let me receive it.`,
+    text: `Rest is not a reward for finishing — it is a rhythm that makes finishing sustainable. If you have been running past empty, today is permission to stop. Not everything worth doing must be done today.`,
+  },
+  {
+    theme: 'Patience',
+    scripture: 'Romans 5:3–4',
+    text: `Not all growth is visible while it's happening. Some of the most important work in a person's life happens underground, in a season that looks like delay. What is forming in you right now may be the most valuable thing about this chapter.`,
+  },
+  {
+    theme: 'Words',
+    scripture: 'Proverbs 18:21',
+    text: `Consider what you've said recently — and what you've left unsaid. Words that need to be spoken rarely become easier with more time. And words that should have been withheld rarely disappear on their own. Choose carefully today.`,
+  },
+  {
+    theme: 'Focus',
+    scripture: 'Colossians 3:2',
+    text: `Your attention is the most finite resource you have. It is also the most hunted. What you consume, scroll through, and dwell on becomes the lens through which you see everything else. Protect it accordingly.`,
+  },
+  {
+    theme: 'Integrity',
+    scripture: 'Proverbs 11:3',
+    text: `Character is what you do when no one is watching — not because no one matters, but because the habit of consistency doesn't know how to be selective. Who you are privately is who you become publicly. Build carefully in the quiet.`,
+  },
+  {
+    theme: 'Community',
+    scripture: 'Hebrews 10:24–25',
+    text: `You were not designed to carry everything alone. The people around you are not interruptions to your growth — they often are your growth. Who in your life deserves more of your time than you've been giving them?`,
+  },
+  {
+    theme: 'Contentment',
+    scripture: 'Philippians 4:11',
+    text: `Wanting more is not wrong. But wanting more before you've been fully present in what you already have is a kind of poverty disguised as ambition. Contentment is not a ceiling — it is a foundation.`,
+  },
+  {
+    theme: 'Change',
+    scripture: 'Romans 12:2',
+    text: `Growth is not about adding habits to an unchanged self. The real transformation happens when old thinking is replaced, not just supplemented. What belief have you been carrying that no longer serves who you are becoming?`,
+  },
+  {
+    theme: 'Service',
+    scripture: 'Mark 10:43',
+    text: `There is a kind of significance that comes from achievement, and a different kind that comes from contribution. The second kind lasts longer and costs more. Look for someone today whose burden you can quietly lighten.`,
+  },
+  {
+    theme: 'Faith',
+    scripture: 'Hebrews 11:1',
+    text: `Faith is not certainty — it is confidence directed at what you cannot fully prove. If you are waiting for more certainty before you act, you may be waiting for something that by design was never meant to arrive first.`,
+  },
+  {
+    theme: 'Forgiveness',
+    scripture: 'Ephesians 4:31–32',
+    text: `Unforgiveness is not a punishment you give to someone else — it is a weight you carry for them. Whatever you've been holding, consider that releasing it may cost you far less than keeping it has.`,
+  },
+  {
+    theme: 'Discipline',
+    scripture: 'Galatians 6:9',
+    text: `The days when you feel least like doing the right thing are exactly the days when doing the right thing matters most. Discipline is keeping your future self in the room when your present self wants to quit.`,
+  },
+  {
+    theme: 'Anxiety',
+    scripture: '1 Peter 5:7',
+    text: `What are you carrying that was never yours to carry? Anxiety often attaches itself to outcomes genuinely outside your control. Name what is yours to do — then do it. Let the rest go.`,
+  },
+  {
+    theme: 'Presence',
+    scripture: 'Psalm 16:11',
+    text: `The present moment is the only one available for living. The past is a place to learn from, not a place to live in. The future is something to prepare for, not to fear. Where you are right now is where your life is actually happening.`,
+  },
+  {
+    theme: 'Honesty',
+    scripture: 'John 8:32',
+    text: `There is something liberating about saying the true thing — even when it is uncomfortable, even when it costs something. Honesty, practiced consistently, is one of the most freeing disciplines you can build into your life.`,
   },
   {
     theme: 'Loss',
     scripture: 'Psalm 34:18',
-    text: `Lord, You are near to the brokenhearted. I need that nearness today. The grief doesn't leave just because I don't talk about it. I bring it to You — the ache, the absence, the questions without answers. Sit with me in this. That is enough.`,
+    text: `Some seasons are not about building — they are about surviving without losing yourself in the process. If today is one of those days, that is enough. Getting through something intact is its own kind of strength.`,
   },
   {
-    theme: 'Work',
-    scripture: 'Colossians 3:23',
-    text: `God, let me work today as if it matters — because it does. Not for applause or advancement, but out of faithfulness. Let excellence be a form of worship. Where I feel overlooked, remind me You see every effort made in quiet. Nothing is wasted that is done for You.`,
+    theme: 'Generosity',
+    scripture: 'Luke 6:38',
+    text: `What you give does not diminish you. Generosity operates by a different mathematics than scarcity suggests. The most giving people you know are rarely the emptiest — there is something about open hands that tends to be filled.`,
   },
   {
-    theme: 'Relationships',
-    scripture: 'Romans 12:10',
-    text: `Father, I want to be someone who people feel seen by. Who listens more than speaks. Who is present — not performing presence while thinking about something else. Teach me how to love the people in my life with patience, honesty, and care.`,
+    theme: 'Wonder',
+    scripture: 'Psalm 8:3–4',
+    text: `Pay attention to something beautiful today. Not as a productivity strategy — just because beauty still exists, because you still have eyes to see it, and because that is worth something no metric captures.`,
   },
   {
-    theme: 'Dependence',
-    scripture: 'John 15:5',
-    text: `Lord, I cannot do this on my own. I have tried — it shows. The fruit I want to bear does not grow from effort alone. It grows from You. Keep me close today. Let every good thing in me trace its roots back to Your grace, not my performance.`,
+    theme: 'Humility',
+    scripture: 'Micah 6:8',
+    text: `You are not the main character of every story you're in. Some of the wisest things you'll do today will be listening longer, speaking later, and crediting others more freely than your instincts suggest. Strength lives in that.`,
   },
   {
-    theme: 'Evening',
-    scripture: 'Psalm 4:8',
-    text: `God, the day is behind me. Some of it I am proud of. Some of it I'd take back. Cover it all in grace. I do not have to carry tomorrow tonight. Let me sleep in the knowledge that Your mercy is new in the morning and that nothing I did today puts me outside Your reach.`,
+    theme: 'Hope',
+    scripture: 'Romans 15:13',
+    text: `Hope is not wishful thinking — it is the choice to believe that what is good can still arrive, that what is broken can still be mended, that the end of this chapter is not the end of the story.`,
+  },
+  {
+    theme: 'Enough',
+    scripture: '2 Corinthians 12:9',
+    text: `You do not need to have it all together to be useful today. The most powerful thing you can bring into most situations is not your strength — it is your honesty about where your strength ends and your dependence begins.`,
   },
   {
     theme: 'Renewal',
-    scripture: 'Romans 12:2',
-    text: `Father, transform the way I think. There are patterns in my mind — old reactions, reflexive fears, worn assumptions — that I want renewed. Do not conform me to what is comfortable. Conform me to what is true. Change me from the inside.`,
+    scripture: 'Isaiah 43:19',
+    text: `Something new is always possible. Not by ignoring what has happened, but by refusing to let it be the only thing allowed to define what comes next. You are not finished. This is not your final form.`,
   },
   {
-    theme: 'Joy',
-    scripture: 'Nehemiah 8:10',
-    text: `Lord, where joy has been absent, let it return. Not manufactured cheerfulness — deep, settled joy that is not shaken by circumstances. The kind that runs alongside sorrow without canceling it. Your joy is my strength. Let me know it today.`,
-  },
-  {
-    theme: 'Obedience',
-    scripture: '1 Samuel 15:22',
-    text: `God, is there something You have asked of me that I have been slow to do? Show me clearly. I want to be someone who moves when You speak — not because I understand the full plan, but because I trust the One giving the instruction. Here I am.`,
-  },
-  {
-    theme: 'Protection',
-    scripture: 'Psalm 91:11',
-    text: `Father, go before me and behind me today. Guard my mind against what would corrupt it, my heart against what would harden it, my soul against what would diminish it. I am not unaware of the battles that are fought invisibly. Cover me.`,
+    theme: 'Investment',
+    scripture: 'Matthew 6:21',
+    text: `Where you spend your time, money, and attention tells a more accurate story about what you value than what you say you value. Look at your last week honestly — and ask if the story it tells is the one you want to be writing.`,
   },
   {
     theme: 'Surrender',
     scripture: 'Proverbs 3:5–6',
-    text: `Lord, I give You my agenda. My timeline. My preferred outcome. I hold them loosely because I know my plans and Your purposes are not always the same — and Yours are better. I surrender control of what I was never meant to carry. Lead me.`,
+    text: `Some things will not make sense until later. Some may never fully make sense. The willingness to move forward without complete understanding is not weakness — it is the practical expression of trust in something larger than your own comprehension.`,
   },
 ]
 
@@ -159,29 +159,29 @@ function dayOfYear() {
 }
 
 export default function DailyPrayer({ anim = () => ({}), visible }) {
-  const prayer = PRAYERS[dayOfYear() % PRAYERS.length]
-  const today  = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
+  const reflection = REFLECTIONS[dayOfYear() % REFLECTIONS.length]
+  const today = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
 
   return (
     <div style={{
       background:   'var(--stat-bg)',
-      border:       '1px solid var(--accent-prayer)',
+      border:       '1px solid var(--accent-prayer, rgba(212,212,232,0.18))',
       borderRadius:  16,
       padding:      '22px 20px 20px',
       position:     'relative',
       overflow:     'hidden',
-      boxShadow:    '0 0 18px color-mix(in srgb, var(--accent-prayer) 10%, transparent)',
+      boxShadow:    '0 0 18px color-mix(in srgb, var(--accent-prayer, rgba(212,212,232,0.12)) 10%, transparent)',
       ...anim(30),
     }}>
       {/* Accent glow top-right */}
-      <div style={{ position:'absolute', top:-30, right:-30, width:120, height:120, background:'radial-gradient(circle, var(--accent-prayer), transparent 70%)', opacity:0.08, pointerEvents:'none' }} />
+      <div style={{ position:'absolute', top:-30, right:-30, width:120, height:120, background:'radial-gradient(circle, var(--accent-prayer, rgba(212,212,232,0.15)), transparent 70%)', opacity:0.12, pointerEvents:'none' }} />
 
       {/* Header row */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
         <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-          <div style={{ width:2, height:14, background:`linear-gradient(to bottom,var(--accent-prayer),transparent)`, borderRadius:2, boxShadow:`0 0 8px var(--accent-prayer)` }} />
-          <span style={{ color:'var(--accent-prayer)', fontSize:9, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>
-            Daily Prayer
+          <div style={{ width:2, height:14, background:`linear-gradient(to bottom,var(--accent-prayer,rgba(212,212,232,0.5)),transparent)`, borderRadius:2 }} />
+          <span style={{ color:'var(--accent-prayer, rgba(212,212,232,0.6))', fontSize:9, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>
+            Daily Reflection
           </span>
         </div>
         <span style={{ color:'var(--text-faint)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>
@@ -194,8 +194,8 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
         <span style={{
           display:       'inline-block',
           background:    'var(--badge-bg)',
-          border:        '1px solid var(--accent-prayer)',
-          color:         'var(--accent-prayer)',
+          border:        '1px solid var(--accent-prayer, rgba(212,212,232,0.2))',
+          color:         'var(--accent-prayer, rgba(212,212,232,0.6))',
           fontSize:       8,
           fontWeight:     700,
           letterSpacing: '0.2em',
@@ -205,11 +205,11 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
           borderRadius:   99,
           opacity:        0.85,
         }}>
-          {prayer.theme}
+          {reflection.theme}
         </span>
       </div>
 
-      {/* Prayer text */}
+      {/* Reflection text */}
       <p style={{
         color:       'var(--text-primary)',
         fontSize:     16,
@@ -220,21 +220,21 @@ export default function DailyPrayer({ anim = () => ({}), visible }) {
         letterSpacing:'0.01em',
         opacity:      0.88,
       }}>
-        {prayer.text}
+        {reflection.text}
       </p>
 
       {/* Scripture reference */}
-      {prayer.scripture && (
+      {reflection.scripture && (
         <p style={{
-          color:        'var(--accent-prayer)',
+          color:        'var(--accent-prayer, rgba(212,212,232,0.45))',
           fontSize:      10,
           fontFamily:   'Helvetica Neue, sans-serif',
           letterSpacing:'0.14em',
           textTransform:'uppercase',
           fontWeight:    600,
-          opacity:       0.6,
+          opacity:       0.7,
         }}>
-          — {prayer.scripture}
+          — {reflection.scripture}
         </p>
       )}
     </div>

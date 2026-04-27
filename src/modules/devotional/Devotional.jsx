@@ -37,6 +37,48 @@ function getDailyRefFromPool(pool) {
   return pool[day % pool.length]
 }
 
+// ── Daily Devotional Pool ─────────────────────────────────────────────────────
+const DAILY_DEVOTIONALS = [
+  { type:'scripture', ref:'Matthew 5:8',         verse:'"Blessed are the pure in heart, for they shall see God."',                                                                            note:'Purity of heart is not about perfection — it is about undivided intention. Ask yourself today: what is my heart actually reaching toward?' },
+  { type:'study',     focus:'The Psalms of Ascent', tip:'Read Psalms 120–134 slowly — these were songs sung by pilgrims walking to Jerusalem. Notice how each moves from distress to trust. What is your pilgrimage right now?' },
+  { type:'prayer',    theme:'Morning Surrender',  text:'Father, before this day fills my hands, let it first fill my heart. I give You what I am planning, what I am dreading, and what I cannot predict. Let Your will be the axis everything else turns around. Amen.' },
+  { type:'scripture', ref:'Lamentations 3:22–23', verse:'"The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning."',                        note:'Today is a new day — not a continuation of your worst one. Mercies that are new every morning are not rationed. They are renewed.' },
+  { type:'study',     focus:'Job 38–39',          tip:'Read God\'s answer to Job from the storm. Notice what God asks, not what He explains. Sometimes the answer to suffering is not a reason but a revelation of who is holding the universe.' },
+  { type:'prayer',    theme:'Gratitude',          text:'Lord, I name three things I have received that I did not earn: this breath, the people who have stayed, and the certainty that I am not alone. Teach me to hold what You have given with open and grateful hands.' },
+  { type:'scripture', ref:'Romans 8:1',           verse:'"There is now no condemnation for those who are in Christ Jesus."',                                                                  note:'That word "now" matters. Not "soon" or "eventually." Condemnation has no legal standing on your life today. You are free to move.' },
+  { type:'study',     focus:'The Sermon on the Mount', tip:'Read Matthew 5–7 in one sitting. Identify one teaching you find most difficult. Sit with the discomfort — the parts of Scripture that challenge us reveal where we most need to grow.' },
+  { type:'prayer',    theme:'For Others',         text:'God, bring to mind someone who needs more grace than I have been extending. Give me eyes to see past behavior to the person beneath it. Let me be someone worth being trusted.' },
+  { type:'scripture', ref:'Isaiah 30:21',         verse:'"Whether you turn to the right or to the left, your ears will hear a voice saying, \'This is the way; walk in it.\'"',              note:'Guidance does not always come as a clear map ahead. Often it comes as a quiet confirmation behind you. Have you been listening?' },
+  { type:'study',     focus:'Philippians',        tip:'Read Philippians in one sitting. Paul wrote it from prison, yet "joy" appears 16 times. Ask: what is the source of joy that does not depend on circumstances?' },
+  { type:'prayer',    theme:'Confession',         text:'Lord, there are things I have done and left undone that I would undo if I could. I bring them honestly — not to bargain but to release. You know all of it already. Thank You for grace that is not surprised by any of it.' },
+  { type:'scripture', ref:'Proverbs 4:23',        verse:'"Above all else, guard your heart, for everything you do flows from it."',                                                           note:'The heart is not just where feelings live — it is the source of direction. What you protect and expose your heart to shapes the entire trajectory of your life.' },
+  { type:'study',     focus:'The Gospel of Mark', tip:'Read one chapter of Mark today. Notice how often Jesus heals someone and tells them not to tell anyone. Why was Jesus so deliberate about not letting His identity be reduced to spectacle?' },
+  { type:'prayer',    theme:'Wisdom',             text:'Father, I face things today that require more discernment than I naturally carry. Give me wisdom rooted in what is true and good — not just clever reasoning. Slow me down before I speak.' },
+  { type:'scripture', ref:'John 10:10',           verse:'"I have come that they may have life, and have it to the full."',                                                                    note:'Full life is not volume of activity — it is depth of meaning. Are you living fully or just living fast? The two are not the same.' },
+  { type:'study',     focus:'Genesis 1–2',        tip:'Read the creation account and notice the rhythm: work, rest, order from chaos, things declared "good." Where in your own life might you bring more of that deliberate rhythm?' },
+  { type:'prayer',    theme:'Peace',              text:'Lord, I ask for peace that does not depend on every problem being solved before it arrives. The peace You promise passes understanding — I accept that I may not understand it, only receive it.' },
+  { type:'scripture', ref:'Micah 6:8',            verse:'"What does the Lord require of you? To act justly and to love mercy and to walk humbly with your God."',                            note:'Three things. Not thirty. Act, love, walk. Pick one to carry intentionally today.' },
+  { type:'study',     focus:'The Lord\'s Prayer', tip:'Read Matthew 6:9–13 phrase by phrase. Each line is a complete prayer on its own. Choose one phrase and spend five minutes thinking about what it would mean to actually live it this week.' },
+  { type:'prayer',    theme:'Evening',            text:'God, the day is closing. Some of it I\'d keep; some I\'d change. Cover it all in grace. I release tomorrow before it demands anything of me tonight. Let me rest in the knowledge that Your faithfulness does not stop when I do.' },
+  { type:'scripture', ref:'1 Kings 19:12',        verse:'"And after the fire the sound of a low whisper."',                                                                                   note:'The most profound things God says often come in the quiet — not in the dramatic. Are you creating any space today for the whisper to reach you?' },
+  { type:'study',     focus:'The Book of Ruth',   tip:'Read Ruth in a single sitting — four chapters. Notice how loyalty, loss, and redemption weave together without a single miracle. God\'s faithfulness is often visible only in hindsight.' },
+  { type:'prayer',    theme:'Provision',          text:'Father, I name my needs honestly today — not because You have forgotten them, but because I need the act of trusting You with them. Provide in ways that build my faith and not just my comfort.' },
+  { type:'scripture', ref:'Psalm 37:4',           verse:'"Delight yourself in the Lord, and he will give you the desires of your heart."',                                                    note:'The key word is "delight" — not demand. As we genuinely delight in who God is, our desires themselves are transformed into alignment with His.' },
+  { type:'study',     focus:'The Beatitudes',     tip:'Read Matthew 5:3–12 and flip each quality against the culture you live in. "Blessed are the poor in spirit" inverts "blessed are the confident and self-sufficient." What does that inversion reveal?' },
+  { type:'prayer',    theme:'Strength',           text:'Lord, I am worn in places I do not always show. Renew me — not just physically, but in the conviction that what I am doing matters and that You are with me in all of it.' },
+  { type:'scripture', ref:'Romans 12:12',         verse:'"Be joyful in hope, patient in affliction, faithful in prayer."',                                                                    note:'Three disciplines for hard seasons — none of which require the hard season to be over first. Joy, patience, and faithfulness are practices. Available now, in this.' },
+  { type:'study',     focus:'Ecclesiastes 1–2',  tip:'The Preacher explores meaning through pleasure, work, and wisdom — and finds each hollow alone. What are you building your sense of meaning on, and what happens when that thing is absent?' },
+  { type:'prayer',    theme:'Boldness',           text:'God, there is something You\'ve placed in me that I have been small about. Give me the courage to use what You\'ve given without apology — not for recognition, but because holding back what You built for use is its own unfaithfulness.' },
+]
+
+function getDailyDevotional() {
+  const now   = new Date()
+  const start = Date.UTC(now.getFullYear(), 0, 0)
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+  const day   = Math.round((today - start) / (1000 * 60 * 60 * 24))
+  return DAILY_DEVOTIONALS[day % DAILY_DEVOTIONALS.length]
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function SectionHead({ title, sub, onToggle, collapsed }) {
   return (
@@ -600,16 +642,52 @@ export default function Devotional({ embedded = false }) {
           {/* Journal section */}
           {!today ? (
             <div style={anim(200)}>
-              <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.1)', borderRadius:14, padding:'32px 20px', textAlign:'center', marginBottom:0 }}>
-                <div style={{ color:'rgba(212,212,232,0.15)', marginBottom:14, display:'flex', justifyContent:'center' }}>{Ico.book(30)}</div>
-                <p style={{ color:'var(--text-muted)', fontSize:15, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:20 }}>
-                  Reflect on today's scripture.<br/>Write what it means to you.
-                </p>
-                <button onClick={() => setShowJournal(true)} className="ax-journal-btn"
-                  style={{ padding:'13px 28px', background:'rgba(168,180,192,0.15)', color:'#a8b4c0', border:'1px solid rgba(168,180,192,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:7, boxShadow:'0 0 14px rgba(168,180,192,0.1)' }}>
-                  {Ico.edit()} Write Reflection
-                </button>
-              </div>
+              {(() => {
+                const d = getDailyDevotional()
+                return (
+                  <div style={{ background:'rgba(168,180,192,0.05)', border:'1px solid rgba(168,180,192,0.14)', borderRadius:14, padding:'20px 18px', position:'relative', overflow:'hidden' }}>
+                    <div style={{ position:'absolute', top:-20, right:-20, width:80, height:80, background:'radial-gradient(circle, var(--accent-devotional, rgba(168,180,192,0.5)), transparent 70%)', opacity:0.08, pointerEvents:'none' }} />
+                    {/* Header */}
+                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                        <div style={{ width:2, height:12, background:'linear-gradient(to bottom, var(--accent-devotional, rgba(168,180,192,0.6)), transparent)', borderRadius:2 }} />
+                        <span style={{ color:'var(--accent-devotional, rgba(168,180,192,0.7))', fontSize:9, fontWeight:700, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>
+                          {d.type === 'scripture' ? 'Scripture' : d.type === 'study' ? 'Bible Study' : 'Prayer'}
+                        </span>
+                      </div>
+                      <span style={{ color:'var(--text-faint)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>
+                        {new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' })}
+                      </span>
+                    </div>
+                    {/* Scripture type */}
+                    {d.type === 'scripture' && (
+                      <>
+                        <p style={{ color:'var(--accent-devotional, rgba(168,180,192,0.65))', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>{d.ref}</p>
+                        <p style={{ color:'var(--text-primary)', fontSize:16, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, marginBottom:14, opacity:0.9 }}>{d.verse}</p>
+                        <p style={{ color:'var(--text-secondary)', fontSize:13, fontFamily:"'EB Garamond',serif", lineHeight:1.7 }}>{d.note}</p>
+                      </>
+                    )}
+                    {/* Study type */}
+                    {d.type === 'study' && (
+                      <>
+                        <p style={{ color:'var(--text-primary)', fontSize:15, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, letterSpacing:'-0.01em' }}>{d.focus}</p>
+                        <p style={{ color:'var(--text-secondary)', fontSize:14, fontFamily:"'EB Garamond',serif", lineHeight:1.75, fontStyle:'italic' }}>{d.tip}</p>
+                      </>
+                    )}
+                    {/* Prayer type */}
+                    {d.type === 'prayer' && (
+                      <>
+                        <p style={{ color:'var(--accent-devotional, rgba(168,180,192,0.65))', fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>{d.theme}</p>
+                        <p style={{ color:'var(--text-primary)', fontSize:16, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.75, opacity:0.9 }}>{d.text}</p>
+                      </>
+                    )}
+                    {/* Write reflection — secondary CTA */}
+                    <button onClick={() => setShowJournal(true)} style={{ marginTop:18, width:'100%', padding:'10px', borderRadius:9, background:'transparent', border:'1px solid rgba(168,180,192,0.18)', color:'rgba(168,180,192,0.4)', fontSize:10, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6, transition:'all 0.2s' }}>
+                      {Ico.edit()} Write Your Reflection
+                    </button>
+                  </div>
+                )
+              })()}
             </div>
           ) : (
             <Card style={anim(200)}>

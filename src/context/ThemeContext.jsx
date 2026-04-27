@@ -311,6 +311,74 @@ export const THEMES = {
       '--card-shadow':   '0 0 0 1px rgba(201,168,76,0.18), 0 0 24px rgba(201,168,76,0.07), 0 2px 12px rgba(0,0,0,0.65)',
     }
   },
+  dusk: {
+    name: 'Dusk',
+    description: 'Deep twilight with amethyst glow and gemstone module accents',
+    preview: ['#0d0b16', '#14112a', '#b07fe8'],
+    vars: {
+      '--bg-primary':    '#0d0b16',
+      '--bg-secondary':  '#14112a',
+      '--bg-card':       'rgba(180,160,255,0.05)',
+      '--bg-card-hover': 'rgba(180,160,255,0.09)',
+      '--border':        'rgba(180,160,255,0.14)',
+      '--border-focus':  'rgba(180,160,255,0.45)',
+      '--text-primary':  '#ede8ff',
+      '--text-secondary':'rgba(237,232,255,0.62)',
+      '--text-muted':    'rgba(220,210,250,0.38)',
+      '--text-faint':    'rgba(220,210,250,0.17)',
+      '--glow':          'rgba(176,127,232,0.60)',
+      '--glow-bar':      '#b07fe8',
+      '--btn-bg':        '#b07fe8',
+      '--btn-text':      '#0d0b16',
+      '--overlay-bg':    'rgba(13,11,22,0.88)',
+      '--header-bg':     'rgba(13,11,22,0.96)',
+      '--sheet-bg':      '#14112a',
+      '--input-bg':      'rgba(180,160,255,0.04)',
+      '--img-opacity':   '0.12',
+      '--scrollbar':     'rgba(180,160,255,0.18)',
+      '--badge-bg':      'rgba(180,160,255,0.08)',
+      '--stat-bg':       'rgba(180,160,255,0.06)',
+      '--card-shadow':   '0 0 0 1px rgba(180,160,255,0.12), 0 0 24px rgba(176,127,232,0.06), 0 2px 12px rgba(0,0,0,0.65)',
+      '--bg-ambient':    'rgba(120,80,200,0.12)',
+      '--accent-food':        '#f0a070',
+      '--accent-water':       '#70c0f0',
+      '--accent-fitness':     '#f07090',
+      '--accent-finance':     '#70e8a8',
+      '--accent-prayer':      '#e8c870',
+      '--accent-devotional':  '#b07fe8',
+    }
+  },
+  ember: {
+    name: 'Ember',
+    description: 'Deep charcoal with warm amber — focused and grounded',
+    preview: ['#0f0b08', '#1c1408', '#e8843a'],
+    vars: {
+      '--bg-primary':    '#0f0b08',
+      '--bg-secondary':  '#1c1408',
+      '--bg-card':       'rgba(240,160,80,0.05)',
+      '--bg-card-hover': 'rgba(240,160,80,0.09)',
+      '--border':        'rgba(240,160,80,0.15)',
+      '--border-focus':  'rgba(240,160,80,0.45)',
+      '--text-primary':  '#fff0e0',
+      '--text-secondary':'rgba(255,240,224,0.65)',
+      '--text-muted':    'rgba(245,225,200,0.40)',
+      '--text-faint':    'rgba(245,225,200,0.18)',
+      '--glow':          'rgba(232,132,58,0.60)',
+      '--glow-bar':      '#e8843a',
+      '--btn-bg':        '#e8843a',
+      '--btn-text':      '#0f0b08',
+      '--overlay-bg':    'rgba(15,11,8,0.88)',
+      '--header-bg':     'rgba(15,11,8,0.96)',
+      '--sheet-bg':      '#1c1408',
+      '--input-bg':      'rgba(240,160,80,0.04)',
+      '--img-opacity':   '0.11',
+      '--scrollbar':     'rgba(240,160,80,0.18)',
+      '--badge-bg':      'rgba(240,160,80,0.08)',
+      '--stat-bg':       'rgba(240,160,80,0.06)',
+      '--card-shadow':   '0 0 0 1px rgba(240,160,80,0.14), 0 0 22px rgba(232,132,58,0.06), 0 2px 12px rgba(0,0,0,0.65)',
+      '--bg-ambient':    'rgba(180,90,30,0.10)',
+    }
+  },
   forest: {
     name: 'Forest',
     description: 'Deep green — grounded and calm',
@@ -378,7 +446,7 @@ export function ThemeProvider({ children }) {
     if (!theme) return
     const root = document.documentElement
 
-    // Clear per-module accents first so switching away from axis_organic resets them
+    // Clear per-module accents first so switching away from themed variants resets them
     ;['food','water','fitness','finance','prayer','devotional'].forEach(m =>
       root.style.removeProperty(`--accent-${m}`)
     )

@@ -17,27 +17,43 @@ const CALORIE_GOAL = 2200
 const WATER_GOAL   = 8
 const MEAL_TYPES   = ['Breakfast', 'Lunch', 'Dinner', 'Snack']
 
-const HEALTHY_MEALS = [
-  { category:'Light',        name:'Greek Salad',           emoji:'🥗', cal:220, p:8,  c:18, f:14 },
-  { category:'Light',        name:'Turkey Lettuce Wraps',  emoji:'🥬', cal:280, p:24, c:12, f:10 },
-  { category:'Light',        name:'Avocado Toast',         emoji:'🥑', cal:320, p:10, c:32, f:18 },
-  { category:'Light',        name:'Miso Soup & Edamame',   emoji:'🍵', cal:190, p:14, c:16, f:6  },
-  { category:'Balanced',     name:'Grilled Salmon & Veg',  emoji:'🐟', cal:420, p:38, c:22, f:16 },
-  { category:'Balanced',     name:'Quinoa Buddha Bowl',    emoji:'🍚', cal:480, p:18, c:62, f:14 },
-  { category:'Balanced',     name:'Chicken Stir Fry',      emoji:'🥘', cal:390, p:34, c:28, f:12 },
-  { category:'Balanced',     name:'Veggie Grain Bowl',     emoji:'🌾', cal:410, p:14, c:58, f:12 },
-  { category:'High Protein', name:'Egg White Omelette',    emoji:'🍳', cal:180, p:22, c:4,  f:6  },
-  { category:'High Protein', name:'Tuna Rice Bowl',        emoji:'🐠', cal:440, p:42, c:44, f:8  },
-  { category:'High Protein', name:'Cottage Cheese Bowl',   emoji:'🥣', cal:240, p:28, c:14, f:6  },
-  { category:'High Protein', name:'Chicken & Sweet Potato',emoji:'🍠', cal:460, p:40, c:36, f:10 },
+const DAILY_PROTEIN_MEALS = [
+  { name:'Grilled Chicken & Quinoa Bowl',  emoji:'🍗', tag:'High Protein', cal:460, p:42, c:38, f:10,
+    instructions:['Season 6 oz chicken breast with salt, pepper, and garlic powder.','Grill or pan-sear 6–7 min per side on medium-high heat.','Cook ½ cup quinoa per package instructions (≈15 min).','Serve over quinoa with steamed broccoli or cucumber slices.'] },
+  { name:'Greek Yogurt Parfait',           emoji:'🥣', tag:'Quick & Clean', cal:310, p:28, c:32, f:6,
+    instructions:['Layer 1 cup plain Greek yogurt (0% fat) in a bowl.','Top with ½ cup mixed berries and 2 tbsp granola.','Drizzle with 1 tsp honey.','Add 1 scoop protein powder for an extra 20–25g of protein.'] },
+  { name:'Egg White Veggie Scramble',      emoji:'🍳', tag:'Low Carb',      cal:240, p:30, c:12, f:8,
+    instructions:['Whisk 6 egg whites with salt, pepper, and a pinch of turmeric.','Sauté ½ cup spinach and ¼ cup diced bell pepper in a non-stick pan.','Pour in egg whites and cook on medium until set, folding gently.','Serve with 1 slice whole grain toast or as-is.'] },
+  { name:'Tuna Avocado Bowl',              emoji:'🥑', tag:'Omega-3 Rich',  cal:380, p:38, c:14, f:18,
+    instructions:['Drain 1 can (5 oz) albacore tuna.','Mix with ½ avocado diced, 1 tbsp lime juice, salt and pepper.','Serve over ½ cup cooked brown rice or in a lettuce cup.','Optional: add sliced jalapeño and cilantro.'] },
+  { name:'Protein Smoothie',               emoji:'🥤', tag:'Post-Workout',  cal:350, p:35, c:30, f:8,
+    instructions:['Blend 1 cup unsweetened almond milk with 1 scoop vanilla protein powder.','Add 1 frozen banana, 1 tbsp almond butter, 1 cup spinach.','Blend until smooth. Add ice if desired.','Best consumed within 30 minutes of exercise.'] },
+  { name:'Turkey & Sweet Potato',          emoji:'🍠', tag:'Clean Bulk',    cal:440, p:40, c:36, f:9,
+    instructions:['Preheat oven to 400°F. Cube 1 sweet potato, toss with olive oil and roast 25 min.','Brown 5 oz lean ground turkey with garlic and onion powder.','Combine and season with cumin, paprika, and a squeeze of lime.','Serve immediately or meal-prep for up to 4 days.'] },
+  { name:'Cottage Cheese Bowl',            emoji:'🧀', tag:'High Protein',  cal:260, p:30, c:16, f:6,
+    instructions:['Scoop 1 cup low-fat cottage cheese into a bowl.','Add ½ cup sliced peaches or pineapple chunks.','Top with chia seeds and a pinch of cinnamon.','Savory version: swap fruit for sliced tomato and cracked pepper.'] },
+  { name:'Baked Salmon & Asparagus',       emoji:'🐟', tag:'Omega-3 Rich',  cal:420, p:45, c:8,  f:20,
+    instructions:['Preheat oven to 400°F. Line a sheet pan with parchment.','Place 6 oz salmon fillet and trimmed asparagus on the pan.','Drizzle with olive oil, season with salt, pepper, and lemon zest.','Bake 12–15 minutes until salmon flakes easily with a fork.'] },
+  { name:'Overnight Oats',                 emoji:'🌾', tag:'Prep Ahead',    cal:390, p:25, c:52, f:8,
+    instructions:['Combine ½ cup oats, ¾ cup almond milk, 1 scoop protein powder in a jar.','Add 1 tbsp chia seeds, ½ tsp vanilla, pinch of salt.','Stir, seal, and refrigerate overnight (or at least 4 hours).','Top with berries and almond butter before eating.'] },
+  { name:'Chicken Lettuce Wraps',          emoji:'🥬', tag:'Low Carb',      cal:330, p:38, c:16, f:10,
+    instructions:['Dice 5 oz cooked chicken breast (rotisserie works great).','Mix with 1 tbsp hoisin sauce, minced ginger, and garlic.','Spoon into large romaine or butter lettuce leaves.','Top with shredded carrots, scallions, and a squeeze of lime.'] },
+  { name:'Lentil Power Bowl',              emoji:'🫘', tag:'Plant-Based',   cal:400, p:22, c:58, f:8,
+    instructions:['Cook ½ cup green lentils per package instructions (≈20 min).','Serve over ½ cup cooked farro or barley.','Add roasted veggies and a dollop of hummus.','Drizzle with olive oil, lemon juice, and za\'atar spice.'] },
+  { name:'Shrimp Stir Fry',                emoji:'🍤', tag:'Quick Cook',    cal:370, p:36, c:28, f:10,
+    instructions:['Heat a wok on high. Add 1 tsp sesame oil.','Toss in 6 oz peeled shrimp. Cook 2 min per side until pink.','Add mixed frozen vegetables and 2 tbsp low-sodium soy sauce.','Serve over ½ cup brown rice or cauliflower rice.'] },
+  { name:'Hard Boiled Egg Salad',          emoji:'🥚', tag:'Keto-Friendly', cal:290, p:24, c:6,  f:18,
+    instructions:['Boil 4 eggs: bring to boil, cover, remove from heat for 10 min, then ice bath.','Peel and chop. Mix with 1 tbsp Greek yogurt, mustard, salt, pepper.','Serve on cucumber rounds, lettuce, or whole grain crackers.'] },
+  { name:'Black Bean Tacos',               emoji:'🌮', tag:'Plant-Based',   cal:410, p:20, c:54, f:12,
+    instructions:['Heat 1 can drained black beans with cumin, smoked paprika, garlic salt.','Warm 2 small corn tortillas in a dry skillet.','Fill with beans, diced avocado, salsa, and shredded cabbage.','Add lime and hot sauce to taste.'] },
 ]
 
-const GEO_SEARCHES = [
-  { label:'Healthy Restaurants', mapsQuery:'healthy+restaurants', ddQuery:'healthy',        emoji:'🥗' },
-  { label:'Salad Bars',          mapsQuery:'salad+bar',           ddQuery:'salad',           emoji:'🥙' },
-  { label:'Organic Cafes',       mapsQuery:'organic+cafe',        ddQuery:'organic+healthy', emoji:'🌿' },
-  { label:'Smoothie Bars',       mapsQuery:'smoothie+juice+bar',  ddQuery:'smoothie',        emoji:'🥤' },
-]
+function getDailyMeal() {
+  const now   = new Date()
+  const start = new Date(now.getFullYear(), 0, 0)
+  const day   = Math.floor((now - start) / 86400000)
+  return DAILY_PROTEIN_MEALS[day % DAILY_PROTEIN_MEALS.length]
+}
 
 const MEAL_ICONS = {
   Breakfast: (s=16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>,
@@ -624,9 +640,6 @@ export default function FoodJournal() {
   const [showAdd, setShowAdd]   = useState(false)
   const [prefill, setPrefill]   = useState(null)
   const [activeMeal, setActiveMeal] = useState('All')
-  const [geoStatus,    setGeoStatus]    = useState('idle')   // 'idle'|'locating'|'ready'|'denied'
-  const [userCoords,   setUserCoords]   = useState(null)
-  const [suggestCat,   setSuggestCat]   = useState('All')
   const [showSuggest,  setShowSuggest]  = useState(false)
 
   const [activeTab, setActiveTab] = useState('food')
@@ -657,16 +670,6 @@ export default function FoodJournal() {
   const handleSuggestAdd = (meal) => {
     setPrefill({ name: meal.name, calories: meal.cal, protein: meal.p, carbs: meal.c, fat: meal.f })
     setShowAdd(true)
-  }
-
-  const handleLocate = () => {
-    if (!navigator.geolocation) { setGeoStatus('denied'); return }
-    setGeoStatus('locating')
-    navigator.geolocation.getCurrentPosition(
-      (pos) => { setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setGeoStatus('ready') },
-      ()    => setGeoStatus('denied'),
-      { timeout: 10000, maximumAge: 300000 }
-    )
   }
 
   const handleSave = async (entry) => {
@@ -828,32 +831,33 @@ export default function FoodJournal() {
             <MacroPill label="Fat"     value={fat} />
           </div>
 
-          {/* ── Healthy Suggestions featured card ── */}
-          <button onClick={() => setShowSuggest(s => !s)} style={{
-            width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
-            padding:'13px 16px',
-            background: showSuggest ? 'rgba(130,200,130,0.13)' : 'rgba(130,200,130,0.07)',
-            border: `1px solid ${showSuggest ? 'rgba(160,210,160,0.55)' : 'rgba(160,210,160,0.28)'}`,
-            boxShadow: showSuggest ? '0 0 18px rgba(130,200,130,0.12)' : '0 0 0 1px rgba(130,200,130,0.04)',
-            borderRadius:13, cursor:'pointer', transition:'all 0.22s',
-            ...anim(100),
-          }}>
-            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-              <div style={{
-                width:34, height:34, borderRadius:9, flexShrink:0,
-                background:'rgba(130,200,130,0.15)', border:'1px solid rgba(160,210,160,0.35)',
-                display:'flex', alignItems:'center', justifyContent:'center', fontSize:16,
-              }}>🥗</div>
-              <div style={{ textAlign:'left' }}>
-                <p style={{ color:'#a8d8a8', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Healthy Suggestions</p>
-                <p style={{ color:'rgba(160,210,160,0.5)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.04em' }}>Clean meals · Nearby eats · DoorDash</p>
+          {/* ── Today's Meal ── */}
+          {(() => {
+            const meal = getDailyMeal()
+            return (
+              <div style={{ ...anim(100) }}>
+                <button onClick={() => setShowSuggest(s => !s)} style={{
+                  width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
+                  padding:'13px 16px',
+                  background: showSuggest ? 'rgba(130,200,130,0.11)' : 'rgba(130,200,130,0.06)',
+                  border: `1px solid ${showSuggest ? 'rgba(160,210,160,0.45)' : 'rgba(160,210,160,0.22)'}`,
+                  borderRadius:13, cursor:'pointer', transition:'all 0.22s',
+                }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                    <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:'rgba(130,200,130,0.12)', border:'1px solid rgba(160,210,160,0.28)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>{meal.emoji}</div>
+                    <div style={{ textAlign:'left' }}>
+                      <p style={{ color:'#a8d8a8', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{meal.name}</p>
+                      <p style={{ color:'rgba(160,210,160,0.5)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.04em' }}>Today's Recommendation · {meal.p}g protein</p>
+                    </div>
+                  </div>
+                  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="rgba(160,210,160,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                    style={{ transform: showSuggest ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.22s', flexShrink:0 }}>
+                    <path d="M9 18l6-6-6-6"/>
+                  </svg>
+                </button>
               </div>
-            </div>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="rgba(160,210,160,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              style={{ transform: showSuggest ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.22s', flexShrink:0 }}>
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-          </button>
+            )
+          })()}
 
           {/* Meal filter tabs */}
           <div style={{ display:'flex', gap:8, overflowX:'auto', paddingBottom:2, ...anim(140) }}>
@@ -881,132 +885,43 @@ export default function FoodJournal() {
 
           {/* ── Healthy Suggestions panel ── */}
           {showSuggest && (
-            <div style={anim(160)}>
-              {/* Category filter */}
-              <div style={{ display:'flex', gap:6, marginBottom:16, overflowX:'auto' }}>
-                {['All','Light','Balanced','High Protein'].map(cat => {
-                  const on = suggestCat === cat
-                  return (
-                    <button key={cat} onClick={() => setSuggestCat(cat)} style={{
-                      padding:'6px 12px', borderRadius:99, border:`1px solid ${on ? 'rgba(160,210,160,0.5)' : 'rgba(212,212,232,0.1)'}`,
-                      background: on ? 'rgba(160,210,160,0.12)' : 'transparent',
-                      color: on ? '#a8d8a8' : 'rgba(212,212,232,0.4)',
-                      fontSize:10, fontWeight: on ? 700 : 400, letterSpacing:'0.06em',
-                      fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'all 0.15s',
-                    }}>{cat}</button>
-                  )
-                })}
-              </div>
-
-              {/* Meal suggestion cards */}
-              <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:28 }}>
-                {HEALTHY_MEALS.filter(m => suggestCat === 'All' || m.category === suggestCat).map(meal => (
-                  <div key={meal.name} style={{
-                    display:'flex', alignItems:'center', justifyContent:'space-between',
-                    background:'var(--bg-card)', border:'1px solid var(--border)',
-                    boxShadow:'var(--card-shadow)', borderRadius:13, padding:'12px 14px',
-                  }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:12, flex:1, minWidth:0 }}>
-                      <span style={{ fontSize:24, flexShrink:0 }}>{meal.emoji}</span>
-                      <div style={{ minWidth:0 }}>
-                        <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{meal.name}</p>
-                        <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-                          <span style={{ color:'rgba(212,212,232,0.5)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{meal.cal} cal</span>
-                          <span style={{ color:'rgba(160,210,160,0.6)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{meal.p}g protein</span>
-                          <span style={{ color:'rgba(180,188,204,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{meal.c}g carbs · {meal.f}g fat</span>
-                        </div>
-                      </div>
+          {showSuggest && (() => {
+            const meal = getDailyMeal()
+            return (
+              <div style={anim(160)}>
+                {/* Macro bar */}
+                <div style={{ display:'flex', gap:8, marginBottom:16 }}>
+                  {[['Protein', meal.p, 'g', '#a8d8a8'], ['Carbs', meal.c, 'g', 'rgba(180,188,210,0.7)'], ['Fat', meal.f, 'g', 'rgba(210,180,140,0.7)'], ['Cal', meal.cal, '', 'rgba(212,212,232,0.45)']].map(([label, val, unit, color]) => (
+                    <div key={label} style={{ flex:1, background:'rgba(160,210,160,0.06)', border:'1px solid rgba(160,210,160,0.14)', borderRadius:10, padding:'10px 8px', textAlign:'center' }}>
+                      <p style={{ color, fontSize:15, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{val}{unit}</p>
+                      <p style={{ color:'rgba(212,212,232,0.35)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em', textTransform:'uppercase' }}>{label}</p>
                     </div>
-                    <button onClick={() => handleSuggestAdd(meal)} style={{
-                      flexShrink:0, marginLeft:10, padding:'7px 12px', borderRadius:8,
-                      background:'rgba(160,210,160,0.1)', border:'1px solid rgba(160,210,160,0.3)',
-                      color:'#a8d8a8', fontSize:10, fontWeight:700, letterSpacing:'0.08em',
-                      fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.15s',
-                    }}>+ Add</button>
-                  </div>
-                ))}
-              </div>
-
-              {/* Nearby healthy eats */}
-              <div style={{ borderTop:'1px solid rgba(212,212,232,0.07)', paddingTop:20 }}>
-                <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
-                  <div style={{ width:2, height:14, background:'linear-gradient(to bottom,rgba(160,210,160,0.8),rgba(160,210,160,0.1))', borderRadius:2, boxShadow:'0 0 6px rgba(160,210,160,0.4)' }}/>
-                  <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Healthy Eats Near Me</p>
+                  ))}
                 </div>
 
-                {geoStatus === 'idle' && (
-                  <button onClick={handleLocate} style={{
-                    width:'100%', padding:'14px', borderRadius:11,
-                    background:'rgba(160,210,160,0.08)', border:'1px solid rgba(160,210,160,0.28)',
-                    color:'#a8d8a8', fontSize:12, fontWeight:700, letterSpacing:'0.12em',
-                    textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s',
-                    display:'flex', alignItems:'center', justifyContent:'center', gap:8,
-                  }}>
-                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="9" strokeOpacity="0.3"/></svg>
-                    Enable Location
-                  </button>
-                )}
+                {/* Tag + add button row */}
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
+                  <span style={{ background:'rgba(160,210,160,0.1)', border:'1px solid rgba(160,210,160,0.28)', borderRadius:99, padding:'4px 10px', color:'#a8d8a8', fontSize:10, fontWeight:700, letterSpacing:'0.08em', fontFamily:'Helvetica Neue,sans-serif' }}>{meal.tag}</span>
+                  <button onClick={() => handleSuggestAdd(meal)} style={{ padding:'8px 16px', borderRadius:9, background:'rgba(160,210,160,0.12)', border:'1px solid rgba(160,210,160,0.35)', color:'#a8d8a8', fontSize:11, fontWeight:700, letterSpacing:'0.08em', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.15s' }}>+ Log This Meal</button>
+                </div>
 
-                {geoStatus === 'locating' && (
-                  <div style={{ textAlign:'center', padding:'20px 0', color:'rgba(160,210,160,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic' }}>
-                    Finding your location…
-                  </div>
-                )}
-
-                {geoStatus === 'denied' && (
-                  <div style={{ background:'var(--bg-card)', border:'1px solid rgba(212,212,232,0.08)', borderRadius:11, padding:'16px', textAlign:'center' }}>
-                    <p style={{ color:'rgba(212,212,232,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>Location access denied — search manually</p>
-                    <a href="https://www.google.com/maps/search/healthy+restaurants/" target="_blank" rel="noopener noreferrer"
-                      style={{ color:'#a8d8a8', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', textDecoration:'none', border:'1px solid rgba(160,210,160,0.25)', padding:'7px 14px', borderRadius:8, display:'inline-block' }}>
-                      Open Google Maps →
-                    </a>
-                  </div>
-                )}
-
-                {geoStatus === 'ready' && userCoords && (
+                {/* Quick instructions */}
+                <div style={{ borderTop:'1px solid rgba(212,212,232,0.07)', paddingTop:16 }}>
+                  <p style={{ color:'rgba(212,212,232,0.35)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, marginBottom:12 }}>Quick Instructions</p>
                   <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                    {GEO_SEARCHES.map(s => (
-                      <div key={s.label} style={{
-                        background:'var(--bg-card)', border:'1px solid rgba(160,210,160,0.2)',
-                        borderRadius:13, padding:'12px 14px',
-                      }}>
-                        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
-                          <span style={{ fontSize:20 }}>{s.emoji}</span>
-                          <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{s.label}</p>
+                    {meal.instructions.map((step, i) => (
+                      <div key={i} style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
+                        <div style={{ width:20, height:20, borderRadius:'50%', background:'rgba(160,210,160,0.1)', border:'1px solid rgba(160,210,160,0.22)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:1 }}>
+                          <span style={{ color:'#a8d8a8', fontSize:9, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif' }}>{i+1}</span>
                         </div>
-                        <div style={{ display:'flex', gap:8 }}>
-                          <a href={`https://www.google.com/maps/search/${s.mapsQuery}/@${userCoords.lat},${userCoords.lng},15z`}
-                            target="_blank" rel="noopener noreferrer"
-                            style={{
-                              flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6,
-                              padding:'9px 0', borderRadius:9, textDecoration:'none',
-                              background:'rgba(66,133,244,0.1)', border:'1px solid rgba(66,133,244,0.3)',
-                              color:'#7ab3f5', fontSize:11, fontWeight:700,
-                              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', transition:'all 0.15s',
-                            }}>
-                            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                            Maps
-                          </a>
-                          <a href={`https://www.doordash.com/search/store/${s.ddQuery}/`}
-                            target="_blank" rel="noopener noreferrer"
-                            style={{
-                              flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6,
-                              padding:'9px 0', borderRadius:9, textDecoration:'none',
-                              background:'rgba(235,78,60,0.1)', border:'1px solid rgba(235,78,60,0.3)',
-                              color:'#f08070', fontSize:11, fontWeight:700,
-                              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.06em', transition:'all 0.15s',
-                            }}>
-                            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                            DoorDash
-                          </a>
-                        </div>
+                        <p style={{ color:'var(--text-secondary)', fontSize:13, fontFamily:"'EB Garamond',serif", lineHeight:1.65, fontStyle:'italic' }}>{step}</p>
                       </div>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          )}
+            )
+          })()}
 
           {/* Log entries */}
           {(
