@@ -462,8 +462,8 @@ function ExCard({ ex, accent, onLog, muscleLabel }) {
   )
 }
 
-export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise }) {
-  const [selected,     setSelected]    = useState(null)
+export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise, defaultSelected = null }) {
+  const [selected,     setSelected]    = useState(defaultSelected)
   const [view,         setView]        = useState('anterior')
   const [exercises,    setExercises]   = useState([])
   const [spinning,     setSpinning]    = useState(false)

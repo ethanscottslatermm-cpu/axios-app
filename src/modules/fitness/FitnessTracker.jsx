@@ -574,6 +574,90 @@ function WorkoutCard({ workout, delay, visible, onDelete }) {
   )
 }
 
+// ── Recovery Muscle Sheet ──────────────────────────────────────────────────────
+function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, onLogWorkout, onSaveExercise }) {
+  const [visible, setVisible] = useState(false)
+  useEffect(() => { setTimeout(() => setVisible(true), 30) }, [])
+  const close = () => { setVisible(false); setTimeout(onClose, 280) }
+
+  const clr = status === 'fatigued' ? '#f87171' : status === 'recovering' ? '#f59e0b' : status === 'ready' ? '#10b981' : '#60a5fa'
+  const bg  = status === 'fatigued' ? 'rgba(248,113,113,0.1)' : status === 'recovering' ? 'rgba(245,158,11,0.1)' : status === 'ready' ? 'rgba(16,185,129,0.1)' : 'rgba(96,165,250,0.08)'
+  const br  = status === 'fatigued' ? 'rgba(248,113,113,0.25)' : status === 'recovering' ? 'rgba(245,158,11,0.25)' : status === 'ready' ? 'rgba(16,185,129,0.25)' : 'rgba(96,165,250,0.18)'
+  const sub = days === null ? 'Not trained' : days === 0 ? 'Trained today' : days === 1 ? 'Yesterday' : `${days}d ago`
+
+  const GROUP_EXERCISES_MAP = {
+    'Chest':      ['Chest'],
+    'Back':       ['Lats','Upper Back','Lower Back','Traps','Back'],
+    'Shoulders':  ['Shoulders'],
+    'Biceps':     ['Biceps','Forearms'],
+    'Triceps':    ['Triceps'],
+    'Core':       ['Core','Obliques'],
+    'Quads':      ['Quads'],
+    'Hamstrings': ['Hamstrings'],
+    'Glutes':     ['Glutes'],
+    'Calves':     ['Calves'],
+  }
+  const labels = GROUP_EXERCISES_MAP[group] || [group]
+  const recentExercises = []
+  ;(workouts||[]).forEach(w => {
+    ;(w.exercises||[]).forEach(e => {
+      if (labels.includes(e.muscle_group)) {
+        recentExercises.push({ ...e, workoutDate: w.workout_date || w.created_at?.split('T')[0] })
+      }
+    })
+  })
+  const latest = recentExercises.slice(0, 8)
+
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:200, display:'flex', flexDirection:'column', justifyContent:'flex-end' }}>
+      <div onClick={close} style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.55)', opacity:visible?1:0, transition:'opacity 0.28s ease' }} />
+      <div style={{ position:'relative', background:'#16152a', borderRadius:'20px 20px 0 0', maxHeight:'90vh', overflowY:'auto', transform: visible?'translateY(0)':'translateY(100%)', transition:'transform 0.32s cubic-bezier(.16,1,.3,1)', paddingBottom:32 }}>
+        {/* Drag handle */}
+        <div style={{ display:'flex', justifyContent:'center', padding:'12px 0 4px' }}>
+          <div style={{ width:36, height:4, borderRadius:2, background:'rgba(212,212,232,0.18)' }} />
+        </div>
+        {/* Header */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 20px 16px' }}>
+          <div>
+            <p style={{ color:'rgba(212,212,232,0.9)', fontSize:17, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{group}</p>
+            <p style={{ color:'rgba(212,212,232,0.4)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:2 }}>{sub}</p>
+          </div>
+          <span style={{ color:clr, fontSize:10, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', background:bg, border:`1px solid ${br}`, borderRadius:7, padding:'4px 9px' }}>{label}</span>
+        </div>
+        {/* Recent exercises */}
+        {latest.length > 0 && (
+          <div style={{ padding:'0 20px 16px' }}>
+            <p style={{ color:'rgba(212,212,232,0.38)', fontSize:10, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>Recent Exercises</p>
+            <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+              {latest.map((e, i) => (
+                <div key={i} style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(212,212,232,0.07)', borderRadius:10, padding:'9px 12px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div>
+                    <p style={{ color:'rgba(212,212,232,0.82)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif' }}>{e.name || e.exercise_name}</p>
+                    <p style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:2 }}>
+                      {e.sets && e.reps ? `${e.sets}×${e.reps}` : e.reps ? `${e.reps} reps` : ''}
+                      {(e.weight || e.weight_lbs) ? ` · ${e.weight || e.weight_lbs} lbs` : ''}
+                      {e.workoutDate ? ` · ${e.workoutDate}` : ''}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* Muscle map */}
+        <div style={{ padding:'0 4px' }}>
+          <MuscleMapView
+            workouts={workouts}
+            defaultSelected={group}
+            onLogWorkout={onLogWorkout}
+            onSaveExercise={onSaveExercise}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function FitnessTracker() {
   const todayStr = useToday()
@@ -590,6 +674,7 @@ export default function FitnessTracker() {
   const [showWeight,    setShowWeight]    = useState(false)
   const [activeTab,     setActiveTab]     = useState('recovery')
   const [quickLogMuscle,setQuickLogMuscle]= useState(null)
+  const [recoveryMuscle,setRecoveryMuscle]= useState(null)
   const [loadingW,     setLoadingW]     = useState(false)
   const [chartRange,   setChartRange]   = useState('1M')
   const [historyOpen,     setHistoryOpen]     = useState(false)
@@ -941,7 +1026,7 @@ export default function FitnessTracker() {
                   const br  = status === 'fatigued' ? 'rgba(248,113,113,0.22)' : status === 'recovering' ? 'rgba(245,158,11,0.22)' : status === 'ready' ? 'rgba(16,185,129,0.22)' : 'rgba(96,165,250,0.15)'
                   const sub = days === null ? 'Not trained' : days === 0 ? 'Trained today' : days === 1 ? 'Yesterday' : `${days}d ago`
                   return (
-                    <div key={group} style={{ background:bg, border:`1px solid ${br}`, borderRadius:12, padding:'11px 13px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                    <div key={group} onClick={() => setRecoveryMuscle({ group, status, days, label })} style={{ background:bg, border:`1px solid ${br}`, borderRadius:12, padding:'11px 13px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', transition:'opacity 0.15s' }}>
                       <div>
                         <p style={{ color:'rgba(212,212,232,0.75)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{group}</p>
                         <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
@@ -1201,6 +1286,18 @@ export default function FitnessTracker() {
       {showWorkout && <LogWorkoutSheet onSave={handleSaveWorkout} onClose={() => setShowWorkout(false)} />}
       {quickLogMuscle && <LogWorkoutSheet onSave={handleSaveWorkout} onClose={() => setQuickLogMuscle(null)} prefillMuscle={quickLogMuscle} />}
       {showWeight  && <LogWeightSheet  onSave={handleSaveWeight}  onClose={() => setShowWeight(false)} current={latest} todayStr={todayStr} />}
+      {recoveryMuscle && (
+        <RecoveryMuscleSheet
+          group={recoveryMuscle.group}
+          status={recoveryMuscle.status}
+          days={recoveryMuscle.days}
+          label={recoveryMuscle.label}
+          workouts={workouts}
+          onClose={() => setRecoveryMuscle(null)}
+          onLogWorkout={muscle => { setRecoveryMuscle(null); setQuickLogMuscle(muscle) }}
+          onSaveExercise={handleQuickLogExercise}
+        />
+      )}
 
       <BottomNav />
     </>
