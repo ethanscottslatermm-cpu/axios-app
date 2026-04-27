@@ -883,8 +883,6 @@ export default function FoodJournal() {
             })}
           </div>
 
-          {/* ── Healthy Suggestions panel ── */}
-          {showSuggest && (
           {showSuggest && (() => {
             const meal = getDailyMeal()
             return (
