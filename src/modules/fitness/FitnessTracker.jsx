@@ -608,12 +608,31 @@ export default function FitnessTracker() {
   const loadWorkouts = async () => {
     setLoadingW(true)
     try {
-      const { data } = await supabase
+      const { data: wData } = await supabase
         .from('workouts')
-        .select('*, exercises(*)')
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(30)
-      setWorkouts(data || [])
+      if (!wData?.length) { setWorkouts([]); return }
+
+      const { data: exData } = await supabase
+        .from('exercises')
+        .select('*')
+        .in('workout_id', wData.map(w => w.id))
+
+      const byWorkout = {}
+      ;(exData || []).forEach(e => {
+        // normalise column names — schema uses exercise_name/weight_lbs, older rows may use name/weight
+        const norm = {
+          ...e,
+          name:   e.name   ?? e.exercise_name ?? '',
+          weight: e.weight ?? e.weight_lbs    ?? null,
+        }
+        if (!byWorkout[e.workout_id]) byWorkout[e.workout_id] = []
+        byWorkout[e.workout_id].push(norm)
+      })
+
+      setWorkouts(wData.map(w => ({ ...w, exercises: byWorkout[w.id] || [] })))
     } catch(e) {
       console.error(e)
     } finally {
@@ -625,18 +644,18 @@ export default function FitnessTracker() {
     haptic.success()
     const { data: wData, error: wErr } = await supabase
       .from('workouts')
-      .insert({ label: workout.label, type: workout.type, duration: parseInt(workout.duration)||null, user_id: user.id, workout_date: todayStr })
+      .insert({ label: workout.label, type: workout.type, duration_min: parseInt(workout.duration)||null, user_id: user.id, workout_date: todayStr })
       .select().single()
     if (wErr) throw wErr
     if (exercises.length > 0) {
       const exRows = exercises.filter(e=>e.name.trim()).map(e => ({
-        workout_id:   wData.id,
-        user_id:      user.id,
-        name:         e.name,
-        sets:         parseInt(e.sets)||null,
-        reps:         parseInt(e.reps)||null,
-        weight:       parseFloat(e.weight)||null,
-        muscle_group: e.muscle_group,
+        workout_id:    wData.id,
+        user_id:       user.id,
+        exercise_name: e.name,
+        sets:          parseInt(e.sets)||null,
+        reps:          parseInt(e.reps)||null,
+        weight_lbs:    parseFloat(e.weight)||null,
+        muscle_group:  e.muscle_group,
       }))
       if (exRows.length > 0) {
         await supabase.from('exercises').insert(exRows)
@@ -667,13 +686,13 @@ export default function FitnessTracker() {
       workoutId = newW.id
     }
     await supabase.from('exercises').insert({
-      workout_id: workoutId,
-      user_id: user.id,
-      name,
-      sets: parseInt(sets) || null,
-      reps: parseInt(reps) || null,
-      weight: parseFloat(weight) || null,
-      muscle_group: muscleLabel || null,
+      workout_id:    workoutId,
+      user_id:       user.id,
+      exercise_name: name,
+      sets:          parseInt(sets) || null,
+      reps:          parseInt(reps) || null,
+      weight_lbs:    parseFloat(weight) || null,
+      muscle_group:  muscleLabel || null,
     })
     await loadWorkouts()
     setWorkoutHistOpen(true)
