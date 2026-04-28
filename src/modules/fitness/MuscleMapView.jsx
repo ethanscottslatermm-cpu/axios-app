@@ -219,30 +219,25 @@ const DEFINITION_LINES = {
   },
 }
 
-// Non-muscle structural features — knees (patella) and inner hips (inguinal crease).
+// Non-muscle structural features — kneecaps (oval) and inner thigh edges.
 // Always rendered with white glow regardless of selection state.
+// shape:'ellipse' → rendered as <ellipse>; default → rendered as <path>.
 const STRUCTURAL_LINES = {
   anterior: [
-    // Left kneecap (patella)
-    { d: 'M 30 154 Q 36 150 42 154' },
-    { d: 'M 31 161 Q 36 164 42 161' },
-    // Right kneecap (patella)
-    { d: 'M 58 154 Q 64 150 70 154' },
-    { d: 'M 59 161 Q 64 164 70 161' },
-    // Left inguinal crease (hip to inner thigh)
-    { d: 'M 36 91 Q 40 96 44 102' },
-    // Right inguinal crease
-    { d: 'M 64 91 Q 60 96 56 102' },
+    // Left kneecap — oval patella
+    { shape: 'ellipse', cx: 36,  cy: 157, rx: 6.5, ry: 5.5 },
+    // Right kneecap — oval patella
+    { shape: 'ellipse', cx: 64,  cy: 157, rx: 6.5, ry: 5.5 },
+    // Left inner thigh edge (medial)
+    { d: 'M 44 101 Q 44 126 43 151' },
+    // Right inner thigh edge (medial)
+    { d: 'M 56 101 Q 56 126 57 151' },
   ],
   posterior: [
     // Left popliteal crease (back of knee)
     { d: 'M 31 163 Q 36 167 41 163' },
     // Right popliteal crease
     { d: 'M 59 163 Q 64 167 69 163' },
-    // Left sub-gluteal / inner hip crease
-    { d: 'M 39 121 Q 38 126 38 131' },
-    // Right sub-gluteal / inner hip crease
-    { d: 'M 61 121 Q 62 126 62 131' },
   ],
 }
 
@@ -760,19 +755,20 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               })
             })}
 
-            {/* Structural glows — knees and inner hips */}
-            {(STRUCTURAL_LINES[view] || []).map((line, i) => (
-              <path
-                key={`struct-${i}`}
-                d={line.d}
-                stroke="rgba(255,255,255,1)"
-                strokeWidth={1.1}
-                fill="none"
-                strokeLinecap="round"
-                filter="url(#mm-struct-glow)"
-                style={{ animation: 'mmPulse 3.2s ease-in-out infinite' }}
-              />
-            ))}
+            {/* Structural glows — kneecaps (ellipse) and inner thigh edges (path) */}
+            {(STRUCTURAL_LINES[view] || []).map((line, i) => {
+              const shared = {
+                key: `struct-${i}`,
+                stroke: 'rgba(255,255,255,1)',
+                strokeWidth: 1.0,
+                fill: 'none',
+                filter: 'url(#mm-struct-glow)',
+                style: { animation: 'mmPulse 3.2s ease-in-out infinite' },
+              }
+              return line.shape === 'ellipse'
+                ? <ellipse {...shared} cx={line.cx} cy={line.cy} rx={line.rx} ry={line.ry} />
+                : <path   {...shared} d={line.d} strokeLinecap="round" />
+            })}
 
             {labels.map(l => {
               const isActive  = selected === l.group
