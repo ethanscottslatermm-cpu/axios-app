@@ -660,6 +660,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 <feComposite in="white" in2="blur" operator="in" result="wb"/>
                 <feMerge><feMergeNode in="wb"/><feMergeNode in="wb"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
+              <filter id="mm-struct-glow" x="-120%" y="-120%" width="340%" height="340%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="blur"/>
+                <feFlood floodColor="#ffffff" floodOpacity="1" result="col"/>
+                <feComposite in="col" in2="blur" operator="in" result="glow"/>
+                <feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
             </defs>
 
             {/* Head outline — exact polygon from react-body-highlighter source, no fill, white illuminated */}
@@ -759,11 +765,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               <path
                 key={`struct-${i}`}
                 d={line.d}
-                stroke="rgba(255,255,255,0.88)"
-                strokeWidth={0.75}
+                stroke="rgba(255,255,255,1)"
+                strokeWidth={1.1}
                 fill="none"
                 strokeLinecap="round"
-                filter="drop-shadow(0 0 3.5px rgba(255,255,255,0.82)) drop-shadow(0 0 1.5px rgba(255,255,255,0.55))"
+                filter="url(#mm-struct-glow)"
                 style={{ animation: 'mmPulse 3.2s ease-in-out infinite' }}
               />
             ))}
