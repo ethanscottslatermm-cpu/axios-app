@@ -85,14 +85,8 @@ const SCI_SHORT = {
 // Based on actual polygon data extracted from react-body-highlighter source.
 const DEFINITION_LINES = {
   anterior: {
-    Traps: [
-      { d: 'M 44 24 Q 40 30 38 35',            type: 'muscle' }, // left upper trap (anterior)
-      { d: 'M 56 24 Q 60 30 62 35',            type: 'muscle' }, // right upper trap (anterior)
-    ],
     Chest: [
       { d: 'M 49.5 34 L 49.5 58',             type: 'bone'   }, // sternum
-      { d: 'M 49 34 L 22 31',                  type: 'bone'   }, // left clavicle
-      { d: 'M 51 34 L 78 31',                  type: 'bone'   }, // right clavicle
       { d: 'M 32 54 Q 41 61 49.5 58',          type: 'muscle' }, // left pec lower arch
       { d: 'M 68 54 Q 59 61 50.5 58',          type: 'muscle' }, // right pec lower arch
       { d: 'M 49.5 41 Q 38 47 30 53',          type: 'muscle' }, // left pec fiber
