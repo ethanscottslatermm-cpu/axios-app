@@ -219,6 +219,33 @@ const DEFINITION_LINES = {
   },
 }
 
+// Non-muscle structural features — knees (patella) and inner hips (inguinal crease).
+// Always rendered with white glow regardless of selection state.
+const STRUCTURAL_LINES = {
+  anterior: [
+    // Left kneecap (patella)
+    { d: 'M 30 154 Q 36 150 42 154' },
+    { d: 'M 31 161 Q 36 164 42 161' },
+    // Right kneecap (patella)
+    { d: 'M 58 154 Q 64 150 70 154' },
+    { d: 'M 59 161 Q 64 164 70 161' },
+    // Left inguinal crease (hip to inner thigh)
+    { d: 'M 36 91 Q 40 96 44 102' },
+    // Right inguinal crease
+    { d: 'M 64 91 Q 60 96 56 102' },
+  ],
+  posterior: [
+    // Left popliteal crease (back of knee)
+    { d: 'M 31 163 Q 36 167 41 163' },
+    // Right popliteal crease
+    { d: 'M 59 163 Q 64 167 69 163' },
+    // Left sub-gluteal / inner hip crease
+    { d: 'M 39 121 Q 38 126 38 131' },
+    // Right sub-gluteal / inner hip crease
+    { d: 'M 61 121 Q 62 126 62 131' },
+  ],
+}
+
 // Labels positioned in the model's 0 0 100 200 coordinate space.
 // x < 0 or x > 100 renders outside body (requires overflow:visible on parent).
 // ex = x-coordinate of the leader line's body-side endpoint.
@@ -726,6 +753,20 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 )
               })
             })}
+
+            {/* Structural glows — knees and inner hips */}
+            {(STRUCTURAL_LINES[view] || []).map((line, i) => (
+              <path
+                key={`struct-${i}`}
+                d={line.d}
+                stroke="rgba(255,255,255,0.88)"
+                strokeWidth={0.75}
+                fill="none"
+                strokeLinecap="round"
+                filter="drop-shadow(0 0 3.5px rgba(255,255,255,0.82)) drop-shadow(0 0 1.5px rgba(255,255,255,0.55))"
+                style={{ animation: 'mmPulse 3.2s ease-in-out infinite' }}
+              />
+            ))}
 
             {labels.map(l => {
               const isActive  = selected === l.group
