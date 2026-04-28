@@ -2,6 +2,7 @@ const FINANCE_IMG = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEB
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import financeIconSrc from '../../finance-icon.png'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
 import { getLinkToken, exchangeToken, fetchBalances, fetchTransactions } from '../../lib/plaidClient'
@@ -913,7 +914,7 @@ export default function FinanceTracker() {
             <div>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <h1 style={{ color:'#86efac', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M2.504 3.5h19s2 0 2 2v13s0 2-2 2h-19s-2 0-2-2v-13s0-2 2-2"/><path d="M4.957 10h1.281l0.362 3.6a0.448 0.448 0 0 0 0.85 0.148L9.3 9.891"/><path d="m11.113 9.969-0.812 4.062"/><path d="M14.832 9.922s-1.375-0.36-1.844 0.422 0.266 1.281 0.75 1.578 1.016 0.75 0.875 1.281-0.734 1.313-2.3 0.766"/><path d="m16 14.031 1.88-3.789a0.436 0.436 0 0 1 0.825 0.158l0.3 3.569"/><path d="m16.598 12.828 2.328 0"/></svg>
+                <img src={financeIconSrc} width={22} height={22} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
               <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
             </div>

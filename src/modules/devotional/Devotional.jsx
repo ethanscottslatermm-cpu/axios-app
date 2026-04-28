@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
 import { useNavigate } from 'react-router-dom'
+import prayerIconSrc from '../../prayer-icon.png'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { BottomNav } from '../../pages/Dashboard'
@@ -577,7 +578,7 @@ export default function Devotional({ embedded = false }) {
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <h1 style={{ color:'#a8b4c0', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Daily Devotional</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#a8b4c0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <img src={prayerIconSrc} width={20} height={20} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
             </div>
             {today && (

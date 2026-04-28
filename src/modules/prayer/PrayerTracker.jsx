@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import prayerIconSrc from '../../prayer-icon.png'
 import { useToday } from '../../hooks/useToday'
 import { useHaptic } from '../../hooks/useHaptic'
 import { useNavigate } from 'react-router-dom'
@@ -320,7 +321,7 @@ export default function PrayerTracker() {
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <h1 style={{ color:'#c8a000', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Prayer</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#c8a000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M8.5 5.5Q10 3 12 4Q14 3 15.5 5.5"/><circle cx="12" cy="7" r="2"/><path d="M12 9v5"/><path d="M12 10.5L5.5 13.5"/><path d="M12 10.5L18.5 13.5"/><path d="M12 14L9 21"/><path d="M12 14L15 21"/><path d="M9 21Q12 22.5 15 21"/></svg>
+                <img src={prayerIconSrc} width={20} height={20} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
             </div>
             <button onClick={() => setShowAdd(true)} className="ax-add-btn"
