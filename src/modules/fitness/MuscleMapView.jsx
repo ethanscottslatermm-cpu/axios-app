@@ -783,13 +783,14 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
       {/* Detail panel */}
       {!selected ? (
         <div style={{
-          background: 'rgba(212,212,232,0.04)',
-          border: '1px dashed rgba(212,212,232,0.14)',
-          borderRadius: 12, padding: '18px 18px 16px',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+          background: 'radial-gradient(ellipse 110% 100% at 50% 0%, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 100%)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          boxShadow: '0 0 24px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.14)',
+          borderRadius: 14, padding: '22px 18px 18px',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
         }}>
-          <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="rgba(212,212,232,0.45)" strokeWidth="1.4" strokeLinecap="round"
-            style={{ animation: 'mmCrosshairPulse 2.4s ease-in-out infinite' }}>
+          <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.80)" strokeWidth="1.4" strokeLinecap="round"
+            style={{ animation: 'mmCrosshairPulse 2.4s ease-in-out infinite', filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.55))' }}>
             <circle cx="12" cy="12" r="10"/>
             <circle cx="12" cy="12" r="3.5"/>
             <line x1="12" y1="2" x2="12" y2="5.5"/>
@@ -798,10 +799,10 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             <line x1="18.5" y1="12" x2="22" y2="12"/>
           </svg>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'rgba(220,225,245,0.78)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', margin: '0 0 6px', lineHeight: 1.5 }}>
+            <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', margin: '0 0 7px', lineHeight: 1.55, textShadow: '0 0 12px rgba(255,255,255,0.35)' }}>
               Tap a muscle on the model<br/>to see activation details
             </p>
-            <p style={{ color: 'rgba(212,212,232,0.32)', fontSize: 9.5, fontFamily: FF, letterSpacing: '0.05em', margin: 0 }}>
+            <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: 9.5, fontFamily: FF, letterSpacing: '0.06em', margin: 0 }}>
               Exercises · Recovery · Scientific name
             </p>
           </div>
