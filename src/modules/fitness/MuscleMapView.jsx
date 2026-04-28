@@ -219,28 +219,6 @@ const DEFINITION_LINES = {
   },
 }
 
-// Non-muscle structural features — kneecaps (oval) and inner thigh edges.
-// Always rendered with white glow regardless of selection state.
-// shape:'ellipse' → rendered as <ellipse>; default → rendered as <path>.
-const STRUCTURAL_LINES = {
-  anterior: [
-    // Left kneecap — oval patella
-    { shape: 'ellipse', cx: 36,  cy: 157, rx: 6.5, ry: 5.5 },
-    // Right kneecap — oval patella
-    { shape: 'ellipse', cx: 64,  cy: 157, rx: 6.5, ry: 5.5 },
-    // Left inner thigh edge (medial)
-    { d: 'M 44 101 Q 44 126 43 151' },
-    // Right inner thigh edge (medial)
-    { d: 'M 56 101 Q 56 126 57 151' },
-  ],
-  posterior: [
-    // Left popliteal crease (back of knee)
-    { d: 'M 31 163 Q 36 167 41 163' },
-    // Right popliteal crease
-    { d: 'M 59 163 Q 64 167 69 163' },
-  ],
-}
-
 // Labels positioned in the model's 0 0 100 200 coordinate space.
 // x < 0 or x > 100 renders outside body (requires overflow:visible on parent).
 // ex = x-coordinate of the leader line's body-side endpoint.
@@ -655,12 +633,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 <feComposite in="white" in2="blur" operator="in" result="wb"/>
                 <feMerge><feMergeNode in="wb"/><feMergeNode in="wb"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
-              <filter id="mm-struct-glow" x="-120%" y="-120%" width="340%" height="340%">
-                <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="blur"/>
-                <feFlood floodColor="#ffffff" floodOpacity="1" result="col"/>
-                <feComposite in="col" in2="blur" operator="in" result="glow"/>
-                <feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
             </defs>
 
             {/* Head outline — exact polygon from react-body-highlighter source, no fill, white illuminated */}
@@ -753,21 +725,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   />
                 )
               })
-            })}
-
-            {/* Structural glows — kneecaps (ellipse) and inner thigh edges (path) */}
-            {(STRUCTURAL_LINES[view] || []).map((line, i) => {
-              const shared = {
-                key: `struct-${i}`,
-                stroke: 'rgba(255,255,255,1)',
-                strokeWidth: 1.0,
-                fill: 'none',
-                filter: 'url(#mm-struct-glow)',
-                style: { animation: 'mmPulse 3.2s ease-in-out infinite' },
-              }
-              return line.shape === 'ellipse'
-                ? <ellipse {...shared} cx={line.cx} cy={line.cy} rx={line.rx} ry={line.ry} />
-                : <path   {...shared} d={line.d} strokeLinecap="round" />
             })}
 
             {labels.map(l => {
