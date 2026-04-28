@@ -572,7 +572,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
-              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(255,255,255,0.12) 0%, transparent 65%)'
+              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(16,185,129,0.18) 0%, transparent 65%)'
               : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 65%)',
             transition: 'background 0.6s ease',
           }}/>
@@ -599,7 +599,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
                 opacity: op,
-                filter: isSel ? 'drop-shadow(0 0 10px rgba(255,255,255,0.9)) drop-shadow(0 0 5px rgba(255,255,255,0.7))' : undefined,
+                filter: isSel ? 'drop-shadow(0 0 12px rgba(16,185,129,0.95)) drop-shadow(0 0 5px rgba(52,211,153,0.75))' : undefined,
                 transition: 'opacity 0.35s ease, filter 0.35s ease',
                 animation: isSel ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
               }}>
@@ -607,7 +607,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
                   type={view}
                   bodyColor="rgba(0,0,0,0)"
-                  highlightedColors={['#ffffff', '#ffffff', '#ffffff']}
+                  highlightedColors={isSel ? ['#10b981', '#10b981', '#10b981'] : ['#ffffff', '#ffffff', '#ffffff']}
                   style={{ width: '100%', display: 'block' }}
                   svgStyle={{ borderRadius: 8 }}
                 />
