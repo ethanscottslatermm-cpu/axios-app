@@ -913,7 +913,7 @@ export default function FinanceTracker() {
             <div>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <h1 style={{ color:'#86efac', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 10v4M18 10v4"/></svg>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M2.504 3.5h19s2 0 2 2v13s0 2-2 2h-19s-2 0-2-2v-13s0-2 2-2"/><path d="M4.957 10h1.281l0.362 3.6a0.448 0.448 0 0 0 0.85 0.148L9.3 9.891"/><path d="m11.113 9.969-0.812 4.062"/><path d="M14.832 9.922s-1.375-0.36-1.844 0.422 0.266 1.281 0.75 1.578 1.016 0.75 0.875 1.281-0.734 1.313-2.3 0.766"/><path d="m16 14.031 1.88-3.789a0.436 0.436 0 0 1 0.825 0.158l0.3 3.569"/><path d="m16.598 12.828 2.328 0"/></svg>
               </div>
               <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>
             </div>

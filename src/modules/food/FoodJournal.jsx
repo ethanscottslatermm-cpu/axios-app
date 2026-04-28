@@ -737,7 +737,7 @@ export default function FoodJournal() {
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <h1 style={{ color:'#c8d4c8', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Food Journal</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#c8d4c8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#c8d4c8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M23.5 13c0 6-5.5 10.5-11.5 10.5S0.5 19 0.5 13"/><path d="M0.5 13a11.5 2 0 1 0 23 0 11.5 2 0 1 0-23 0"/><path d="M11.64 0.5c-3 3 3 4 0 7"/><path d="M7.14 2c-3 3 3 4 0 7"/><path d="M16.64 2c-3 3 3 4 0 7"/></svg>
               </div>
             </div>
             {/* Action buttons */}

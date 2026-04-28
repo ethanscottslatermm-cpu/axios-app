@@ -945,7 +945,7 @@ export default function FitnessTracker() {
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <h1 style={{ color:'#b4bccc', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Fitness Center</h1>
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#b4bccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><rect x="1.5" y="9" width="4" height="6" rx="1.5"/><rect x="6" y="10.5" width="2" height="3" rx="0.6"/><line x1="8" y1="12" x2="16" y2="12" strokeWidth="2.5"/><rect x="16" y="10.5" width="2" height="3" rx="0.6"/><rect x="18.5" y="9" width="4" height="6" rx="1.5"/></svg>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#b4bccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.8}><path d="M15.75 1.25h4.5a3 3 0 0 1 0 6h-.5c-.817 0-1.544-.107-2 .5l-4.62 8.736"/><path d="M17 21.25a1.75 1.75 0 0 0 .247-3.482L13.8 16.71a2.5 2.5 0 0 1-2.05-2.46v-2h-5.5a4.5 4.5 0 0 0 0 9Z"/><path d="M6.25 16.75a1.5 1.5 0 1 0 3 0 1.5 1.5 0 1 0-3 0"/><path d="m8.81 17.811 1.44 1.439"/><path d="m8.75 19.25 2.5 0"/><path d="M2.25 4.25a1.5 1.5 0 0 0 0 3H7.5a.751.751 0 0 0 .214-1.469C7.387 5.684 2.592 4.25 2.25 4.25"/><path d="m4.25 7.25 4.5 5"/><path d="m5.75 21.25-1.5 1.5"/><path d="m18.25 20.75 2 2"/></svg>
               </div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
