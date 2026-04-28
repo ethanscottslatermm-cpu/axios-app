@@ -4,7 +4,8 @@ import { DB } from './WorkoutGuide'
 
 const FF = 'Helvetica Neue,Arial,sans-serif'
 
-const MIND_COLOR = '#a78bfa'
+const MIND_COLOR      = '#a78bfa'
+const HIGHLIGHT_COLOR = '#c8a800'
 
 const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
 
@@ -464,6 +465,7 @@ function ExCard({ ex, accent, onLog, muscleLabel }) {
 
 export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise, defaultSelected = null }) {
   const [selected,     setSelected]    = useState(defaultSelected)
+  const [lastSelected, setLastSelected] = useState(null)
   const [view,         setView]        = useState('anterior')
   const [exercises,    setExercises]   = useState([])
   const [spinning,     setSpinning]    = useState(false)
@@ -514,7 +516,10 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
 
   function handleClick({ muscle }) {
     const group = GROUP_FROM_SLUG[muscle]
-    if (group) setSelected(s => s === group ? null : group)
+    if (group) {
+      setLastSelected(group)
+      setSelected(s => s === group ? null : group)
+    }
   }
 
   function handleShuffle() {
@@ -535,21 +540,26 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <style>{`
-        @keyframes mmFadeUp { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
-        @keyframes mmGlow   { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
-        @keyframes mmPulse  { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
+        @keyframes mmFadeUp         { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+        @keyframes mmGlow           { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
+        @keyframes mmPulse          { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
+        @keyframes mmCrosshairPulse { 0%,100% { opacity:0.45; transform:scale(1) } 50% { opacity:0.9; transform:scale(1.14) } }
       `}</style>
 
       {/* Front / Back toggle */}
-      <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
         {[['anterior','Front'], ['posterior','Back']].map(([v, label]) => (
           <button key={v} onClick={() => setView(v)} style={{
-            padding: '6px 20px', borderRadius: 99, cursor: 'pointer',
-            background: view === v ? 'rgba(180,188,220,0.12)' : 'var(--bg-card)',
-            border:    `1px solid ${view === v ? 'rgba(180,188,220,0.45)' : 'var(--border)'}`,
-            color:      view === v ? '#d8e0ee' : 'var(--text-muted)',
+            padding: '7px 26px', borderRadius: 99, cursor: 'pointer',
+            background: view === v
+              ? `linear-gradient(135deg, ${HIGHLIGHT_COLOR}28 0%, ${HIGHLIGHT_COLOR}12 100%)`
+              : 'var(--bg-card)',
+            border: `1px solid ${view === v ? `${HIGHLIGHT_COLOR}75` : 'var(--border)'}`,
+            color: view === v ? HIGHLIGHT_COLOR : 'var(--text-muted)',
             fontSize: 11, fontFamily: FF, fontWeight: view === v ? 700 : 400,
-            letterSpacing: '0.08em', textTransform: 'uppercase', transition: 'all 0.15s',
+            letterSpacing: '0.12em', textTransform: 'uppercase',
+            boxShadow: view === v ? `0 0 14px ${HIGHLIGHT_COLOR}30, inset 0 1px 0 ${HIGHLIGHT_COLOR}20` : 'none',
+            transition: 'all 0.2s',
           }}>{label}</button>
         ))}
       </div>
@@ -558,12 +568,18 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
       <div style={{ display: 'flex', justifyContent: 'center', overflow: 'visible' }}>
         <div style={{ position: 'relative', width: '100%', maxWidth: 240, overflow: 'visible' }}>
 
-          {/* Background glow — white ambient when a muscle is selected */}
+          {/* Depth vignette — always on for model separation */}
+          <div style={{
+            position: 'absolute', inset: '-4px -8px',
+            zIndex: 0, pointerEvents: 'none', borderRadius: 12,
+            background: 'radial-gradient(ellipse 58% 72% at 50% 48%, transparent 38%, rgba(6,6,12,0.62) 100%)',
+          }}/>
+          {/* Ambient glow — gold tint, brightens on selection */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
-              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(255,255,255,0.10) 0%, transparent 65%)'
-              : 'none',
+              ? `radial-gradient(ellipse 72% 62% at 50% 45%, ${HIGHLIGHT_COLOR}30 0%, transparent 65%)`
+              : `radial-gradient(ellipse 72% 62% at 50% 45%, ${HIGHLIGHT_COLOR}0a 0%, transparent 65%)`,
             transition: 'background 0.6s ease',
           }}/>
 
@@ -575,7 +591,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
-              filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.28)) drop-shadow(0 0 1px rgba(255,255,255,0.55))',
+              filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.38)) drop-shadow(0 0 2px rgba(255,255,255,0.70))',
             }}
             svgStyle={{ borderRadius: 8 }}
           />
@@ -589,7 +605,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
                 opacity: op,
-                filter: isSel ? 'drop-shadow(0 0 10px rgba(255,255,255,0.9)) drop-shadow(0 0 5px rgba(255,255,255,0.7))' : undefined,
+                filter: isSel ? `drop-shadow(0 0 14px ${HIGHLIGHT_COLOR}f5) drop-shadow(0 0 6px ${HIGHLIGHT_COLOR}c0)` : undefined,
                 transition: 'opacity 0.35s ease, filter 0.35s ease',
                 animation: isSel ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
               }}>
@@ -597,7 +613,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
                   type={view}
                   bodyColor="rgba(0,0,0,0)"
-                  highlightedColors={['#ffffff', '#ffffff', '#ffffff']}
+                  highlightedColors={[HIGHLIGHT_COLOR, HIGHLIGHT_COLOR, HIGHLIGHT_COLOR]}
                   style={{ width: '100%', display: 'block' }}
                   svgStyle={{ borderRadius: 8 }}
                 />
@@ -775,10 +791,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         <div style={{
           background: 'rgba(212,212,232,0.04)',
           border: '1px dashed rgba(212,212,232,0.14)',
-          borderRadius: 12, padding: '18px',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 9,
+          borderRadius: 12, padding: '18px 18px 16px',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
         }}>
-          <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="rgba(212,212,232,0.45)" strokeWidth="1.4" strokeLinecap="round">
+          <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="rgba(212,212,232,0.45)" strokeWidth="1.4" strokeLinecap="round"
+            style={{ animation: 'mmCrosshairPulse 2.4s ease-in-out infinite' }}>
             <circle cx="12" cy="12" r="10"/>
             <circle cx="12" cy="12" r="3.5"/>
             <line x1="12" y1="2" x2="12" y2="5.5"/>
@@ -786,9 +803,26 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             <line x1="2" y1="12" x2="5.5" y2="12"/>
             <line x1="18.5" y1="12" x2="22" y2="12"/>
           </svg>
-          <p style={{ color: 'rgba(220,225,245,0.78)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
-            Tap a muscle on the model<br/>to see activation details
-          </p>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'rgba(220,225,245,0.78)', fontSize: 13, fontFamily: FF, fontStyle: 'italic', margin: '0 0 6px', lineHeight: 1.5 }}>
+              Tap a muscle on the model<br/>to see activation details
+            </p>
+            <p style={{ color: 'rgba(212,212,232,0.32)', fontSize: 9.5, fontFamily: FF, letterSpacing: '0.05em', margin: 0 }}>
+              Exercises · Recovery · Scientific name
+            </p>
+          </div>
+          {lastSelected && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '5px 13px', borderRadius: 99,
+              background: `${HIGHLIGHT_COLOR}12`, border: `1px solid ${HIGHLIGHT_COLOR}38`,
+            }}>
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: HIGHLIGHT_COLOR, boxShadow: `0 0 5px ${HIGHLIGHT_COLOR}` }}/>
+              <p style={{ color: `${HIGHLIGHT_COLOR}cc`, fontSize: 9.5, fontFamily: FF, fontWeight: 600, margin: 0, letterSpacing: '0.04em' }}>
+                Last: {lastSelected}
+              </p>
+            </div>
+          )}
         </div>
       ) : isHead ? (
         /* ── Mind & Recovery panel ── */
@@ -867,27 +901,27 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           {dbData && (
             <div style={{
               background: 'var(--bg-card)',
-              border: '1px solid rgba(255,255,255,0.18)',
+              border: `1px solid ${HIGHLIGHT_COLOR}38`,
               borderRadius: 14, overflow: 'hidden',
             }}>
               {/* Header row */}
               <div style={{
-                background: 'linear-gradient(90deg, rgba(255,255,255,0.07) 0%, transparent 100%)',
-                borderBottom: '1px solid rgba(255,255,255,0.10)',
+                background: `linear-gradient(90deg, ${HIGHLIGHT_COLOR}1c 0%, transparent 100%)`,
+                borderBottom: `1px solid ${HIGHLIGHT_COLOR}1c`,
                 padding: '11px 14px',
                 display: 'flex', alignItems: 'center', gap: 9,
               }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', flexShrink: 0, background: '#ffffff', boxShadow: '0 0 10px rgba(255,255,255,0.8)' }}/>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', flexShrink: 0, background: HIGHLIGHT_COLOR, boxShadow: `0 0 10px ${HIGHLIGHT_COLOR}cc` }}/>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ color: '#ffffff', fontSize: 14, fontWeight: 800, fontFamily: FF, margin: 0, lineHeight: 1.2, textShadow: '0 0 12px rgba(255,255,255,0.9), 0 0 24px rgba(255,255,255,0.5)' }}>{selected}</p>
-                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 8.5, fontFamily: FF, fontStyle: 'italic', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{dbData.scientific}</p>
+                  <p style={{ color: '#ffffff', fontSize: 14, fontWeight: 800, fontFamily: FF, margin: 0, lineHeight: 1.2, textShadow: `0 0 12px ${HIGHLIGHT_COLOR}bb, 0 0 24px ${HIGHLIGHT_COLOR}66` }}>{selected}</p>
+                  <p style={{ color: `${HIGHLIGHT_COLOR}88`, fontSize: 8.5, fontFamily: FF, fontStyle: 'italic', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{dbData.scientific}</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                   {[1,2,3,4,5].map(i => (
                     <div key={i} style={{
                       width: 5, height: 5, borderRadius: '50%',
-                      background: i <= dbData.intensity ? '#ffffff' : 'rgba(212,212,232,0.10)',
-                      boxShadow: i <= dbData.intensity ? '0 0 4px rgba(255,255,255,0.75)' : 'none',
+                      background: i <= dbData.intensity ? HIGHLIGHT_COLOR : 'rgba(212,212,232,0.10)',
+                      boxShadow: i <= dbData.intensity ? `0 0 4px ${HIGHLIGHT_COLOR}bb` : 'none',
                     }}/>
                   ))}
                 </div>
@@ -899,8 +933,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
                   {n > 0 && (
                     <span style={{
-                      background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.35)',
-                      color: '#ffffff', fontSize: 9, fontFamily: FF, fontWeight: 700,
+                      background: `${HIGHLIGHT_COLOR}1a`, border: `1px solid ${HIGHLIGHT_COLOR}55`,
+                      color: HIGHLIGHT_COLOR, fontSize: 9, fontFamily: FF, fontWeight: 700,
                       padding: '3px 8px', borderRadius: 99, letterSpacing: '0.06em',
                     }}>{n}× this week</span>
                   )}
@@ -919,9 +953,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 {onLogWorkout && (
                   <button onClick={() => onLogWorkout(selected)} style={{
                     width: '100%', padding: '10px',
-                    background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.40)',
+                    background: `${HIGHLIGHT_COLOR}1a`, border: `1px solid ${HIGHLIGHT_COLOR}55`,
                     borderRadius: 10, cursor: 'pointer',
-                    color: '#ffffff', fontSize: 11, fontWeight: 700,
+                    color: HIGHLIGHT_COLOR, fontSize: 11, fontWeight: 700,
                     fontFamily: FF, letterSpacing: '0.08em',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                     marginTop: 2,
@@ -940,15 +974,15 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           {dbData && exercises.length > 0 && (
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <div style={{ width: 3, height: 12, background: '#ffffff', borderRadius: 2, boxShadow: '0 0 6px rgba(255,255,255,0.7)' }}/>
-                <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: FF, fontWeight: 700, flex: 1, margin: 0 }}>
+                <div style={{ width: 3, height: 12, background: HIGHLIGHT_COLOR, borderRadius: 2, boxShadow: `0 0 6px ${HIGHLIGHT_COLOR}aa` }}/>
+                <p style={{ color: `${HIGHLIGHT_COLOR}cc`, fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: FF, fontWeight: 700, flex: 1, margin: 0 }}>
                   Exercises
                 </p>
                 <button onClick={handleShuffle} style={{
                   display: 'flex', alignItems: 'center', gap: 5,
                   padding: '4px 9px', borderRadius: 7,
-                  background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.35)',
-                  color: 'rgba(255,255,255,0.85)', fontSize: 9, fontWeight: 700,
+                  background: `${HIGHLIGHT_COLOR}14`, border: `1px solid ${HIGHLIGHT_COLOR}40`,
+                  color: `${HIGHLIGHT_COLOR}cc`, fontSize: 9, fontWeight: 700,
                   fontFamily: FF, cursor: 'pointer', letterSpacing: '0.08em',
                 }}>
                   <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
@@ -961,7 +995,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 </button>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {exercises.map((ex, i) => <ExCard key={`${ex.name}-${i}`} ex={ex} accent='#ffffff' onLog={onSaveExercise} muscleLabel={dbData?.label} />)}
+                {exercises.map((ex, i) => <ExCard key={`${ex.name}-${i}`} ex={ex} accent={HIGHLIGHT_COLOR} onLog={onSaveExercise} muscleLabel={dbData?.label} />)}
               </div>
             </div>
           )}
