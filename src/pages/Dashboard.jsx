@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import fitnessIconSrc from '../fitness-icon.png'
 import { useAuth } from '../context/AuthContext'
 import { useFoodLog } from '../hooks/useFoodLog'
 import { useWaterLog } from '../hooks/useWaterLog'
@@ -33,7 +34,7 @@ const Ico = {
   weight:   (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/></svg>,
   prayer:   (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 5.5Q10 3 12 4Q14 3 15.5 5.5"/><circle cx="12" cy="7" r="2"/><path d="M12 9v5"/><path d="M12 10.5L5.5 13.5"/><path d="M12 10.5L18.5 13.5"/><path d="M12 14L9 21"/><path d="M12 14L15 21"/><path d="M9 21Q12 22.5 15 21"/></svg>,
   book:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
-  fitness:  (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15.75 1.25h4.5a3 3 0 0 1 0 6h-.5c-.817 0-1.544-.107-2 .5l-4.62 8.736"/><path d="M17 21.25a1.75 1.75 0 0 0 .247-3.482L13.8 16.71a2.5 2.5 0 0 1-2.05-2.46v-2h-5.5a4.5 4.5 0 0 0 0 9Z"/><path d="M6.25 16.75a1.5 1.5 0 1 0 3 0 1.5 1.5 0 1 0-3 0"/><path d="m8.81 17.811 1.44 1.439"/><path d="m8.75 19.25 2.5 0"/><path d="M2.25 4.25a1.5 1.5 0 0 0 0 3H7.5a.751.751 0 0 0 .214-1.469C7.387 5.684 2.592 4.25 2.25 4.25"/><path d="m4.25 7.25 4.5 5"/><path d="m5.75 21.25-1.5 1.5"/><path d="m18.25 20.75 2 2"/></svg>,
+  fitness:  (s=18) => <img src={fitnessIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   settings: (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5a12.5 12.5 0 0 1 18 0"/><path d="M6.5 12.5a8 8 0 0 1 11 0"/><path d="M10 16.5a3.5 3.5 0 0 1 4 0"/><circle cx="12" cy="20" r="1.25" fill="currentColor" stroke="none"/></svg>,
   home:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
   plus:     (s=16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>,
