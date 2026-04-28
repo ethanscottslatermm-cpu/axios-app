@@ -3,8 +3,7 @@ import { webAuthnSupported, registerBiometric, hasRegisteredDevice } from '../ho
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import LoadingScreen from '../components/LoadingScreen'
-
-const HERO = 'data:image/jpeg;base64,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'
+import knightSrc from '../knight-loading.jpg'
 
 const WORDS = ['Discipline.', 'Accountability.', 'Personal ownership.']
 
@@ -247,13 +246,16 @@ export default function Login() {
         {/* Radial vignette — edges dark, center open so physique shows */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1,
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.93) 100%)',
+          background: 'radial-gradient(ellipse 78% 88% at 50% 44%, rgba(2,8,20,0.12) 0%, rgba(2,8,20,0.60) 55%, rgba(2,8,20,0.94) 100%)',
         }} />
+
+        {/* Blue corona — cold midnight light source from top */}
+        <div style={{ position:'fixed', top:0, left:'50%', transform:'translateX(-50%)', width:'90%', height:320, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at 50% 0%, rgba(30,80,220,0.18) 0%, transparent 70%)', filter:'blur(22px)' }}/>
 
         {/* Bottom fade */}
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0, height: '40%', zIndex: 2,
-          background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 100%)',
+          background: 'linear-gradient(to top, rgba(2,8,20,0.96) 0%, transparent 100%)',
         }} />
 
         {/* Top fade */}
@@ -366,15 +368,42 @@ export default function Login() {
         {/* Open — full form */}
         {open && (
           <div style={{
-            position: 'relative', zIndex: 10,
+            position: 'fixed', inset: 0, zIndex: 10,
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            width: '100%', maxWidth: '420px',
-            padding: 'clamp(1rem, 4vh, 2rem) 1.25rem clamp(1rem, 4vh, 2rem)',
-            margin: '0 auto',
-            minHeight: '100dvh',
-            justifyContent: 'center',
-            animation: 'secureReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards',
+            justifyContent: 'flex-end',
+            padding: '0 16px clamp(1.5rem,4vh,3rem)',
           }}>
+            {/* Frosted glass card */}
+            <div style={{
+              width: '100%', maxWidth: 420,
+              padding: 'clamp(1.5rem,5vh,2.5rem) 1.25rem clamp(1.25rem,4vh,2rem)',
+              borderRadius: 24,
+              background: 'rgba(3,12,28,0.60)',
+              backdropFilter: 'blur(36px)',
+              WebkitBackdropFilter: 'blur(36px)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              boxShadow: [
+                'inset 0 1.5px 0 rgba(255,255,255,0.18)',
+                'inset 0 -1px 0 rgba(255,255,255,0.04)',
+                'inset 1px 0 rgba(255,255,255,0.05)',
+                'inset -1px 0 rgba(255,255,255,0.05)',
+                '0 12px 56px rgba(0,0,0,0.72)',
+                '0 0 0 0.5px rgba(255,255,255,0.05)',
+                '0 0 60px rgba(40,90,220,0.10)',
+              ].join(','),
+              display: 'flex', flexDirection: 'column', alignItems: 'center',
+              position: 'relative',
+              animation: 'secureReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards',
+            }}>
+              {/* Corner brackets */}
+              {[
+                { top:11, left:11,   borderTop:'1px solid rgba(255,255,255,0.28)', borderLeft:'1px solid rgba(255,255,255,0.28)'   },
+                { top:11, right:11,  borderTop:'1px solid rgba(255,255,255,0.28)', borderRight:'1px solid rgba(255,255,255,0.28)'  },
+                { bottom:11, left:11,  borderBottom:'1px solid rgba(255,255,255,0.28)', borderLeft:'1px solid rgba(255,255,255,0.28)'  },
+                { bottom:11, right:11, borderBottom:'1px solid rgba(255,255,255,0.28)', borderRight:'1px solid rgba(255,255,255,0.28)' },
+              ].map((c, i) => (
+                <div key={i} style={{ position:'absolute', width:13, height:13, ...c }}/>
+              ))}
 
             {/* Brand */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'clamp(0.75rem, 2.5vh, 1.5rem)', position: 'relative' }}>
@@ -466,6 +495,7 @@ export default function Login() {
             <p style={{ color: 'rgba(212,212,232,0.15)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '1.5rem', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>
               "Axios" — The Worthy
             </p>
+            </div>{/* end glass card */}
           </div>
         )}
 
@@ -481,3 +511,5 @@ export default function Login() {
     </>
   )
 }
+
+
