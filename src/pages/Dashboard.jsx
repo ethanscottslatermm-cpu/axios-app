@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import fitnessIconSrc from '../fitness-icon.png'
 import prayerIconSrc  from '../prayer-icon.png'
 import financeIconSrc from '../finance-icon.png'
+import foodIconSrc    from '../food-icon.png'
+import homeIconSrc    from '../home-icon.png'
 import { useAuth } from '../context/AuthContext'
 import { useFoodLog } from '../hooks/useFoodLog'
 import { useWaterLog } from '../hooks/useWaterLog'
@@ -31,14 +33,14 @@ function getGreeting() {
 }
 
 const Ico = {
-  food:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23.5 13c0 6-5.5 10.5-11.5 10.5S0.5 19 0.5 13"/><path d="M0.5 13a11.5 2 0 1 0 23 0 11.5 2 0 1 0-23 0"/><path d="M11.64 0.5c-3 3 3 4 0 7"/><path d="M7.14 2c-3 3 3 4 0 7"/><path d="M16.64 2c-3 3 3 4 0 7"/></svg>,
+  food:     (s=18) => <img src={foodIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   water:    (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 2h6"/><path d="M7.5 5h9l.5 2V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V7l.5-2z"/><path d="M7.5 11h9"/></svg>,
   weight:   (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/></svg>,
   prayer:   (s=18) => <img src={prayerIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   book:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
   fitness:  (s=18) => <img src={fitnessIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   settings: (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5a12.5 12.5 0 0 1 18 0"/><path d="M6.5 12.5a8 8 0 0 1 11 0"/><path d="M10 16.5a3.5 3.5 0 0 1 4 0"/><circle cx="12" cy="20" r="1.25" fill="currentColor" stroke="none"/></svg>,
-  home:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+  home:     (s=18) => <img src={homeIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   plus:     (s=16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>,
   chevron:  (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>,
   finance:  (s=18) => <img src={financeIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
