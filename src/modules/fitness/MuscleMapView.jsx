@@ -568,18 +568,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
       <div style={{ display: 'flex', justifyContent: 'center', overflow: 'visible' }}>
         <div style={{ position: 'relative', width: '100%', maxWidth: 240, overflow: 'visible' }}>
 
-          {/* Depth vignette — always on for model separation */}
-          <div style={{
-            position: 'absolute', inset: '-4px -8px',
-            zIndex: 0, pointerEvents: 'none', borderRadius: 12,
-            background: 'radial-gradient(ellipse 58% 72% at 50% 48%, transparent 38%, rgba(6,6,12,0.62) 100%)',
-          }}/>
-          {/* Ambient glow — gold tint, brightens on selection */}
+          {/* Ambient glow — brightens on selection */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
-              ? `radial-gradient(ellipse 72% 62% at 50% 45%, ${HIGHLIGHT_COLOR}30 0%, transparent 65%)`
-              : `radial-gradient(ellipse 72% 62% at 50% 45%, ${HIGHLIGHT_COLOR}0a 0%, transparent 65%)`,
+              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(255,255,255,0.12) 0%, transparent 65%)'
+              : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 65%)',
             transition: 'background 0.6s ease',
           }}/>
 
@@ -605,7 +599,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
                 opacity: op,
-                filter: isSel ? `drop-shadow(0 0 14px ${HIGHLIGHT_COLOR}f5) drop-shadow(0 0 6px ${HIGHLIGHT_COLOR}c0)` : undefined,
+                filter: isSel ? 'drop-shadow(0 0 10px rgba(255,255,255,0.9)) drop-shadow(0 0 5px rgba(255,255,255,0.7))' : undefined,
                 transition: 'opacity 0.35s ease, filter 0.35s ease',
                 animation: isSel ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
               }}>
@@ -613,7 +607,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
                   type={view}
                   bodyColor="rgba(0,0,0,0)"
-                  highlightedColors={[HIGHLIGHT_COLOR, HIGHLIGHT_COLOR, HIGHLIGHT_COLOR]}
+                  highlightedColors={['#ffffff', '#ffffff', '#ffffff']}
                   style={{ width: '100%', display: 'block' }}
                   svgStyle={{ borderRadius: 8 }}
                 />
