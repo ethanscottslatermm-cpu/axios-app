@@ -157,31 +157,32 @@ export const THEMES = {
   midnight: {
     name: 'Midnight',
     description: 'Deep navy blue — bold and focused',
-    preview: ['#050d1a', '#0a1628', '#4fa3ff'],
+    preview: ['#030c1c', '#071425', '#4fa3ff'],
     vars: {
-      '--bg-primary':    '#050d1a',
-      '--bg-secondary':  '#0a1628',
-      '--bg-card':       'rgba(79,163,255,0.05)',
-      '--bg-card-hover': 'rgba(79,163,255,0.09)',
-      '--border':        'rgba(79,163,255,0.15)',
-      '--border-focus':  'rgba(79,163,255,0.45)',
-      '--text-primary':  '#e8f4ff',
-      '--text-secondary':'rgba(232,244,255,0.6)',
-      '--text-muted':    'rgba(232,244,255,0.35)',
-      '--text-faint':    'rgba(232,244,255,0.15)',
-      '--glow':          'rgba(79,163,255,0.6)',
-      '--glow-bar':      '#4fa3ff',
+      '--bg-primary':    '#030c1c',
+      '--bg-secondary':  '#071425',
+      '--bg-card':       'rgba(79,163,255,0.065)',
+      '--bg-card-hover': 'rgba(79,163,255,0.12)',
+      '--border':        'rgba(79,163,255,0.22)',
+      '--border-focus':  'rgba(79,163,255,0.58)',
+      '--text-primary':  '#edf6ff',
+      '--text-secondary':'rgba(210,232,255,0.70)',
+      '--text-muted':    'rgba(175,210,255,0.44)',
+      '--text-faint':    'rgba(175,210,255,0.18)',
+      '--glow':          'rgba(79,163,255,0.75)',
+      '--glow-bar':      '#5aadff',
       '--btn-bg':        '#4fa3ff',
-      '--btn-text':      '#050d1a',
-      '--overlay-bg':    'rgba(5,13,26,0.85)',
-      '--header-bg':     'rgba(5,13,26,0.95)',
-      '--sheet-bg':      '#0a1628',
-      '--input-bg':      'rgba(79,163,255,0.05)',
-      '--img-opacity':   '0.1',
-      '--scrollbar':     'rgba(79,163,255,0.15)',
-      '--badge-bg':      'rgba(79,163,255,0.08)',
-      '--stat-bg':       'rgba(79,163,255,0.05)',
-      '--card-shadow':   '0 0 0 0.5px rgba(79,163,255,0.1), 0 0 18px rgba(79,163,255,0.06), 0 2px 10px rgba(0,0,0,0.5)',
+      '--btn-text':      '#020b19',
+      '--overlay-bg':    'rgba(3,12,28,0.90)',
+      '--header-bg':     'rgba(3,12,28,0.97)',
+      '--sheet-bg':      '#071425',
+      '--input-bg':      'rgba(79,163,255,0.055)',
+      '--img-opacity':   '0.12',
+      '--scrollbar':     'rgba(79,163,255,0.20)',
+      '--badge-bg':      'rgba(79,163,255,0.11)',
+      '--stat-bg':       'rgba(79,163,255,0.065)',
+      '--card-shadow':   '0 0 0 0.5px rgba(79,163,255,0.24), 0 0 28px rgba(79,163,255,0.10), 0 4px 18px rgba(0,0,0,0.72)',
+      '--bg-ambient':    'rgba(40,100,210,0.11)',
     }
   },
   crimson: {
@@ -417,7 +418,7 @@ export function ThemeProvider({ children }) {
   const { user } = useAuth()
   const [themeKey, setThemeKey] = useState(() => {
     const saved = localStorage.getItem('axios-theme')
-    return (saved && THEMES[saved]) ? saved : 'axis_organic'
+    return (saved && THEMES[saved]) ? saved : 'midnight'
   })
   const [loading,  setLoading]  = useState(true)
 
