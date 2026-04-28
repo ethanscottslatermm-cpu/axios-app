@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import fitnessIconSrc from '../fitness-icon.png'
 import prayerIconSrc  from '../prayer-icon.png'
 import financeIconSrc from '../finance-icon.png'
 import foodIconSrc    from '../food-icon.png'
 import homeIconSrc    from '../home-icon.png'
+import settingsIconSrc from '../settings-icon.png'
 import { useAuth } from '../context/AuthContext'
 import { useFoodLog } from '../hooks/useFoodLog'
 import { useWaterLog } from '../hooks/useWaterLog'
@@ -39,7 +40,7 @@ const Ico = {
   prayer:   (s=18) => <img src={prayerIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   book:     (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
   fitness:  (s=18) => <img src={fitnessIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
-  settings: (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5a12.5 12.5 0 0 1 18 0"/><path d="M6.5 12.5a8 8 0 0 1 11 0"/><path d="M10 16.5a3.5 3.5 0 0 1 4 0"/><circle cx="12" cy="20" r="1.25" fill="currentColor" stroke="none"/></svg>,
+  settings: (s=18) => <img src={settingsIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   home:     (s=18) => <img src={homeIconSrc} width={s} height={s} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.85, display:'block', flexShrink:0 }} alt="" />,
   plus:     (s=16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>,
   chevron:  (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>,
@@ -497,3 +498,4 @@ export default function Dashboard() {
     </>
   )
 }
+
