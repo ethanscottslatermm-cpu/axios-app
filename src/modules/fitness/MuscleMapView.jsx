@@ -544,6 +544,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @keyframes mmGlow           { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
         @keyframes mmPulse          { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
         @keyframes mmCrosshairPulse { 0%,100% { opacity:0.45; transform:scale(1) } 50% { opacity:0.9; transform:scale(1.14) } }
+        @keyframes mmVeinFlow       { 0%,100% { opacity:0.58 } 50% { opacity:0.82 } }
       `}</style>
 
       {/* Front / Back toggle */}
@@ -691,17 +692,22 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               return lines.map((line, i) => {
                 const isVein   = line.type === 'vein'
                 const isBone   = line.type === 'bone'
-                const baseOp   = isBone ? 0.26 : isVein ? 0.28 : 0.22
-                const activeOp = isBone ? 0.90 : isVein ? 0.92 : 0.86
-                const stroke   = isVein ? 'rgba(80,185,255,1)' : isBone ? 'rgba(228,234,255,1)' : 'rgba(255,255,255,1)'
-                const sw       = isBone ? 0.5 : isVein ? 0.45 : 0.42
+                const baseOp   = isBone ? 0.55 : isVein ? 1 : 0.46
+                const activeOp = isBone ? 0.96 : isVein ? 1    : 0.92
+                const stroke   = isVein ? 'rgba(56,195,255,1)' : isBone ? 'rgba(238,244,255,1)' : 'rgba(255,255,255,1)'
+                const sw       = isBone ? 0.65 : isVein ? 0.58 : 0.52
+                const baseGlow = isVein
+                  ? 'drop-shadow(0 0 2px rgba(56,195,255,0.75)) drop-shadow(0 0 1px rgba(100,220,255,0.5))'
+                  : isBone
+                  ? 'drop-shadow(0 0 1.2px rgba(238,244,255,0.5))'
+                  : undefined
                 const glowF    = isActive
                   ? (isVein
-                      ? 'drop-shadow(0 0 2px rgba(80,185,255,0.95)) drop-shadow(0 0 1px rgba(120,210,255,0.7))'
+                      ? 'drop-shadow(0 0 4px rgba(56,195,255,1)) drop-shadow(0 0 2px rgba(140,228,255,0.9))'
                       : isBone
-                      ? 'drop-shadow(0 0 2px rgba(255,255,255,0.8))'
-                      : 'drop-shadow(0 0 1.8px rgba(255,255,255,0.95))')
-                  : undefined
+                      ? 'drop-shadow(0 0 3px rgba(255,255,255,0.9))'
+                      : 'drop-shadow(0 0 2.5px rgba(255,255,255,1))')
+                  : baseGlow
                 return (
                   <path
                     key={`def-${group}-${i}`}
@@ -712,7 +718,10 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                     strokeLinecap="round"
                     opacity={isActive ? activeOp : baseOp}
                     filter={glowF}
-                    style={{ transition: 'opacity 0.3s, stroke-width 0.3s' }}
+                    style={{
+                      transition: 'opacity 0.3s, stroke-width 0.3s',
+                      animation: !isActive && isVein ? 'mmVeinFlow 3.5s ease-in-out infinite' : undefined,
+                    }}
                   />
                 )
               })
