@@ -28,6 +28,10 @@ const styles = `
       text-shadow: 0 0 12px rgba(212,212,232,0.95), 0 0 28px rgba(212,212,232,0.6), 0 0 55px rgba(200,210,255,0.35), 0 0 90px rgba(200,210,255,0.15);
     }
   }
+  @keyframes saGlow {
+    0%, 100% { color: rgba(255,255,255,0.18); text-shadow: none; }
+    50%       { color: rgba(255,255,255,0.55); text-shadow: 0 0 8px rgba(255,255,255,0.35), 0 0 20px rgba(200,210,255,0.2); }
+  }
   @keyframes l2-shimmer {
     0%   { background-position: -250% center; }
     100% { background-position: 250% center; }
@@ -405,6 +409,7 @@ export default function Login2() {
               fontWeight: 300,
               margin: 0,
               color: 'rgba(255,255,255,0.25)',
+              animation: 'saGlow 3s ease-in-out infinite',
             }}>
               Secure Access
             </p>
