@@ -430,7 +430,7 @@ export default function Login2() {
                 backgroundClip: 'text',
                 animation: 'l2-shimmer 2.8s linear infinite',
               }}>
-                Secure Access
+                PROCEED
               </p>
             </div>
 
