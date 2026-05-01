@@ -473,11 +473,7 @@ export default function Login2() {
                     Skip for now
                   </button>
                 </div>
-              ) : (
-                <button type="submit" disabled={loading} className={`l2-enter-btn${password.length > 0 ? ' l2-btn-active' : ''}`}>
-                  {loading ? 'Entering...' : 'Enter'}
-                </button>
-              )}
+              ) : null}
 
             </form>
           </div>
