@@ -390,57 +390,24 @@ export default function Login2() {
             onClick={() => setOpen(true)}
             style={{
               position: 'absolute', zIndex: 10,
-              top: '68%', left: 0, right: 0,
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
+              bottom: '8%', left: 0, right: 0,
+              display: 'flex', justifyContent: 'center',
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
               userSelect: 'none',
             }}
           >
-            {/* Vertical accent line above text */}
-            <div style={{
-              width: 1, height: 36,
-              background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.65), transparent)',
-              marginBottom: 18,
-              animation: 'l2-vline 2.8s ease-in-out infinite',
-            }} />
-
-            {/* Corner bracket accents */}
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-              {/* top-left */}
-              <div style={{ position:'absolute', top:-8, left:-10, width:8, height:8, borderTop:'1px solid rgba(255,255,255,0.45)', borderLeft:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite' }} />
-              {/* top-right */}
-              <div style={{ position:'absolute', top:-8, right:-10, width:8, height:8, borderTop:'1px solid rgba(255,255,255,0.45)', borderRight:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite', animationDelay:'0.2s' }} />
-              {/* bottom-left */}
-              <div style={{ position:'absolute', bottom:-8, left:-10, width:8, height:8, borderBottom:'1px solid rgba(255,255,255,0.45)', borderLeft:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite', animationDelay:'0.4s' }} />
-              {/* bottom-right */}
-              <div style={{ position:'absolute', bottom:-8, right:-10, width:8, height:8, borderBottom:'1px solid rgba(255,255,255,0.45)', borderRight:'1px solid rgba(255,255,255,0.45)', animation:'l2-corner 2.8s ease-in-out infinite', animationDelay:'0.6s' }} />
-
-              <p style={{
-                fontSize: 'clamp(0.62rem, 2.6vw, 0.78rem)',
-                letterSpacing: '0.65em',
-                textTransform: 'uppercase',
-                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                fontWeight: 300,
-                margin: 0,
-                background: 'linear-gradient(90deg, #3a3a42 0%, #8a8a96 38%, #ffffff 50%, #8a8a96 62%, #3a3a42 100%)',
-                backgroundSize: '250% auto',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                animation: 'l2-shimmer 2.8s linear infinite',
-              }}>
-                Secure Access
-              </p>
-            </div>
-
-            <div style={{
-              width: 28, height: 1,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
-              marginTop: 18,
-              animation: 'lineBreath 2.8s ease-in-out infinite',
-              animationDelay: '0.35s',
-            }} />
+            <p style={{
+              fontSize: '0.6rem',
+              letterSpacing: '0.55em',
+              textTransform: 'uppercase',
+              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+              fontWeight: 300,
+              margin: 0,
+              color: 'rgba(255,255,255,0.25)',
+            }}>
+              Secure Access
+            </p>
           </div>
         )}
 
