@@ -381,7 +381,7 @@ export default function Login2() {
             color: 'rgba(212,212,232,0.9)',
             textShadow: '0 0 8px rgba(212,212,232,0.7), 0 0 20px rgba(212,212,232,0.4), 0 0 40px rgba(200,210,255,0.2)',
             animation: 'iamworthy 3.2s ease-in-out infinite',
-          }}>I Am Worthy</p>
+          }}>The Worthy</p>
         </div>
 
         {/* Closed — SECURE ACCESS only */}
