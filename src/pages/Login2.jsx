@@ -453,7 +453,7 @@ export default function Login2() {
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                   </svg>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} onBlur={() => { if (email && password) handleSubmit({ preventDefault: () => {} }) }} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
                 </div>
               </div>
 
