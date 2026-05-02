@@ -1,6 +1,20 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
-import Model from 'react-body-highlighter'
+import { useState, useMemo, useEffect } from 'react'
 import { DB } from './WorkoutGuide'
+import AnatomyModel3D from '../../components/AnatomyModel3D'
+
+const THREED_TO_DISPLAY = {
+  chest: 'Chest', shoulders: 'Shoulders', biceps: 'Biceps',
+  triceps: 'Triceps', forearms: 'Biceps', core: 'Core',
+  back: 'Upper Back', glutes: 'Glutes', quads: 'Quads',
+  hamstrings: 'Hamstrings', calves: 'Calves', hip_flexors: null,
+}
+
+const DISPLAY_TO_THREED = {
+  Chest: 'chest', Shoulders: 'shoulders', Biceps: 'biceps',
+  Triceps: 'triceps', Core: 'core', 'Upper Back': 'back',
+  'Lower Back': 'back', Glutes: 'glutes', Quads: 'quads',
+  Hamstrings: 'hamstrings', Calves: 'calves',
+}
 
 const FF = 'Helvetica Neue,Arial,sans-serif'
 
@@ -514,11 +528,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     setBreathingEx(null)
   }, [selected])
 
-  function handleClick({ muscle }) {
-    const group = GROUP_FROM_SLUG[muscle]
-    if (group) {
-      setLastSelected(group)
-      setSelected(s => s === group ? null : group)
+  function handleMuscleSelect(groupKey) {
+    const displayName = THREED_TO_DISPLAY[groupKey]
+    if (displayName) {
+      setLastSelected(displayName)
+      setSelected(s => s === displayName ? null : displayName)
     }
   }
 
@@ -535,7 +549,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const n      = selected && !isHead ? (counts[selected] || 0) : 0
   const rec    = selected && !isHead ? getRecovery(n) : null
   const dbData = selected && !isHead ? DB[GROUP_TO_DB[selected]] : null
-  const labels = LABELS[view] || []
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -565,229 +578,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         ))}
       </div>
 
-      {/* Body model + label overlay */}
-      <div style={{ display: 'flex', justifyContent: 'center', overflow: 'visible' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: 240, overflow: 'visible' }}>
-
-          {/* Ambient glow — brightens on selection */}
-          <div style={{
-            position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
-            background: selected && selected !== 'Head'
-              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(16,185,129,0.18) 0%, transparent 65%)'
-              : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 65%)',
-            transition: 'background 0.6s ease',
-          }}/>
-
-          {/* Base body silhouette — handles all click events */}
-          <Model
-            data={[]}
-            type={view}
-            bodyColor="#1a1a28"
-            onClick={handleClick}
-            style={{
-              width: '100%', display: 'block', position: 'relative', zIndex: 1,
-              filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.38)) drop-shadow(0 0 2px rgba(255,255,255,0.70))',
-            }}
-            svgStyle={{ borderRadius: 8 }}
-          />
-
-          {/* Per-muscle DB-colored overlays */}
-          {MUSCLES.map(m => {
-            if (m === 'Head') return null  // Head rendered as SVG outline, no fill
-            const isSel = selected === m
-            const op    = isSel ? 0.92 : 0.24
-            return (
-              <div key={m} style={{
-                position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-                opacity: op,
-                filter: isSel ? 'drop-shadow(0 0 12px rgba(16,185,129,0.95)) drop-shadow(0 0 5px rgba(52,211,153,0.75))' : undefined,
-                transition: 'opacity 0.35s ease, filter 0.35s ease',
-                animation: isSel ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
-              }}>
-                <Model
-                  data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
-                  type={view}
-                  bodyColor="rgba(0,0,0,0)"
-                  highlightedColors={isSel ? ['#10b981', '#10b981', '#10b981'] : ['#ffffff', '#ffffff', '#ffffff']}
-                  style={{ width: '100%', display: 'block' }}
-                  svgStyle={{ borderRadius: 8 }}
-                />
-              </div>
-            )
-          })}
-
-          {/* Label overlay — viewBox matches model's 0 0 100 200 space */}
-          <svg
-            viewBox="0 0 100 200"
-            preserveAspectRatio="xMidYMid meet"
-            style={{
-              position: 'absolute', top: 0, left: 0,
-              width: '100%', height: '100%',
-              overflow: 'visible', pointerEvents: 'none',
-            }}
-          >
-            <defs>
-              <filter id="mm-label-glow" x="-60%" y="-60%" width="220%" height="220%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
-                <feFlood floodColor="#ffffff" floodOpacity="1" result="white"/>
-                <feComposite in="white" in2="blur" operator="in" result="wb"/>
-                <feMerge><feMergeNode in="wb"/><feMergeNode in="wb"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-
-            {/* Head outline — exact polygon from react-body-highlighter source, no fill, white illuminated */}
-            <polygon
-              points={view === 'anterior'
-                ? '42.4489796 2.85714286 40 11.8367347 42.0408163 19.5918367 46.122449 23.2653061 49.7959184 25.3061224 54.6938776 22.4489796 57.5510204 19.1836735 59.1836735 10.2040816 57.1428571 2.44897959 49.7959184 0'
-                : '50.6382979 0 45.9574468 0.85106383 40.8510638 5.53191489 40.4255319 12.7659574 45.106383 20 55.7446809 20 59.1489362 13.6170213 59.5744681 4.68085106 55.7446809 1.27659574'
-              }
-              fill="none"
-              stroke="rgba(255,255,255,1)"
-              strokeWidth={selected === 'Head' ? 0.9 : 0.42}
-              strokeLinejoin="round"
-              opacity={selected === 'Head' ? 1.0 : 0.42}
-              style={{
-                filter: selected === 'Head' ? 'drop-shadow(0 0 4px rgba(255,255,255,0.95)) drop-shadow(0 0 8px rgba(255,255,255,0.5))' : undefined,
-                transition: 'stroke-width 0.3s, opacity 0.3s',
-                animation: selected === 'Head' ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
-              }}
-            />
-
-            {/* Facial definition — anterior only */}
-            {view === 'anterior' && (
-              <g
-                opacity={selected === 'Head' ? 0.92 : 0.32}
-                pointerEvents="none"
-                style={{
-                  filter: selected === 'Head' ? 'drop-shadow(0 0 1.5px rgba(255,255,255,0.65))' : undefined,
-                  transition: 'opacity 0.3s',
-                }}
-              >
-                {/* Eyes */}
-                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.35"/>
-                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.35"/>
-                {/* Nose */}
-                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.3" strokeLinecap="round"/>
-                {/* Mouth */}
-                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.42" strokeLinecap="round"/>
-                {/* Jaw lines */}
-                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
-                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
-                {/* Chin cleft */}
-                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
-                {/* Cheekbones — zygomatic arch */}
-                <path d="M 43.5 12.2 Q 38.8 13.8 39.8 17.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.42" strokeLinecap="round"/>
-                <path d="M 56.5 12.2 Q 61.2 13.8 60.2 17.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.42" strokeLinecap="round"/>
-                {/* Zygomatic frontal process (vertical at outer eye corner) */}
-                <path d="M 44 10.2 L 43 13.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.3" strokeLinecap="round"/>
-                <path d="M 56 10.2 L 57 13.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.3" strokeLinecap="round"/>
-              </g>
-            )}
-
-            {/* Definition lines — bone landmarks, muscle cuts, veins */}
-            {Object.entries(DEFINITION_LINES[view] || {}).map(([group, lines]) => {
-              const isActive = selected === group
-              const dbKey    = GROUP_TO_DB[group]
-              const color    = DB[dbKey]?.color || '#b4bccc'
-              return lines.map((line, i) => {
-                const isVein   = line.type === 'vein'
-                const isBone   = line.type === 'bone'
-                const baseOp   = isBone ? 0.55 : isVein ? 1 : 0.46
-                const activeOp = isBone ? 0.96 : isVein ? 1    : 0.92
-                const stroke   = isVein ? 'rgba(56,195,255,1)' : isBone ? 'rgba(238,244,255,1)' : 'rgba(255,255,255,1)'
-                const sw       = isBone ? 0.65 : isVein ? 0.58 : 0.52
-                const baseGlow = isVein
-                  ? 'drop-shadow(0 0 2px rgba(56,195,255,0.75)) drop-shadow(0 0 1px rgba(100,220,255,0.5))'
-                  : isBone
-                  ? 'drop-shadow(0 0 1.2px rgba(238,244,255,0.5))'
-                  : undefined
-                const glowF    = isActive
-                  ? (isVein
-                      ? 'drop-shadow(0 0 4px rgba(56,195,255,1)) drop-shadow(0 0 2px rgba(140,228,255,0.9))'
-                      : isBone
-                      ? 'drop-shadow(0 0 3px rgba(255,255,255,0.9))'
-                      : 'drop-shadow(0 0 2.5px rgba(255,255,255,1))')
-                  : baseGlow
-                return (
-                  <path
-                    key={`def-${group}-${i}`}
-                    d={line.d}
-                    stroke={stroke}
-                    strokeWidth={isActive ? sw * 1.8 : sw}
-                    fill="none"
-                    strokeLinecap="round"
-                    opacity={isActive ? activeOp : baseOp}
-                    filter={glowF}
-                    style={{
-                      transition: 'opacity 0.3s, stroke-width 0.3s',
-                      animation: !isActive && isVein ? 'mmVeinFlow 3.5s ease-in-out infinite' : undefined,
-                    }}
-                  />
-                )
-              })
-            })}
-
-            {labels.map(l => {
-              const isActive  = selected === l.group
-              const dbKey     = GROUP_TO_DB[l.group]
-              const isHeadLbl = l.group === 'Head'
-              const color     = isActive ? '#ffffff' : 'rgba(200,210,230,0.30)'
-              const lineX1    = l.anchor === 'start' ? 101 : -1
-              const dotX      = l.ex
-
-              return (
-                <g key={l.group} style={{ transition: 'opacity 0.2s' }}>
-                  {/* Leader line */}
-                  <line
-                    x1={lineX1} y1={l.y}
-                    x2={dotX}   y2={l.y}
-                    stroke={color}
-                    strokeWidth={isActive ? 0.5 : 0.3}
-                    strokeDasharray={isActive ? 'none' : '2 2'}
-                    style={{ transition: 'stroke 0.2s, stroke-width 0.2s' }}
-                  />
-                  {/* Endpoint dot on muscle */}
-                  <circle cx={dotX} cy={l.y} r={isActive ? 1.4 : 0.8}
-                    fill={color}
-                    style={{ transition: 'fill 0.2s, r 0.2s' }}
-                  />
-                  {/* Label text — common name */}
-                  <text
-                    x={l.x} y={l.y}
-                    textAnchor={l.anchor}
-                    fontSize="4.2"
-                    fontFamily={FF}
-                    fontWeight={isActive ? '700' : '500'}
-                    fill={color}
-                    filter={isActive ? 'url(#mm-label-glow)' : undefined}
-                    letterSpacing="0.04em"
-                    style={{
-                      transition: 'fill 0.2s',
-                      animation: isActive ? 'mmGlow 2.4s ease-in-out infinite' : undefined,
-                    }}
-                  >
-                    {l.group}
-                  </text>
-                  {/* Scientific name sub-label */}
-                  <text
-                    x={l.x} y={l.y + 4.2}
-                    textAnchor={l.anchor}
-                    fontSize="3.0"
-                    fontFamily={FF}
-                    fontWeight="400"
-                    fontStyle="italic"
-                    fill={isActive ? `${color}cc` : 'rgba(200,210,230,0.18)'}
-                    letterSpacing="0.02em"
-                    style={{ transition: 'fill 0.2s' }}
-                  >
-                    {SCI_SHORT[l.group] || ''}
-                  </text>
-                </g>
-              )
-            })}
-          </svg>
-        </div>
-      </div>
+      {/* 3D Anatomy Model */}
+      <AnatomyModel3D
+        selectedGroup={DISPLAY_TO_THREED[selected] || null}
+        onMuscleSelect={handleMuscleSelect}
+        view={view}
+      />
 
       {/* Detail panel */}
       {!selected ? (
