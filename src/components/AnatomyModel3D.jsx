@@ -5,23 +5,23 @@ import * as THREE from 'three'
 
 // ── Per-group base colors (dark tinted steels — visible on black bg) ──────────
 const GROUP_COLORS = {
-  chest:       '#4A6080',   // steel blue
-  shoulders:   '#3A6855',   // teal steel
-  biceps:      '#5A4A78',   // violet steel
-  triceps:     '#6A3A58',   // mauve steel
-  forearms:    '#4E5840',   // olive steel
-  core:        '#385870',   // navy steel
-  back:        '#3A5068',   // slate steel
-  glutes:      '#684838',   // rust steel
-  quads:       '#3A6040',   // forest steel
-  hamstrings:  '#604838',   // amber steel
-  calves:      '#3A4860',   // indigo steel
-  hip_flexors: '#584060',   // plum steel
+  chest:       '#6A8FB8',   // bright steel blue
+  shoulders:   '#5A9E80',   // teal
+  biceps:      '#8A70B8',   // violet
+  triceps:     '#A85878',   // rose steel
+  forearms:    '#7A8860',   // olive
+  core:        '#5A88A8',   // sky steel
+  back:        '#5A7898',   // slate blue
+  glutes:      '#A86848',   // copper
+  quads:       '#5A9060',   // green steel
+  hamstrings:  '#9A7048',   // amber
+  calves:      '#5A6898',   // periwinkle
+  hip_flexors: '#887090',   // plum
 }
 
 const SEL_COLOR   = '#C9A96E'   // gold on selection
 const FAINT_COLOR = '#0E1018'   // fascia / bursa — near invisible
-const DEFAULT_COL = '#2E3A4A'   // unrecognised muscles
+const DEFAULT_COL = '#4A5868'   // unrecognised muscles — visible neutral steel
 
 // ── Muscle group patterns (actual Z-Anatomy mesh names) ──────────────────────
 const GROUPS = {
@@ -99,14 +99,17 @@ function AnatomyMesh({ selectedGroup, onMuscleSelect }) {
     readyRef.current = true
     normalizeScene(scene)
     meshes.forEach(m => {
-      const filler = isFiller(m.name)
+      // Hide connective tissue entirely — don't render or raycast
+      if (isFiller(m.name)) {
+        m.visible = false
+        return
+      }
       const mat = new THREE.MeshStandardMaterial({
-        color:       baseColor(m.name),
-        transparent: true,
-        opacity:     filler ? 0.15 : 0.9,
-        roughness:   filler ? 0.9  : 0.4,
-        metalness:   filler ? 0.1  : 0.6,
-        side:        THREE.DoubleSide,
+        color:      baseColor(m.name),
+        roughness:  0.45,
+        metalness:  0.55,
+        side:       THREE.FrontSide,
+        depthWrite: true,
       })
       m.material = mat
       matsRef.current[m.uuid] = mat
@@ -215,10 +218,10 @@ export default function AnatomyModel3D({ selectedGroup, onMuscleSelect, view }) 
         frameloop="demand"
         style={{ background: 'transparent' }}
       >
-        {/* Front key light + soft back fill — no flat directional wash */}
-        <ambientLight  intensity={1.2} color="#B4BCC8" />
-        <pointLight    position={[2, 4, 5]}   intensity={0.9} color="#C8D0E0" />
-        <pointLight    position={[-2, 0, -5]} intensity={0.25} color="#202838" />
+        <ambientLight intensity={1.6} color="#C8D0DC" />
+        <pointLight   position={[3, 5, 6]}    intensity={1.4} color="#D8E0F0" />
+        <pointLight   position={[-3, 2, -4]}  intensity={0.5} color="#304050" />
+        <pointLight   position={[0, -3, 2]}   intensity={0.3} color="#B0B8C8" />
 
         <Suspense fallback={<Html center><PlatinumLoader /></Html>}>
           <AnatomyMesh selectedGroup={selectedGroup} onMuscleSelect={onMuscleSelect} />
