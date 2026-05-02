@@ -28,6 +28,20 @@ const styles = `
       text-shadow: 0 0 12px rgba(212,212,232,0.95), 0 0 28px rgba(212,212,232,0.6), 0 0 55px rgba(200,210,255,0.35), 0 0 90px rgba(200,210,255,0.15);
     }
   }
+  @keyframes enterPulse {
+    0%, 100% {
+      color: rgba(212,212,232,0.45);
+      text-shadow: none;
+      box-shadow: none;
+      border-color: rgba(212,212,232,0.15);
+    }
+    50% {
+      color: rgba(212,212,232,0.95);
+      text-shadow: 0 0 10px rgba(212,212,232,0.6), 0 0 28px rgba(200,210,255,0.25);
+      box-shadow: 0 0 18px rgba(212,212,232,0.18), 0 0 40px rgba(200,210,255,0.1);
+      border-color: rgba(212,212,232,0.45);
+    }
+  }
   @keyframes saGlow {
     0%, 100% { color: rgba(255,255,255,0.18); text-shadow: none; }
     50%       { color: rgba(255,255,255,0.55); text-shadow: 0 0 8px rgba(255,255,255,0.35), 0 0 20px rgba(200,210,255,0.2); }
@@ -484,7 +498,7 @@ export default function Login2() {
               {authenticated && (
                 <div style={{ display: 'flex', justifyContent: 'center', animation: 'formReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards' }}>
                   <button type="button" onClick={() => setShowLoader(true)}
-                    style={{ padding: '14px 48px', borderRadius: 2, border: '1px solid rgba(212,212,232,0.3)', background: 'transparent', color: 'rgba(212,212,232,0.9)', fontSize: '0.72rem', fontWeight: 300, fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.55em', textTransform: 'uppercase', cursor: 'pointer', textShadow: '0 0 12px rgba(212,212,232,0.5)' }}>
+                    style={{ padding: '14px 48px', borderRadius: 2, border: '1px solid rgba(212,212,232,0.15)', background: 'transparent', color: 'rgba(212,212,232,0.45)', fontSize: '1.1rem', fontWeight: 400, fontFamily: '"The Seasons", Georgia, serif', letterSpacing: '0.2em', cursor: 'pointer', animation: 'enterPulse 3s ease-in-out infinite' }}>
                     Enter
                   </button>
                 </div>
