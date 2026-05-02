@@ -106,7 +106,7 @@ function CircleRing({ pct = 0, color = '#fff', size = 88, stroke = 5, children }
 
 function Card({ children, style={} }) {
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:14, padding:'18px 16px', ...style }}>
+    <div style={{ background:'transparent', border:'1px solid rgba(212,212,232,0.1)', boxShadow:'none', borderRadius:14, padding:'18px 16px', ...style }}>
       {children}
     </div>
   )
@@ -303,7 +303,7 @@ export default function Dashboard() {
               ]
             })().map(({ label, value, sub, pct, color, path, valSize }) => (
               <div key={label} onClick={path ? () => navigate(path) : undefined}
-                style={{ background:'var(--bg-card)', border:`1px solid ${color}33`, boxShadow:`var(--card-shadow), 0 0 12px ${color}11`, borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                style={{ background:'transparent', border:`1px solid ${color}22`, boxShadow:'none', borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
                 <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>{label}</p>
                 <CircleRing pct={pct} color={color} size={84} stroke={5}>
                   <p style={{ color, fontSize:valSize, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{value}</p>
