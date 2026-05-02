@@ -23,7 +23,7 @@ const MONTHS = ['January','February','March','April','May','June','July','August
 const TYPE_CFG = {
   general: { label:'General',  icon:'🗓',  color:'var(--btn-bg)' },
   workout: { label:'Workout',  icon:'💪',  color:'var(--accent-fitness,#dc4f3a)' },
-  prayer:  { label:'Prayer',   icon:'🙏',  color:'var(--accent-prayer,#c8a000)' },
+  prayer:  { label:'Devotion', icon:'🙏',  color:'var(--accent-prayer,#c8a000)' },
   meal:    { label:'Meal',     icon:'🥗',  color:'var(--accent-food,#c8853a)' },
   finance: { label:'Finance',  icon:'💰',  color:'var(--accent-finance,#4db891)' },
 }
@@ -33,7 +33,7 @@ const toDateStr = (y, m, d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).
 
 const EVENT_TEMPLATES = [
   { emoji:'💪', title:'Workout',       type:'workout', time:'07:00' },
-  { emoji:'🙏', title:'Prayer',        type:'prayer',  time:'08:00' },
+  { emoji:'🙏', title:'Devotion',       type:'prayer',  time:'08:00' },
   { emoji:'🥗', title:'Meal Prep',     type:'meal',    time:'11:00' },
   { emoji:'📖', title:'Bible Study',   type:'prayer',  time:'19:00' },
   { emoji:'💰', title:'Pay Bills',     type:'finance', time:null    },

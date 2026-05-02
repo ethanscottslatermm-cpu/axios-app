@@ -5,12 +5,12 @@ import SignOutScreen from '../SignOutScreen'
 
 const modules = [
   { path: '/dashboard', label: 'Dashboard' },
-  { path: '/food',      label: 'Food Journal' },
+  { path: '/food',      label: 'Nourishment' },
   { path: '/water',     label: 'Water Tracker' },
   { path: '/weight',    label: 'Weight Tracker' },
-  { path: '/prayer',    label: 'Prayer Tracker' },
+  { path: '/prayer',    label: 'Devotion' },
   { path: '/devotional',label: 'Daily Devotional' },
-  { path: '/fitness',   label: 'Fitness Tracker' },
+  { path: '/fitness',   label: 'Training' },
 ]
 
 export default function Sidebar() {

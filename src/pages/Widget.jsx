@@ -123,8 +123,8 @@ export default function Widget() {
           {/* Quick nav */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, ...anim(160) }}>
             {[
-              { label: 'Fitness',    path: '/fitness'    },
-              { label: 'Prayer',     path: '/prayer'     },
+              { label: 'Training',   path: '/fitness'    },
+              { label: 'Devotion',   path: '/prayer'     },
               { label: 'Devotional', path: '/devotional' },
               { label: 'Dashboard',  path: '/dashboard'  },
             ].map(({ label, path }) => (

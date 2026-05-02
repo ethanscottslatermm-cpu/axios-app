@@ -57,10 +57,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'Food & Water',   path:'/food',    icon: Ico.food },
-  { key:'prayer',  label:'Prayer',         path:'/prayer',  icon: Ico.prayer },
-  { key:'fitness', label:'Fitness Center', path:'/fitness', icon: Ico.fitness },
-  { key:'finance', label:'Finance',        path:'/finance', icon: Ico.finance },
+  { key:'food',    label:'Nourishment',    path:'/food',    icon: Ico.food },
+  { key:'prayer',  label:'Devotion',       path:'/prayer',  icon: Ico.prayer },
+  { key:'fitness', label:'Training',       path:'/fitness', icon: Ico.fitness },
+  { key:'finance', label:'Treasury',       path:'/finance', icon: Ico.finance },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -145,11 +145,11 @@ export function BottomNav() {
   const loc = useLocation()
   const items = [
     { label:'Home',     path:'/dashboard', icon: Ico.home,    color: '#c8c8d8', activeColor: '#d8d8f0' },
-    { label:'Food',     path:'/food',      icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
-    { label:'Fitness',  path:'/fitness',   icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
-    { label:'Prayer',   path:'/prayer',    icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
-    { label:'Finance',  path:'/finance',   icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
-    { label:'Settings', path:'/settings',  icon: Ico.settings,color: '#4a90b8', activeColor: '#7dd3fc' },
+    { label:'Nourish',  path:'/food',      icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
+    { label:'Training', path:'/fitness',   icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
+    { label:'Devotion', path:'/prayer',    icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
+    { label:'Treasury', path:'/finance',   icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
+    { label:'Forge',    path:'/settings',  icon: Ico.settings,color: '#4a90b8', activeColor: '#7dd3fc' },
   ]
   return (
     <nav className="ax-bottom-nav" style={{
@@ -441,7 +441,7 @@ export default function Dashboard() {
 
           {/* Prayer */}
           <Card style={anim(400)}>
-            <SectionHead title="Prayer" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} onToggle={() => toggleSection('prayer')} collapsed={activeSection !== 'prayer'} />
+            <SectionHead title="Devotion" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} onToggle={() => toggleSection('prayer')} collapsed={activeSection !== 'prayer'} />
             {activeSection === 'prayer' && (
             <>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
@@ -479,7 +479,7 @@ export default function Dashboard() {
               { label:'Food',    val: streaks.food,       color: MODULE_COLORS.food       },
               { label:'Water',   val: streaks.water,      color: MODULE_COLORS.water      },
               { label:'Fitness', val: streaks.fitness,    color: MODULE_COLORS.fitness    },
-              { label:'Prayer',  val: streaks.prayer,     color: MODULE_COLORS.prayer     },
+              { label:'Devotion',val: streaks.prayer,     color: MODULE_COLORS.prayer     },
               { label:'Devot.',  val: streaks.devotional, color: MODULE_COLORS.devotional },
             ].map(({ label, val, color }) => (
               <div key={label} style={{ background:`${color}11`, border:`1px solid ${color}44`, boxShadow:`0 0 10px ${color}22`, borderRadius:10, padding:'10px 6px', textAlign:'center' }}>

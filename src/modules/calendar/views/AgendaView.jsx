@@ -2,7 +2,7 @@ const FF = 'Helvetica Neue,Arial,sans-serif'
 const TYPE_CFG = {
   general: { label:'General',  icon:'🗓',  color:'var(--btn-bg)' },
   workout: { label:'Workout',  icon:'💪',  color:'var(--accent-fitness,#dc4f3a)' },
-  prayer:  { label:'Prayer',   icon:'🙏',  color:'var(--accent-prayer,#c8a000)' },
+  prayer:  { label:'Devotion', icon:'🙏',  color:'var(--accent-prayer,#c8a000)' },
   meal:    { label:'Meal',     icon:'🥗',  color:'var(--accent-food,#c8853a)' },
   finance: { label:'Finance',  icon:'💰',  color:'var(--accent-finance,#4db891)' },
 }

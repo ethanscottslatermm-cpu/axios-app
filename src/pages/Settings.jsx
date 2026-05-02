@@ -287,7 +287,7 @@ export default function Settings() {
             <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
               <img src={settingsIconSrc} width={20} height={20} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
-              <h1 style={{ color:'var(--text-primary)', fontWeight:400, fontSize:22, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase' }}>Settings</h1>
+              <h1 style={{ color:'var(--text-primary)', fontWeight:400, fontSize:18, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase', whiteSpace:'nowrap' }}>Forge</h1>
             </div>
           </div>
           {/* Profile avatar — top right */}
