@@ -252,13 +252,13 @@ export default function Dashboard() {
           backgroundImage:`url(${CAR_IMG})`,
           backgroundSize:'cover', backgroundPosition:'center 30%',
           backgroundRepeat:'no-repeat',
-          opacity:0.18,
+          opacity:0.38,
           pointerEvents:'none',
-          filter:'grayscale(100%) contrast(1.25) brightness(1.08)',
+          filter:'grayscale(100%) contrast(1.5) brightness(1.1) sharpen(1)',
         }} />
         <div style={{
           position:'fixed', inset:0, zIndex:0,
-          background:'linear-gradient(to bottom, rgba(8,8,8,0.5) 0%, rgba(8,8,8,0.2) 40%, rgba(8,8,8,0.85) 100%)',
+          background:'linear-gradient(to bottom, rgba(8,8,8,0.35) 0%, rgba(8,8,8,0.08) 40%, rgba(8,8,8,0.65) 100%)',
           pointerEvents:'none',
         }} />
 
