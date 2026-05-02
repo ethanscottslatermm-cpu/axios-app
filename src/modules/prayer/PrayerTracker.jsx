@@ -349,7 +349,7 @@ export default function PrayerTracker() {
 
           {/* Tab switcher */}
           <div style={{ display:'flex', gap:8, marginTop: activeTab === 'prayer' ? 12 : 0 }}>
-            {[['prayer','Devotion'],['devotional','Devotional']].map(([key, label]) => {
+            {[['prayer','Devotion'],['devotional','Scripture']].map(([key, label]) => {
               const isActive = activeTab === key
               return (
                 <button key={key} onClick={() => setActiveTab(key)} className="ax-filter-tab"
