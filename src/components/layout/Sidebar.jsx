@@ -5,12 +5,12 @@ import SignOutScreen from '../SignOutScreen'
 
 const modules = [
   { path: '/dashboard', label: 'Dashboard' },
-  { path: '/food',      label: 'Food journal' },
-  { path: '/water',     label: 'Water tracker' },
-  { path: '/weight',    label: 'Weight tracker' },
-  { path: '/prayer',    label: 'Prayer tracker' },
-  { path: '/devotional',label: 'Daily devotional' },
-  { path: '/fitness',   label: 'Fitness tracker' },
+  { path: '/food',      label: 'Food Journal' },
+  { path: '/water',     label: 'Water Tracker' },
+  { path: '/weight',    label: 'Weight Tracker' },
+  { path: '/prayer',    label: 'Prayer Tracker' },
+  { path: '/devotional',label: 'Daily Devotional' },
+  { path: '/fitness',   label: 'Fitness Tracker' },
 ]
 
 export default function Sidebar() {
@@ -41,12 +41,13 @@ export default function Sidebar() {
         <NavLink
           to="/dashboard"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-5 py-2.5 text-[13px] transition-colors ${
+            `flex items-center gap-3 px-5 py-2.5 transition-colors ${
               isActive
                 ? 'text-white bg-white/[0.07] border-l-2 border-white'
                 : 'text-white/45 hover:text-white/70'
             }`
           }
+          style={{ fontFamily: "'The Seasons', serif", fontSize: '0.85rem', letterSpacing: '0.06em' }}
         >
           Dashboard
         </NavLink>
@@ -57,12 +58,13 @@ export default function Sidebar() {
             key={path}
             to={path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-5 py-2.5 text-[13px] transition-colors ${
+              `flex items-center gap-3 px-5 py-2.5 transition-colors ${
                 isActive
                   ? 'text-white bg-white/[0.07] border-l-2 border-white'
                   : 'text-white/45 hover:text-white/70'
               }`
             }
+            style={{ fontFamily: "'The Seasons', serif", fontSize: '0.85rem', letterSpacing: '0.06em' }}
           >
             {label}
           </NavLink>

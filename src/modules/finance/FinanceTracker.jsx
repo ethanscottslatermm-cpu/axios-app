@@ -913,7 +913,7 @@ export default function FinanceTracker() {
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
             <div>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#86efac', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Markets</h1>
+                <h1 style={{ color:'#86efac', fontSize:22, fontWeight:400, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase' }}>Markets</h1>
                 <img src={financeIconSrc} width={22} height={22} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
               <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>

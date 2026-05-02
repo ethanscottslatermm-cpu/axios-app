@@ -320,7 +320,7 @@ export default function PrayerTracker() {
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#c8a000', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Prayer</h1>
+                <h1 style={{ color:'#c8a000', fontWeight:400, fontSize:22, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase' }}>Prayer</h1>
                 <img src={prayerIconSrc} width={20} height={20} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
             </div>

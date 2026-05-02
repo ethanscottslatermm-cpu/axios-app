@@ -945,7 +945,7 @@ export default function FitnessTracker() {
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>AXIOS</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#b4bccc', fontWeight:900, fontSize:20, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Fitness Center</h1>
+                <h1 style={{ color:'#b4bccc', fontWeight:400, fontSize:22, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase' }}>Fitness Center</h1>
                 <img src={fitnessIconSrc} width={20} height={20} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
             </div>
