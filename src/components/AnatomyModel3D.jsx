@@ -1,6 +1,6 @@
 import { Suspense, useRef, useEffect, useState } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
-import { useGLTF, Html } from '@react-three/drei'
+import { useGLTF, Html, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 // ── Exercise data ─────────────────────────────────────────────────────────────
@@ -133,7 +133,7 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
     const box    = new THREE.Box3().setFromObject(scene)
     const size   = box.getSize(new THREE.Vector3())
     const center = box.getCenter(new THREE.Vector3())
-    const s      = 3.2 / Math.max(size.x, size.y, size.z)
+    const s      = 2.6 / Math.max(size.x, size.y, size.z)
 
     if (groupRef.current) {
       groupRef.current.scale.setScalar(s)
@@ -213,7 +213,7 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
     <group ref={groupRef}>
       <primitive
         object={scene}
-        onPointerDown={e => {
+        onClick={e => {
           e.stopPropagation()
           const g = e.object.userData.muscleGroup ?? findGroup(e.object.name)
           if (g) onMuscleSelect(g)
@@ -346,9 +346,9 @@ export default function AnatomyModel3D({ selectedGroup, onMuscleSelect, view }) 
   }
 
   return (
-    <div style={{ position:'relative', width:'100%', height:'60vh', minHeight:420, touchAction:'none' }}>
+    <div style={{ position:'relative', width:'100%', height:'68vh', minHeight:460, touchAction:'none' }}>
       <Canvas
-        camera={{ position:[0, 0, 4.2], fov:38 }}
+        camera={{ position:[0, 0, 5], fov:44 }}
         gl={{ alpha:true, antialias:true }}
         dpr={Math.min(window.devicePixelRatio, 2)}
         frameloop="always"
@@ -366,6 +366,12 @@ export default function AnatomyModel3D({ selectedGroup, onMuscleSelect, view }) 
             selectedGroup={selectedGroup}
             onMuscleSelect={handleSelect}
             view={view}
+          />
+          <OrbitControls
+            enablePan={false}
+            minDistance={2.5}
+            maxDistance={9}
+            target={[0, 0, 0]}
           />
         </Suspense>
       </Canvas>
