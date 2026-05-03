@@ -508,13 +508,18 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     return lw
   }, [workouts])
 
-  function muscleHeatColor(muscle) {
+  function muscleAgeDays(muscle) {
     const lw = lastWorked[muscle]
-    if (!lw) return '#ffffff'
-    const diff = Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000)
-    if (diff === 0) return '#ef4444'
-    if (diff === 1) return '#f97316'
-    if (diff <= 3)  return '#eab308'
+    if (!lw) return null
+    return Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000)
+  }
+
+  function muscleHeatColor(muscle) {
+    const days = muscleAgeDays(muscle)
+    if (days === null) return '#ffffff'
+    if (days === 0) return '#ef4444'
+    if (days === 1) return '#f97316'
+    if (days <= 3)  return '#eab308'
     return '#22c55e'
   }
 
@@ -559,6 +564,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @keyframes mmGlow           { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
         @keyframes mmPulse          { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
         @keyframes mmCrosshairPulse { 0%,100% { opacity:0.45; transform:scale(1) } 50% { opacity:0.9; transform:scale(1.14) } }
+        @keyframes mmFatiguePulse   { 0%,100% { opacity:0.58 } 50% { opacity:0.78 } }
         @keyframes mmVeinDash       { from { stroke-dashoffset:0.6 } to { stroke-dashoffset:-0.6 } }
         @keyframes mmScan           { 0%{transform:translateY(-2px);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(202px);opacity:0.5} 33%{transform:translateY(202px);opacity:0} 100%{transform:translateY(202px);opacity:0} }
         @keyframes mmRipple         { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
@@ -632,14 +638,29 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             if (m === 'Head') return null  // Head rendered as SVG outline, no fill
             const isSel   = selected === m
             const heatCol = muscleHeatColor(m)
-            const op      = isSel ? 0.92 : lastWorked[m] ? 0.52 : 0.24
+            const days    = muscleAgeDays(m)
+            const op      = isSel ? 0.92 : days !== null ? (days <= 1 ? 0.70 : 0.52) : 0.24
+            const glowFilter = isSel
+              ? 'drop-shadow(0 0 12px rgba(16,185,129,0.95)) drop-shadow(0 0 5px rgba(52,211,153,0.75))'
+              : days === 0
+              ? 'drop-shadow(0 0 11px rgba(239,68,68,0.80)) drop-shadow(0 0 5px rgba(239,68,68,0.55))'
+              : days === 1
+              ? 'drop-shadow(0 0 9px rgba(249,115,22,0.65)) drop-shadow(0 0 4px rgba(249,115,22,0.45))'
+              : days !== null && days <= 3
+              ? 'drop-shadow(0 0 6px rgba(234,179,8,0.38))'
+              : undefined
+            const anim = isSel
+              ? 'mmPulse 2.4s ease-in-out infinite'
+              : days === 0
+              ? 'mmFatiguePulse 2s ease-in-out infinite'
+              : undefined
             return (
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
                 opacity: op,
-                filter: isSel ? 'drop-shadow(0 0 12px rgba(16,185,129,0.95)) drop-shadow(0 0 5px rgba(52,211,153,0.75))' : undefined,
-                transition: 'opacity 0.35s ease, filter 0.35s ease, color 0.5s ease',
-                animation: isSel ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
+                filter: glowFilter,
+                transition: 'opacity 0.35s ease, filter 0.6s ease',
+                animation: anim,
               }}>
                 <Model
                   data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
