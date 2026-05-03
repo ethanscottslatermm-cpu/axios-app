@@ -55,15 +55,15 @@ const GROUPS = {
 
 // Mesh name substrings → hide entirely and disable raycasting
 const HIDE = [
-  // Connective tissue (galea aponeurotica is handled by SKULL_INCLUDE override)
+  // Connective tissue
   'fascia','bursa','retinaculum','aponeurosis','ligament','septum',
   'tendon sheath','tendinous ring','tarsus','trochlea',
-  // Keep small detail/expression muscles hidden (look wrong without skin)
-  // but leave structural face/jaw muscles visible so the face has shape
-  'pterygoid','auricularis','platysma',
+  // Entire head + face — knight helmet aesthetic, no head rendered
+  'temporalis','frontalis','occipitalis','epicranius','temporoparietalis',
+  'masseter','buccinator','zygomaticus','auricularis','platysma',
   'corrugator','procerus','mentalis','nasalis',
   'orbicularis','risorius','depressor',
-  'levator labii','levator anguli',
+  'levator labii','levator anguli','pterygoid',
   // Eye muscles
   'superior oblique','inferior oblique',
   'superior rectus','inferior rectus',
@@ -90,11 +90,8 @@ const HIDE = [
   'transversus thoracis','innermost intercostal',
 ]
 
-// Always render these with platinum regardless of HIDE matches (galea aponeurotica matches 'aponeurosis' but must show)
-const SKULL_INCLUDE = [
-  'skull', 'cranium', 'cranial', 'calvaria',
-  'neurocranium', 'viscerocranium', 'head', 'galea',
-]
+// No skull/head overrides — head is intentionally hidden
+const SKULL_INCLUDE = []
 
 const SEL_COLOR  = new THREE.Color('#C9A96E')
 const BASE_COLOR = new THREE.Color('#C0C8D8')
@@ -124,13 +121,30 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
   const matsRef    = useRef({})
   const camRaf     = useRef(null)
 
-  // One-time setup: center + scale model, assign materials
+  // One-time setup: hide head, center on visible body, assign materials
   useEffect(() => {
     scene.scale.set(1, 1, 1)
     scene.position.set(0, 0, 0)
     scene.updateMatrixWorld(true)
 
-    const box    = new THREE.Box3().setFromObject(scene)
+    // Pass 1 — set visibility so bounding box reflects body only (no head)
+    scene.traverse(child => {
+      if (!child.isMesh) return
+      if (shouldHide(child.name)) {
+        child.visible = false
+        child.raycast = NOOP_RAYCAST
+      }
+    })
+
+    // Compute bounding box from visible meshes only
+    const box    = new THREE.Box3()
+    const tmpBox = new THREE.Box3()
+    scene.traverse(child => {
+      if (child.isMesh && child.visible) {
+        tmpBox.setFromObject(child)
+        box.union(tmpBox)
+      }
+    })
     const size   = box.getSize(new THREE.Vector3())
     const center = box.getCenter(new THREE.Vector3())
     const s      = 2.6 / Math.max(size.x, size.y, size.z)
@@ -140,23 +154,12 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
       groupRef.current.position.set(-center.x * s, -center.y * s, -center.z * s)
     }
 
+    // Pass 2 — assign platinum material to every visible mesh
     const mats = {}
     scene.traverse(child => {
-      if (!child.isMesh) return
-
-      if (shouldHide(child.name)) {
-        child.visible = false
-        child.raycast = NOOP_RAYCAST
-        // Temporary: log every hidden mesh so we can audit the face/jaw area
-        console.log('[HIDDEN]', child.name)
-        return
-      }
-      console.log('[VISIBLE]', child.name)
-
-      // Enable raycasting explicitly for every visible muscle
+      if (!child.isMesh || !child.visible) return
       child.raycast = THREE.Mesh.prototype.raycast
       child.userData.muscleGroup = findGroup(child.name)
-
       if (child.material?._axiosOwned) child.material.dispose()
       const mat = new THREE.MeshStandardMaterial({
         color:             BASE_COLOR.clone(),
@@ -175,7 +178,6 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
     })
     matsRef.current = mats
 
-    // Capture local `mats` so cleanup disposes the correct set
     return () => { Object.values(mats).forEach(m => m.dispose()) }
   }, [scene])
 
@@ -373,6 +375,8 @@ export default function AnatomyModel3D({ selectedGroup, onMuscleSelect, view }) 
             enablePan={false}
             minDistance={2.5}
             maxDistance={9}
+            minPolarAngle={0.1}
+            maxPolarAngle={Math.PI * 0.78}
             target={[0, 0, 0]}
           />
         </Suspense>
