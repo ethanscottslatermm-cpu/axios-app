@@ -470,6 +470,10 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const [exercises,    setExercises]   = useState([])
   const [spinning,     setSpinning]    = useState(false)
   const [breathingEx,  setBreathingEx] = useState(null)
+  const [ripples,      setRipples]     = useState([])
+  const svgRef      = useRef(null)
+  const touchStartX = useRef(null)
+  const didSwipe    = useRef(false)
 
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
@@ -504,6 +508,16 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     return lw
   }, [workouts])
 
+  function muscleHeatColor(muscle) {
+    const lw = lastWorked[muscle]
+    if (!lw) return '#ffffff'
+    const diff = Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000)
+    if (diff === 0) return '#ef4444'
+    if (diff === 1) return '#f97316'
+    if (diff <= 3)  return '#eab308'
+    return '#22c55e'
+  }
+
   useEffect(() => {
     if (selected && selected !== 'Head') {
       const dbKey = GROUP_TO_DB[selected]
@@ -515,6 +529,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   }, [selected])
 
   function handleClick({ muscle }) {
+    if (didSwipe.current) { didSwipe.current = false; return }
     const group = GROUP_FROM_SLUG[muscle]
     if (group) {
       setLastSelected(group)
@@ -544,7 +559,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @keyframes mmGlow           { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
         @keyframes mmPulse          { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
         @keyframes mmCrosshairPulse { 0%,100% { opacity:0.45; transform:scale(1) } 50% { opacity:0.9; transform:scale(1.14) } }
-        @keyframes mmVeinFlow       { 0%,100% { opacity:0.58 } 50% { opacity:0.82 } }
+        @keyframes mmVeinDash       { from { stroke-dashoffset:0.6 } to { stroke-dashoffset:-0.6 } }
+        @keyframes mmScan           { 0%{transform:translateY(-2px);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(202px);opacity:0.5} 33%{transform:translateY(202px);opacity:0} 100%{transform:translateY(202px);opacity:0} }
+        @keyframes mmRipple         { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
       `}</style>
 
       {/* Front / Back toggle */}
@@ -567,7 +584,26 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
 
       {/* Body model + label overlay */}
       <div style={{ display: 'flex', justifyContent: 'center', overflow: 'visible' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: 240, overflow: 'visible' }}>
+        <div
+          style={{ position: 'relative', width: '100%', maxWidth: 240, overflow: 'visible' }}
+          onTouchStart={e => { touchStartX.current = e.touches[0].clientX }}
+          onTouchEnd={e => {
+            if (touchStartX.current === null) return
+            const dx = e.changedTouches[0].clientX - touchStartX.current
+            if (Math.abs(dx) > 40) { setView(dx < 0 ? 'posterior' : 'anterior'); didSwipe.current = true }
+            touchStartX.current = null
+          }}
+          onPointerDown={e => {
+            const svg = svgRef.current
+            if (!svg) return
+            const rect = svg.getBoundingClientRect()
+            const x = (e.clientX - rect.left) / rect.width * 100
+            const y = (e.clientY - rect.top)  / rect.height * 200
+            const id = Date.now()
+            setRipples(r => [...r, { x, y, id }])
+            setTimeout(() => setRipples(r => r.filter(ri => ri.id !== id)), 700)
+          }}
+        >
 
           {/* Ambient glow — brightens on selection */}
           <div style={{
@@ -594,21 +630,22 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           {/* Per-muscle DB-colored overlays */}
           {MUSCLES.map(m => {
             if (m === 'Head') return null  // Head rendered as SVG outline, no fill
-            const isSel = selected === m
-            const op    = isSel ? 0.92 : 0.24
+            const isSel   = selected === m
+            const heatCol = muscleHeatColor(m)
+            const op      = isSel ? 0.92 : lastWorked[m] ? 0.52 : 0.24
             return (
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
                 opacity: op,
                 filter: isSel ? 'drop-shadow(0 0 12px rgba(16,185,129,0.95)) drop-shadow(0 0 5px rgba(52,211,153,0.75))' : undefined,
-                transition: 'opacity 0.35s ease, filter 0.35s ease',
+                transition: 'opacity 0.35s ease, filter 0.35s ease, color 0.5s ease',
                 animation: isSel ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
               }}>
                 <Model
                   data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
                   type={view}
                   bodyColor="rgba(0,0,0,0)"
-                  highlightedColors={isSel ? ['#10b981', '#10b981', '#10b981'] : ['#ffffff', '#ffffff', '#ffffff']}
+                  highlightedColors={isSel ? ['#10b981','#10b981','#10b981'] : [heatCol, heatCol, heatCol]}
                   style={{ width: '100%', display: 'block' }}
                   svgStyle={{ borderRadius: 8 }}
                 />
@@ -618,6 +655,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
 
           {/* Label overlay — viewBox matches model's 0 0 100 200 space */}
           <svg
+            ref={svgRef}
             viewBox="0 0 100 200"
             preserveAspectRatio="xMidYMid meet"
             style={{
@@ -633,7 +671,23 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 <feComposite in="white" in2="blur" operator="in" result="wb"/>
                 <feMerge><feMergeNode in="wb"/><feMergeNode in="wb"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
+              <linearGradient id="mm-scan-grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="transparent"/>
+                <stop offset="25%"  stopColor="rgba(100,200,255,0.4)"/>
+                <stop offset="50%"  stopColor="rgba(180,230,255,0.28)"/>
+                <stop offset="75%"  stopColor="rgba(100,200,255,0.4)"/>
+                <stop offset="100%" stopColor="transparent"/>
+              </linearGradient>
             </defs>
+            {/* Periodic scan sweep */}
+            <rect
+              x="0" y="-1" width="100" height="1.5"
+              fill="url(#mm-scan-grad)"
+              style={{
+                animation: 'mmScan 7s ease-in-out infinite',
+                filter: 'drop-shadow(0 0 1.5px rgba(100,200,255,0.55))',
+              }}
+            />
 
             {/* Head outline — exact polygon from react-body-highlighter source, no fill, white illuminated */}
             <polygon
@@ -718,14 +772,34 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                     strokeLinecap="round"
                     opacity={isActive ? activeOp : baseOp}
                     filter={glowF}
+                    pathLength={isVein ? '1' : undefined}
+                    strokeDasharray={isVein && !isActive ? '0.12 0.08' : undefined}
                     style={{
                       transition: 'opacity 0.3s, stroke-width 0.3s',
-                      animation: !isActive && isVein ? 'mmVeinFlow 3.5s ease-in-out infinite' : undefined,
+                      animation: !isActive && isVein ? `mmVeinDash 2.8s linear ${i * 0.22}s infinite` : undefined,
                     }}
                   />
                 )
               })
             })}
+
+            {/* Tap ripples */}
+            {ripples.map(rp => (
+              <circle
+                key={rp.id}
+                cx={rp.x} cy={rp.y}
+                r="11"
+                fill="rgba(255,255,255,0.10)"
+                stroke="rgba(255,255,255,0.72)"
+                strokeWidth="0.55"
+                style={{
+                  transformBox: 'fill-box',
+                  transformOrigin: 'center',
+                  animation: 'mmRipple 0.65s ease-out forwards',
+                  pointerEvents: 'none',
+                }}
+              />
+            ))}
 
             {labels.map(l => {
               const isActive  = selected === l.group
