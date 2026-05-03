@@ -92,7 +92,7 @@ const HIDE = [
 // Skull/cranium meshes — always render with platinum material, override HIDE
 const SKULL_INCLUDE = [
   'skull', 'cranium', 'cranial', 'calvaria',
-  'neurocranium', 'viscerocranium', 'head of ',
+  'neurocranium', 'viscerocranium', 'head',
 ]
 
 const SEL_COLOR  = new THREE.Color('#C9A96E')
