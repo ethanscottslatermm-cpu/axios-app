@@ -58,11 +58,11 @@ const HIDE = [
   // Connective tissue (galea aponeurotica is handled by SKULL_INCLUDE override)
   'fascia','bursa','retinaculum','aponeurosis','ligament','septum',
   'tendon sheath','tendinous ring','tarsus','trochlea',
-  // Face muscles only — scalp muscles (temporalis, frontalis, occipitalis) are
-  // intentionally kept visible because they form the skull shape in this model
-  'pterygoid','masseter','buccinator','auricularis','platysma',
+  // Keep small detail/expression muscles hidden (look wrong without skin)
+  // but leave structural face/jaw muscles visible so the face has shape
+  'pterygoid','auricularis','platysma',
   'corrugator','procerus','mentalis','nasalis',
-  'orbicularis','risorius','zygomaticus','depressor',
+  'orbicularis','risorius','depressor',
   'levator labii','levator anguli',
   // Eye muscles
   'superior oblique','inferior oblique',
