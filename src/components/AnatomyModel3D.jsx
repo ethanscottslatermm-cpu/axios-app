@@ -55,20 +55,21 @@ const GROUPS = {
 
 // Mesh name substrings → hide entirely and disable raycasting
 const HIDE = [
-  // Connective tissue
+  // Connective tissue (galea aponeurotica is handled by SKULL_INCLUDE override)
   'fascia','bursa','retinaculum','aponeurosis','ligament','septum',
   'tendon sheath','tendinous ring','tarsus','trochlea',
-  // Entire head / skull area — use short roots to catch all Z-Anatomy name variants
-  'temporalis','frontalis','occipitalis','epicranius','temporoparietalis',
-  'masseter','buccinator','corrugator','procerus',
-  'mentalis','nasalis','orbicularis','risorius','zygomaticus','depressor',
+  // Face muscles only — scalp muscles (temporalis, frontalis, occipitalis) are
+  // intentionally kept visible because they form the skull shape in this model
+  'pterygoid','masseter','buccinator','auricularis','platysma',
+  'corrugator','procerus','mentalis','nasalis',
+  'orbicularis','risorius','zygomaticus','depressor',
   'levator labii','levator anguli',
   // Eye muscles
   'superior oblique','inferior oblique',
   'superior rectus','inferior rectus',
   'lateral rectus','medial rectus','levator palpebrae',
   // Throat / larynx
-  'pterygoid','arytenoid','cricothyroid','thyrohyoid',
+  'arytenoid','cricothyroid','thyrohyoid',
   'sternohyoid','sternothyroid','omohyoid',
   'digastric','mylohyoid','geniohyoid','stylohyoid',
   'hyoglossus','genioglossus','palatopharyngeus','stylopharyngeus',
@@ -89,10 +90,10 @@ const HIDE = [
   'transversus thoracis','innermost intercostal',
 ]
 
-// Skull/cranium meshes — always render with platinum material, override HIDE
+// Always render these with platinum regardless of HIDE matches (galea aponeurotica matches 'aponeurosis' but must show)
 const SKULL_INCLUDE = [
   'skull', 'cranium', 'cranial', 'calvaria',
-  'neurocranium', 'viscerocranium', 'head',
+  'neurocranium', 'viscerocranium', 'head', 'galea',
 ]
 
 const SEL_COLOR  = new THREE.Color('#C9A96E')
