@@ -89,12 +89,20 @@ const HIDE = [
   'transversus thoracis','innermost intercostal',
 ]
 
+// Skull/cranium meshes — always render with platinum material, override HIDE
+const SKULL_INCLUDE = [
+  'skull', 'cranium', 'cranial', 'calvaria',
+  'neurocranium', 'viscerocranium', 'head of ',
+]
+
 const SEL_COLOR  = new THREE.Color('#C9A96E')
 const BASE_COLOR = new THREE.Color('#C0C8D8')
 const NOOP_RAYCAST = () => {}
 
 function shouldHide(name) {
   const l = name.toLowerCase()
+  // Skull/cranium meshes are always included — never hidden
+  if (SKULL_INCLUDE.some(p => l.includes(p))) return false
   return HIDE.some(w => l.includes(w))
 }
 
