@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react'
 import { DB } from './WorkoutGuide'
+import Model from 'react-body-highlighter'
 import AnatomyModel3D from '../../components/AnatomyModel3D'
 
 const THREED_TO_DISPLAY = {
@@ -484,6 +485,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const [exercises,    setExercises]   = useState([])
   const [spinning,     setSpinning]    = useState(false)
   const [breathingEx,  setBreathingEx] = useState(null)
+  const [use3D,        setUse3D]       = useState(false)
 
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
@@ -528,6 +530,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     setBreathingEx(null)
   }, [selected])
 
+  function handleClick(data) {
+    const group = data.name
+    if (group) { setLastSelected(group); setSelected(s => s === group ? null : group) }
+  }
+
   function handleMuscleSelect(groupKey) {
     const displayName = THREED_TO_DISPLAY[groupKey]
     if (displayName) {
@@ -560,8 +567,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @keyframes mmVeinFlow       { 0%,100% { opacity:0.58 } 50% { opacity:0.82 } }
       `}</style>
 
-      {/* Front / Back toggle */}
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+      {/* Front / Back + 2D/3D toggles */}
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
         {[['anterior','Front'], ['posterior','Back']].map(([v, label]) => (
           <button key={v} onClick={() => setView(v)} style={{
             padding: '7px 26px', borderRadius: 99, cursor: 'pointer',
@@ -576,14 +583,76 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             transition: 'all 0.2s',
           }}>{label}</button>
         ))}
+        <button onClick={() => setUse3D(v => !v)} style={{
+          padding: '7px 16px', borderRadius: 99, cursor: 'pointer',
+          background: use3D
+            ? 'linear-gradient(135deg, rgba(201,169,110,0.18) 0%, rgba(201,169,110,0.08) 100%)'
+            : 'var(--bg-card)',
+          border: `1px solid ${use3D ? 'rgba(201,169,110,0.6)' : 'var(--border)'}`,
+          color: use3D ? '#C9A96E' : 'var(--text-muted)',
+          fontSize: 11, fontFamily: FF, fontWeight: use3D ? 700 : 400,
+          letterSpacing: '0.12em', textTransform: 'uppercase',
+          transition: 'all 0.2s',
+        }}>3D</button>
       </div>
 
-      {/* 3D Anatomy Model */}
-      <AnatomyModel3D
-        selectedGroup={DISPLAY_TO_THREED[selected] || null}
-        onMuscleSelect={handleMuscleSelect}
-        view={view}
-      />
+      {/* Body model — 2D default, 3D when toggled */}
+      {use3D ? (
+        <AnatomyModel3D
+          selectedGroup={DISPLAY_TO_THREED[selected] || null}
+          onMuscleSelect={handleMuscleSelect}
+          view={view}
+        />
+      ) : (
+        <div style={{ position: 'relative', userSelect: 'none' }}>
+          <Model
+            data={MUSCLES.map(m => ({
+              name:    m,
+              muscles: SLUG_MAP[m],
+              color:   selected === m
+                ? HIGHLIGHT_COLOR
+                : m === 'Head' ? `${MIND_COLOR}70` : 'rgba(212,212,232,0.12)',
+            }))}
+            onClick={handleClick}
+            type={view === 'anterior' ? 'anterior' : 'posterior'}
+            style={{ width: '100%' }}
+          />
+          <svg
+            viewBox="0 0 100 200"
+            preserveAspectRatio="xMidYMid meet"
+            style={{ position:'absolute', inset:0, width:'100%', height:'100%', overflow:'visible', pointerEvents:'none' }}
+          >
+            {Object.entries(DEFINITION_LINES[view] || {}).flatMap(([grp, lines]) =>
+              lines.map((ln, i) => (
+                <path key={`${grp}-${i}`} d={ln.d} fill="none"
+                  stroke={
+                    ln.type === 'bone'   ? 'rgba(220,220,240,0.22)' :
+                    ln.type === 'vein'   ? 'rgba(160,190,255,0.30)' :
+                    selected === grp     ? `${HIGHLIGHT_COLOR}95`   : 'rgba(212,212,232,0.18)'
+                  }
+                  strokeWidth={ln.type === 'bone' ? 0.55 : ln.type === 'vein' ? 0.38 : 0.5}
+                  strokeLinecap="round"
+                />
+              ))
+            )}
+            {(LABELS[view] || []).map(l => {
+              const isSel = selected === l.group
+              const color = l.group === 'Head' ? MIND_COLOR : (isSel ? HIGHLIGHT_COLOR : 'rgba(212,212,232,0.50)')
+              return (
+                <g key={l.group}>
+                  <line x1={l.ex} y1={l.y} x2={l.anchor === 'start' ? 100 : 0} y2={l.y}
+                    stroke={color} strokeWidth={0.35} opacity={0.65} />
+                  <text x={l.x} y={l.y + 1.3} textAnchor={l.anchor}
+                    fill={color} fontSize={4.8} fontFamily={FF}
+                    fontWeight={isSel ? 700 : 400} letterSpacing={0.25}>
+                    {l.group.toUpperCase()}
+                  </text>
+                </g>
+              )
+            })}
+          </svg>
+        </div>
+      )}
 
       {/* Detail panel */}
       {!selected ? (
