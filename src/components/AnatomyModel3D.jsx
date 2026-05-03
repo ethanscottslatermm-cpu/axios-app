@@ -146,10 +146,12 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
 
       if (shouldHide(child.name)) {
         child.visible = false
-        // Disable raycasting — hidden meshes must NOT intercept taps on visible muscles
         child.raycast = NOOP_RAYCAST
+        // Temporary: log every hidden mesh so we can audit the face/jaw area
+        console.log('[HIDDEN]', child.name)
         return
       }
+      console.log('[VISIBLE]', child.name)
 
       // Enable raycasting explicitly for every visible muscle
       child.raycast = THREE.Mesh.prototype.raycast
