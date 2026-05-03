@@ -564,7 +564,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @keyframes mmGlow           { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
         @keyframes mmPulse          { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
         @keyframes mmCrosshairPulse { 0%,100% { opacity:0.45; transform:scale(1) } 50% { opacity:0.9; transform:scale(1.14) } }
-        @keyframes mmFatiguePulse   { 0%,100% { opacity:0.58 } 50% { opacity:0.78 } }
+        @-webkit-keyframes mmFatiguePulse { 0%,100% { opacity:0.58 } 50% { opacity:0.78 } }
+        @keyframes mmFatiguePulse         { 0%,100% { opacity:0.58 } 50% { opacity:0.78 } }
+        @-webkit-keyframes mmPulse        { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
         @keyframes mmVeinDash       { from { stroke-dashoffset:0.6 } to { stroke-dashoffset:-0.6 } }
         @keyframes mmScan           { 0%{transform:translateY(-2px);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(202px);opacity:0.5} 33%{transform:translateY(202px);opacity:0} 100%{transform:translateY(202px);opacity:0} }
         @keyframes mmRipple         { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
@@ -657,19 +659,26 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             return (
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-                opacity: op,
                 filter: glowFilter,
-                transition: 'opacity 0.35s ease, filter 0.6s ease',
-                animation: anim,
+                transition: 'filter 0.6s ease',
               }}>
-                <Model
-                  data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
-                  type={view}
-                  bodyColor="rgba(0,0,0,0)"
-                  highlightedColors={isSel ? ['#10b981','#10b981','#10b981'] : [heatCol, heatCol, heatCol]}
-                  style={{ width: '100%', display: 'block' }}
-                  svgStyle={{ borderRadius: 8 }}
-                />
+                <div style={{
+                  width: '100%', height: '100%',
+                  opacity: op,
+                  transition: 'opacity 0.35s ease',
+                  animation: anim,
+                  WebkitAnimation: anim,
+                  transform: 'translateZ(0)',
+                }}>
+                  <Model
+                    data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
+                    type={view}
+                    bodyColor="rgba(0,0,0,0)"
+                    highlightedColors={isSel ? ['#10b981','#10b981','#10b981'] : [heatCol, heatCol, heatCol]}
+                    style={{ width: '100%', display: 'block' }}
+                    svgStyle={{ borderRadius: 8 }}
+                  />
+                </div>
               </div>
             )
           })}
