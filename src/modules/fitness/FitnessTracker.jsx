@@ -8,7 +8,7 @@ import { useProfile } from '../../hooks/useProfile'
 import { BottomNav } from '../../pages/Dashboard'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import MuscleMapView from './MuscleMapView'
+import AnatomyDiagram from './AnatomyDiagram'
 import EquipmentScanner from './EquipmentScanner'
 
 
@@ -648,7 +648,7 @@ function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, on
         )}
         {/* Muscle map */}
         <div style={{ padding:'0 4px' }}>
-          <MuscleMapView
+          <AnatomyDiagram
             workouts={workouts}
             defaultSelected={group}
             onLogWorkout={onLogWorkout}
@@ -1297,7 +1297,7 @@ export default function FitnessTracker() {
 
           {activeTab === 'body' && (
             <div style={anim(80)}>
-              <MuscleMapView
+              <AnatomyDiagram
                 workouts={workouts}
                 onLogWorkout={muscle => setQuickLogMuscle(muscle)}
                 onSaveExercise={handleQuickLogExercise}
