@@ -1023,7 +1023,7 @@ export default function FitnessTracker() {
             <div style={anim(140)}>
 
               {/* ── Equipment Scanner Banner ── */}
-              <div onClick={() => setShowScanner(true)} style={{ background:'linear-gradient(135deg,rgba(201,168,76,0.13) 0%,rgba(201,168,76,0.05) 55%,rgba(201,168,76,0.09) 100%)', border:'1px solid rgba(201,168,76,0.32)', borderRadius:14, padding:'15px 16px', marginBottom:18, cursor:'pointer', position:'relative', overflow:'hidden', boxShadow:'0 0 28px rgba(201,168,76,0.07)', transition:'all 0.2s' }}>
+              <div onClick={() => setShowScanner(true)} style={{ background:'linear-gradient(135deg,rgba(201,168,76,0.13) 0%,rgba(201,168,76,0.05) 55%,rgba(201,168,76,0.09) 100%)', border:'1px solid rgba(201,168,76,0.32)', borderRadius:14, padding:'15px 16px', marginBottom:18, cursor:'pointer', position:'relative', boxShadow:'0 0 28px rgba(201,168,76,0.07)', transition:'all 0.2s' }}>
                 <div style={{ position:'absolute', inset:0, pointerEvents:'none', backgroundImage:'radial-gradient(circle,rgba(201,168,76,0.12) 1px,transparent 1px)', backgroundSize:'20px 20px', opacity:0.35 }} />
                 <div style={{ position:'absolute', top:8, right:10, pointerEvents:'none' }}>
                   <svg width="60" height="60" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="29" stroke="rgba(201,168,76,0.08)" strokeWidth="1"/><circle cx="30" cy="30" r="20" stroke="rgba(201,168,76,0.06)" strokeWidth="1" strokeDasharray="3 4"/></svg>
