@@ -953,7 +953,6 @@ export default function FitnessTracker() {
               </div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => setShowScanner(true)} className="ax-scan-btn" style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'rgba(201,168,76,0.07)', border:'1px solid rgba(201,168,76,0.38)', boxShadow:'0 0 14px rgba(201,168,76,0.1)', color:'var(--btn-bg)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', transition:'all 0.2s', flexShrink:0 }}><svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5l-1.5 2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3L14.5 4z"/><circle cx="12" cy="13" r="3"/></svg> Scan</button>
               <button onClick={() => setShowWeight(true)} className="ax-wt-btn"
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, transition:'all 0.2s' }}>
                 {Ico.scale(14)} Weight
