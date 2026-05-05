@@ -5,7 +5,7 @@ import { DB } from './WorkoutGuide'
 const FF = 'Helvetica Neue,Arial,sans-serif'
 
 const MIND_COLOR      = '#a78bfa'
-const HIGHLIGHT_COLOR = '#c8a800'
+const HIGHLIGHT_COLOR = '#f59e0b'
 
 const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
 
@@ -516,11 +516,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
 
   function muscleHeatColor(muscle) {
     const days = muscleAgeDays(muscle)
-    if (days === null) return '#ffffff'
+    if (days === null) return '#92400e'
     if (days === 0) return '#ef4444'
     if (days === 1) return '#f97316'
-    if (days <= 3)  return '#eab308'
-    return '#22c55e'
+    if (days <= 3)  return '#f59e0b'
+    return '#fbbf24'
   }
 
   useEffect(() => {
@@ -578,13 +578,13 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <button key={v} onClick={() => setView(v)} style={{
             padding: '7px 26px', borderRadius: 99, cursor: 'pointer',
             background: view === v
-              ? 'linear-gradient(135deg, rgba(16,185,129,0.18) 0%, rgba(16,185,129,0.08) 100%)'
+              ? 'linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(245,158,11,0.08) 100%)'
               : 'var(--bg-card)',
-            border: `1px solid ${view === v ? 'rgba(16,185,129,0.6)' : 'var(--border)'}`,
-            color: view === v ? '#10b981' : 'var(--text-muted)',
+            border: `1px solid ${view === v ? 'rgba(245,158,11,0.6)' : 'var(--border)'}`,
+            color: view === v ? '#f59e0b' : 'var(--text-muted)',
             fontSize: 11, fontFamily: FF, fontWeight: view === v ? 700 : 400,
             letterSpacing: '0.12em', textTransform: 'uppercase',
-            boxShadow: view === v ? '0 0 14px rgba(16,185,129,0.28), inset 0 1px 0 rgba(16,185,129,0.18)' : 'none',
+            boxShadow: view === v ? '0 0 14px rgba(245,158,11,0.28), inset 0 1px 0 rgba(245,158,11,0.18)' : 'none',
             transition: 'all 0.2s',
           }}>{label}</button>
         ))}
@@ -617,8 +617,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
-              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(16,185,129,0.18) 0%, transparent 65%)'
-              : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 65%)',
+              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(245,158,11,0.15) 0%, transparent 65%)'
+              : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(180,80,20,0.06) 0%, transparent 65%)',
             transition: 'background 0.6s ease',
           }}/>
 
@@ -626,11 +626,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <Model
             data={[]}
             type={view}
-            bodyColor="#1a1a28"
+            bodyColor="#120a02"
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
-              filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.38)) drop-shadow(0 0 2px rgba(255,255,255,0.70))',
+              filter: 'drop-shadow(0 0 10px rgba(251,146,60,0.55)) drop-shadow(0 0 3px rgba(253,186,116,0.65))',
             }}
             svgStyle={{ borderRadius: 8 }}
           />
@@ -643,13 +643,13 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             const days    = muscleAgeDays(m)
             const op      = isSel ? 0.92 : days !== null ? (days <= 1 ? 0.70 : 0.52) : 0.24
             const glowFilter = isSel
-              ? 'drop-shadow(0 0 12px rgba(16,185,129,0.95)) drop-shadow(0 0 5px rgba(52,211,153,0.75))'
+              ? 'drop-shadow(0 0 14px rgba(251,191,36,0.95)) drop-shadow(0 0 6px rgba(254,243,199,0.80))'
               : days === 0
               ? 'drop-shadow(0 0 11px rgba(239,68,68,0.80)) drop-shadow(0 0 5px rgba(239,68,68,0.55))'
               : days === 1
               ? 'drop-shadow(0 0 9px rgba(249,115,22,0.65)) drop-shadow(0 0 4px rgba(249,115,22,0.45))'
               : days !== null && days <= 3
-              ? 'drop-shadow(0 0 6px rgba(234,179,8,0.38))'
+              ? 'drop-shadow(0 0 6px rgba(245,158,11,0.45))'
               : undefined
             const anim = isSel
               ? 'mmPulse 2.4s ease-in-out infinite'
@@ -674,7 +674,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                     data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
                     type={view}
                     bodyColor="rgba(0,0,0,0)"
-                    highlightedColors={isSel ? ['#10b981','#10b981','#10b981'] : [heatCol, heatCol, heatCol]}
+                    highlightedColors={isSel ? ['#fbbf24','#fbbf24','#fbbf24'] : [heatCol, heatCol, heatCol]}
                     style={{ width: '100%', display: 'block' }}
                     svgStyle={{ borderRadius: 8 }}
                   />
@@ -697,15 +697,15 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             <defs>
               <filter id="mm-label-glow" x="-60%" y="-60%" width="220%" height="220%">
                 <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
-                <feFlood floodColor="#ffffff" floodOpacity="1" result="white"/>
+                <feFlood floodColor="#fbbf24" floodOpacity="1" result="white"/>
                 <feComposite in="white" in2="blur" operator="in" result="wb"/>
                 <feMerge><feMergeNode in="wb"/><feMergeNode in="wb"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
               <linearGradient id="mm-scan-grad" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%"   stopColor="transparent"/>
-                <stop offset="25%"  stopColor="rgba(100,200,255,0.4)"/>
-                <stop offset="50%"  stopColor="rgba(180,230,255,0.28)"/>
-                <stop offset="75%"  stopColor="rgba(100,200,255,0.4)"/>
+                <stop offset="25%"  stopColor="rgba(251,146,60,0.45)"/>
+                <stop offset="50%"  stopColor="rgba(254,215,170,0.30)"/>
+                <stop offset="75%"  stopColor="rgba(251,146,60,0.45)"/>
                 <stop offset="100%" stopColor="transparent"/>
               </linearGradient>
             </defs>
@@ -715,7 +715,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               fill="url(#mm-scan-grad)"
               style={{
                 animation: 'mmScan 7s ease-in-out infinite',
-                filter: 'drop-shadow(0 0 1.5px rgba(100,200,255,0.55))',
+                filter: 'drop-shadow(0 0 1.5px rgba(251,146,60,0.65))',
               }}
             />
 
@@ -726,12 +726,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 : '50.6382979 0 45.9574468 0.85106383 40.8510638 5.53191489 40.4255319 12.7659574 45.106383 20 55.7446809 20 59.1489362 13.6170213 59.5744681 4.68085106 55.7446809 1.27659574'
               }
               fill="none"
-              stroke="rgba(255,255,255,1)"
+              stroke="rgba(255,230,160,1)"
               strokeWidth={selected === 'Head' ? 0.9 : 0.42}
               strokeLinejoin="round"
               opacity={selected === 'Head' ? 1.0 : 0.42}
               style={{
-                filter: selected === 'Head' ? 'drop-shadow(0 0 4px rgba(255,255,255,0.95)) drop-shadow(0 0 8px rgba(255,255,255,0.5))' : undefined,
+                filter: selected === 'Head' ? 'drop-shadow(0 0 4px rgba(251,191,36,0.95)) drop-shadow(0 0 8px rgba(253,186,116,0.6))' : undefined,
                 transition: 'stroke-width 0.3s, opacity 0.3s',
                 animation: selected === 'Head' ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
               }}
@@ -748,23 +748,23 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 }}
               >
                 {/* Eyes */}
-                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.35"/>
-                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.35"/>
+                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(255,225,170,1)" strokeWidth="0.35"/>
+                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(255,225,170,1)" strokeWidth="0.35"/>
                 {/* Nose */}
-                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(255,225,170,1)" strokeWidth="0.3" strokeLinecap="round"/>
                 {/* Mouth */}
-                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(255,225,170,1)" strokeWidth="0.42" strokeLinecap="round"/>
                 {/* Jaw lines */}
-                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
-                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(255,225,170,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(255,225,170,1)" strokeWidth="0.28" strokeLinecap="round"/>
                 {/* Chin cleft */}
-                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(200,212,235,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(255,225,170,1)" strokeWidth="0.28" strokeLinecap="round"/>
                 {/* Cheekbones — zygomatic arch */}
-                <path d="M 43.5 12.2 Q 38.8 13.8 39.8 17.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.42" strokeLinecap="round"/>
-                <path d="M 56.5 12.2 Q 61.2 13.8 60.2 17.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                <path d="M 43.5 12.2 Q 38.8 13.8 39.8 17.2" fill="none" stroke="rgba(255,235,190,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                <path d="M 56.5 12.2 Q 61.2 13.8 60.2 17.2" fill="none" stroke="rgba(255,235,190,1)" strokeWidth="0.42" strokeLinecap="round"/>
                 {/* Zygomatic frontal process (vertical at outer eye corner) */}
-                <path d="M 44 10.2 L 43 13.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.3" strokeLinecap="round"/>
-                <path d="M 56 10.2 L 57 13.2" fill="none" stroke="rgba(220,228,248,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                <path d="M 44 10.2 L 43 13.2" fill="none" stroke="rgba(255,235,190,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                <path d="M 56 10.2 L 57 13.2" fill="none" stroke="rgba(255,235,190,1)" strokeWidth="0.3" strokeLinecap="round"/>
               </g>
             )}
 
@@ -778,19 +778,19 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 const isBone   = line.type === 'bone'
                 const baseOp   = isBone ? 0.55 : isVein ? 1 : 0.46
                 const activeOp = isBone ? 0.96 : isVein ? 1    : 0.92
-                const stroke   = isVein ? 'rgba(56,195,255,1)' : isBone ? 'rgba(238,244,255,1)' : 'rgba(255,255,255,1)'
+                const stroke   = isVein ? 'rgba(251,113,133,1)' : isBone ? 'rgba(255,235,180,1)' : 'rgba(255,220,150,1)'
                 const sw       = isBone ? 0.65 : isVein ? 0.58 : 0.52
                 const baseGlow = isVein
-                  ? 'drop-shadow(0 0 2px rgba(56,195,255,0.75)) drop-shadow(0 0 1px rgba(100,220,255,0.5))'
+                  ? 'drop-shadow(0 0 2px rgba(251,113,133,0.75)) drop-shadow(0 0 1px rgba(253,164,175,0.5))'
                   : isBone
-                  ? 'drop-shadow(0 0 1.2px rgba(238,244,255,0.5))'
+                  ? 'drop-shadow(0 0 1.2px rgba(255,235,180,0.5))'
                   : undefined
                 const glowF    = isActive
                   ? (isVein
-                      ? 'drop-shadow(0 0 4px rgba(56,195,255,1)) drop-shadow(0 0 2px rgba(140,228,255,0.9))'
+                      ? 'drop-shadow(0 0 4px rgba(251,113,133,1)) drop-shadow(0 0 2px rgba(253,164,175,0.9))'
                       : isBone
-                      ? 'drop-shadow(0 0 3px rgba(255,255,255,0.9))'
-                      : 'drop-shadow(0 0 2.5px rgba(255,255,255,1))')
+                      ? 'drop-shadow(0 0 3px rgba(255,235,180,0.9))'
+                      : 'drop-shadow(0 0 2.5px rgba(255,220,150,1))')
                   : baseGlow
                 return (
                   <path
@@ -819,8 +819,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 key={rp.id}
                 cx={rp.x} cy={rp.y}
                 r="11"
-                fill="rgba(255,255,255,0.10)"
-                stroke="rgba(255,255,255,0.72)"
+                fill="rgba(251,146,60,0.10)"
+                stroke="rgba(253,186,116,0.72)"
                 strokeWidth="0.55"
                 style={{
                   transformBox: 'fill-box',
