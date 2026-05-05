@@ -917,7 +917,7 @@ export default function FitnessTracker() {
         .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
         .ax-add-btn:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
         .ax-tab:hover{background:rgba(212,212,232,0.05)!important;}
-        .ax-wt-btn:hover{border-color:rgba(212,212,232,0.25)!important;color:rgba(212,212,232,0.7)!important;}
+        .ax-wt-btn:hover{border-color:rgba(212,212,232,0.25)!important;color:rgba(212,212,232,0.7)!important;} .ax-scan-btn:hover{border-color:rgba(201,168,76,0.7)!important;box-shadow:0 0 22px rgba(201,168,76,0.22)!important;}
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
@@ -953,7 +953,7 @@ export default function FitnessTracker() {
               </div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => setShowScanner(true)} style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'rgba(201,168,76,0.06)', border:'1px solid rgba(201,168,76,0.28)', boxShadow:'var(--card-shadow)', color:'var(--btn-bg)', cursor:'pointer', transition:'all 0.2s', flexShrink:0 }}><svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5l-1.5 2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3L14.5 4z"/><circle cx="12" cy="13" r="3"/></svg></button>
+              <button onClick={() => setShowScanner(true)} className="ax-scan-btn" style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'rgba(201,168,76,0.07)', border:'1px solid rgba(201,168,76,0.38)', boxShadow:'0 0 14px rgba(201,168,76,0.1)', color:'var(--btn-bg)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', transition:'all 0.2s', flexShrink:0 }}><svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5l-1.5 2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3L14.5 4z"/><circle cx="12" cy="13" r="3"/></svg> Scan</button>
               <button onClick={() => setShowWeight(true)} className="ax-wt-btn"
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, transition:'all 0.2s' }}>
                 {Ico.scale(14)} Weight
@@ -1021,6 +1021,27 @@ export default function FitnessTracker() {
           {/* ── Recovery Tab ── */}
           {activeTab === 'recovery' && (
             <div style={anim(140)}>
+
+              {/* ── Equipment Scanner Banner ── */}
+              <div onClick={() => setShowScanner(true)} style={{ background:'linear-gradient(135deg,rgba(201,168,76,0.13) 0%,rgba(201,168,76,0.05) 55%,rgba(201,168,76,0.09) 100%)', border:'1px solid rgba(201,168,76,0.32)', borderRadius:14, padding:'15px 16px', marginBottom:18, cursor:'pointer', position:'relative', overflow:'hidden', boxShadow:'0 0 28px rgba(201,168,76,0.07)', transition:'all 0.2s' }}>
+                <div style={{ position:'absolute', inset:0, pointerEvents:'none', backgroundImage:'radial-gradient(circle,rgba(201,168,76,0.12) 1px,transparent 1px)', backgroundSize:'20px 20px', opacity:0.35 }} />
+                <div style={{ position:'absolute', top:8, right:10, pointerEvents:'none' }}>
+                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="29" stroke="rgba(201,168,76,0.08)" strokeWidth="1"/><circle cx="30" cy="30" r="20" stroke="rgba(201,168,76,0.06)" strokeWidth="1" strokeDasharray="3 4"/></svg>
+                </div>
+                <div style={{ position:'relative', display:'flex', alignItems:'center', gap:14 }}>
+                  <div style={{ width:46, height:46, borderRadius:12, background:'rgba(201,168,76,0.1)', border:'1px solid rgba(201,168,76,0.28)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, boxShadow:'0 0 18px rgba(201,168,76,0.15)' }}>
+                    <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="var(--btn-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5l-1.5 2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3L14.5 4z"/><circle cx="12" cy="13" r="3"/></svg>
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:3 }}>
+                      <p style={{ color:'var(--btn-bg)', fontSize:12, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.14em', textTransform:'uppercase' }}>Equipment Scanner</p>
+                      <span style={{ background:'rgba(201,168,76,0.15)', border:'1px solid rgba(201,168,76,0.3)', borderRadius:4, padding:'1px 6px', color:'var(--btn-bg)', fontSize:8, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase' }}>AI</span>
+                    </div>
+                    <p style={{ color:'rgba(212,212,232,0.45)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1.45 }}>Photograph any equipment for instant form guides, muscle maps &amp; workouts</p>
+                  </div>
+                  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0 }}><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+              </div>
 
               {/* ── Muscle Readiness ── */}
               <SectionHead title="Muscle Readiness" sub="Based on recent sessions" />
