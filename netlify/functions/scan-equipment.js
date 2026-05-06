@@ -34,7 +34,7 @@ equipment_type must be one of: gym_machine, free_weight, cardio, home, improvise
 If you cannot confidently identify the equipment, set identified to false and return your best guess in equipment_name with confidence set to low.
 Return ONLY the JSON object, no additional text or markdown.`
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
