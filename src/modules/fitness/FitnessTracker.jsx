@@ -956,7 +956,7 @@ export default function FitnessTracker() {
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={() => setShowScanner(true)} className="ax-wt-btn"
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, transition:'all 0.2s' }}>
-                {Ico.scan(14)} Scan
+                {Ico.scan(14)} Scan Equipment
               </button>
               <button onClick={() => setShowWorkout(true)} className="ax-add-btn"
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 14px', borderRadius:9, background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s' }}>
