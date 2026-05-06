@@ -682,6 +682,7 @@ export default function FitnessTracker() {
   const [chartRange,   setChartRange]   = useState('1M')
   const [historyOpen,     setHistoryOpen]     = useState(false)
   const [workoutHistOpen, setWorkoutHistOpen] = useState(false)
+  const [prsOpen,         setPrsOpen]         = useState(false)
   const [showScanner,     setShowScanner]     = useState(false)
   const [prefillWorkout,  setPrefillWorkout]  = useState(null)
   const [sleepHrs,        setSleepHrs]        = useState(() => { try { return localStorage.getItem(`ax-sleep-${new Date().toISOString().split('T')[0]}`) || '' } catch { return '' } })
@@ -1068,34 +1069,47 @@ export default function FitnessTracker() {
                 </div>
               </div>
 
-              {/* ── Personal Records ── */}
-              <SectionHead title="Personal Records" sub={`${prs.length} lifts tracked`} />
-              {prs.length === 0 ? (
-                <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'28px 20px', textAlign:'center', marginBottom:18 }}>
-                  <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Log workouts with weights to track PRs.</p>
+              {/* ── Personal Records (collapsible) ── */}
+              <button onClick={() => setPrsOpen(o => !o)} style={{ width:'100%', background:'none', border:'none', cursor:'pointer', padding:0, marginBottom: prsOpen ? 12 : 18 }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+                    <div style={{ width:2, height:14, background:'linear-gradient(to bottom,var(--accent-fitness),transparent)', borderRadius:2, boxShadow:'0 0 8px var(--accent-fitness)' }} />
+                    <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Personal Records</p>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{prs.length} lifts tracked</p>
+                    <span style={{ color:'rgba(212,212,232,0.35)', fontSize:12, display:'inline-block', transform: prsOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.25s cubic-bezier(.16,1,.3,1)' }}>▾</span>
+                  </div>
                 </div>
-              ) : (
-                <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:18 }}>
-                  {prs.map((pr, i) => (
-                    <div key={pr.name} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'13px 15px', opacity:visible?1:0, transform:visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*25}ms, transform 0.4s ease ${i*25}ms` }}>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ color:'rgba(212,212,232,0.82)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{pr.name}</p>
-                        <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:2 }}>
-                          {pr.muscle_group && <span>{pr.muscle_group} · </span>}
-                          {pr.sets && pr.reps ? `${pr.sets}×${pr.reps}` : pr.reps ? `${pr.reps} reps` : ''}
-                          {pr.date ? ` · ${formatDate(pr.date)}` : ''}
-                        </p>
+              </button>
+              <div style={{ overflow:'hidden', maxHeight: prsOpen ? 4000 : 0, transition:'max-height 0.4s cubic-bezier(.16,1,.3,1)' }}>
+                {prs.length === 0 ? (
+                  <div style={{ background:'var(--bg-card)', border:'1px dashed rgba(212,212,232,0.08)', borderRadius:14, padding:'28px 20px', textAlign:'center', marginBottom:18 }}>
+                    <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:"'EB Garamond',serif", fontStyle:'italic' }}>Log workouts with weights to track PRs.</p>
+                  </div>
+                ) : (
+                  <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:18 }}>
+                    {prs.map((pr, i) => (
+                      <div key={pr.name} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'13px 15px', opacity:visible?1:0, transform:visible?'translateY(0)':'translateY(8px)', transition:`opacity 0.4s ease ${i*25}ms, transform 0.4s ease ${i*25}ms` }}>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <p style={{ color:'rgba(212,212,232,0.82)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{pr.name}</p>
+                          <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:2 }}>
+                            {pr.muscle_group && <span>{pr.muscle_group} · </span>}
+                            {pr.sets && pr.reps ? `${pr.sets}×${pr.reps}` : pr.reps ? `${pr.reps} reps` : ''}
+                            {pr.date ? ` · ${formatDate(pr.date)}` : ''}
+                          </p>
+                        </div>
+                        <div style={{ textAlign:'right', flexShrink:0 }}>
+                          <p style={{ color:'#f87171', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
+                            {pr.weight}<span style={{ fontSize:10, color:'rgba(212,212,232,0.35)', fontWeight:400, marginLeft:3 }}>lbs</span>
+                          </p>
+                          <p style={{ color:'rgba(248,113,113,0.45)', fontSize:9, letterSpacing:'0.12em', fontFamily:'Helvetica Neue,sans-serif', textTransform:'uppercase', marginTop:2 }}>PR</p>
+                        </div>
                       </div>
-                      <div style={{ textAlign:'right', flexShrink:0 }}>
-                        <p style={{ color:'#f87171', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
-                          {pr.weight}<span style={{ fontSize:10, color:'rgba(212,212,232,0.35)', fontWeight:400, marginLeft:3 }}>lbs</span>
-                        </p>
-                        <p style={{ color:'rgba(248,113,113,0.45)', fontSize:9, letterSpacing:'0.12em', fontFamily:'Helvetica Neue,sans-serif', textTransform:'uppercase', marginTop:2 }}>PR</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* ── Workout History (collapsible) ── */}
               <button onClick={() => setWorkoutHistOpen(o => !o)} style={{ width:'100%', background:'none', border:'none', cursor:'pointer', padding:0, marginBottom: workoutHistOpen ? 12 : 0 }}>
