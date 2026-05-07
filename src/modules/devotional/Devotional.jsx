@@ -346,7 +346,7 @@ function BibleReader({ onClose }) {
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
 
       {/* Header */}
-      <div style={{ position:'sticky', top:0, zIndex:10, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'14px 16px', flexShrink:0 }}>
+      <div style={{ position:'sticky', top:0, zIndex:10, background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)', borderBottom:'1px solid var(--border)', padding:'calc(14px + env(safe-area-inset-top)) 16px 14px', flexShrink:0 }}>
         <div style={{ display:'flex', alignItems:'center', gap:12 }}>
           <button onClick={goBack} className="ax-back"
             style={{ display:'flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', color:'var(--text-secondary)', cursor:'pointer', flexShrink:0 }}>
