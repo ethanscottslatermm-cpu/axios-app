@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import fitnessIconSrc from '../fitness-icon.png'
 import prayerIconSrc  from '../prayer-icon.png'
@@ -237,227 +237,263 @@ export default function Dashboard() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@1&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
-        body{background:#07071a;overflow-x:hidden;}
+        body{background:var(--bg-primary);overflow-x:hidden;}
         ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(100,80,200,0.2);border-radius:99px;}
-        .ax-btn-log:hover{background:rgba(140,120,230,0.95)!important;box-shadow:0 0 18px rgba(124,106,219,0.4)!important;}
-        .ax-mod-tile{transition:border-color 0.2s,background 0.2s,transform 0.15s!important;}
-        .ax-mod-tile:hover{border-color:rgba(124,106,219,0.35)!important;background:rgba(124,106,219,0.07)!important;}
-        .ax-mod-tile:active{transform:scale(0.96)!important;}
-        .ax-stat-card:hover{border-color:rgba(124,106,219,0.3)!important;}
+        ::-webkit-scrollbar-thumb{background:rgba(212,212,232,0.1);border-radius:99px;}
+        .ax-pill:hover{background:rgba(212,212,232,0.06)!important;border-color:rgba(212,212,232,0.18)!important;}
+        .ax-log-row:hover{background:rgba(212,212,232,0.03);border-radius:8px;}
+        .ax-btn-white:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.22)!important;}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'#07071a', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
-
+      <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
         {/* Car background */}
-        <div style={{ position:'fixed', inset:0, zIndex:0, backgroundImage:`url(${CAR_IMG})`, backgroundSize:'cover', backgroundPosition:'center 30%', backgroundRepeat:'no-repeat', opacity:0.2, pointerEvents:'none', filter:'grayscale(100%) contrast(1.4) brightness(1.1)' }} />
-        {/* Purple-dark overlay */}
-        <div style={{ position:'fixed', inset:0, zIndex:0, background:'linear-gradient(150deg, rgba(30,15,65,0.82) 0%, rgba(10,8,28,0.5) 45%, rgba(5,5,18,0.92) 100%)', pointerEvents:'none' }} />
+        <div style={{
+          position:'fixed', inset:0, zIndex:0,
+          backgroundImage:`url(${CAR_IMG})`,
+          backgroundSize:'cover', backgroundPosition:'center 30%',
+          backgroundRepeat:'no-repeat',
+          opacity:0.38,
+          pointerEvents:'none',
+          filter:'grayscale(100%) contrast(1.5) brightness(1.1) sharpen(1)',
+        }} />
+        <div style={{
+          position:'fixed', inset:0, zIndex:0,
+          background:'linear-gradient(to bottom, rgba(8,8,8,0.35) 0%, rgba(8,8,8,0.08) 40%, rgba(8,8,8,0.65) 100%)',
+          pointerEvents:'none',
+        }} />
 
-        {/* ── Sticky Header ── */}
-        <div style={{ position:'sticky', top:0, zIndex:50, background:'rgba(7,5,22,0.82)', backdropFilter:'blur(22px)', WebkitBackdropFilter:'blur(22px)', borderBottom:'1px solid rgba(124,106,219,0.16)', padding:'14px 16px 12px' }}>
-          <p style={{ color:'rgba(140,115,220,0.5)', fontSize:9, letterSpacing:'0.32em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>
+        {/* Sticky Header */}
+        <div style={{
+          position:'sticky', top:0, zIndex:50,
+          background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)',
+          padding:'14px 16px 12px',
+        }}>
+          <p style={{ color:'var(--text-muted)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>
             {dayName} · {dateStr}
           </p>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10 }}>
-            <h1 style={{ color:'rgba(225,220,255,0.95)', fontWeight:900, fontSize:21, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
+            <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:21, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
               {getGreeting()},{' '}
               <span style={{ fontStyle:'italic', fontFamily:"'EB Garamond',serif", fontWeight:400, fontSize:23 }}>{displayName}.</span>
             </h1>
-            <button onClick={() => navigate('/food')} className="ax-btn-log"
-              style={{ background:'rgba(124,106,219,0.85)', color:'#fff', border:'none', borderRadius:10, padding:'9px 16px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
+            <button onClick={() => navigate('/food')} className="ax-btn-white"
+              style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
               {Ico.plus(12)} Log
             </button>
           </div>
+          {/* Ticker spans full width, bleeding past the 16px padding */}
           <div style={{ margin:'12px -16px 0' }}>
             <QuoteTicker />
           </div>
         </div>
 
-        {/* ── Body ── */}
-        <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:12, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
+        {/* Scrollable body */}
+        <div style={{ padding:'16px 16px 0', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
-          {/* ── 2×2 Stat Cards ── */}
+          {/* 2×2 Stat Grid */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(60) }}>
             {(() => {
               const weightRawPct = weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal / latest) * 100)) : 0
               const todayRawPct  = Math.round((loggedCount / 4) * 100)
               return [
-                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,       color: MODULE_COLORS.food,    path:'/food'    },
-                { label:'Water',    value:`${waterCount}/${WATER_GOAL}`, sub: waterCount >= WATER_GOAL ? '✓ goal reached' : `${WATER_GOAL - waterCount} to go`, pct: waterPct, color: MODULE_COLORS.water, path:'/water' },
-                { label:'Weight',   value: latest ? `${latest} lb` : '—', sub: latest ? 'tracked' : 'not logged', pct: weightRawPct, color: MODULE_COLORS.fitness, path:'/fitness' },
-                { label:'Today',    value:`${loggedCount}/4`,             sub:'modules done',                       pct: todayRawPct,  color:'#7c6adb'                             },
+                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,        color: ringColor(calRawPct, true),   path:'/food',    valSize:14 },
+                { label:'Water',    value:`${waterCount}/${WATER_GOAL}`, sub:'glasses',                        pct: waterPct,      color: ringColor(waterRawPct),       path:'/water',   valSize:17 },
+                { label:'Weight',   value: latest ? `${latest}` : '—',  sub: latest ? 'lb' : 'not logged',    pct: weightRawPct,  color: ringColor(weightRawPct),      path:'/fitness', valSize:17 },
+                { label:'Today',    value:`${loggedCount}/4`,            sub:'logged',                         pct: todayRawPct,   color: ringColor(todayRawPct),       valSize:17 },
               ]
-            })().map(({ label, value, sub, pct, color, path }) => (
-              <div key={label} onClick={path ? () => navigate(path) : undefined} className="ax-stat-card"
-                style={{ background:'rgba(255,255,255,0.025)', border:`1px solid ${color}20`, backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', borderRadius:16, padding:'16px 14px', cursor: path ? 'pointer' : 'default', transition:'border-color 0.25s' }}>
-                <p style={{ color:`${color}70`, fontSize:8, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>{label}</p>
-                <p style={{ color, fontSize:24, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:8 }}>{value}</p>
-                <div style={{ height:2, background:`${color}15`, borderRadius:99, marginBottom:7, overflow:'hidden' }}>
-                  <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:`linear-gradient(90deg,${color}66,${color})`, borderRadius:99, boxShadow:`0 0 8px ${color}55`, transition:'width 0.8s cubic-bezier(.16,1,.3,1)' }} />
-                </div>
-                <p style={{ color:`${color}55`, fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+            })().map(({ label, value, sub, pct, color, path, valSize }) => (
+              <div key={label} onClick={path ? () => navigate(path) : undefined}
+                style={{ background:'transparent', border:`1px solid ${color}22`, boxShadow:'none', borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>{label}</p>
+                <CircleRing pct={pct} color={color} size={84} stroke={5}>
+                  <p style={{ color, fontSize:valSize, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{value}</p>
+                  <p style={{ color:`${color}66`, fontSize:8, fontFamily:'Helvetica Neue,sans-serif', marginTop:2, textAlign:'center' }}>{Math.round(pct)}%</p>
+                </CircleRing>
+                <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center' }}>{sub}</p>
               </div>
             ))}
           </div>
 
-          {/* ── Module Tiles 3×2 ── */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, ...anim(120) }}>
-            {[
-              { key:'food',    label:'Nourish',  path:'/food',     icon: Ico.food,     color: MODULE_COLORS.food    },
-              { key:'fitness', label:'Training', path:'/fitness',  icon: Ico.fitness,  color: MODULE_COLORS.fitness },
-              { key:'prayer',  label:'Devotion', path:'/prayer',   icon: Ico.prayer,   color: MODULE_COLORS.prayer  },
-              { key:'finance', label:'Treasury', path:'/finance',  icon: Ico.finance,  color: MODULE_COLORS.finance },
-              { key:'calendar',label:'Calendar', path:'/calendar', icon: (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>, color:'#c8853a' },
-              { key:'settings',label:'Forge',    path:'/settings', icon: Ico.settings, color:'#4a90b8'              },
-            ].map(({ key, label, path, icon, color }, i) => {
-              const done = loggedModules[key] ?? false
-              return (
-                <button key={key} onClick={() => navigate(path)} className="ax-mod-tile"
-                  style={{
-                    display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8,
-                    padding:'20px 6px', borderRadius:16,
-                    background:'rgba(255,255,255,0.022)',
-                    border:`1px solid ${done ? `${color}30` : 'rgba(124,106,219,0.1)'}`,
-                    backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
-                    cursor:'pointer', width:'100%', outline:'none',
-                    opacity: visible ? 1 : 0,
-                    transform: visible ? 'translateY(0)' : 'translateY(10px)',
-                    transition: `opacity 0.45s ease ${160+i*45}ms, transform 0.45s ease ${160+i*45}ms`,
-                  }}>
-                  <div style={{ position:'relative' }}>
-                    <div style={{ color: done ? color : `${color}50`, filter: done ? `drop-shadow(0 0 5px ${color}55)` : 'none', transition:'color 0.2s,filter 0.2s' }}>
-                      {icon(22)}
-                    </div>
-                    {done && <div style={{ position:'absolute', top:-2, right:-2, width:6, height:6, borderRadius:'50%', background:color, boxShadow:`0 0 5px ${color}` }} />}
-                  </div>
-                  <span style={{ color: done ? color : `${color}70`, fontSize:9, fontWeight:700, letterSpacing:'0.1em', fontFamily:'Helvetica Neue,sans-serif', textTransform:'uppercase' }}>{label}</span>
-                </button>
-              )
-            })}
-          </div>
-
-          {/* ── Upcoming Events ── */}
-          <div style={{ background:'rgba(255,255,255,0.022)', border:'1px solid rgba(200,133,58,0.18)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', borderRadius:16, padding:'18px 16px', ...anim(190) }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-                <div style={{ width:2, height:13, background:'linear-gradient(to bottom,#c8853a,#c8853a18)', borderRadius:2, boxShadow:'0 0 5px #c8853a66' }} />
-                <p style={{ color:'rgba(200,133,58,0.85)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Upcoming</p>
-              </div>
-              <button onClick={() => navigate('/calendar')} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(200,133,58,0.45)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Calendar →</button>
-            </div>
+          {/* Calendar */}
+          <Card style={anim(130)}>
+            <SectionHead title="Upcoming" action={() => navigate('/calendar')} actionLabel="Open Calendar →" color="#c8853a" />
             {upcomingEvents.length === 0 ? (
-              <p style={{ color:'rgba(124,106,219,0.3)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', textAlign:'center', padding:'8px 0 2px' }}>No upcoming events</p>
+              <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', textAlign:'center', padding:'10px 0 4px' }}>
+                No upcoming events
+              </p>
             ) : (
-              <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
                 {upcomingEvents.map(ev => {
-                  const typeColors = { general:'#c8853a', workout:'#dc4f3a', prayer:'#9b7ad4', meal:'#c8d4c8', finance:'#b4c4b0' }
+                  const typeColors = { general:'#c8853a', workout:'#dc4f3a', prayer:'#9b7ad4', meal:'#c8853a', finance:'#4db891' }
                   const color = typeColors[ev.type] || '#c8853a'
                   const isToday = ev.date === todayStr
                   const dateLabel = isToday ? 'Today' : new Date(ev.date + 'T12:00:00').toLocaleDateString([], { month:'short', day:'numeric' })
                   const timeLabel = ev.time ? new Date(`2000-01-01T${ev.time}`).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : null
                   return (
-                    <div key={ev.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 11px', background:'rgba(255,255,255,0.018)', border:`1px solid ${color}15`, borderRadius:10 }}>
-                      <span style={{ width:5, height:5, borderRadius:'50%', background:color, boxShadow:`0 0 5px ${color}`, flexShrink:0 }} />
+                    <div key={ev.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 12px', background:'var(--stat-bg)', border:`1px solid ${color}22`, borderRadius:9 }}>
+                      <span style={{ width:7, height:7, borderRadius:'50%', background:color, boxShadow:`0 0 5px ${color}88`, flexShrink:0, display:'inline-block' }}/>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ color:'rgba(220,215,255,0.82)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{ev.title}</p>
-                        <p style={{ color:'rgba(140,120,200,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:'1px 0 0' }}>{dateLabel}{timeLabel ? ' · '+timeLabel : ''}</p>
+                        <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{ev.title}</p>
+                        <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:'1px 0 0' }}>{dateLabel}{timeLabel ? ' · ' + timeLabel : ''}</p>
                       </div>
                     </div>
                   )
                 })}
               </div>
             )}
-            <button onClick={() => navigate('/calendar')}
-              style={{ width:'100%', marginTop:12, padding:'9px', borderRadius:10, background:'transparent', border:'1px solid rgba(200,133,58,0.18)', color:'rgba(200,133,58,0.5)', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer' }}>
-              + Schedule Event
-            </button>
-          </div>
+            <button
+              onClick={() => navigate('/calendar')}
+              style={{ width:'100%', marginTop:12, padding:'10px', borderRadius:8, background:'transparent', border:'1px solid #c8853a44', color:'#c8853a99', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor='#c8853a';e.currentTarget.style.color='#c8853a'}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor='#c8853a44';e.currentTarget.style.color='#c8853a99'}}
+            >+ Schedule Event</button>
+          </Card>
 
-          {/* ── Streaks ── */}
-          <div style={{ ...anim(250) }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-                <div style={{ width:2, height:13, background:'linear-gradient(to bottom,rgba(124,106,219,0.9),rgba(124,106,219,0.08))', borderRadius:2, boxShadow:'0 0 5px rgba(124,106,219,0.45)' }} />
-                <p style={{ color:'rgba(160,140,240,0.75)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Streaks</p>
-              </div>
-              <p style={{ color:'rgba(124,106,219,0.35)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic' }}>consecutive days</p>
+          {/* Modules */}
+          <Card style={anim(160)}>
+            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 4`} onToggle={() => toggleSection('modules')} collapsed={activeSection !== 'modules'} />
+            {activeSection === 'modules' && (
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {modules.map(({ key, label, path, icon }, i) => {
+                const done  = loggedModules[key]
+                const color = MODULE_COLORS[key] || 'rgba(212,212,232,0.5)'
+                return (
+                  <button key={key} onClick={() => navigate(path)} className="ax-pill"
+                    style={{
+                      display:'flex', alignItems:'center', justifyContent:'space-between',
+                      padding:'13px 14px', borderRadius:11,
+                      border:`1px solid ${done ? `${color}30` : 'rgba(212,212,232,0.06)'}`,
+                      background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
+                      cursor:'pointer', textAlign:'left', width:'100%',
+                      opacity: visible ? 1 : 0,
+                      transform: visible ? 'translateX(0)' : 'translateX(-8px)',
+                      transition: `opacity 0.4s ease ${200 + i*45}ms, transform 0.4s ease ${200 + i*45}ms, background 0.2s, border-color 0.2s`,
+                    }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                      <div style={{ width:7, height:7, borderRadius:'50%', background: done ? color : `${color}55`, boxShadow: done ? `0 0 7px ${color}99` : 'none', flexShrink:0 }} />
+                      <div style={{ color: done ? color : `${color}66` }}>{icon(15)}</div>
+                      <div>
+                        <p style={{ color: done ? color : `${color}cc`, fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>{label}</p>
+                        <p style={{ color: done ? `${color}88` : `${color}55`, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
+                      </div>
+                    </div>
+                    <div style={{ color:'rgba(212,212,232,0.2)' }}>{Ico.chevron()}</div>
+                  </button>
+                )
+              })}
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:8 }}>
-              {[
-                { label:'Food',    val: streaks.food,       color: MODULE_COLORS.food       },
-                { label:'Water',   val: streaks.water,      color: MODULE_COLORS.water      },
-                { label:'Fitness', val: streaks.fitness,    color: MODULE_COLORS.fitness    },
-                { label:'Devot.',  val: streaks.prayer,     color: MODULE_COLORS.prayer     },
-                { label:'Bible',   val: streaks.devotional, color: MODULE_COLORS.devotional },
-              ].map(({ label, val, color }) => (
-                <div key={label} style={{ background:`${color}08`, border:`1px solid ${color}28`, backdropFilter:'blur(20px)', borderRadius:13, padding:'12px 4px', textAlign:'center' }}>
-                  <p style={{ color, fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{val}</p>
-                  <p style={{ color:`${color}66`, fontSize:8, letterSpacing:'0.1em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>{label}</p>
-                  {val >= 1 && <p style={{ fontSize:10, marginTop:3 }}>{val >= 7 ? '🔥🔥' : '🔥'}</p>}
-                </div>
-              ))}
-            </div>
-          </div>
+            )}
+          </Card>
 
-          {/* ── Food + Water Row ── */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(310) }}>
-            <div onClick={() => navigate('/food')} style={{ background:'rgba(255,255,255,0.022)', border:`1px solid ${MODULE_COLORS.food}18`, backdropFilter:'blur(20px)', borderRadius:16, padding:'16px 14px', cursor:'pointer' }}>
-              <p style={{ color:`${MODULE_COLORS.food}66`, fontSize:8, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Recent Food</p>
+          {/* Food */}
+          <Card style={anim(280)}>
+            <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" color={MODULE_COLORS.food} onToggle={() => toggleSection('food')} collapsed={activeSection !== 'food'} />
+            {activeSection === 'food' && (
+            <>
               {recentFood.length === 0
-                ? <p style={{ color:'rgba(124,106,219,0.28)', fontSize:11, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif' }}>Nothing logged</p>
-                : recentFood.slice(0,2).map(e => (
-                  <div key={e.id} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:5 }}>
-                    <span style={{ color:'rgba(210,205,250,0.65)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:'65%' }}>{e.food_name}</span>
-                    <span style={{ color:`${MODULE_COLORS.food}66`, fontSize:10, fontFamily:'Helvetica Neue,sans-serif', flexShrink:0 }}>{e.calories}</span>
+                ? <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'14px 0' }}>Nothing logged yet today.</p>
+                : recentFood.map((e, i) => (
+                  <div key={e.id} className="ax-log-row" style={{ display:'flex', justifyContent:'space-between', padding:'10px 6px', borderBottom: i < recentFood.length-1 ? '1px solid rgba(212,212,232,0.05)' : 'none', transition:'background 0.15s' }}>
+                    <span style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.food_name}</span>
+                    <span style={{ color:`${MODULE_COLORS.food}88`, fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>{e.calories} cal</span>
                   </div>
                 ))
               }
-              <div style={{ height:2, background:`${MODULE_COLORS.food}12`, borderRadius:99, marginTop:10, overflow:'hidden' }}>
-                <div style={{ height:'100%', width:`${calPct}%`, background:`linear-gradient(90deg,${MODULE_COLORS.food}55,${MODULE_COLORS.food})`, borderRadius:99, transition:'width 0.8s ease' }} />
+              <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(212,212,232,0.06)', display:'flex', alignItems:'center', gap:14 }}>
+                <div>
+                  <p style={{ color:`${MODULE_COLORS.food}88`, fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:4 }}>Remaining</p>
+                  <p style={{ color:MODULE_COLORS.food, fontWeight:900, fontSize:16, fontFamily:'Helvetica Neue,sans-serif' }}>{calLeft.toLocaleString()} cal</p>
+                </div>
+                <div style={{ flex:1 }}>
+                  <GlowBar pct={calPct} h={4} color={MODULE_COLORS.food} glow="rgba(200,212,200,0.5)" />
+                  <p style={{ color:`${MODULE_COLORS.food}99`, fontSize:10, textAlign:'right', marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}%</p>
+                </div>
               </div>
-              <p style={{ color:`${MODULE_COLORS.food}44`, fontSize:9, marginTop:5, fontFamily:'Helvetica Neue,sans-serif' }}>{calPct}% of goal</p>
-            </div>
-            <div onClick={() => navigate('/water')} style={{ background:'rgba(255,255,255,0.022)', border:`1px solid ${MODULE_COLORS.water}18`, backdropFilter:'blur(20px)', borderRadius:16, padding:'16px 14px', cursor:'pointer' }}>
-              <p style={{ color:`${MODULE_COLORS.water}66`, fontSize:8, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>Water</p>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:4, marginBottom:8 }}>
-                {Array.from({ length: WATER_GOAL }).map((_,i) => (
-                  <div key={i} style={{ width:9, height:13, borderRadius:3, background: i < waterCount ? MODULE_COLORS.water : `${MODULE_COLORS.water}15`, boxShadow: i < waterCount ? `0 0 4px ${MODULE_COLORS.water}55` : 'none', transition:'background 0.3s' }} />
+            </>
+            )}
+          </Card>
+
+          {/* Water */}
+          <Card style={anim(340)}>
+            <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" color={MODULE_COLORS.water} onToggle={() => toggleSection('water')} collapsed={activeSection !== 'water'} />
+            {activeSection === 'water' && (
+            <>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
+                {Array.from({ length: WATER_GOAL }).map((_,i) => {
+                  const full = i < waterCount
+                  return (
+                    <svg key={i} width={26} height={26} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ transition:'all 0.3s', filter: full ? '0 0 6px rgba(154,180,204,0.5)' : 'none' }}>
+                      <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={full ? 'rgba(154,180,204,0.7)' : 'rgba(212,212,232,0.04)'} stroke="none"/>
+                      <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                      <line x1="5" y1="3" x2="19" y2="3" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                      <path d="M19 8 C21.5 8 21.5 13 19 13" stroke={full ? '#9ab4cc' : 'rgba(212,212,232,0.18)'} strokeWidth="1.4"/>
+                    </svg>
+                  )
+                })}
+              </div>
+              <p style={{ color: waterCount >= WATER_GOAL ? '#9ab4cc' : 'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>
+                {waterCount >= WATER_GOAL ? '✓ Goal reached — well done.' : `${WATER_GOAL - waterCount} glass${WATER_GOAL - waterCount !== 1 ? 'es' : ''} remaining`}
+              </p>
+              <GlowBar pct={waterPct} color={MODULE_COLORS.water} glow="rgba(154,180,204,0.5)" />
+            </>
+            )}
+          </Card>
+
+          {/* Prayer */}
+          <Card style={anim(400)}>
+            <SectionHead title="Devotion" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} onToggle={() => toggleSection('prayer')} collapsed={activeSection !== 'prayer'} />
+            {activeSection === 'prayer' && (
+            <>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
+                {[{ label:'Today', value: todayPrayers, sub:'logged' },{ label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
+                  <div key={label} style={{ background:'var(--stat-bg)', border:`1px solid ${MODULE_COLORS.prayer}22`, boxShadow:'var(--card-shadow)', borderRadius:10, padding:'13px 14px' }}>
+                    <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
+                    <p style={{ color:MODULE_COLORS.prayer, fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
+                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                  </div>
                 ))}
               </div>
-              <p style={{ color: waterCount >= WATER_GOAL ? MODULE_COLORS.water : `${MODULE_COLORS.water}55`, fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>
-                {waterCount >= WATER_GOAL ? '✓ Goal reached' : `${WATER_GOAL - waterCount} to go`}
-              </p>
-            </div>
-          </div>
-
-          {/* ── Prayer Card ── */}
-          <div style={{ background:'rgba(255,255,255,0.022)', border:`1px solid ${MODULE_COLORS.prayer}18`, backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', borderRadius:16, padding:'18px 16px', ...anim(370) }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-                <div style={{ width:2, height:13, background:`linear-gradient(to bottom,${MODULE_COLORS.prayer},${MODULE_COLORS.prayer}18)`, borderRadius:2, boxShadow:`0 0 5px ${MODULE_COLORS.prayer}66` }} />
-                <p style={{ color:`${MODULE_COLORS.prayer}cc`, fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Devotion</p>
-              </div>
-              <button onClick={() => navigate('/prayer')} style={{ background:'none', border:'none', cursor:'pointer', color:`${MODULE_COLORS.prayer}44`, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Open →</button>
-            </div>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
-              {[{ label:'Today', value: todayPrayers, sub:'logged' }, { label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
-                <div key={label} style={{ background:`${MODULE_COLORS.prayer}07`, border:`1px solid ${MODULE_COLORS.prayer}18`, borderRadius:12, padding:'14px 12px' }}>
-                  <p style={{ color:`${MODULE_COLORS.prayer}55`, fontSize:8, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
-                  <p style={{ color:MODULE_COLORS.prayer, fontSize:30, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:4 }}>{value}</p>
-                  <p style={{ color:`${MODULE_COLORS.prayer}44`, fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => navigate('/prayer')}
-              style={{ width:'100%', padding:'10px', borderRadius:10, background:'transparent', border:`1px solid ${MODULE_COLORS.prayer}25`, color:`${MODULE_COLORS.prayer}66`, fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer' }}>
-              + Log a prayer
-            </button>
-          </div>
+              <button onClick={() => navigate('/prayer')}
+                style={{ width:'100%', padding:'11px', borderRadius:8, background:'transparent', border:`1px solid ${MODULE_COLORS.prayer}44`, color:`${MODULE_COLORS.prayer}99`, fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor=MODULE_COLORS.prayer;e.currentTarget.style.color=MODULE_COLORS.prayer}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=`${MODULE_COLORS.prayer}44`;e.currentTarget.style.color=`${MODULE_COLORS.prayer}99`}}
+              >
+                + Log a prayer
+              </button>
+            </>
+            )}
+          </Card>
 
         </div>
       </div>
 
+
+        {/* Streaks */}
+        <div style={{ padding:'0 16px 100px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+            <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Streaks</p>
+            <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic' }}>consecutive days</p>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:8 }}>
+            {[
+              { label:'Food',    val: streaks.food,       color: MODULE_COLORS.food       },
+              { label:'Water',   val: streaks.water,      color: MODULE_COLORS.water      },
+              { label:'Fitness', val: streaks.fitness,    color: MODULE_COLORS.fitness    },
+              { label:'Devotion',val: streaks.prayer,     color: MODULE_COLORS.prayer     },
+              { label:'Devot.',  val: streaks.devotional, color: MODULE_COLORS.devotional },
+            ].map(({ label, val, color }) => (
+              <div key={label} style={{ background:`${color}11`, border:`1px solid ${color}44`, boxShadow:`0 0 10px ${color}22`, borderRadius:10, padding:'10px 6px', textAlign:'center' }}>
+                <p style={{ color, fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1 }}>{val}</p>
+                <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>{label}</p>
+                {val >= 1 && (
+                  <p style={{ fontSize:11, marginTop:3 }}>
+                    {val >= 7 ? '🔥🔥 ×2' : '🔥 ×1'}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       <BottomNav />
     </>
   )
