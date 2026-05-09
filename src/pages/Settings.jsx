@@ -144,7 +144,8 @@ export default function Settings() {
       .then(({ data }) => {
         if (data) {
           if (data.avatar_url) setAvatarUrl(data.avatar_url)
-          if (data.role === 'admin') setIsAdmin(true)
+          const MASTER_ADMINS = ['ethan.scott.slatermm@gmail.com', 'ethan.scott.marketing@gmail.com']
+          if (data.role === 'admin' || MASTER_ADMINS.includes(user.email?.toLowerCase())) setIsAdmin(true)
           setProfile(p => ({ ...p, ...data }))
         }
       })
@@ -182,6 +183,26 @@ export default function Settings() {
 
   const [signingOut, setSigningOut] = useState(false)
   const handleSignOut = () => setSigningOut(true)
+
+  const [pwOpen,    setPwOpen]    = useState(false)
+  const [pwNew,     setPwNew]     = useState('')
+  const [pwConfirm, setPwConfirm] = useState('')
+  const [pwSaving,  setPwSaving]  = useState(false)
+  const [pwError,   setPwError]   = useState('')
+  const [pwDone,    setPwDone]    = useState(false)
+
+  const handleChangePassword = async () => {
+    setPwError('')
+    if (pwNew.length < 6) { setPwError('Password must be at least 6 characters.'); return }
+    if (pwNew !== pwConfirm) { setPwError('Passwords do not match.'); return }
+    setPwSaving(true)
+    const { error } = await supabase.auth.updateUser({ password: pwNew })
+    setPwSaving(false)
+    if (error) { setPwError(error.message); return }
+    setPwDone(true)
+    setPwNew(''); setPwConfirm('')
+    setTimeout(() => { setPwDone(false); setPwOpen(false) }, 2500)
+  }
 
   const [wipeStep,        setWipeStep]       = useState(0)
   const [wipeError,       setWipeError]      = useState('')
@@ -496,6 +517,33 @@ export default function Settings() {
               style={{ width:'100%', padding:'12px', background:'transparent', border:'1px solid var(--border)', borderRadius:9, color:'var(--text-muted)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s', marginBottom:10 }}>
               Re-run Setup Questionnaire
             </button>
+            {/* Change Password */}
+            <button onClick={() => { setPwOpen(o => !o); setPwError(''); setPwDone(false) }}
+              style={{ width:'100%', padding:'12px', background:'transparent', border:'1px solid var(--border)', borderRadius:9, color:'var(--text-muted)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:10, transition:'all 0.2s' }}>
+              <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              {pwOpen ? 'Cancel' : 'Change Password'}
+            </button>
+            {pwOpen && (
+              <div style={{ background:'rgba(212,212,232,0.03)', border:'1px solid var(--border)', borderRadius:9, padding:'14px', marginBottom:10 }}>
+                <input
+                  type="password" placeholder="New password" value={pwNew}
+                  onChange={e => setPwNew(e.target.value)}
+                  style={{ width:'100%', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(212,212,232,0.15)', borderRadius:7, color:'var(--text-primary)', padding:'11px 12px', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, outline:'none', boxSizing:'border-box' }}
+                />
+                <input
+                  type="password" placeholder="Confirm new password" value={pwConfirm}
+                  onChange={e => setPwConfirm(e.target.value)}
+                  style={{ width:'100%', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(212,212,232,0.15)', borderRadius:7, color:'var(--text-primary)', padding:'11px 12px', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10, outline:'none', boxSizing:'border-box' }}
+                />
+                {pwError && <p style={{ color:'rgba(255,100,100,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>{pwError}</p>}
+                {pwDone && <p style={{ color:'rgba(120,220,120,0.85)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', marginBottom:10 }}>✓ Password updated successfully.</p>}
+                <button onClick={handleChangePassword} disabled={pwSaving || pwDone}
+                  style={{ width:'100%', padding:'11px', background: pwDone ? 'rgba(120,220,120,0.1)' : '#fff', color: pwDone ? 'rgba(120,220,120,0.9)' : 'var(--bg-primary)', border:'none', borderRadius:7, fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: pwSaving ? 'not-allowed' : 'pointer', opacity: pwSaving ? 0.6 : 1, transition:'all 0.2s' }}>
+                  {pwSaving ? 'Saving…' : pwDone ? '✓ Saved' : 'Update Password'}
+                </button>
+              </div>
+            )}
+
             <button onClick={handleSignOut} className="ax-signout"
               style={{ width:'100%', padding:'12px', background:'transparent', border:'1px solid rgba(255,80,80,0.16)', borderRadius:9, color:'rgba(255,80,80,0.45)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
               {Ico.logout()} Sign Out

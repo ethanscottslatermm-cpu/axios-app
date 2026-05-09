@@ -28,17 +28,24 @@ export default function AdminGuard({ children }) {
     }
   }, [user])
 
+  const MASTER_ADMINS = [
+    'ethan.scott.slatermm@gmail.com',
+    'ethan.scott.marketing@gmail.com',
+  ]
+
   useEffect(() => {
     if (!user) return
     ;(async () => {
-      // 1. Check admin role
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-      if (data?.role !== 'admin') { setPhase('denied'); return }
+      // 1. Check admin role — master admin emails always pass
+      const isMasterAdmin = MASTER_ADMINS.includes(user.email?.toLowerCase())
+      if (!isMasterAdmin) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+        if (data?.role !== 'admin') { setPhase('denied'); return }
+      }
 
       // 2. Check WebAuthn support
       if (!webAuthnSupported()) {
