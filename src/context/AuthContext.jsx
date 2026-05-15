@@ -2,20 +2,16 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
-const INACTIVITY_MS = 5 * 60 * 1000 // 5 minutes
+const INACTIVITY_MS = 10 * 60 * 1000 // 10 minutes
 
 export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null)
   const [loading, setLoading] = useState(true)
-  const [locked,  setLocked]  = useState(false) // biometric lock
-  const timerRef   = useRef(null)
-  const resetTimer = useRef(null)
+  const timerRef = useRef(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      const u = session?.user ?? null
-      setUser(u)
-      if (u) setLocked(true) // lock on every app open if session exists
+      setUser(session?.user ?? null)
       setLoading(false)
     })
 
@@ -27,19 +23,19 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-
-  // Auto-lock after 3 minutes of inactivity
+  // Sign out after 10 minutes of inactivity
   useEffect(() => {
-    if (!user || locked) return
+    if (!user) return
 
-    const lock = () => setLocked(true)
+    const handleSignOut = async () => {
+      await supabase.auth.signOut()
+      setUser(null)
+    }
 
     const reset = () => {
       clearTimeout(timerRef.current)
-      timerRef.current = setTimeout(lock, INACTIVITY_MS)
+      timerRef.current = setTimeout(handleSignOut, INACTIVITY_MS)
     }
-
-    resetTimer.current = reset
 
     const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click']
     events.forEach(e => window.addEventListener(e, reset, { passive: true }))
@@ -49,7 +45,7 @@ export function AuthProvider({ children }) {
       clearTimeout(timerRef.current)
       events.forEach(e => window.removeEventListener(e, reset))
     }
-  }, [user, locked])
+  }, [user])
 
   const signIn = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -90,7 +86,6 @@ export function AuthProvider({ children }) {
       }).catch(() => {})
     }
 
-    setLocked(false) // freshly signed in — no lock needed
     return data
   }
 
@@ -108,13 +103,10 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     await supabase.auth.signOut()
     setUser(null)
-    setLocked(false)
   }
 
-  const unlock = () => setLocked(false)
-
   return (
-    <AuthContext.Provider value={{ user, loading, locked, signIn, signOut, unlock }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )
