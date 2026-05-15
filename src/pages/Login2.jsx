@@ -239,7 +239,7 @@ const styles = `
 `
 
 const VARIANTS = ['l2-px-a','l2-px-b','l2-px-c','l2-px-d','l2-px-e']
-const COLORS   = ['rgba(190,165,90,', 'rgba(160,145,78,', 'rgba(205,183,108,']
+const COLORS   = ['rgba(212,212,232,', 'rgba(200,200,220,', 'rgba(220,220,240,']
 const PARTICLES = Array.from({ length: 140 }, (_, i) => {
   const small   = i >= 100
   const opacity = small ? 0.08 + (i % 5) * 0.05 : 0.13 + (i % 5) * 0.07
