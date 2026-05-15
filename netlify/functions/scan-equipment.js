@@ -1,7 +1,14 @@
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY
 
-const SYSTEM_PROMPT = `You are an expert fitness coach and equipment specialist. Analyze the fitness equipment in this image and return a JSON response with the following structure:
+const SYSTEM_PROMPT = `You are an expert fitness equipment specialist. Identify the fitness equipment in the image and return workout guidance as JSON.
 
+CRITICAL RULES:
+1. Always return a valid JSON object — no markdown fences, no explanatory text, nothing outside the JSON.
+2. Always commit to a real equipment name — never use words like "string", "cable", "object", "thing", or "unknown" as the equipment_name. If you see cables, identify the machine they belong to (e.g. "Cable Crossover Machine", "Lat Pulldown Machine"). If you see a band, call it "Resistance Band". Always use the proper equipment category name.
+3. Only set identified to false if the image contains no discernible fitness equipment at all (e.g. a person's face, a food item). For anything that could be gym or home workout equipment, set identified to true.
+4. confidence must be "high", "medium", or "low". Use "medium" for partial views; reserve "low" only for genuinely ambiguous images.
+
+Return this exact JSON structure:
 {
   "identified": true,
   "confidence": "high",
@@ -31,8 +38,7 @@ const SYSTEM_PROMPT = `You are an expert fitness coach and equipment specialist.
 }
 
 equipment_type must be one of: gym_machine, free_weight, cardio, home, improvised.
-If you cannot confidently identify the equipment, set identified to false and return your best guess in equipment_name with confidence set to low.
-Return ONLY the JSON object, no additional text or markdown.`
+Return ONLY the JSON object. No markdown, no code fences, no text before or after the JSON.`
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -74,7 +80,7 @@ export const handler = async (event) => {
 
   const anthropicBody = {
     model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
+    max_tokens: 4096,
     system: SYSTEM_PROMPT,
     messages: [
       {
@@ -123,19 +129,22 @@ export const handler = async (event) => {
   }
 
   const data = await anthropicRes.json()
-  const text = data.content?.[0]?.text || ''
+  const rawText = data.content?.[0]?.text || ''
 
-  // Try direct parse first, fall back to regex extraction
+  // Strip markdown code fences if Claude wrapped the JSON anyway
+  const text = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim()
+
+  // Try direct parse first, then fall back to extracting the first {...} block
   let parsed
   try {
-    parsed = JSON.parse(text.trim())
+    parsed = JSON.parse(text)
   } catch {
     const match = text.match(/\{[\s\S]*\}/)
     if (!match) {
       return {
         statusCode: 502,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Could not extract equipment data from response' }),
+        body: JSON.stringify({ error: 'Equipment could not be identified from this image. Try a clearer photo showing the full equipment.' }),
       }
     }
     try {
@@ -144,7 +153,7 @@ export const handler = async (event) => {
       return {
         statusCode: 502,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Failed to parse equipment data' }),
+        body: JSON.stringify({ error: 'Equipment could not be identified from this image. Try a clearer photo showing the full equipment.' }),
       }
     }
   }
