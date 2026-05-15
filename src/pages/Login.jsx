@@ -184,7 +184,7 @@ export default function Login() {
   const [offerFaceId, setOfferFaceId] = useState(false)
   const [registeringFaceId, setRegisteringFaceId] = useState(false)
   const [phase, setPhase] = useState('in')
-  const [open,  setOpen]  = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
     const cycle = () => {
@@ -329,44 +329,21 @@ export default function Login() {
           animation:'loginAurora 8s ease-in-out infinite',
         }}/>
 
-        {/* Closed — SECURE ACCESS only */}
-        {!open && (
+        {/* Closed — full-screen tap zone */}
+        {!showLogin && (
           <div
-            onClick={() => setOpen(true)}
+            onClick={() => setShowLogin(true)}
             style={{
               position: 'fixed', inset: 0, zIndex: 10,
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'flex-end',
-              paddingBottom: 'clamp(16vh, 28vh, 32vh)',
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
               userSelect: 'none',
             }}
-          >
-            <p style={{
-              color: '#fff',
-              fontSize: 'clamp(0.62rem, 2.6vw, 0.78rem)',
-              letterSpacing: '0.65em',
-              textTransform: 'uppercase',
-              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-              fontWeight: 300,
-              margin: 0,
-              animation: 'secureGlow 2.8s ease-in-out infinite',
-            }}>
-              Secure Access
-            </p>
-            <div style={{
-              width: 28, height: 1,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
-              marginTop: 14,
-              animation: 'lineBreath 2.8s ease-in-out infinite',
-              animationDelay: '0.35s',
-            }} />
-          </div>
+          />
         )}
 
         {/* Open — full form */}
-        {open && (
+        {showLogin && (
           <div style={{
             position: 'fixed', inset: 0, zIndex: 10,
             display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -465,7 +442,7 @@ export default function Login() {
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.22)', pointerEvents: 'none' }}>
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                   </svg>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="password" autoComplete="current-password" required className="login-input login-input-icon" />
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSubmit(e)} placeholder="password" autoComplete="current-password" required className="login-input login-input-icon" />
                 </div>
               </div>
 
