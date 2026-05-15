@@ -195,21 +195,25 @@ const styles = `
     100% { transform: translateY(0px) scale(1); }
   }
   @keyframes l2-smoke-a {
-    0%   { transform: translateX(-8%)  translateY(0px)  skewX(-2deg)   scale(1);    opacity: 0.65; }
-    35%  { transform: translateX(0%)   translateY(-5px) skewX(0deg)    scale(1.02); opacity: 1;    }
-    65%  { transform: translateX(6%)   translateY(-8px) skewX(1.5deg)  scale(1.04); opacity: 0.75; }
-    100% { transform: translateX(-8%)  translateY(0px)  skewX(-2deg)   scale(1);    opacity: 0.65; }
+    0%   { transform: translateY(0%)    translateX(-4%) skewX(-1.5deg) scale(1.05); opacity: 0;    }
+    20%  { opacity: 0.82; }
+    50%  { transform: translateY(-100%) translateX(0%)  skewX(0deg)    scale(1);    opacity: 0.88; }
+    80%  { opacity: 0.72; }
+    100% { transform: translateY(-200%) translateX(5%)  skewX(2deg)    scale(0.95); opacity: 0;    }
   }
   @keyframes l2-smoke-b {
-    0%   { transform: translateX(7%)   translateY(5px)  skewX(2deg)    scale(1.02); opacity: 0.55; }
-    42%  { transform: translateX(0%)   translateY(-3px) skewX(-0.5deg) scale(1);    opacity: 0.9;  }
-    78%  { transform: translateX(-6%)  translateY(7px)  skewX(-2deg)   scale(0.97); opacity: 0.6;  }
-    100% { transform: translateX(7%)   translateY(5px)  skewX(2deg)    scale(1.02); opacity: 0.55; }
+    0%   { transform: translateY(0%)    translateX(6%)  skewX(2deg)    scale(1);    opacity: 0;    }
+    20%  { opacity: 0.62; }
+    50%  { transform: translateY(-100%) translateX(-2%) skewX(-1deg)   scale(1.04); opacity: 0.68; }
+    80%  { opacity: 0.52; }
+    100% { transform: translateY(-200%) translateX(-5%) skewX(-2deg)   scale(0.92); opacity: 0;    }
   }
   @keyframes l2-smoke-c {
-    0%   { transform: translateX(3%)   translateY(-6px) skewX(1deg)    scale(1);    opacity: 0.5;  }
-    55%  { transform: translateX(-5%)  translateY(4px)  skewX(-1.5deg) scale(1.03); opacity: 0.85; }
-    100% { transform: translateX(3%)   translateY(-6px) skewX(1deg)    scale(1);    opacity: 0.5;  }
+    0%   { transform: translateY(0%)    translateX(2%)  skewX(-1deg)   scale(1.02); opacity: 0;    }
+    20%  { opacity: 0.48; }
+    50%  { transform: translateY(-100%) translateX(-3%) skewX(1.5deg)  scale(1);    opacity: 0.55; }
+    80%  { opacity: 0.42; }
+    100% { transform: translateY(-200%) translateX(-6%) skewX(1deg)    scale(0.9);  opacity: 0;    }
   }
 `
 
@@ -292,34 +296,36 @@ export default function Login2() {
           background: 'radial-gradient(ellipse at 38% 45%, transparent 40%, rgba(0,0,0,0.55) 100%)',
         }} />
 
-        {/* ── Smoke drift A — broad mid-scene layer ── */}
+        {/* ── Smoke A — rises from below, primary layer ── */}
         <div style={{
-          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 160% 55% at 50% 52%, rgba(200,200,220,0.11) 0%, rgba(185,190,215,0.05) 45%, transparent 70%)',
-          filter: 'blur(38px)',
-          animation: 'l2-smoke-a 28s ease-in-out infinite',
-          transformOrigin: '50% 50%',
-        }} />
-
-        {/* ── Smoke drift B — offset layer for depth ── */}
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 130% 48% at 40% 62%, rgba(195,195,218,0.09) 0%, rgba(180,185,210,0.04) 48%, transparent 68%)',
-          filter: 'blur(50px)',
-          animation: 'l2-smoke-b 37s ease-in-out infinite',
-          animationDelay: '-18s',
-          transformOrigin: '50% 50%',
-        }} />
-
-        {/* ── Smoke drift C — low ground fog ── */}
-        <div style={{
-          position: 'absolute', left: '-15%', right: '-15%', bottom: '8%', height: '42%',
+          position: 'absolute', left: '-10%', right: '-10%',
+          top: '100%', height: '100%',
           zIndex: 1, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 75% 80% at 52% 75%, rgba(200,205,225,0.10) 0%, rgba(190,195,218,0.04) 52%, transparent 70%)',
-          filter: 'blur(42px)',
-          animation: 'l2-smoke-c 22s ease-in-out infinite',
-          animationDelay: '-9s',
-          transformOrigin: '50% 50%',
+          background: 'radial-gradient(ellipse 70% 55% at 50% 60%, rgba(200,200,220,0.13) 0%, rgba(185,190,215,0.06) 45%, transparent 72%)',
+          filter: 'blur(40px)',
+          animation: 'l2-smoke-a 20s linear infinite',
+        }} />
+
+        {/* ── Smoke B — slower, offset left ── */}
+        <div style={{
+          position: 'absolute', left: '-15%', right: '5%',
+          top: '100%', height: '100%',
+          zIndex: 1, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 65% 50% at 40% 65%, rgba(190,190,215,0.11) 0%, rgba(175,180,208,0.05) 50%, transparent 70%)',
+          filter: 'blur(52px)',
+          animation: 'l2-smoke-b 28s linear infinite',
+          animationDelay: '-11s',
+        }} />
+
+        {/* ── Smoke C — fastest, offset right ── */}
+        <div style={{
+          position: 'absolute', left: '5%', right: '-10%',
+          top: '100%', height: '100%',
+          zIndex: 1, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 60% 48% at 55% 65%, rgba(195,200,218,0.10) 0%, rgba(185,190,215,0.04) 52%, transparent 70%)',
+          filter: 'blur(44px)',
+          animation: 'l2-smoke-c 16s linear infinite',
+          animationDelay: '-6s',
         }} />
 
         {/* ── Starfield ── */}
@@ -422,11 +428,7 @@ export default function Login2() {
                 <animate attributeName="x2" from="0"    to="760" dur="2.8s" repeatCount="indefinite"/>
               </linearGradient>
             </defs>
-            <polygon points="10,62 45,4 80,62"   fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
-            <polygon points="22,62 45,20 68,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
-            <text x="100" y="52" fontFamily="Georgia,'Times New Roman',serif" fontSize="42" fontWeight="700" letterSpacing="5" fill="url(#ax-login-sg)">AXIOS</text>
-            <polygon points="300,62 335,4 370,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
-            <polygon points="312,62 335,20 358,62" fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+            <text x="190" y="52" textAnchor="middle" fontFamily="Georgia,'Times New Roman',serif" fontSize="42" fontWeight="700" letterSpacing="5" fill="url(#ax-login-sg)">AXIOS</text>
           </svg>
 
           {/* Shimmer bar */}
@@ -438,17 +440,6 @@ export default function Login2() {
             }}/>
           </div>
 
-          {/* Tagline */}
-          <p style={{
-            fontSize: '0.6rem',
-            letterSpacing: '0.38em',
-            textTransform: 'uppercase',
-            fontFamily: '"The Seasons", Georgia, serif',
-            margin: 0,
-            color: 'rgba(212,212,232,0.9)',
-            textShadow: '0 0 8px rgba(212,212,232,0.7), 0 0 20px rgba(212,212,232,0.4), 0 0 40px rgba(200,210,255,0.2)',
-            animation: 'iamworthy 3.2s ease-in-out infinite',
-          }}>The Worthy</p>
         </div>
 
         {/* Closed — full-screen tap zone */}
