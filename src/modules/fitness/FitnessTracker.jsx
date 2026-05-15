@@ -681,7 +681,7 @@ export default function FitnessTracker() {
   const [loadingW,     setLoadingW]     = useState(false)
   const [chartRange,   setChartRange]   = useState('1M')
   const [historyOpen,     setHistoryOpen]     = useState(false)
-const [prsOpen,         setPrsOpen]         = useState(false)
+const [prsOpen,         setPrsOpen]         = useState(true)
   const [showScanner,     setShowScanner]     = useState(false)
   const [prefillWorkout,  setPrefillWorkout]  = useState(null)
   const [sleepHrs,        setSleepHrs]        = useState(() => { try { return localStorage.getItem(`ax-sleep-${new Date().toISOString().split('T')[0]}`) || '' } catch { return '' } })
