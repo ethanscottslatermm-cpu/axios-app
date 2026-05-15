@@ -206,7 +206,7 @@ export default function Login2() {
   const [showLoader, setShowLoader]               = useState(false)
   const [offerFaceId, setOfferFaceId]             = useState(false)
   const [registeringFaceId, setRegisteringFaceId] = useState(false)
-  const [open, setOpen]                           = useState(false)
+  const [showLogin, setShowLogin]                 = useState(false)
   const [authenticated, setAuthenticated]         = useState(false)
 
   useEffect(() => {
@@ -404,36 +404,21 @@ export default function Login2() {
           }}>The Worthy</p>
         </div>
 
-        {/* Closed — SECURE ACCESS only */}
-        {!open && (
+        {/* Closed — full-screen tap zone */}
+        {!showLogin && (
           <div
-            onClick={() => setOpen(true)}
+            onClick={() => setShowLogin(true)}
             style={{
-              position: 'absolute', zIndex: 10,
-              bottom: '8%', left: 0, right: 0,
-              display: 'flex', justifyContent: 'center',
+              position: 'fixed', inset: 0, zIndex: 10,
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
               userSelect: 'none',
             }}
-          >
-            <p style={{
-              fontSize: '0.6rem',
-              letterSpacing: '0.55em',
-              textTransform: 'uppercase',
-              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-              fontWeight: 300,
-              margin: 0,
-              color: 'rgba(255,255,255,0.25)',
-              animation: 'saGlow 3s ease-in-out infinite',
-            }}>
-              Secure Access
-            </p>
-          </div>
+          />
         )}
 
         {/* Open — form revealed */}
-        {open && (
+        {showLogin && (
           <div style={{
             position: 'absolute', zIndex: 10,
             top: '62%',
@@ -471,7 +456,7 @@ export default function Login2() {
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                       </svg>
-                      <input type="password" value={password} onChange={e => setPassword(e.target.value)} onBlur={() => { if (email && password) handleSubmit({ preventDefault: () => {} }) }} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
+                      <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSubmit(e)} onBlur={() => { if (email && password) handleSubmit({ preventDefault: () => {} }) }} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
                     </div>
                   </div>
 
