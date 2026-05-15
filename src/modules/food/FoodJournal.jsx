@@ -109,11 +109,13 @@ function SectionHead({ title, count }) {
 
 // ── Barcode Scanner ────────────────────────────────────────────────────────────
 function BarcodeScanner({ onResult, onClose }) {
-  const [status, setStatus] = useState('starting') // starting | scanning | found | error
-  const [msg,    setMsg]    = useState('')
+  const [status,    setStatus]    = useState('starting') // starting | scanning | found | confirm | error
+  const [msg,       setMsg]       = useState('')
+  const [foundFood, setFoundFood] = useState(null)
+  const [servings,  setServings]  = useState(1)
   const scannerRef = useRef(null)
   const handledRef = useRef(false)
-  const startedRef = useRef(false) // true only after .start() resolves
+  const startedRef = useRef(false)
 
   useEffect(() => {
     let mounted = true
@@ -121,7 +123,6 @@ function BarcodeScanner({ onResult, onClose }) {
     import('html5-qrcode').then(({ Html5Qrcode }) => {
       if (!mounted) return
 
-      // Clear any leftover DOM injected by a previous render
       const el = document.getElementById('barcode-reader')
       if (el) el.innerHTML = ''
 
@@ -138,7 +139,11 @@ function BarcodeScanner({ onResult, onClose }) {
             if (startedRef.current) await html5Qrcode.stop().catch(() => {})
             startedRef.current = false
             const food = await lookupBarcode(decodedText)
-            if (mounted) onResult(food)
+            if (mounted) {
+              setFoundFood(food)
+              setServings(1)
+              setStatus('confirm')
+            }
           } catch {
             if (mounted) {
               setStatus('error')
@@ -179,14 +184,50 @@ function BarcodeScanner({ onResult, onClose }) {
     }
   }, [])
 
+  const confirmServing = () => {
+    if (!foundFood) return
+    onResult({
+      ...foundFood,
+      calories: Math.round(foundFood.calories * servings),
+      protein:  Math.round(foundFood.protein  * servings * 10) / 10,
+      carbs:    Math.round(foundFood.carbs    * servings * 10) / 10,
+      fat:      Math.round(foundFood.fat      * servings * 10) / 10,
+    })
+  }
+
+  const adjustServings = (delta) =>
+    setServings(s => Math.max(0.5, Math.round((s + delta) * 10) / 10))
+
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:500,
       background:'rgba(0,0,0,0.97)', display:'flex', flexDirection:'column',
     }}>
+      <style>{`
+        @keyframes shutterTopOpen {
+          from { transform: translateY(0); }
+          to   { transform: translateY(-101%); }
+        }
+        @keyframes shutterBotOpen {
+          from { transform: translateY(0); }
+          to   { transform: translateY(101%); }
+        }
+        @keyframes shutterRingFade {
+          0%   { opacity:1; transform:scale(1) rotate(0deg); }
+          60%  { opacity:0.9; transform:scale(1.15) rotate(15deg); }
+          100% { opacity:0; transform:scale(1.4) rotate(25deg); }
+        }
+        @keyframes shutterLinePulse {
+          0%,100% { opacity:0.18; }
+          50%     { opacity:0.5; }
+        }
+      `}</style>
+
       {/* Header */}
       <div style={{ padding:'max(16px, env(safe-area-inset-top)) 16px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(212,212,232,0.1)' }}>
-        <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>Scan Barcode</p>
+        <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>
+          {status === 'confirm' ? 'Confirm Serving' : 'Scan Food'}
+        </p>
         <button onClick={onClose} style={{
           background:'rgba(0,0,0,0.55)', border:'none', cursor:'pointer',
           color:'rgba(212,212,232,0.9)', display:'flex', alignItems:'center', justifyContent:'center',
@@ -196,41 +237,156 @@ function BarcodeScanner({ onResult, onClose }) {
         </button>
       </div>
 
-      {/* Viewfinder */}
       <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24, padding:24 }}>
-        <div style={{ position:'relative', width:'100%', maxWidth:340 }}>
-          <div id="barcode-reader" style={{ width:'100%', borderRadius:12, overflow:'hidden' }} />
-          {status === 'scanning' && (
-            <div style={{
-              position:'absolute', inset:0, pointerEvents:'none',
-              border:'2px solid rgba(212,212,232,0.6)', borderRadius:12,
-              boxShadow:'0 0 0 9999px rgba(0,0,0,0.5)',
-            }}>
-              <div style={{ position:'absolute', top:0, left:0, width:24, height:24, borderTop:'3px solid #c8a000', borderLeft:'3px solid #c8a000', borderRadius:'4px 0 0 0' }} />
-              <div style={{ position:'absolute', top:0, right:0, width:24, height:24, borderTop:'3px solid #c8a000', borderRight:'3px solid #c8a000', borderRadius:'0 4px 0 0' }} />
-              <div style={{ position:'absolute', bottom:0, left:0, width:24, height:24, borderBottom:'3px solid #c8a000', borderLeft:'3px solid #c8a000', borderRadius:'0 0 0 4px' }} />
-              <div style={{ position:'absolute', bottom:0, right:0, width:24, height:24, borderBottom:'3px solid #c8a000', borderRight:'3px solid #c8a000', borderRadius:'0 0 4px 0' }} />
-            </div>
-          )}
-        </div>
 
-        <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', letterSpacing:'0.06em' }}>
-          {status === 'starting'  && 'Starting camera…'}
-          {status === 'scanning'  && 'Point at a barcode on any packaged food'}
-          {status === 'found'     && msg}
-          {status === 'error'     && msg}
-        </p>
+        {status === 'confirm' && foundFood ? (
+          /* ── Serving size confirmation ── */
+          <div style={{ width:'100%', maxWidth:340, display:'flex', flexDirection:'column', gap:18 }}>
+
+            {/* Food card */}
+            <div style={{ background:'rgba(212,212,232,0.05)', borderRadius:14, padding:'16px 18px', border:'1px solid rgba(212,212,232,0.1)' }}>
+              <p style={{ color:'var(--text-primary)', fontSize:15, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{foundFood.name}</p>
+              {foundFood.brand && <p style={{ color:'rgba(212,212,232,0.4)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>{foundFood.brand}</p>}
+              <p style={{ color:'rgba(212,212,232,0.3)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>Per serving: {foundFood.serving}</p>
+            </div>
+
+            {/* Servings label */}
+            <div style={{ textAlign:'center' }}>
+              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:12 }}>Servings Eaten</p>
+
+              {/* Quick chips */}
+              <div style={{ display:'flex', gap:7, justifyContent:'center', marginBottom:16 }}>
+                {[0.5, 1, 1.5, 2, 3].map(n => (
+                  <button key={n} onClick={() => setServings(n)} style={{
+                    padding:'7px 11px', borderRadius:9, cursor:'pointer', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif',
+                    background: servings === n ? '#c8a000' : 'rgba(212,212,232,0.07)',
+                    border: servings === n ? '1px solid #c8a000' : '1px solid rgba(212,212,232,0.13)',
+                    color: servings === n ? '#000' : 'rgba(212,212,232,0.55)',
+                    transition:'all 0.15s',
+                  }}>{n === 0.5 ? '½' : n === 1.5 ? '1½' : n}</button>
+                ))}
+              </div>
+
+              {/* +/- stepper */}
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:20 }}>
+                <button onClick={() => adjustServings(-0.5)} style={{
+                  width:42, height:42, borderRadius:'50%', background:'rgba(212,212,232,0.07)', border:'1px solid rgba(212,212,232,0.14)',
+                  color:'rgba(212,212,232,0.7)', fontSize:22, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1,
+                }}>−</button>
+                <div style={{ textAlign:'center', minWidth:56 }}>
+                  <p style={{ color:'var(--text-primary)', fontSize:30, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{servings}</p>
+                  <p style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>serving{servings !== 1 ? 's' : ''}</p>
+                </div>
+                <button onClick={() => adjustServings(0.5)} style={{
+                  width:42, height:42, borderRadius:'50%', background:'rgba(212,212,232,0.07)', border:'1px solid rgba(212,212,232,0.14)',
+                  color:'rgba(212,212,232,0.7)', fontSize:22, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1,
+                }}>+</button>
+              </div>
+            </div>
+
+            {/* Scaled macro preview */}
+            <div style={{ display:'flex', gap:8 }}>
+              {[
+                ['Cal',     Math.round(foundFood.calories * servings),              ''],
+                ['Protein', Math.round(foundFood.protein  * servings * 10) / 10,   'g'],
+                ['Carbs',   Math.round(foundFood.carbs    * servings * 10) / 10,   'g'],
+                ['Fat',     Math.round(foundFood.fat      * servings * 10) / 10,   'g'],
+              ].map(([label, val, unit]) => (
+                <div key={label} style={{ flex:1, background:'rgba(212,212,232,0.04)', borderRadius:10, padding:'10px 6px', textAlign:'center' }}>
+                  <p style={{ color:'var(--text-primary)', fontSize:15, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{val}<span style={{ fontSize:9, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:1 }}>{unit}</span></p>
+                  <p style={{ color:'rgba(212,212,232,0.3)', fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Log button */}
+            <button onClick={confirmServing} style={{
+              width:'100%', padding:'15px', borderRadius:13, background:'#c8a000', border:'none',
+              color:'#000', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800,
+              letterSpacing:'0.14em', textTransform:'uppercase', cursor:'pointer',
+              boxShadow:'0 4px 24px rgba(200,160,0,0.32)',
+            }}>Log Food</button>
+
+            <button onClick={() => { setStatus('scanning'); setFoundFood(null); handledRef.current = false }} style={{
+              background:'none', border:'none', color:'rgba(212,212,232,0.3)', fontSize:11,
+              fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', textDecoration:'underline',
+            }}>Scan again</button>
+          </div>
+
+        ) : (
+          /* ── Viewfinder ── */
+          <div style={{ position:'relative', width:'100%', maxWidth:340 }}>
+
+            {/* Camera shutter animation — plays once on 'starting' */}
+            {status === 'starting' && (
+              <div style={{ position:'absolute', inset:0, zIndex:10, borderRadius:12, overflow:'hidden', pointerEvents:'none' }}>
+                {/* Top blade */}
+                <div style={{
+                  position:'absolute', top:0, left:0, right:0, height:'50%', background:'#000',
+                  animation:'shutterTopOpen 0.52s cubic-bezier(0.76,0,0.24,1) 0.2s forwards',
+                }} />
+                {/* Bottom blade */}
+                <div style={{
+                  position:'absolute', bottom:0, left:0, right:0, height:'50%', background:'#000',
+                  animation:'shutterBotOpen 0.52s cubic-bezier(0.76,0,0.24,1) 0.2s forwards',
+                }} />
+                {/* Aperture ring */}
+                <div style={{
+                  position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', zIndex:11, pointerEvents:'none',
+                }}>
+                  <div style={{
+                    width:62, height:62, borderRadius:'50%',
+                    border:'1.5px solid rgba(200,160,0,0.85)',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    animation:'shutterRingFade 0.65s ease-out 0.1s forwards',
+                  }}>
+                    <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="rgba(200,160,0,0.9)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                      <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div id="barcode-reader" style={{ width:'100%', borderRadius:12, overflow:'hidden' }} />
+
+            {status === 'scanning' && (
+              <div style={{
+                position:'absolute', inset:0, pointerEvents:'none',
+                border:'2px solid rgba(212,212,232,0.6)', borderRadius:12,
+                boxShadow:'0 0 0 9999px rgba(0,0,0,0.5)',
+              }}>
+                <div style={{ position:'absolute', top:0, left:0, width:24, height:24, borderTop:'3px solid #c8a000', borderLeft:'3px solid #c8a000', borderRadius:'4px 0 0 0' }} />
+                <div style={{ position:'absolute', top:0, right:0, width:24, height:24, borderTop:'3px solid #c8a000', borderRight:'3px solid #c8a000', borderRadius:'0 4px 0 0' }} />
+                <div style={{ position:'absolute', bottom:0, left:0, width:24, height:24, borderBottom:'3px solid #c8a000', borderLeft:'3px solid #c8a000', borderRadius:'0 0 0 4px' }} />
+                <div style={{ position:'absolute', bottom:0, right:0, width:24, height:24, borderBottom:'3px solid #c8a000', borderRight:'3px solid #c8a000', borderRadius:'0 0 4px 0' }} />
+              </div>
+            )}
+          </div>
+        )}
+
+        {status !== 'confirm' && (
+          <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', letterSpacing:'0.06em' }}>
+            {status === 'starting' && 'Opening camera…'}
+            {status === 'scanning' && 'Point at a barcode on any packaged food'}
+            {status === 'found'    && msg}
+            {status === 'error'    && msg}
+          </p>
+        )}
 
         {status === 'error' && (
           <button onClick={onClose} style={{ padding:'11px 28px', borderRadius:9, background:'rgba(212,212,232,0.08)', border:'1px solid rgba(212,212,232,0.2)', color:'var(--text-primary)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.12em', cursor:'pointer' }}>
-            BACK TO SEARCH
+            CLOSE
           </button>
         )}
       </div>
 
-      <p style={{ textAlign:'center', padding:'0 0 32px', color:'rgba(212,212,232,0.2)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em' }}>
-        Powered by Open Food Facts · 3M+ products
-      </p>
+      {status !== 'confirm' && (
+        <p style={{ textAlign:'center', padding:'0 0 32px', color:'rgba(212,212,232,0.2)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.1em' }}>
+          Powered by Open Food Facts · 3M+ products
+        </p>
+      )}
     </div>
   )
 }
@@ -642,6 +798,7 @@ export default function FoodJournal() {
   const navigate  = useNavigate()
   const [visible, setVisible]   = useState(false)
   const [showAI,  setShowAI]    = useState(false)
+  const [showScanner, setShowScanner] = useState(false)
   const [showAdd, setShowAdd]   = useState(false)
   const [prefill, setPrefill]   = useState(null)
   const [activeMeal, setActiveMeal] = useState('All')
@@ -664,6 +821,12 @@ export default function FoodJournal() {
   const handleAISelect = (item) => {
     setPrefill(item)
     setShowAI(false)
+    setShowAdd(true)
+  }
+
+  const handleScanResult = (food) => {
+    setShowScanner(false)
+    setPrefill(food)
     setShowAdd(true)
   }
 
@@ -709,6 +872,7 @@ export default function FoodJournal() {
         input:focus{outline:none;}
         .ax-back:hover{background:rgba(212,212,232,0.08)!important;}
         .ax-ai-btn:hover{background:rgba(212,212,232,0.07)!important;border-color:rgba(212,212,232,0.22)!important;}
+        .ax-scan-btn:hover{background:rgba(200,160,0,0.2)!important;border-color:rgba(200,160,0,0.6)!important;box-shadow:0 0 20px rgba(200,160,0,0.25)!important;}
         .ax-add-btn:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.2)!important;}
         .ax-meal-tab:hover{background:rgba(212,212,232,0.05)!important;}
         .ax-tab:hover{background:rgba(212,212,232,0.05)!important;}
@@ -747,10 +911,10 @@ export default function FoodJournal() {
             </div>
             {/* Action buttons */}
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => setShowAI(true)} className="ax-ai-btn"
-                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 12px', borderRadius:9, background:'var(--stat-bg)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', color:'var(--text-secondary)', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.06em', transition:'all 0.2s' }}>
-                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                Search
+              <button onClick={() => setShowScanner(true)} className="ax-scan-btn"
+                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 13px', borderRadius:9, background:'rgba(200,160,0,0.1)', border:'1px solid rgba(200,160,0,0.38)', boxShadow:'0 0 14px rgba(200,160,0,0.14)', color:'#c8a000', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.07em', transition:'all 0.2s' }}>
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Scan Food
               </button>
               <button onClick={handleManualAdd} className="ax-add-btn"
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 14px', borderRadius:9, background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s' }}>
@@ -982,6 +1146,7 @@ export default function FoodJournal() {
 
 
             {/* Overlays */}
+      {showScanner && <BarcodeScanner onResult={handleScanResult} onClose={() => setShowScanner(false)} />}
       {showAI  && <AISearchPanel onSelect={handleAISelect} onClose={() => setShowAI(false)} />}
       {showAdd && (
         <ManualAddSheet
