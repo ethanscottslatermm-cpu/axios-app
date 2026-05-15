@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
 import { useHaptic } from '../../hooks/useHaptic'
 import foodIconSrc from '../../food-icon.png'
+import cameraScanSrc from '../../icons/camera-scan.png'
 import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
 import { BottomNav } from '../../pages/Dashboard'
@@ -958,7 +959,7 @@ export default function FoodJournal() {
           {/* Scan Food — full-width, between calorie tracker and tabs */}
           <button onClick={() => setShowScanner(true)} className="ax-scan-btn"
             style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, width:'100%', padding:'12px 0', marginTop:14, borderRadius:10, background:'rgba(200,160,0,0.08)', border:'1px solid rgba(200,160,0,0.38)', boxShadow:'0 0 14px rgba(200,160,0,0.12)', color:'#c8a000', cursor:'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', transition:'all 0.2s' }}>
-            <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <img src={cameraScanSrc} width={18} height={18} alt="" style={{ filter:'brightness(0) invert(1) sepia(1) hue-rotate(10deg) saturate(4) brightness(0.82)', objectFit:'contain' }} />
             Scan Food
           </button>
 
