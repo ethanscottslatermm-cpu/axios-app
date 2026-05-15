@@ -190,8 +190,8 @@ export default function Dashboard() {
   const { user }  = useAuth()
   const [profile, setProfile] = useState(null)
   const [visible, setVisible] = useState(false)
-  const [activeSection, setActiveSection] = useState(null)
-  const toggleSection = (key) => setActiveSection(prev => prev === key ? null : key)
+  const [openSections, setOpenSections] = useState(new Set(['modules', 'food', 'water', 'prayer']))
+  const toggleSection = (key) => setOpenSections(prev => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n })
 
   const { totals, logs: foodLogs } = useFoodLog(todayStr)
   const { count: waterCount }      = useWaterLog(todayStr)
@@ -351,8 +351,8 @@ export default function Dashboard() {
 
           {/* Modules */}
           <Card style={anim(160)}>
-            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 4`} onToggle={() => toggleSection('modules')} collapsed={activeSection !== 'modules'} />
-            {activeSection === 'modules' && (
+            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 4`} onToggle={() => toggleSection('modules')} collapsed={!openSections.has('modules')} />
+            {openSections.has('modules') && (
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {modules.map(({ key, label, path, icon }, i) => {
                 const done  = loggedModules[key]
@@ -387,8 +387,8 @@ export default function Dashboard() {
 
           {/* Food */}
           <Card style={anim(280)}>
-            <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" color={MODULE_COLORS.food} onToggle={() => toggleSection('food')} collapsed={activeSection !== 'food'} />
-            {activeSection === 'food' && (
+            <SectionHead title="Recent Food Log" action={() => navigate('/food')} actionLabel="View all →" color={MODULE_COLORS.food} onToggle={() => toggleSection('food')} collapsed={!openSections.has('food')} />
+            {openSections.has('food') && (
             <>
               {recentFood.length === 0
                 ? <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontStyle:'italic', fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'14px 0' }}>Nothing logged yet today.</p>
@@ -415,8 +415,8 @@ export default function Dashboard() {
 
           {/* Water */}
           <Card style={anim(340)}>
-            <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" color={MODULE_COLORS.water} onToggle={() => toggleSection('water')} collapsed={activeSection !== 'water'} />
-            {activeSection === 'water' && (
+            <SectionHead title="Water Intake" action={() => navigate('/water')} actionLabel="Open →" color={MODULE_COLORS.water} onToggle={() => toggleSection('water')} collapsed={!openSections.has('water')} />
+            {openSections.has('water') && (
             <>
               <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
                 {Array.from({ length: WATER_GOAL }).map((_,i) => {
@@ -441,8 +441,8 @@ export default function Dashboard() {
 
           {/* Prayer */}
           <Card style={anim(400)}>
-            <SectionHead title="Devotion" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} onToggle={() => toggleSection('prayer')} collapsed={activeSection !== 'prayer'} />
-            {activeSection === 'prayer' && (
+            <SectionHead title="Devotion" action={() => navigate('/prayer')} actionLabel="Open →" color={MODULE_COLORS.prayer} onToggle={() => toggleSection('prayer')} collapsed={!openSections.has('prayer')} />
+            {openSections.has('prayer') && (
             <>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
                 {[{ label:'Today', value: todayPrayers, sub:'logged' },{ label:'Answered', value: answeredCount, sub:'total' }].map(({ label, value, sub }) => (
