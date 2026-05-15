@@ -231,17 +231,26 @@ export default function Admin() {
   const [appVersion,    setAppVersion]    = useState('')
   const [releaseNotes,  setReleaseNotes]  = useState('')
   const [notesSaving,   setNotesSaving]   = useState(false)
+  const [toast,         setToast]         = useState(null) // { msg, ok }
+
+  const flash = (msg, ok = true) => {
+    setToast({ msg, ok })
+    setTimeout(() => setToast(null), 3000)
+  }
 
   useEffect(() => {
     supabase.from('app_settings').select('value').eq('key', 'app_offline').single()
-      .then(({ data }) => setAppOffline(data?.value === 'true'))
+      .then(({ data, error }) => {
+        if (!error) setAppOffline(data?.value === 'true')
+      })
   }, [])
 
   const toggleAppOffline = async () => {
     setTogglingOffline(true)
     const next = !appOffline
-    await supabase.from('app_settings').upsert({ key: 'app_offline', value: String(next) }, { onConflict: 'key' })
-    setAppOffline(next)
+    const { error } = await supabase.from('app_settings').upsert({ key: 'app_offline', value: String(next) }, { onConflict: 'key' })
+    if (error) flash('Failed to update maintenance mode', false)
+    else { setAppOffline(next); flash(next ? 'App set to offline mode' : 'App is back online') }
     setTogglingOffline(false)
   }
 
@@ -253,10 +262,11 @@ export default function Admin() {
 
   const loadUsers = async () => {
     setLoading(true)
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('id, name, role, status, suspended_until, created_at, last_login, last_seen')
       .order('created_at', { ascending: false })
+    if (error) flash('Failed to load users', false)
     setUsers(data || [])
     setLoading(false)
   }
@@ -264,30 +274,32 @@ export default function Admin() {
   const handleAction = async (id, action, payload) => {
     if (action === 'delete') {
       if (confirm?.id === id && confirm?.action === 'delete') {
-        // Second tap — confirmed
-        await supabase.from('profiles').update({ status: 'deleted' }).eq('id', id)
-        setConfirm(null)
-        setExpanded(null)
-        loadUsers()
+        const { error } = await supabase.from('profiles').update({ status: 'deleted' }).eq('id', id)
+        if (error) { flash('Delete failed: ' + error.message, false); return }
+        flash('User deleted')
+        setConfirm(null); setExpanded(null); loadUsers()
       } else {
         setConfirm({ id, action: 'delete' })
-        return
       }
+      return
     }
 
+    let error
     if (action === 'suspend') {
-      await supabase.from('profiles').update({ status: 'suspended', suspended_until: payload }).eq('id', id)
+      ;({ error } = await supabase.from('profiles').update({ status: 'suspended', suspended_until: payload }).eq('id', id))
+      if (!error) flash('User suspended')
     }
     if (action === 'inactive') {
-      await supabase.from('profiles').update({ status: 'inactive', suspended_until: null }).eq('id', id)
+      ;({ error } = await supabase.from('profiles').update({ status: 'inactive', suspended_until: null }).eq('id', id))
+      if (!error) flash('User deactivated')
     }
     if (action === 'activate') {
-      await supabase.from('profiles').update({ status: 'active', suspended_until: null }).eq('id', id)
+      ;({ error } = await supabase.from('profiles').update({ status: 'active', suspended_until: null }).eq('id', id))
+      if (!error) flash('User activated')
     }
 
-    setConfirm(null)
-    setExpanded(null)
-    loadUsers()
+    if (error) { flash(error.message, false); return }
+    setConfirm(null); setExpanded(null); loadUsers()
   }
 
   // System tab — load health + deploy status
@@ -335,27 +347,34 @@ export default function Admin() {
     if (!newVerseRef.trim()) return
     setVerseSaving(true)
     const maxOrder = verses.length ? Math.max(...verses.map(v => v.sort_order)) : -1
-    await supabase.from('verse_pool').insert({ reference: newVerseRef.trim(), sort_order: maxOrder + 1 })
+    const { error } = await supabase.from('verse_pool').insert({ reference: newVerseRef.trim(), sort_order: maxOrder + 1 })
+    if (error) { flash('Failed to add verse: ' + error.message, false); setVerseSaving(false); return }
     setNewVerseRef('')
     const { data } = await supabase.from('verse_pool').select('*').order('sort_order')
     setVerses(data || [])
+    flash('Verse added')
     setVerseSaving(false)
   }
 
   const toggleVerse = async (id, active) => {
-    await supabase.from('verse_pool').update({ active: !active }).eq('id', id)
+    const { error } = await supabase.from('verse_pool').update({ active: !active }).eq('id', id)
+    if (error) { flash('Failed to update verse', false); return }
     setVerses(v => v.map(x => x.id === id ? { ...x, active: !active } : x))
   }
 
   const deleteVerse = async (id) => {
-    await supabase.from('verse_pool').delete().eq('id', id)
+    const { error } = await supabase.from('verse_pool').delete().eq('id', id)
+    if (error) { flash('Failed to delete verse', false); return }
     setVerses(v => v.filter(x => x.id !== id))
+    flash('Verse removed')
   }
 
   const saveNotes = async () => {
     setNotesSaving(true)
-    await supabase.from('app_settings').upsert({ key: 'app_version', value: appVersion }, { onConflict: 'key' })
-    await supabase.from('app_settings').upsert({ key: 'release_notes', value: releaseNotes }, { onConflict: 'key' })
+    const { error: e1 } = await supabase.from('app_settings').upsert({ key: 'app_version',   value: appVersion   }, { onConflict: 'key' })
+    const { error: e2 } = await supabase.from('app_settings').upsert({ key: 'release_notes', value: releaseNotes }, { onConflict: 'key' })
+    if (e1 || e2) flash('Save failed: ' + (e1 || e2).message, false)
+    else flash('Release notes saved')
     setNotesSaving(false)
   }
 
@@ -382,6 +401,21 @@ export default function Admin() {
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', WebkitFontSmoothing: 'antialiased', paddingBottom: 40 }}>
+
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          position: 'fixed', top: 16, left: '50%', transform: 'translateX(-50%)', zIndex: 9999,
+          background: toast.ok ? 'rgba(16,185,129,0.18)' : 'rgba(248,113,113,0.18)',
+          border: `1px solid ${toast.ok ? 'rgba(16,185,129,0.45)' : 'rgba(248,113,113,0.45)'}`,
+          color: toast.ok ? '#34d399' : '#f87171',
+          borderRadius: 10, padding: '9px 18px', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif',
+          fontWeight: 700, letterSpacing: '0.06em', backdropFilter: 'blur(12px)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.4)', whiteSpace: 'nowrap',
+        }}>
+          {toast.msg}
+        </div>
+      )}
 
       {/* Header */}
       <div style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--header-bg)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid var(--border)' }}>

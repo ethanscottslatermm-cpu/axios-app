@@ -9,7 +9,7 @@
 const SUPABASE_URL  = process.env.SUPABASE_URL  || process.env.VITE_SUPABASE_URL  || ''
 const SERVICE_KEY   = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
-const TABLES = ['profiles', 'food_logs', 'water_logs', 'prayer_logs', 'fitness_logs', 'stock_watchlist']
+const TABLES = ['profiles', 'food_logs', 'water_logs', 'prayer_logs', 'workouts', 'stock_watchlist']
 
 async function countTable(table) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {

@@ -45,9 +45,15 @@ exports.handler = async (event) => {
     cutoff.setFullYear(cutoff.getFullYear() - 1)
     const cutoffStr = cutoff.toISOString().split('T')[0]
 
-    for (const table of ['food_logs', 'water_logs', 'prayer_logs', 'fitness_logs']) {
+    const tableColMap = {
+      food_logs:   'date',
+      water_logs:  'date',
+      prayer_logs: 'date',
+      workouts:    'workout_date',
+    }
+    for (const [table, col] of Object.entries(tableColMap)) {
       try {
-        const { ok, count } = await sb(`${table}?date=lt.${cutoffStr}`, { method: 'DELETE' })
+        const { ok, count } = await sb(`${table}?${col}=lt.${cutoffStr}`, { method: 'DELETE' })
         results[table] = ok ? `${count} rows deleted` : 'error'
       } catch (e) {
         results[table] = `error: ${e.message}`
