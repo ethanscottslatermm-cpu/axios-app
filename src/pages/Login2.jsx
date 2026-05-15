@@ -194,6 +194,23 @@ const styles = `
     50%  { transform: translateY(-3px) scale(1.1); }
     100% { transform: translateY(0px) scale(1); }
   }
+  @keyframes l2-smoke-a {
+    0%   { transform: translateX(-8%)  translateY(0px)  skewX(-2deg)   scale(1);    opacity: 0.65; }
+    35%  { transform: translateX(0%)   translateY(-5px) skewX(0deg)    scale(1.02); opacity: 1;    }
+    65%  { transform: translateX(6%)   translateY(-8px) skewX(1.5deg)  scale(1.04); opacity: 0.75; }
+    100% { transform: translateX(-8%)  translateY(0px)  skewX(-2deg)   scale(1);    opacity: 0.65; }
+  }
+  @keyframes l2-smoke-b {
+    0%   { transform: translateX(7%)   translateY(5px)  skewX(2deg)    scale(1.02); opacity: 0.55; }
+    42%  { transform: translateX(0%)   translateY(-3px) skewX(-0.5deg) scale(1);    opacity: 0.9;  }
+    78%  { transform: translateX(-6%)  translateY(7px)  skewX(-2deg)   scale(0.97); opacity: 0.6;  }
+    100% { transform: translateX(7%)   translateY(5px)  skewX(2deg)    scale(1.02); opacity: 0.55; }
+  }
+  @keyframes l2-smoke-c {
+    0%   { transform: translateX(3%)   translateY(-6px) skewX(1deg)    scale(1);    opacity: 0.5;  }
+    55%  { transform: translateX(-5%)  translateY(4px)  skewX(-1.5deg) scale(1.03); opacity: 0.85; }
+    100% { transform: translateX(3%)   translateY(-6px) skewX(1deg)    scale(1);    opacity: 0.5;  }
+  }
 `
 
 export default function Login2() {
@@ -273,6 +290,36 @@ export default function Login2() {
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background: 'radial-gradient(ellipse at 38% 45%, transparent 40%, rgba(0,0,0,0.55) 100%)',
+        }} />
+
+        {/* ── Smoke drift A — broad mid-scene layer ── */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 160% 55% at 50% 52%, rgba(200,200,220,0.11) 0%, rgba(185,190,215,0.05) 45%, transparent 70%)',
+          filter: 'blur(38px)',
+          animation: 'l2-smoke-a 28s ease-in-out infinite',
+          transformOrigin: '50% 50%',
+        }} />
+
+        {/* ── Smoke drift B — offset layer for depth ── */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 130% 48% at 40% 62%, rgba(195,195,218,0.09) 0%, rgba(180,185,210,0.04) 48%, transparent 68%)',
+          filter: 'blur(50px)',
+          animation: 'l2-smoke-b 37s ease-in-out infinite',
+          animationDelay: '-18s',
+          transformOrigin: '50% 50%',
+        }} />
+
+        {/* ── Smoke drift C — low ground fog ── */}
+        <div style={{
+          position: 'absolute', left: '-15%', right: '-15%', bottom: '8%', height: '42%',
+          zIndex: 1, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 75% 80% at 52% 75%, rgba(200,205,225,0.10) 0%, rgba(190,195,218,0.04) 52%, transparent 70%)',
+          filter: 'blur(42px)',
+          animation: 'l2-smoke-c 22s ease-in-out infinite',
+          animationDelay: '-9s',
+          transformOrigin: '50% 50%',
         }} />
 
         {/* ── Starfield ── */}
