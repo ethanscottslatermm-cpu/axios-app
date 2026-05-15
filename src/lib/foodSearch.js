@@ -1,30 +1,27 @@
-const KEY = import.meta.env.VITE_USDA_KEY || 'DEMO_KEY'
-const BASE = 'https://api.nal.usda.gov/fdc/v1'
+const OFF_SEARCH = 'https://world.openfoodfacts.org/cgi/search.pl'
 
-const get = (nutrients, id) => {
-  const n = (nutrients || []).find(n => n.nutrientId === id)
-  return n ? Math.round(n.value * 10) / 10 : 0
-}
+const n100 = (nutriments, key) => Math.round((nutriments[key] || 0) * 10) / 10
 
 export async function searchFood(query) {
   if (!query.trim()) return []
-  const url = `${BASE}/foods/search?query=${encodeURIComponent(query)}&api_key=${KEY}` +
-    `&dataType=Foundation,SR%20Legacy,Survey%20(FNDDS),Branded&pageSize=15&sortBy=score&sortOrder=desc`
+  const url = `${OFF_SEARCH}?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,brands,nutriments,serving_size`
   const res = await fetch(url)
   if (!res.ok) throw new Error('Search failed')
   const data = await res.json()
-  return (data.foods || []).map(item => ({
-    fdcId:    item.fdcId,
-    name:     item.description,
-    brand:    item.brandOwner || item.brandName || '',
-    calories: Math.round(get(item.foodNutrients, 1008)),
-    protein:  get(item.foodNutrients, 1003),
-    carbs:    get(item.foodNutrients, 1005),
-    fat:      get(item.foodNutrients, 1004),
-    serving:  item.servingSize
-      ? `${item.servingSize}${item.servingSizeUnit || 'g'}`
-      : 'per 100g',
-  }))
+  return (data.products || [])
+    .filter(p => p.product_name)
+    .map(p => {
+      const nm = p.nutriments || {}
+      return {
+        name:     p.product_name,
+        brand:    p.brands || '',
+        calories: Math.round(nm['energy-kcal_100g'] || nm['energy-kcal'] || 0),
+        protein:  n100(nm, 'proteins_100g'),
+        carbs:    n100(nm, 'carbohydrates_100g'),
+        fat:      n100(nm, 'fat_100g'),
+        serving:  p.serving_size || '100g',
+      }
+    })
 }
 
 // ── Open Food Facts barcode lookup ────────────────────────────────────────────

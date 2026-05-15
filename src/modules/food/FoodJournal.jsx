@@ -187,8 +187,12 @@ function BarcodeScanner({ onResult, onClose }) {
       {/* Header */}
       <div style={{ padding:'max(16px, env(safe-area-inset-top)) 16px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(212,212,232,0.1)' }}>
         <p style={{ color:'var(--text-primary)', fontSize:14, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em' }}>Scan Barcode</p>
-        <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(212,212,232,0.5)', display:'flex' }}>
-          {Ico.close(20)}
+        <button onClick={onClose} style={{
+          background:'rgba(0,0,0,0.55)', border:'none', cursor:'pointer',
+          color:'rgba(212,212,232,0.9)', display:'flex', alignItems:'center', justifyContent:'center',
+          width:44, height:44, borderRadius:'50%', flexShrink:0,
+        }}>
+          {Ico.close(24)}
         </button>
       </div>
 

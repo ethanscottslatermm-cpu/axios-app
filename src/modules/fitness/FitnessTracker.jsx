@@ -681,8 +681,7 @@ export default function FitnessTracker() {
   const [loadingW,     setLoadingW]     = useState(false)
   const [chartRange,   setChartRange]   = useState('1M')
   const [historyOpen,     setHistoryOpen]     = useState(false)
-  const [workoutHistOpen, setWorkoutHistOpen] = useState(false)
-  const [prsOpen,         setPrsOpen]         = useState(false)
+const [prsOpen,         setPrsOpen]         = useState(false)
   const [showScanner,     setShowScanner]     = useState(false)
   const [prefillWorkout,  setPrefillWorkout]  = useState(null)
   const [sleepHrs,        setSleepHrs]        = useState(() => { try { return localStorage.getItem(`ax-sleep-${new Date().toISOString().split('T')[0]}`) || '' } catch { return '' } })
@@ -786,7 +785,6 @@ export default function FitnessTracker() {
       muscle_group:  muscleLabel || null,
     })
     await loadWorkouts()
-    setWorkoutHistOpen(true)
   }
 
   const handleSaveWeight = async ({ weight_lbs, note, date }) => {
@@ -1074,7 +1072,7 @@ export default function FitnessTracker() {
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:9 }}>
                     <div style={{ width:2, height:14, background:'linear-gradient(to bottom,var(--accent-fitness),transparent)', borderRadius:2, boxShadow:'0 0 8px var(--accent-fitness)' }} />
-                    <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Personal Records</p>
+                    <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Fitness Logs</p>
                   </div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{prs.length} lifts tracked</p>
@@ -1112,47 +1110,6 @@ export default function FitnessTracker() {
                   )}
                 </div>
               )}
-
-              {/* ── Workout History (collapsible) ── */}
-              <button onClick={() => setWorkoutHistOpen(o => !o)} style={{ width:'100%', background:'none', border:'none', cursor:'pointer', padding:0, marginBottom: workoutHistOpen ? 12 : 0 }}>
-                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-                    <div style={{ width:2, height:14, background:'linear-gradient(to bottom,var(--accent-fitness),transparent)', borderRadius:2, boxShadow:'0 0 8px var(--accent-fitness)' }} />
-                    <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Workout History</p>
-                  </div>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{workouts.length} logged</p>
-                    <span style={{ color:'rgba(212,212,232,0.35)', fontSize:12, display:'inline-block', transform: workoutHistOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.25s cubic-bezier(.16,1,.3,1)' }}>▾</span>
-                  </div>
-                </div>
-              </button>
-              <div style={{ overflow:'hidden', maxHeight: workoutHistOpen ? 4000 : 0, transition:'max-height 0.4s cubic-bezier(.16,1,.3,1)' }}>
-                {loadingW && <p style={{ color:'rgba(212,212,232,0.2)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center', padding:'24px 0', fontStyle:'italic' }}>Loading…</p>}
-                {!loadingW && workouts.length === 0 && (
-                  <div style={{ position:'relative', overflow:'hidden', background:'linear-gradient(135deg,rgba(248,113,113,0.09) 0%,rgba(251,146,60,0.06) 55%,rgba(248,113,113,0.04) 100%)', border:'1px solid rgba(248,113,113,0.22)', borderRadius:14, padding:'40px 20px', textAlign:'center', marginTop:12 }}>
-                    <div style={{ position:'absolute', inset:0, pointerEvents:'none', backgroundImage:'radial-gradient(circle,rgba(248,113,113,0.18) 1px,transparent 1px)', backgroundSize:'18px 18px', opacity:0.45 }}/>
-                    <svg style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }} viewBox="0 0 100 100" preserveAspectRatio="none">
-                      <g stroke="rgba(248,113,113,0.3)" strokeWidth="0.8" fill="none">
-                        <polyline points="4,12 4,4 12,4"/><polyline points="88,4 96,4 96,12"/>
-                        <polyline points="4,88 4,96 12,96"/><polyline points="88,96 96,96 96,88"/>
-                      </g>
-                    </svg>
-                    <div style={{ position:'relative', color:'rgba(248,113,113,0.7)', marginBottom:12, display:'flex', justifyContent:'center', filter:'drop-shadow(0 0 10px rgba(248,113,113,0.45))' }}>{Ico.dumbbell(36)}</div>
-                    <p style={{ position:'relative', color:'rgba(248,200,200,0.82)', fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:'italic', lineHeight:1.7, marginBottom:18 }}>No workouts logged yet.<br/>Start with today's session.</p>
-                    <button onClick={() => setShowWorkout(true)}
-                      style={{ position:'relative', display:'inline-flex', alignItems:'center', gap:6, padding:'10px 22px', borderRadius:9, background:'rgba(248,113,113,0.18)', border:'1px solid rgba(248,113,113,0.42)', color:'#f87171', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', cursor:'pointer', boxShadow:'0 0 18px rgba(248,113,113,0.14)' }}>
-                      {Ico.plus(12)} Log first workout
-                    </button>
-                  </div>
-                )}
-                {!loadingW && workouts.length > 0 && (
-                  <div style={{ display:'flex', flexDirection:'column', gap:10, marginTop:12 }}>
-                    {workouts.map((w, i) => (
-                      <WorkoutCard key={w.id} workout={w} delay={i*30} visible={visible} onDelete={handleDeleteWorkout} />
-                    ))}
-                  </div>
-                )}
-              </div>
 
             </div>
           )}

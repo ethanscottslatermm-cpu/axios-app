@@ -57,10 +57,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'Nourishment',    path:'/food',    icon: Ico.food },
-  { key:'prayer',  label:'Devotion',       path:'/prayer',  icon: Ico.prayer },
-  { key:'fitness', label:'Training',       path:'/fitness', icon: Ico.fitness },
-  { key:'finance', label:'Treasury',       path:'/finance', icon: Ico.finance },
+  { key:'food',    label:'NOURISHMENT', path:'/food',    icon: Ico.food },
+  { key:'prayer',  label:'DEVOTION',    path:'/prayer',  icon: Ico.prayer },
+  { key:'fitness', label:'TRAINING',    path:'/fitness', icon: Ico.fitness },
+  { key:'finance', label:'TREASURY',    path:'/finance', icon: Ico.finance },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -71,17 +71,12 @@ function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232
   )
 }
 
-function ringColor(rawPct, isCalories = false) {
-  if (isCalories) {
-    if (rawPct >= 100) return '#fca5a5'  // over goal
-    if (rawPct >= 85)  return '#fb923c'  // close to limit
-    if (rawPct >= 60)  return '#fbbf24'  // halfway there
-    return '#b8b0c8'                      // low usage
-  }
-  if (rawPct >= 100) return '#86efac'    // complete
-  if (rawPct >= 75)  return '#fbbf24'    // almost there
-  if (rawPct >= 40)  return '#9ab4cc'    // making progress
-  return '#b8b8cc'                        // just started
+function ringColor(pct) {
+  if (pct >= 100) return '#FFD700'  // bright gold — complete
+  if (pct >= 75)  return '#C9A96E'  // gold
+  if (pct >= 50)  return '#FB923C'  // amber/orange
+  if (pct >= 25)  return '#86EFAC'  // green
+  return '#F87171'                   // muted red
 }
 
 function CircleRing({ pct = 0, color = '#fff', size = 88, stroke = 5, children }) {
@@ -145,10 +140,10 @@ export function BottomNav() {
   const loc = useLocation()
   const items = [
     { label:'Home',     path:'/dashboard', icon: Ico.home,    color: '#c8c8d8', activeColor: '#d8d8f0' },
-    { label:'Nourish',  path:'/food',      icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
-    { label:'Training', path:'/fitness',   icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
-    { label:'Devotion', path:'/prayer',    icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
-    { label:'Treasury', path:'/finance',   icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
+    { label:'NOURISHMENT', path:'/food',      icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
+    { label:'TRAINING',    path:'/fitness',   icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
+    { label:'DEVOTION',    path:'/prayer',    icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
+    { label:'TREASURY',    path:'/finance',   icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
     { label:'Forge',    path:'/settings',  icon: Ico.settings,color: '#4a90b8', activeColor: '#7dd3fc' },
   ]
   return (
@@ -296,7 +291,7 @@ export default function Dashboard() {
               const weightRawPct = weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal / latest) * 100)) : 0
               const todayRawPct  = Math.round((loggedCount / 4) * 100)
               return [
-                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,        color: ringColor(calRawPct, true),   path:'/food',    valSize:14 },
+                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,        color: ringColor(calRawPct),   path:'/food',    valSize:14 },
                 { label:'Water',    value:`${waterCount}/${WATER_GOAL}`, sub:'glasses',                        pct: waterPct,      color: ringColor(waterRawPct),       path:'/water',   valSize:17 },
                 { label:'Weight',   value: latest ? `${latest}` : '—',  sub: latest ? 'lb' : 'not logged',    pct: weightRawPct,  color: ringColor(weightRawPct),      path:'/fitness', valSize:17 },
                 { label:'Today',    value:`${loggedCount}/4`,            sub:'logged',                         pct: todayRawPct,   color: ringColor(todayRawPct),       valSize:17 },
