@@ -55,8 +55,8 @@ const styles = `
     50%     { opacity: 1.0;  }
   }
   @keyframes l2-iconPulse {
-    0%,100% { filter: drop-shadow(0 0 3px rgba(200,200,220,0.25)); opacity: 0.50; }
-    50%     { filter: drop-shadow(0 0 10px rgba(200,200,220,0.80)); opacity: 1.0; }
+    0%,100% { filter: invert(1) drop-shadow(0 0 3px rgba(200,200,220,0.25)); opacity: 0.50; }
+    50%     { filter: invert(1) drop-shadow(0 0 10px rgba(200,200,220,0.80)); opacity: 1.0; }
   }
   @keyframes l2-btnGlow {
     0%,100% { box-shadow: 0 0 12px rgba(200,200,220,0.22), 0 0 28px rgba(200,200,220,0.09); }
@@ -445,10 +445,7 @@ export default function Login2() {
                 <>
                   <div style={{ marginBottom: '2.2rem' }}>
                     <div style={{ position: 'relative' }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
-                      </svg>
+                      <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                       <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
                       {email.includes('@') && email.includes('.') && (
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
@@ -461,10 +458,7 @@ export default function Login2() {
 
                   <div style={{ marginBottom: '3.5rem' }}>
                     <div style={{ position: 'relative' }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="l2-lock-icon" style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.45)', pointerEvents: 'none' }}>
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                      </svg>
+                      <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                       <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSubmit(e)} onBlur={() => { if (email && password) handleSubmit({ preventDefault: () => {} }) }} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
                     </div>
                   </div>
