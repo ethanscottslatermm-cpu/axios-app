@@ -139,12 +139,12 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',     path:'/dashboard', icon: Ico.home,    color: '#c8c8d8', activeColor: '#d8d8f0' },
-    { label:'NOURISHMENT', path:'/food',      icon: Ico.food,    color: '#c8d4c8', activeColor: '#4ade80' },
-    { label:'TRAINING',    path:'/fitness',   icon: Ico.fitness, color: '#b4bccc', activeColor: '#f87171' },
-    { label:'DEVOTION',    path:'/prayer',    icon: Ico.prayer,  color: '#c8a000', activeColor: '#c8a000' },
-    { label:'TREASURY',    path:'/finance',   icon: Ico.finance, color: '#b4c4b0', activeColor: '#34d399' },
-    { label:'Forge',    path:'/settings',  icon: Ico.settings,color: '#4a90b8', activeColor: '#7dd3fc' },
+    { label:'Home',        path:'/dashboard', icon: Ico.home,     color: '#c8c8d8', activeColor: '#d8d8f0' },
+    { label:'NOURISHMENT', path:'/food',      icon: Ico.food,     color: '#c8d4c8', activeColor: '#c8853a' },
+    { label:'TRAINING',    path:'/fitness',   icon: Ico.fitness,  color: '#b4bccc', activeColor: '#dc4f3a' },
+    { label:'DEVOTION',    path:'/prayer',    icon: Ico.prayer,   color: '#c8a000', activeColor: '#c8a000' },
+    { label:'TREASURY',    path:'/finance',   icon: Ico.finance,  color: '#b4c4b0', activeColor: '#4db891' },
+    { label:'Forge',       path:'/settings',  icon: Ico.settings, color: '#4a90b8', activeColor: '#7dd3fc' },
   ]
   return (
     <nav className="ax-bottom-nav" style={{
