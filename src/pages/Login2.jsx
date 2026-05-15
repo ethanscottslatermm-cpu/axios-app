@@ -185,14 +185,35 @@ const styles = `
     0%   { background-position: -300% center; transform: translateX(-200%); }
     60%, 100% { transform: translateX(500%); }
   }
-  @keyframes starTwinkle {
-    0%, 100% { opacity: 0.08; transform: scale(0.7); }
-    50%       { opacity: 0.75; transform: scale(1.15); }
+  @keyframes l2-px-a {
+    0%   { transform: translateY(0px)   translateX(0px);   opacity: 0; }
+    18%  { opacity: 1; }
+    82%  { opacity: 1; }
+    100% { transform: translateY(-54px) translateX(9px);   opacity: 0; }
   }
-  @keyframes starDrift {
-    0%   { transform: translateY(0px) scale(1); }
-    50%  { transform: translateY(-3px) scale(1.1); }
-    100% { transform: translateY(0px) scale(1); }
+  @keyframes l2-px-b {
+    0%   { transform: translateY(0px)   translateX(0px);   opacity: 0; }
+    18%  { opacity: 1; }
+    82%  { opacity: 1; }
+    100% { transform: translateY(-44px) translateX(-12px); opacity: 0; }
+  }
+  @keyframes l2-px-c {
+    0%   { transform: translateY(0px)   translateX(0px);   opacity: 0; }
+    18%  { opacity: 1; }
+    82%  { opacity: 1; }
+    100% { transform: translateY(-70px) translateX(4px);   opacity: 0; }
+  }
+  @keyframes l2-px-d {
+    0%   { transform: translateY(0px)   translateX(0px);   opacity: 0; }
+    18%  { opacity: 1; }
+    82%  { opacity: 1; }
+    100% { transform: translateY(-38px) translateX(15px);  opacity: 0; }
+  }
+  @keyframes l2-px-e {
+    0%   { transform: translateY(0px)   translateX(0px);   opacity: 0; }
+    18%  { opacity: 1; }
+    82%  { opacity: 1; }
+    100% { transform: translateY(-78px) translateX(-7px);  opacity: 0; }
   }
   @keyframes l2-smoke-a {
     0%   { transform: translateY(0%)    translateX(-4%) skewX(-1.5deg) scale(1.05); opacity: 0;    }
@@ -216,6 +237,22 @@ const styles = `
     100% { transform: translateY(-200%) translateX(-6%) skewX(1deg)    scale(0.9);  opacity: 0;    }
   }
 `
+
+const VARIANTS = ['l2-px-a','l2-px-b','l2-px-c','l2-px-d','l2-px-e']
+const COLORS   = ['rgba(190,165,90,', 'rgba(160,145,78,', 'rgba(205,183,108,']
+const PARTICLES = Array.from({ length: 140 }, (_, i) => {
+  const small   = i >= 100
+  const opacity = small ? 0.08 + (i % 5) * 0.05 : 0.13 + (i % 5) * 0.07
+  return {
+    x:       (i * 37 + 13) % 100,
+    y:       (i * 53 +  7) % 100,
+    size:    small ? 0.5 + (i % 3) * 0.35 : 0.9 + (i % 3) * 0.55,
+    color:   COLORS[i % 3] + opacity + ')',
+    variant: VARIANTS[i % 5],
+    dur:     2.2 + (i % 5) * 0.9,
+    delay:  -((i * 0.31) % 7),
+  }
+})
 
 export default function Login2() {
   const { signIn, user: authUser } = useAuth()
@@ -328,49 +365,17 @@ export default function Login2() {
           animationDelay: '-6s',
         }} />
 
-        {/* ── Starfield ── */}
-        <div style={{ position:'fixed', inset:0, zIndex:1, overflow:'hidden', pointerEvents:'none' }}>
-          {[
-            {x:'8%',  y:'6%',  s:1.5, d:'3.1s', dl:'0s'   },
-            {x:'18%', y:'3%',  s:1,   d:'4.2s', dl:'-1.2s'},
-            {x:'31%', y:'8%',  s:2,   d:'5.0s', dl:'-0.5s'},
-            {x:'47%', y:'2%',  s:1.5, d:'3.7s', dl:'-2.1s'},
-            {x:'62%', y:'7%',  s:1,   d:'4.8s', dl:'-0.9s'},
-            {x:'74%', y:'4%',  s:2,   d:'3.4s', dl:'-1.8s'},
-            {x:'85%', y:'9%',  s:1,   d:'5.2s', dl:'-0.3s'},
-            {x:'92%', y:'5%',  s:1.5, d:'4.0s', dl:'-2.7s'},
-            {x:'5%',  y:'15%', s:1,   d:'3.9s', dl:'-1.5s'},
-            {x:'24%', y:'18%', s:1.5, d:'4.5s', dl:'-0.7s'},
-            {x:'38%', y:'13%', s:2,   d:'3.2s', dl:'-3.1s'},
-            {x:'55%', y:'17%', s:1,   d:'5.5s', dl:'-1.0s'},
-            {x:'70%', y:'12%', s:1.5, d:'4.1s', dl:'-2.4s'},
-            {x:'82%', y:'19%', s:1,   d:'3.6s', dl:'-0.6s'},
-            {x:'95%', y:'14%', s:2,   d:'4.7s', dl:'-1.9s'},
-            {x:'12%', y:'25%', s:1,   d:'5.1s', dl:'-0.4s'},
-            {x:'44%', y:'22%', s:1.5, d:'3.3s', dl:'-2.0s'},
-            {x:'66%', y:'27%', s:1,   d:'4.4s', dl:'-1.3s'},
-            {x:'88%', y:'24%', s:2,   d:'3.8s', dl:'-3.5s'},
-            {x:'3%',  y:'32%', s:1,   d:'5.3s', dl:'-0.8s'},
-            {x:'27%', y:'35%', s:1.5, d:'4.6s', dl:'-2.6s'},
-            {x:'51%', y:'30%', s:1,   d:'3.5s', dl:'-1.1s'},
-            {x:'78%', y:'33%', s:2,   d:'4.9s', dl:'-0.2s'},
-            {x:'91%', y:'38%', s:1,   d:'3.0s', dl:'-1.7s'},
-            {x:'16%', y:'42%', s:1.5, d:'5.4s', dl:'-2.3s'},
-            {x:'59%', y:'40%', s:1,   d:'4.3s', dl:'-0.5s'},
-            {x:'83%', y:'45%', s:2,   d:'3.7s', dl:'-1.4s'},
-            {x:'7%',  y:'52%', s:1,   d:'5.0s', dl:'-2.8s'},
-            {x:'34%', y:'55%', s:1.5, d:'3.9s', dl:'-0.1s'},
-            {x:'72%', y:'50%', s:1,   d:'4.2s', dl:'-1.6s'},
-          ].map((st, i) => (
+        {/* ── Particles ── */}
+        <div style={{ position:'fixed', inset:0, zIndex:2, overflow:'hidden', pointerEvents:'none' }}>
+          {PARTICLES.map((p, i) => (
             <div key={i} style={{
               position: 'absolute',
-              left: st.x, top: st.y,
-              width: st.s, height: st.s,
+              left: `${p.x}%`, top: `${p.y}%`,
+              width: `${p.size}px`, height: `${p.size}px`,
               borderRadius: '50%',
-              background: 'rgba(255,255,255,0.9)',
-              boxShadow: `0 0 ${st.s * 2}px ${st.s}px rgba(200,210,255,0.6)`,
-              animation: `starTwinkle ${st.d} ease-in-out infinite, starDrift ${parseFloat(st.d) * 1.4 + 's'} ease-in-out infinite`,
-              animationDelay: st.dl,
+              background: p.color,
+              animation: `${p.variant} ${p.dur}s ease-in-out infinite`,
+              animationDelay: `${p.delay}s`,
             }}/>
           ))}
         </div>
