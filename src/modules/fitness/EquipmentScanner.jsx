@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 
@@ -24,10 +24,12 @@ function matchMuscleGroup(muscle) {
 }
 
 async function compressImage(file, maxPx = 1024, quality = 0.82) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader()
+    reader.onerror = () => reject(new Error('Failed to read image file'))
     reader.onload = (e) => {
       const img = new Image()
+      img.onerror = () => reject(new Error('Failed to decode image'))
       img.onload = () => {
         const ratio = Math.min(maxPx / img.width, maxPx / img.height, 1)
         const canvas = document.createElement('canvas')
@@ -78,8 +80,7 @@ export default function EquipmentScanner({ onClose, onStartWorkout }) {
   const [logSaved,     setLogSaved]     = useState(false)
   const [logSaving,    setLogSaving]    = useState(false)
 
-  // Animate in
-  useState(() => { const t = setTimeout(() => setVisible(true), 30); return () => clearTimeout(t) })
+  useEffect(() => { const t = setTimeout(() => setVisible(true), 30); return () => clearTimeout(t) }, [])
 
   const handleCapture = async (e) => {
     const file = e.target.files?.[0]
@@ -107,9 +108,8 @@ export default function EquipmentScanner({ onClose, onStartWorkout }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: base64, mediaType: mt, confirmName: confirmContext }),
       })
-      if (!res.ok) throw new Error(`Server error ${res.status}`)
       const data = await res.json()
-      if (data.error) throw new Error(data.error)
+      if (!res.ok || data.error) throw new Error(data.error || `Server error ${res.status}`)
 
       setResult(data)
 
@@ -134,15 +134,16 @@ export default function EquipmentScanner({ onClose, onStartWorkout }) {
     if (!result || logSaved || logSaving) return
     setLogSaving(true)
     try {
-      await supabase.from('user_equipment').insert({
+      const { error: dbErr } = await supabase.from('user_equipment').insert({
         user_id:        user.id,
         equipment_name: result.equipment_name,
         equipment_type: result.equipment_type,
         scanned_at:     new Date().toISOString(),
       })
+      if (dbErr) throw dbErr
       setLogSaved(true)
     } catch (err) {
-      console.error('Failed to log equipment:', err)
+      setError(err.message?.includes('does not exist') ? 'Equipment table not set up — run the Supabase migration.' : 'Failed to save equipment.')
     } finally {
       setLogSaving(false)
     }
