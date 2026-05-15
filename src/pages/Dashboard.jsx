@@ -139,12 +139,12 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',        path:'/dashboard', icon: Ico.home,     color: '#c8c8d8', activeColor: '#d8d8f0' },
-    { label:'NOURISHMENT', path:'/food',      icon: Ico.food,     color: '#c8d4c8', activeColor: '#c8853a' },
-    { label:'TRAINING',    path:'/fitness',   icon: Ico.fitness,  color: '#b4bccc', activeColor: '#dc4f3a' },
-    { label:'DEVOTION',    path:'/prayer',    icon: Ico.prayer,   color: '#c8a000', activeColor: '#c8a000' },
-    { label:'TREASURY',    path:'/finance',   icon: Ico.finance,  color: '#b4c4b0', activeColor: '#4db891' },
-    { label:'Forge',       path:'/settings',  icon: Ico.settings, color: '#4a90b8', activeColor: '#7dd3fc' },
+    { label:'Home',        path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
+    { label:'NOURISHMENT', path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
+    { label:'TRAINING',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
+    { label:'DEVOTION',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
+    { label:'TREASURY',    path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
+    { label:'Forge',       path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
   ]
   return (
     <nav className="ax-bottom-nav" style={{
@@ -154,9 +154,9 @@ export function BottomNav() {
       display:'flex', alignItems:'center', justifyContent:'space-around',
       padding:'8px 4px max(10px,env(safe-area-inset-bottom))',
     }}>
-      {items.map(({ label, path, icon, color, activeColor }) => {
+      {items.map(({ label, path, src, activeColor }) => {
         const active = loc.pathname === path
-        const c = active ? activeColor : color
+        const iconColor = active ? activeColor : 'rgba(212,212,232,0.9)'
         return (
           <button key={path} onClick={() => navigate(path)} style={{
             display:'flex', flexDirection:'column', alignItems:'center', gap:3,
@@ -165,10 +165,23 @@ export function BottomNav() {
             transition:'opacity 0.2s',
             flex:1, minWidth:0, padding:'2px 1px',
           }}>
-            <div style={{ color: c, filter: active ? `drop-shadow(0 0 6px ${activeColor}99)` : 'none', transition:'color 0.2s, filter 0.2s' }}>
-              {icon(20)}
+            <div style={{ filter: active ? `drop-shadow(0 0 6px ${activeColor}99)` : 'none', transition:'filter 0.2s' }}>
+              <div style={{
+                width:20, height:20,
+                backgroundColor: iconColor,
+                WebkitMaskImage: `url(${src})`,
+                maskImage: `url(${src})`,
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+                transition:'background-color 0.2s',
+                flexShrink:0,
+              }} />
             </div>
-            <span style={{ color: c, fontSize:'clamp(7px,2vw,9px)', letterSpacing:'0.06em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, transition:'color 0.2s' }}>{label}</span>
+            <span style={{ color: active ? activeColor : 'rgba(212,212,232,0.9)', fontSize:'clamp(7px,2vw,9px)', letterSpacing:'0.06em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, transition:'color 0.2s' }}>{label}</span>
           </button>
         )
       })}
