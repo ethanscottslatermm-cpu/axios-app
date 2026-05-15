@@ -428,7 +428,11 @@ export default function Login2() {
                 <animate attributeName="x2" from="0"    to="760" dur="2.8s" repeatCount="indefinite"/>
               </linearGradient>
             </defs>
-            <text x="190" y="52" textAnchor="middle" fontFamily="Georgia,'Times New Roman',serif" fontSize="42" fontWeight="700" letterSpacing="5" fill="url(#ax-login-sg)">AXIOS</text>
+            <polygon points="10,62 45,4 80,62"   fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+            <polygon points="22,62 45,20 68,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+            <text x="100" y="52" fontFamily="Georgia,'Times New Roman',serif" fontSize="42" fontWeight="700" letterSpacing="5" fill="url(#ax-login-sg)">AXIOS</text>
+            <polygon points="300,62 335,4 370,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+            <polygon points="312,62 335,20 358,62" fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
           </svg>
 
           {/* Shimmer bar */}
