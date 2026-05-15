@@ -911,11 +911,6 @@ export default function FoodJournal() {
             </div>
             {/* Action buttons */}
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => setShowScanner(true)} className="ax-scan-btn"
-                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 13px', borderRadius:9, background:'rgba(200,160,0,0.1)', border:'1px solid rgba(200,160,0,0.38)', boxShadow:'0 0 14px rgba(200,160,0,0.14)', color:'#c8a000', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.07em', transition:'all 0.2s' }}>
-                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                Scan Food
-              </button>
               <button onClick={handleManualAdd} className="ax-add-btn"
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 14px', borderRadius:9, background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s' }}>
                 {Ico.plus(13)} Add
@@ -959,6 +954,13 @@ export default function FoodJournal() {
               </div>
             </>
           )}
+
+          {/* Scan Food — full-width, between calorie tracker and tabs */}
+          <button onClick={() => setShowScanner(true)} className="ax-scan-btn"
+            style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, width:'100%', padding:'12px 0', marginTop:14, borderRadius:10, background:'rgba(200,160,0,0.08)', border:'1px solid rgba(200,160,0,0.38)', boxShadow:'0 0 14px rgba(200,160,0,0.12)', color:'#c8a000', cursor:'pointer', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, letterSpacing:'0.08em', transition:'all 0.2s' }}>
+            <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Scan Food
+          </button>
 
           {/* Tab switcher */}
           <div style={{ display:'flex', gap:8, marginTop:14 }}>
