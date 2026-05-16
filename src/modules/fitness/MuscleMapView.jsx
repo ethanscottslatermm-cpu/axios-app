@@ -98,223 +98,127 @@ const SCI_SHORT = {
 const DEFINITION_LINES = {
   anterior: {
     Traps: [
-      { d: 'M 44 24 Q 40 30 38 35',           type: 'muscle' },
-      { d: 'M 56 24 Q 60 30 62 35',           type: 'muscle' },
-      { d: 'M 44 26 L 56 26',                 type: 'armor'  }, // collar plate
-      { d: 'M 43 29 L 57 29',                 type: 'armor'  }, // lower collar
+      { d: 'M 44 24 Q 40 30 38 35',           type: 'muscle' }, // left upper trap
+      { d: 'M 56 24 Q 60 30 62 35',           type: 'muscle' }, // right upper trap
     ],
     Chest: [
-      { d: 'M 49 34 L 22 31',                 type: 'bone'   },
-      { d: 'M 51 34 L 78 31',                 type: 'bone'   },
-      { d: 'M 49.5 34 L 49.5 58',             type: 'bone'   },
-      { d: 'M 32 54 Q 41 61 49.5 58',         type: 'muscle' },
-      { d: 'M 68 54 Q 59 61 50.5 58',         type: 'muscle' },
-      { d: 'M 49.5 41 Q 38 47 30 53',         type: 'muscle' },
-      { d: 'M 50.5 41 Q 62 47 70 53',         type: 'muscle' },
-      { d: 'M 49 38 Q 47.5 48 48.5 57',       type: 'vein'   },
-      { d: 'M 51 38 Q 52.5 48 51.5 57',       type: 'vein'   },
-      { d: 'M 22 33 Q 28 42 30 54',           type: 'armor'  }, // left outer plate
-      { d: 'M 78 33 Q 72 42 70 54',           type: 'armor'  }, // right outer plate
-      { d: 'M 23 39 L 36 37',                 type: 'armor'  }, // left upper plate
-      { d: 'M 77 39 L 64 37',                 type: 'armor'  }, // right upper plate
-      { d: 'M 24 47 L 35 44',                 type: 'armor'  }, // left mid plate
-      { d: 'M 76 47 L 65 44',                 type: 'armor'  }, // right mid plate
-      { d: 'M 26 53 L 36 49',                 type: 'armor'  }, // left lower plate
-      { d: 'M 74 53 L 64 49',                 type: 'armor'  }, // right lower plate
+      { d: 'M 49 34 L 22 31',                 type: 'bone'   }, // left clavicle
+      { d: 'M 51 34 L 78 31',                 type: 'bone'   }, // right clavicle
+      { d: 'M 49.5 34 L 49.5 58',             type: 'bone'   }, // sternum
+      { d: 'M 32 54 Q 41 61 49.5 58',          type: 'muscle' }, // left pec lower arch
+      { d: 'M 68 54 Q 59 61 50.5 58',          type: 'muscle' }, // right pec lower arch
+      { d: 'M 49.5 41 Q 38 47 30 53',          type: 'muscle' }, // left pec fiber
+      { d: 'M 50.5 41 Q 62 47 70 53',          type: 'muscle' }, // right pec fiber
+      { d: 'M 49 38 Q 47.5 48 48.5 57',        type: 'vein'   }, // left sternal vein
+      { d: 'M 51 38 Q 52.5 48 51.5 57',        type: 'vein'   }, // right sternal vein
     ],
     Shoulders: [
-      { d: 'M 22 32 Q 18.5 38 20 45',         type: 'muscle' },
-      { d: 'M 78 32 Q 81.5 38 80 45',         type: 'muscle' },
-      { d: 'M 20 45 Q 24 51 28 56',           type: 'muscle' },
-      { d: 'M 80 45 Q 76 51 72 56',           type: 'muscle' },
-      { d: 'M 21 38 Q 19 44 20 52',           type: 'vein'   },
-      { d: 'M 79 38 Q 81 44 80 52',           type: 'vein'   },
-      { d: 'M 19 30 L 27 28',                 type: 'armor'  }, // left epaulet top
-      { d: 'M 81 30 L 73 28',                 type: 'armor'  }, // right epaulet top
-      { d: 'M 17 34 Q 19 38 20 43',           type: 'armor'  }, // left plate 1
-      { d: 'M 83 34 Q 81 38 80 43',           type: 'armor'  }, // right plate 1
-      { d: 'M 17 39 Q 19 44 20 49',           type: 'armor'  }, // left plate 2
-      { d: 'M 83 39 Q 81 44 80 49',           type: 'armor'  }, // right plate 2
-      { d: 'M 18 45 Q 20 50 22 54',           type: 'armor'  }, // left plate 3
-      { d: 'M 82 45 Q 80 50 78 54',           type: 'armor'  }, // right plate 3
-      { d: 'M 20 50 Q 23 54 26 57',           type: 'armor'  }, // left plate 4
-      { d: 'M 80 50 Q 77 54 74 57',           type: 'armor'  }, // right plate 4
+      { d: 'M 22 32 Q 18.5 38 20 45',          type: 'muscle' }, // left delt groove
+      { d: 'M 78 32 Q 81.5 38 80 45',          type: 'muscle' }, // right delt groove
+      { d: 'M 20 45 Q 24 51 28 56',            type: 'muscle' }, // left delt/bi junction
+      { d: 'M 80 45 Q 76 51 72 56',            type: 'muscle' }, // right delt/bi junction
+      { d: 'M 21 38 Q 19 44 20 52',            type: 'vein'   }, // left cephalic vein (shoulder)
+      { d: 'M 79 38 Q 81 44 80 52',            type: 'vein'   }, // right cephalic vein (shoulder)
     ],
     Biceps: [
-      { d: 'M 23 52 Q 21 61 19 71',           type: 'muscle' },
-      { d: 'M 77 52 Q 79 61 81 71',           type: 'muscle' },
-      { d: 'M 21 54 Q 19 65 17 75',           type: 'vein'   },
-      { d: 'M 79 54 Q 81 65 83 75',           type: 'vein'   },
-      { d: 'M 24 56 Q 22 66 20 74',           type: 'vein'   },
-      { d: 'M 76 56 Q 78 66 80 74',           type: 'vein'   },
-      { d: 'M 15 78 Q 10 89 7 98',            type: 'vein'   },
-      { d: 'M 17 79 Q 13 90 10 99',           type: 'vein'   },
-      { d: 'M 19 78 Q 16 89 14 98',           type: 'vein'   },
-      { d: 'M 85 78 Q 90 89 93 98',           type: 'vein'   },
-      { d: 'M 83 79 Q 87 90 90 99',           type: 'vein'   },
-      { d: 'M 81 78 Q 84 89 86 98',           type: 'vein'   },
-      { d: 'M 24 58 L 21 62',                 type: 'armor'  }, // left bicep plate top
-      { d: 'M 76 58 L 79 62',                 type: 'armor'  }, // right bicep plate top
-      { d: 'M 22 66 L 19 70',                 type: 'armor'  }, // left bicep plate mid
-      { d: 'M 78 66 L 81 70',                 type: 'armor'  }, // right bicep plate mid
-      { d: 'M 20 73 L 17 77',                 type: 'armor'  }, // left elbow plate
-      { d: 'M 80 73 L 83 77',                 type: 'armor'  }, // right elbow plate
-      { d: 'M 17 81 L 13 85',                 type: 'armor'  }, // left forearm plate 1
-      { d: 'M 83 81 L 87 85',                 type: 'armor'  }, // right forearm plate 1
-      { d: 'M 14 89 L 10 93',                 type: 'armor'  }, // left forearm plate 2
-      { d: 'M 86 89 L 90 93',                 type: 'armor'  }, // right forearm plate 2
+      { d: 'M 23 52 Q 21 61 19 71',            type: 'muscle' }, // left bicep split
+      { d: 'M 77 52 Q 79 61 81 71',            type: 'muscle' }, // right bicep split
+      { d: 'M 21 54 Q 19 65 17 75',            type: 'vein'   }, // left cephalic vein (bicep)
+      { d: 'M 79 54 Q 81 65 83 75',            type: 'vein'   }, // right cephalic vein (bicep)
+      { d: 'M 24 56 Q 22 66 20 74',            type: 'vein'   }, // left basilic vein
+      { d: 'M 76 56 Q 78 66 80 74',            type: 'vein'   }, // right basilic vein
+      { d: 'M 15 78 Q 10 89 7 98',             type: 'vein'   }, // left forearm vein 1
+      { d: 'M 17 79 Q 13 90 10 99',            type: 'vein'   }, // left forearm vein 2
+      { d: 'M 19 78 Q 16 89 14 98',            type: 'vein'   }, // left forearm vein 3
+      { d: 'M 85 78 Q 90 89 93 98',            type: 'vein'   }, // right forearm vein 1
+      { d: 'M 83 79 Q 87 90 90 99',            type: 'vein'   }, // right forearm vein 2
+      { d: 'M 81 78 Q 84 89 86 98',            type: 'vein'   }, // right forearm vein 3
     ],
     Triceps: [
-      { d: 'M 25 57 Q 23 64 22 72',           type: 'muscle' },
-      { d: 'M 75 57 Q 77 64 78 72',           type: 'muscle' },
-      { d: 'M 26 62 L 23 66',                 type: 'armor'  }, // left tricep plate
-      { d: 'M 74 62 L 77 66',                 type: 'armor'  }, // right tricep plate
-      { d: 'M 24 69 L 21 73',                 type: 'armor'  }, // left lower plate
-      { d: 'M 76 69 L 79 73',                 type: 'armor'  }, // right lower plate
+      { d: 'M 25 57 Q 23 64 22 72',            type: 'muscle' }, // left tricep line
+      { d: 'M 75 57 Q 77 64 78 72',            type: 'muscle' }, // right tricep line
     ],
     Core: [
-      { d: 'M 50 58 L 50 95',                 type: 'muscle' },
-      { d: 'M 42 63 Q 50 62 58 63',           type: 'muscle' },
-      { d: 'M 42 65 L 58 65',                 type: 'muscle' },
-      { d: 'M 41 72 L 59 72',                 type: 'muscle' },
-      { d: 'M 41 79 L 59 79',                 type: 'muscle' },
-      { d: 'M 40 86 L 60 86',                 type: 'muscle' },
-      { d: 'M 44 65 L 44 72',                 type: 'muscle' },
-      { d: 'M 56 65 L 56 72',                 type: 'muscle' },
-      { d: 'M 43 72 L 43 79',                 type: 'muscle' },
-      { d: 'M 57 72 L 57 79',                 type: 'muscle' },
-      { d: 'M 38 64 Q 33 77 35 91',           type: 'muscle' },
-      { d: 'M 62 64 Q 67 77 65 91',           type: 'muscle' },
-      { d: 'M 49 65 Q 48 72 49 79',           type: 'muscle' },
-      { d: 'M 51 65 Q 52 72 51 79',           type: 'muscle' },
-      { d: 'M 43 79 L 43 86',                 type: 'armor'  }, // left col row 3
-      { d: 'M 57 79 L 57 86',                 type: 'armor'  }, // right col row 3
-      { d: 'M 41 93 Q 50 91 59 93',           type: 'armor'  }, // lower ab arch
-      { d: 'M 36 91 Q 40 97 43 101',          type: 'armor'  }, // left V-taper
-      { d: 'M 64 91 Q 60 97 57 101',          type: 'armor'  }, // right V-taper
+      { d: 'M 50 58 L 50 95',                  type: 'muscle' }, // ab midline
+      { d: 'M 42 63 Q 50 62 58 63',            type: 'muscle' }, // subcostal arch
+      { d: 'M 42 65 L 58 65',                  type: 'muscle' }, // cut 1
+      { d: 'M 41 72 L 59 72',                  type: 'muscle' }, // cut 2
+      { d: 'M 41 79 L 59 79',                  type: 'muscle' }, // cut 3
+      { d: 'M 40 86 L 60 86',                  type: 'muscle' }, // cut 4
+      { d: 'M 44 65 L 44 72',                  type: 'muscle' }, // left inner col 1
+      { d: 'M 56 65 L 56 72',                  type: 'muscle' }, // right inner col 1
+      { d: 'M 43 72 L 43 79',                  type: 'muscle' }, // left inner col 2
+      { d: 'M 57 72 L 57 79',                  type: 'muscle' }, // right inner col 2
+      { d: 'M 38 64 Q 33 77 35 91',            type: 'muscle' }, // left oblique edge
+      { d: 'M 62 64 Q 67 77 65 91',            type: 'muscle' }, // right oblique edge
+      { d: 'M 49 65 Q 48 72 49 79',            type: 'muscle' }, // left ab cell line
+      { d: 'M 51 65 Q 52 72 51 79',            type: 'muscle' }, // right ab cell line
     ],
     Quads: [
-      { d: 'M 40 101 Q 37 123 36 144',        type: 'muscle' },
-      { d: 'M 60 101 Q 63 123 64 144',        type: 'muscle' },
-      { d: 'M 29 112 Q 27 129 27 147',        type: 'muscle' },
-      { d: 'M 71 112 Q 73 129 73 147',        type: 'muscle' },
-      { d: 'M 39 136 Q 37 143 40 151',        type: 'muscle' },
-      { d: 'M 61 136 Q 63 143 60 151',        type: 'muscle' },
-      { d: 'M 44 102 Q 42 128 42 148',        type: 'vein'   },
-      { d: 'M 56 102 Q 58 128 58 148',        type: 'vein'   },
-      { d: 'M 30 108 L 38 106',               type: 'armor'  }, // left upper plate
-      { d: 'M 70 108 L 62 106',               type: 'armor'  }, // right upper plate
-      { d: 'M 28 120 L 37 118',               type: 'armor'  }, // left mid plate
-      { d: 'M 72 120 L 63 118',               type: 'armor'  }, // right mid plate
-      { d: 'M 27 134 L 36 132',               type: 'armor'  }, // left lower plate
-      { d: 'M 73 134 L 64 132',               type: 'armor'  }, // right lower plate
-      { d: 'M 35 148 Q 38 153 42 155',        type: 'armor'  }, // left kneecap arc
-      { d: 'M 65 148 Q 62 153 58 155',        type: 'armor'  }, // right kneecap arc
-      { d: 'M 33 153 L 44 156',               type: 'armor'  }, // left knee plate
-      { d: 'M 67 153 L 56 156',               type: 'armor'  }, // right knee plate
+      { d: 'M 40 101 Q 37 123 36 144',         type: 'muscle' }, // left RF/VL cut
+      { d: 'M 60 101 Q 63 123 64 144',         type: 'muscle' }, // right RF/VL cut
+      { d: 'M 29 112 Q 27 129 27 147',         type: 'muscle' }, // left outer VL
+      { d: 'M 71 112 Q 73 129 73 147',         type: 'muscle' }, // right outer VL
+      { d: 'M 39 136 Q 37 143 40 151',         type: 'muscle' }, // left VMO bulge
+      { d: 'M 61 136 Q 63 143 60 151',         type: 'muscle' }, // right VMO bulge
+      { d: 'M 44 102 Q 42 128 42 148',         type: 'vein'   }, // left great saphenous vein
+      { d: 'M 56 102 Q 58 128 58 148',         type: 'vein'   }, // right great saphenous vein
     ],
     Calves: [
-      { d: 'M 30 165 Q 29 176 30 187',        type: 'muscle' },
-      { d: 'M 70 165 Q 71 176 70 187',        type: 'muscle' },
-      { d: 'M 27 168 Q 26 179 28 187',        type: 'muscle' },
-      { d: 'M 73 168 Q 74 179 72 187',        type: 'muscle' },
-      { d: 'M 33 163 Q 32 176 33 188',        type: 'vein'   },
-      { d: 'M 67 163 Q 68 176 67 188',        type: 'vein'   },
-      { d: 'M 27 163 L 35 161',               type: 'armor'  }, // left top plate
-      { d: 'M 73 163 L 65 161',               type: 'armor'  }, // right top plate
-      { d: 'M 26 174 L 32 172',               type: 'armor'  }, // left mid plate
-      { d: 'M 74 174 L 68 172',               type: 'armor'  }, // right mid plate
-      { d: 'M 27 183 L 33 181',               type: 'armor'  }, // left lower plate
-      { d: 'M 73 183 L 67 181',               type: 'armor'  }, // right lower plate
-      { d: 'M 28 191 L 35 193',               type: 'armor'  }, // left ankle plate
-      { d: 'M 72 191 L 65 193',               type: 'armor'  }, // right ankle plate
+      { d: 'M 30 165 Q 29 176 30 187',         type: 'muscle' }, // left medial/lateral split
+      { d: 'M 70 165 Q 71 176 70 187',         type: 'muscle' }, // right medial/lateral split
+      { d: 'M 27 168 Q 26 179 28 187',         type: 'muscle' }, // left lateral head line
+      { d: 'M 73 168 Q 74 179 72 187',         type: 'muscle' }, // right lateral head line
+      { d: 'M 33 163 Q 32 176 33 188',         type: 'vein'   }, // left anterior tibial vein
+      { d: 'M 67 163 Q 68 176 67 188',         type: 'vein'   }, // right anterior tibial vein
     ],
   },
   posterior: {
     Traps: [
-      { d: 'M 44 22 Q 37 33 32 42',           type: 'muscle' },
-      { d: 'M 56 22 Q 63 33 68 42',           type: 'muscle' },
-      { d: 'M 47.5 22 L 47.5 62',             type: 'muscle' },
-      { d: 'M 52.5 22 L 52.5 62',             type: 'muscle' },
-      { d: 'M 44 30 Q 38 36 35 42',           type: 'armor'  }, // left trap plate
-      { d: 'M 56 30 Q 62 36 65 42',           type: 'armor'  }, // right trap plate
-      { d: 'M 46 50 L 40 55',                 type: 'armor'  }, // left lower plate
-      { d: 'M 54 50 L 60 55',                 type: 'armor'  }, // right lower plate
+      { d: 'M 44 22 Q 37 33 32 42',            type: 'muscle' }, // left trap fiber
+      { d: 'M 56 22 Q 63 33 68 42',            type: 'muscle' }, // right trap fiber
+      { d: 'M 47.5 22 L 47.5 62',              type: 'muscle' }, // left inner trap line
+      { d: 'M 52.5 22 L 52.5 62',              type: 'muscle' }, // right inner trap line
     ],
     Shoulders: [
-      { d: 'M 24 39 Q 20 48 22 57',           type: 'muscle' },
-      { d: 'M 76 39 Q 80 48 78 57',           type: 'muscle' },
-      { d: 'M 20 34 L 27 32',                 type: 'armor'  }, // left top plate
-      { d: 'M 80 34 L 73 32',                 type: 'armor'  }, // right top plate
-      { d: 'M 18 39 Q 20 44 21 49',           type: 'armor'  }, // left plate 1
-      { d: 'M 82 39 Q 80 44 79 49',           type: 'armor'  }, // right plate 1
-      { d: 'M 18 45 Q 20 50 22 54',           type: 'armor'  }, // left plate 2
-      { d: 'M 82 45 Q 80 50 78 54',           type: 'armor'  }, // right plate 2
-      { d: 'M 19 51 Q 21 55 24 58',           type: 'armor'  }, // left plate 3
-      { d: 'M 81 51 Q 79 55 76 58',           type: 'armor'  }, // right plate 3
+      { d: 'M 24 39 Q 20 48 22 57',            type: 'muscle' }, // left rear delt line
+      { d: 'M 76 39 Q 80 48 78 57',            type: 'muscle' }, // right rear delt line
     ],
     'Upper Back': [
-      { d: 'M 50 28 L 50 100',                type: 'bone'   },
-      { d: 'M 47 40 L 35 56 L 37 67',         type: 'muscle' },
-      { d: 'M 53 40 L 65 56 L 63 67',         type: 'muscle' },
-      { d: 'M 47 41 Q 41 55 37 65',           type: 'muscle' },
-      { d: 'M 53 41 Q 59 55 63 65',           type: 'muscle' },
-      { d: 'M 41 68 Q 35 77 34 86',           type: 'muscle' },
-      { d: 'M 59 68 Q 65 77 66 86',           type: 'muscle' },
-      { d: 'M 50 35 L 43 38',                 type: 'armor'  }, // left scapula spine
-      { d: 'M 50 35 L 57 38',                 type: 'armor'  }, // right scapula spine
-      { d: 'M 38 44 L 34 52',                 type: 'armor'  }, // left scapula plate
-      { d: 'M 62 44 L 66 52',                 type: 'armor'  }, // right scapula plate
-      { d: 'M 38 58 Q 44 65 50 65',           type: 'armor'  }, // left lat plate
-      { d: 'M 62 58 Q 56 65 50 65',           type: 'armor'  }, // right lat plate
-      { d: 'M 36 72 Q 33 80 34 88',           type: 'armor'  }, // left lower lat
-      { d: 'M 64 72 Q 67 80 66 88',           type: 'armor'  }, // right lower lat
+      { d: 'M 50 28 L 50 100',                 type: 'bone'   }, // spine
+      { d: 'M 47 40 L 35 56 L 37 67',          type: 'muscle' }, // left scapula border
+      { d: 'M 53 40 L 65 56 L 63 67',          type: 'muscle' }, // right scapula border
+      { d: 'M 47 41 Q 41 55 37 65',            type: 'muscle' }, // left lat sweep
+      { d: 'M 53 41 Q 59 55 63 65',            type: 'muscle' }, // right lat sweep
+      { d: 'M 41 68 Q 35 77 34 86',            type: 'muscle' }, // left lat lower
+      { d: 'M 59 68 Q 65 77 66 86',            type: 'muscle' }, // right lat lower
     ],
     'Lower Back': [
-      { d: 'M 46 74 L 44 101',                type: 'muscle' },
-      { d: 'M 54 74 L 56 101',                type: 'muscle' },
-      { d: 'M 44 80 Q 43 88 44 97',           type: 'vein'   },
-      { d: 'M 56 80 Q 57 88 56 97',           type: 'vein'   },
-      { d: 'M 44 78 L 56 78',                 type: 'armor'  }, // lumbar plate 1
-      { d: 'M 44 86 L 56 86',                 type: 'armor'  }, // lumbar plate 2
-      { d: 'M 44 94 L 56 94',                 type: 'armor'  }, // lumbar plate 3
+      { d: 'M 46 74 L 44 101',                 type: 'muscle' }, // left erector spinae
+      { d: 'M 54 74 L 56 101',                 type: 'muscle' }, // right erector spinae
+      { d: 'M 44 80 Q 43 88 44 97',            type: 'vein'   }, // left paraspinal vein
+      { d: 'M 56 80 Q 57 88 56 97',            type: 'vein'   }, // right paraspinal vein
     ],
     Triceps: [
-      { d: 'M 22 56 Q 19 67 18 77',           type: 'muscle' },
-      { d: 'M 78 56 Q 81 67 82 77',           type: 'muscle' },
-      { d: 'M 25 59 Q 22 69 21 79',           type: 'muscle' },
-      { d: 'M 75 59 Q 78 69 79 79',           type: 'muscle' },
-      { d: 'M 19 60 Q 17 70 16 80',           type: 'vein'   },
-      { d: 'M 81 60 Q 83 70 84 80',           type: 'vein'   },
-      { d: 'M 16 82 Q 13 90 11 100',          type: 'vein'   },
-      { d: 'M 84 82 Q 87 90 89 100',          type: 'vein'   },
-      { d: 'M 21 58 Q 23 66 22 74',           type: 'armor'  }, // left horseshoe
-      { d: 'M 79 58 Q 77 66 78 74',           type: 'armor'  }, // right horseshoe
-      { d: 'M 20 66 L 17 70',                 type: 'armor'  }, // left tricep plate
-      { d: 'M 80 66 L 83 70',                 type: 'armor'  }, // right tricep plate
-      { d: 'M 18 76 L 14 80',                 type: 'armor'  }, // left forearm plate
-      { d: 'M 82 76 L 86 80',                 type: 'armor'  }, // right forearm plate
+      { d: 'M 22 56 Q 19 67 18 77',            type: 'muscle' }, // left long head
+      { d: 'M 78 56 Q 81 67 82 77',            type: 'muscle' }, // right long head
+      { d: 'M 25 59 Q 22 69 21 79',            type: 'muscle' }, // left lateral head
+      { d: 'M 75 59 Q 78 69 79 79',            type: 'muscle' }, // right lateral head
+      { d: 'M 19 60 Q 17 70 16 80',            type: 'vein'   }, // left posterior vein
+      { d: 'M 81 60 Q 83 70 84 80',            type: 'vein'   }, // right posterior vein
+      { d: 'M 16 82 Q 13 90 11 100',           type: 'vein'   }, // left forearm posterior vein
+      { d: 'M 84 82 Q 87 90 89 100',           type: 'vein'   }, // right forearm posterior vein
     ],
     Glutes: [
-      { d: 'M 50 100 L 50 123',               type: 'muscle' },
-      { d: 'M 32 113 Q 41 120 49.5 117',      type: 'muscle' },
-      { d: 'M 68 113 Q 59 120 50.5 117',      type: 'muscle' },
-      { d: 'M 34 106 Q 42 104 49 104',        type: 'armor'  }, // left upper plate
-      { d: 'M 66 106 Q 58 104 51 104',        type: 'armor'  }, // right upper plate
-      { d: 'M 31 116 Q 40 113 49 113',        type: 'armor'  }, // left mid plate
-      { d: 'M 69 116 Q 60 113 51 113',        type: 'armor'  }, // right mid plate
+      { d: 'M 50 100 L 50 123',                type: 'muscle' }, // glute cleft
+      { d: 'M 32 113 Q 41 120 49.5 117',       type: 'muscle' }, // left glute crease
+      { d: 'M 68 113 Q 59 120 50.5 117',       type: 'muscle' }, // right glute crease
     ],
     Hamstrings: [
-      { d: 'M 33 128 Q 31 144 29 161',        type: 'muscle' },
-      { d: 'M 67 128 Q 69 144 71 161',        type: 'muscle' },
-      { d: 'M 38 127 Q 37 146 38 163',        type: 'muscle' },
-      { d: 'M 62 127 Q 63 146 62 163',        type: 'muscle' },
-      { d: 'M 30 130 L 38 129',               type: 'armor'  }, // left upper plate
-      { d: 'M 70 130 L 62 129',               type: 'armor'  }, // right upper plate
-      { d: 'M 29 145 L 37 144',               type: 'armor'  }, // left mid plate
-      { d: 'M 71 145 L 63 144',               type: 'armor'  }, // right mid plate
-      { d: 'M 29 158 L 37 157',               type: 'armor'  }, // left lower plate
-      { d: 'M 71 158 L 63 157',               type: 'armor'  }, // right lower plate
+      { d: 'M 33 128 Q 31 144 29 161',         type: 'muscle' }, // left biceps femoris
+      { d: 'M 67 128 Q 69 144 71 161',         type: 'muscle' }, // right biceps femoris
+      { d: 'M 38 127 Q 37 146 38 163',         type: 'muscle' }, // left semimembranosus
+      { d: 'M 62 127 Q 63 146 62 163',         type: 'muscle' }, // right semimembranosus
     ],
     Calves: [
       { d: 'M 30 168 Q 29 180 30 193',         type: 'muscle' }, // left lateral/medial split
@@ -883,55 +787,27 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
 
             {/* Definition lines — bone landmarks, muscle cuts, veins */}
             {Object.entries(DEFINITION_LINES[view] || {}).map(([group, lines]) => {
-              const isActive   = selected === group
-              const armorColor = muscleArmorColor(group)
-              // Derive per-group armor stroke from the fill color
-              const armorStroke = (() => {
-                if (armorColor === ARMOR_GLOW) return 'rgba(232,244,255,1)'
-                if (armorColor === ARMOR_RED)  return 'rgba(200,80,80,1)'
-                if (armorColor === ARMOR_GOLD) return 'rgba(255,200,80,1)'
-                return 'rgba(100,150,220,1)' // navy group — lighter tint
-              })()
-              const armorGlowBase = (() => {
-                if (armorColor === ARMOR_GLOW) return 'drop-shadow(0 0 1.5px rgba(232,244,255,0.65))'
-                if (armorColor === ARMOR_RED)  return 'drop-shadow(0 0 1.5px rgba(200,80,80,0.55))'
-                if (armorColor === ARMOR_GOLD) return 'drop-shadow(0 0 1.5px rgba(245,166,35,0.55))'
-                return 'drop-shadow(0 0 1.2px rgba(100,150,220,0.45))'
-              })()
-              const armorGlowActive = (() => {
-                if (armorColor === ARMOR_GLOW) return 'drop-shadow(0 0 4px rgba(255,255,255,1)) drop-shadow(0 0 2px rgba(232,244,255,0.9))'
-                if (armorColor === ARMOR_RED)  return 'drop-shadow(0 0 4px rgba(200,80,80,1)) drop-shadow(0 0 2px rgba(139,26,26,0.9))'
-                if (armorColor === ARMOR_GOLD) return 'drop-shadow(0 0 4px rgba(245,166,35,1)) drop-shadow(0 0 2px rgba(255,200,80,0.9))'
-                return 'drop-shadow(0 0 4px rgba(100,150,220,1)) drop-shadow(0 0 2px rgba(27,58,107,0.9))'
-              })()
+              const isActive = selected === group
+              const dbKey    = GROUP_TO_DB[group]
+              const color    = DB[dbKey]?.color || '#b4bccc'
               return lines.map((line, i) => {
                 const isVein   = line.type === 'vein'
                 const isBone   = line.type === 'bone'
-                const isArmor  = line.type === 'armor'
-                const isMuscle = line.type === 'muscle'
-                const baseOp   = isBone ? 0.55 : isVein ? 1 : isArmor ? 0.52 : isMuscle ? 0.50 : 0.46
-                const activeOp = isBone ? 0.96 : isVein ? 1 : isArmor ? 0.95 : isMuscle ? 0.92 : 0.92
-                const stroke   = isVein
-                  ? 'rgba(220,245,255,1)'
-                  : isBone
-                  ? 'rgba(255,210,80,1)'
-                  : (isArmor || isMuscle)
-                  ? armorStroke
-                  : armorStroke
-                const sw       = isBone ? 0.65 : isVein ? 0.58 : isArmor ? 0.48 : 0.52
+                const baseOp   = isBone ? 0.55 : isVein ? 1 : 0.46
+                const activeOp = isBone ? 0.96 : isVein ? 1    : 0.92
+                const stroke   = isVein ? 'rgba(220,245,255,1)' : isBone ? 'rgba(255,210,80,1)' : 'rgba(147,223,253,1)'
+                const sw       = isBone ? 0.65 : isVein ? 0.58 : 0.52
                 const baseGlow = isVein
                   ? 'drop-shadow(0 0 2px rgba(220,245,255,0.85)) drop-shadow(0 0 1px rgba(255,255,255,0.6))'
                   : isBone
                   ? 'drop-shadow(0 0 1.2px rgba(255,210,80,0.5))'
-                  : (isArmor || isMuscle)
-                  ? armorGlowBase
-                  : armorGlowBase
+                  : undefined
                 const glowF    = isActive
                   ? (isVein
                       ? 'drop-shadow(0 0 4px rgba(255,255,255,1)) drop-shadow(0 0 2px rgba(186,230,253,0.9))'
                       : isBone
                       ? 'drop-shadow(0 0 3px rgba(255,210,80,0.9))'
-                      : armorGlowActive)
+                      : 'drop-shadow(0 0 2.5px rgba(56,189,248,1))')
                   : baseGlow
                 return (
                   <path
