@@ -426,10 +426,9 @@ export default function Login2() {
         }}/>
 
 
-        {/* ── AX Logo + The Worthy ── */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, paddingTop:'max(env(safe-area-inset-top), 36px)', display:'flex', flexDirection:'column', alignItems:'center', zIndex:5, pointerEvents:'none' }}>
-          <img src={axLogoSrc} alt="AX" style={{ width:175, height:'auto', display:'block', mixBlendMode:'screen', filter:'drop-shadow(0 2px 22px rgba(180,185,210,0.5))' }} />
-          <span style={{ marginTop:6, fontFamily:"Cinzel,Georgia,serif", fontSize:11, letterSpacing:'4px', textTransform:'uppercase', color:'rgba(212,212,232,0.9)', animation:'iamworthy 3s ease-in-out infinite' }}>the worthy</span>
+        {/* ── AX Logo ── */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, paddingTop:'max(env(safe-area-inset-top), 36px)', display:'flex', justifyContent:'center', alignItems:'flex-start', zIndex:5, pointerEvents:'none' }}>
+          <img src={axLogoSrc} alt="AX" style={{ width:185, height:'auto', display:'block', transform:'scaleX(1.08)', mixBlendMode:'screen', filter:'drop-shadow(0 2px 22px rgba(180,185,210,0.5))' }} />
         </div>
         {/* Closed — full-screen tap zone */}
         {!showLogin && (
