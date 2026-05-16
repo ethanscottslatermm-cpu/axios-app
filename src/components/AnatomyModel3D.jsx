@@ -93,9 +93,29 @@ const HIDE = [
 // No skull/head overrides — head is intentionally hidden
 const SKULL_INCLUDE = []
 
-const SEL_COLOR  = new THREE.Color('#C9A96E')
-const BASE_COLOR = new THREE.Color('#C0C8D8')
+const SEL_COLOR  = new THREE.Color('#F5A623')   // Gold — selected highlight
 const NOOP_RAYCAST = () => {}
+
+// Per-group base colors matching the Gemini armor reference
+const GROUP_COLORS = {
+  chest:       '#1B3A6B',
+  shoulders:   '#1B3A6B',
+  core:        '#1B3A6B',
+  back:        '#1B3A6B',
+  glutes:      '#1B3A6B',
+  quads:       '#1B3A6B',
+  hamstrings:  '#1B3A6B',
+  biceps:      '#E8F4FF',
+  triceps:     '#E8F4FF',
+  forearms:    '#E8F4FF',
+  calves:      '#8B1A1A',
+  hip_flexors: '#3A3A3A',
+}
+const DEFAULT_COLOR = '#3A3A3A'
+
+function groupColor(g) {
+  return new THREE.Color(g ? (GROUP_COLORS[g] ?? DEFAULT_COLOR) : DEFAULT_COLOR)
+}
 
 function shouldHide(name) {
   const l = name.toLowerCase()
@@ -154,19 +174,31 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
       groupRef.current.position.set(-center.x * s, -center.y * s, -center.z * s)
     }
 
-    // Pass 2 — assign platinum material to every visible mesh
+    // Pass 2 — assign per-group colored materials
     const mats = {}
     scene.traverse(child => {
       if (!child.isMesh || !child.visible) return
       child.raycast = THREE.Mesh.prototype.raycast
-      child.userData.muscleGroup = findGroup(child.name)
+      const g = findGroup(child.name)
+      child.userData.muscleGroup = g
       if (child.material?._axiosOwned) child.material.dispose()
+
+      // Tune material properties per zone
+      const isGlow  = g === 'biceps' || g === 'triceps' || g === 'forearms'
+      const isRed   = g === 'calves'
+      const isNavy  = g && GROUP_COLORS[g] === '#1B3A6B'
+
       const mat = new THREE.MeshStandardMaterial({
-        color:             BASE_COLOR.clone(),
-        emissive:          new THREE.Color('#080C14'),
-        emissiveIntensity: 0.25,
-        roughness:         0.22,
-        metalness:         0.88,
+        color:             groupColor(g),
+        emissive:          new THREE.Color(
+          isGlow  ? '#C8E8FF' :
+          isRed   ? '#4A0A0A' :
+          isNavy  ? '#0A1A3A' :
+                    '#0A0A0A'
+        ),
+        emissiveIntensity: isGlow ? 0.55 : isRed ? 0.3 : 0.2,
+        roughness:         isGlow ? 0.08 : isRed ? 0.45 : 0.28,
+        metalness:         isGlow ? 0.6  : isRed ? 0.3  : 0.85,
         transparent:       false,
         opacity:           1,
         side:              THREE.DoubleSide,
@@ -181,16 +213,25 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
     return () => { Object.values(mats).forEach(m => m.dispose()) }
   }, [scene])
 
-  // Gold highlight on selected group
+  // Gold highlight on selected group; restore per-group color when deselected
   useEffect(() => {
     scene.traverse(obj => {
       if (!obj.isMesh) return
       const mat = matsRef.current[obj.uuid]
       if (!mat) return
-      const isSel = !!selectedGroup && obj.userData.muscleGroup === selectedGroup
-      mat.color.set(isSel ? SEL_COLOR : BASE_COLOR)
-      mat.emissive.set(isSel ? '#C9A96E' : '#080C14')
-      mat.emissiveIntensity = isSel ? 0.65 : 0.25
+      const g     = obj.userData.muscleGroup
+      const isSel = !!selectedGroup && g === selectedGroup
+      if (isSel) {
+        mat.color.set(SEL_COLOR)
+        mat.emissive.set('#F5A623')
+        mat.emissiveIntensity = 0.7
+      } else {
+        mat.color.copy(groupColor(g))
+        const isGlow = g === 'biceps' || g === 'triceps' || g === 'forearms'
+        const isRed  = g === 'calves'
+        mat.emissive.set(isGlow ? '#C8E8FF' : isRed ? '#4A0A0A' : '#0A0A0A')
+        mat.emissiveIntensity = isGlow ? 0.55 : isRed ? 0.3 : 0.2
+      }
     })
   }, [selectedGroup, scene])
 
@@ -243,7 +284,7 @@ function WorkoutPanel({ group, onClose }) {
   const Bracket = ({ flip }) => (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
       style={{ transform: flip ? 'scale(-1,1)' : 'none', flexShrink:0 }}>
-      <path d="M5 1H1V15H5" stroke="#C9A96E" strokeWidth="1.5" strokeLinecap="square"/>
+      <path d="M5 1H1V15H5" stroke="#F5A623" strokeWidth="1.5" strokeLinecap="square"/>
     </svg>
   )
 
@@ -258,7 +299,7 @@ function WorkoutPanel({ group, onClose }) {
           position:   'relative',
           width:      '100%',
           background: '#0D0F14',
-          borderTop:  '1.5px solid #C9A96E',
+          borderTop:  '1.5px solid #F5A623',
           padding:    '18px 20px 28px',
           transform:  up ? 'translateY(0)' : 'translateY(100%)',
           transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
@@ -269,7 +310,7 @@ function WorkoutPanel({ group, onClose }) {
 
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:14 }}>
           <div>
-            <div style={{ color:'#C9A96E', fontSize:13, letterSpacing:'2px', textTransform:'uppercase', fontWeight:600 }}>
+            <div style={{ color:'#F5A623', fontSize:13, letterSpacing:'2px', textTransform:'uppercase', fontWeight:600 }}>
               {info.label}
             </div>
             {info.latin && (
@@ -293,7 +334,7 @@ function WorkoutPanel({ group, onClose }) {
               border:'1px solid rgba(201,169,110,0.15)',
               borderRadius:4,
             }}>
-              <span style={{ color:'#C9A96E', fontSize:11, fontWeight:700, minWidth:18 }}>
+              <span style={{ color:'#F5A623', fontSize:11, fontWeight:700, minWidth:18 }}>
                 {String(i+1).padStart(2,'0')}
               </span>
               <span style={{ color:'rgba(220,220,235,0.85)', fontSize:13 }}>
@@ -305,7 +346,7 @@ function WorkoutPanel({ group, onClose }) {
 
         <button style={{
           width:'100%', padding:'12px 0',
-          background:'linear-gradient(135deg,#C9A96E,#A88850)',
+          background:'linear-gradient(135deg,#F5A623,#C97F10)',
           border:'none', borderRadius:4,
           color:'#0D0F14', fontSize:12, fontWeight:700,
           letterSpacing:'2px', textTransform:'uppercase',
@@ -358,12 +399,12 @@ export default function AnatomyModel3D({ selectedGroup, onMuscleSelect, view }) 
         frameloop="always"
         style={{ background:'transparent', width:'100%', height:'100%' }}
       >
-        {/* Knight lighting rig: strong top-front key, cool fill, dark rim */}
-        <ambientLight     intensity={0.35} color="#B0B8C8" />
-        <directionalLight position={[2, 8, 6]}   intensity={2.8} color="#FFFFFF" />
-        <directionalLight position={[-4, 3, 3]}  intensity={0.9} color="#8AAAC8" />
-        <directionalLight position={[0, -4, -6]} intensity={0.3} color="#1A2030" />
-        <pointLight       position={[3, 1, 2]}   intensity={0.6} color="#C8D8F0" />
+        {/* Armor lighting: warm top key, cool blue fill, navy rim */}
+        <ambientLight     intensity={0.3}  color="#8AA0C0" />
+        <directionalLight position={[2, 8, 6]}   intensity={3.0} color="#FFFFFF" />
+        <directionalLight position={[-4, 3, 3]}  intensity={1.1} color="#6090C8" />
+        <directionalLight position={[0, -4, -6]} intensity={0.4} color="#0A1A3A" />
+        <pointLight       position={[3, 1, 2]}   intensity={0.8} color="#E8F4FF" />
 
         <Suspense fallback={<Html center><PlatinumLoader /></Html>}>
           <Scene3D
