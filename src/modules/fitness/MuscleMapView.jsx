@@ -13,8 +13,9 @@ const ARMOR_RED  = '#8B1A1A'
 const ARMOR_GOLD = '#F5A623'
 
 function muscleArmorColor(m) {
-  if (m === 'Biceps' || m === 'Triceps') return ARMOR_GLOW
+  if (m === 'Biceps' || m === 'Triceps' || m === 'Quads') return ARMOR_GLOW
   if (m === 'Calves') return ARMOR_RED
+  if (m === 'Shoulders') return ARMOR_GOLD
   return ARMOR_NAVY
 }
 
@@ -647,15 +648,26 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             const isSel   = selected === m
             const heatCol = muscleHeatColor(m)
             const days    = muscleAgeDays(m)
-            const op      = isSel ? 0.92 : days !== null ? (days <= 1 ? 0.70 : 0.52) : 0.24
+            const op      = isSel ? 1.0 : 0.72
             const armorCol   = muscleArmorColor(m)
-            const glowFilter = isSel
-              ? 'drop-shadow(0 0 14px rgba(245,166,35,0.95)) drop-shadow(0 0 6px rgba(245,166,35,0.70))'
-              : armorCol === ARMOR_GLOW
-              ? 'drop-shadow(0 0 10px rgba(232,244,255,0.75)) drop-shadow(0 0 4px rgba(255,255,255,0.50))'
-              : armorCol === ARMOR_RED
-              ? 'drop-shadow(0 0 10px rgba(139,26,26,0.80)) drop-shadow(0 0 4px rgba(180,40,40,0.55))'
-              : 'drop-shadow(0 0 8px rgba(27,58,107,0.70)) drop-shadow(0 0 3px rgba(56,100,180,0.40))'
+            const glowFilter = (() => {
+              const intensity = isSel ? 1.8 : 1.0
+              if (armorCol === ARMOR_GLOW)
+                return isSel
+                  ? 'drop-shadow(0 0 18px rgba(255,255,255,1.0)) drop-shadow(0 0 8px rgba(232,244,255,0.90))'
+                  : 'drop-shadow(0 0 10px rgba(232,244,255,0.75)) drop-shadow(0 0 4px rgba(255,255,255,0.50))'
+              if (armorCol === ARMOR_RED)
+                return isSel
+                  ? 'drop-shadow(0 0 18px rgba(180,40,40,1.0)) drop-shadow(0 0 8px rgba(139,26,26,0.90))'
+                  : 'drop-shadow(0 0 10px rgba(139,26,26,0.80)) drop-shadow(0 0 4px rgba(180,40,40,0.55))'
+              if (armorCol === ARMOR_GOLD)
+                return isSel
+                  ? 'drop-shadow(0 0 18px rgba(245,166,35,1.0)) drop-shadow(0 0 8px rgba(255,200,80,0.90))'
+                  : 'drop-shadow(0 0 10px rgba(245,166,35,0.75)) drop-shadow(0 0 4px rgba(255,200,80,0.50))'
+              return isSel
+                ? 'drop-shadow(0 0 18px rgba(56,100,180,1.0)) drop-shadow(0 0 8px rgba(27,58,107,0.90))'
+                : 'drop-shadow(0 0 8px rgba(27,58,107,0.70)) drop-shadow(0 0 3px rgba(56,100,180,0.40))'
+            })()
             const anim = isSel
               ? 'mmPulse 2.4s ease-in-out infinite'
               : days === 0
@@ -679,7 +691,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                     data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
                     type={view}
                     bodyColor="rgba(0,0,0,0)"
-                    highlightedColors={isSel ? [ARMOR_GOLD,ARMOR_GOLD,ARMOR_GOLD] : [armorCol, armorCol, armorCol]}
+                    highlightedColors={[armorCol, armorCol, armorCol]}
                     style={{ width: '100%', display: 'block' }}
                     svgStyle={{ borderRadius: 8 }}
                   />
