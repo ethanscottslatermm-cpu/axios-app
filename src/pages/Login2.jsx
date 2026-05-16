@@ -430,8 +430,8 @@ export default function Login2() {
         <div style={{ position:'absolute', top:'8%', left:'50%', transform:'translateX(-50%)', width:'55%', height:'72%', background:'linear-gradient(to bottom, rgba(215,220,235,0.22) 0%, rgba(205,212,228,0.14) 25%, rgba(200,208,225,0.08) 55%, transparent 100%)', filter:'blur(28px)', animation:'l2-body-wash 5.5s ease-in-out infinite', pointerEvents:'none', zIndex:4 }} />
 
         {/* ── AX Logo ── */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, paddingTop:'max(env(safe-area-inset-top), 72px)', display:'flex', justifyContent:'center', alignItems:'flex-start', zIndex:5, pointerEvents:'none' }}>
-          <img src={axLogoSrc} alt="AX" style={{ width:175, height:'auto', display:'block', mixBlendMode:'screen', filter:'drop-shadow(0 2px 22px rgba(180,185,210,0.5))' }} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, paddingTop:'max(env(safe-area-inset-top), 46px)', display:'flex', justifyContent:'center', alignItems:'flex-start', zIndex:5, pointerEvents:'none' }}>
+          <img src={axLogoSrc} alt="AX" style={{ width:100, height:'auto', display:'block', mixBlendMode:'screen', filter:'drop-shadow(0 2px 22px rgba(180,185,210,0.5))' }} />
         </div>
         {/* Closed — full-screen tap zone */}
         {!showLogin && (
