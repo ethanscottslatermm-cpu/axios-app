@@ -74,7 +74,7 @@ Include all ${numWeeks} weeks. Each week should have exactly ${days} training da
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 8192,
+        max_tokens: 16000,
         messages: [{ role: 'user', content: prompt }],
       }),
     })
@@ -91,9 +91,16 @@ Include all ${numWeeks} weeks. Each week should have exactly ${days} training da
     const jsonEnd   = text.lastIndexOf('}')
     const clean     = jsonStart !== -1 && jsonEnd !== -1 ? text.slice(jsonStart, jsonEnd + 1) : text
 
-    const program = JSON.parse(clean)
+    let program
+    try {
+      program = JSON.parse(clean)
+    } catch (parseErr) {
+      console.error('JSON parse failed. Raw text length:', text.length, 'Clean snippet:', clean.slice(-200))
+      return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Program generation returned invalid JSON. Try a shorter duration or fewer days.' }) }
+    }
     return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(program) }
   } catch (e) {
+    console.error('generate-program error:', e.message)
     return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: e.message }) }
   }
 }
