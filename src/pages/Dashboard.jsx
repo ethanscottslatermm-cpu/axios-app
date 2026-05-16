@@ -57,7 +57,7 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'NOURISHMENT', path:'/food',    icon: Ico.food },
+  { key:'food',    label:'FOOD LOG', path:'/food',    icon: Ico.food },
   { key:'prayer',  label:'DEVOTION',    path:'/prayer',  icon: Ico.prayer },
   { key:'fitness', label:'TRAINING',    path:'/fitness', icon: Ico.fitness },
   { key:'finance', label:'WALLSTREET',    path:'/finance', icon: Ico.finance },
@@ -140,7 +140,7 @@ export function BottomNav() {
   const loc = useLocation()
   const items = [
     { label:'Home',        path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
-    { label:'NOURISHMENT', path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
+    { label:'FOOD LOG', path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
     { label:'TRAINING',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
     { label:'DEVOTION',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
     { label:'WALLSTREET',    path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },

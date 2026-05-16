@@ -906,7 +906,7 @@ export default function FoodJournal() {
             <div style={{ flex:1 }}>
               <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>Today</p>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#c8d4c8', fontWeight:400, fontSize:18, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase', whiteSpace:'nowrap' }}>Nourishment</h1>
+                <h1 style={{ color:'#c8d4c8', fontWeight:400, fontSize:18, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase', whiteSpace:'nowrap' }}>Food Log</h1>
                 <img src={foodIconSrc} width={20} height={20} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
             </div>
@@ -965,7 +965,7 @@ export default function FoodJournal() {
 
           {/* Tab switcher */}
           <div style={{ display:'flex', gap:8, marginTop:14 }}>
-            {[['food','Nourishment'],['water','Water']].map(([key, label]) => {
+            {[['food','Food Log'],['water','Water']].map(([key, label]) => {
               const isActive = activeTab === key
               return (
                 <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"

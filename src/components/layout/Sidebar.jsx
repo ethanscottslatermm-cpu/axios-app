@@ -5,7 +5,7 @@ import SignOutScreen from '../SignOutScreen'
 
 const modules = [
   { path: '/dashboard', label: 'Dashboard' },
-  { path: '/food',      label: 'Nourishment' },
+  { path: '/food',      label: 'Food Log' },
   { path: '/water',     label: 'Water Tracker' },
   { path: '/weight',    label: 'Weight Tracker' },
   { path: '/prayer',    label: 'Devotion' },
