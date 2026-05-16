@@ -15,7 +15,7 @@ const ARMOR_GOLD = '#F5A623'
 function muscleArmorColor(m) {
   if (m === 'Biceps' || m === 'Triceps' || m === 'Quads') return ARMOR_GLOW
   if (m === 'Calves') return ARMOR_RED
-  if (m === 'Shoulders') return ARMOR_GOLD
+  if (m === 'Shoulders' || m === 'Traps') return ARMOR_GOLD
   return ARMOR_NAVY
 }
 
@@ -633,7 +633,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <Model
             data={[]}
             type={view}
-            bodyColor="#060d1a"
+            bodyColor="#3A3A3A"
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
