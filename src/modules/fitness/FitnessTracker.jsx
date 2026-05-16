@@ -42,7 +42,7 @@ const MUSCLE_IMAGE_ROTATION = {
   'Core':       '90deg',
   'Quads':      '90deg',
   'Hamstrings': '90deg',
-  'Glutes':     '90deg',
+  'Glutes':     '-90deg',
   'Calves':     '90deg',
 }
 
