@@ -13,7 +13,7 @@ const ARMOR_RED  = '#8B1A1A'
 const ARMOR_GOLD = '#F5A623'
 
 function muscleArmorColor(m) {
-  if (m === 'Head' || m === 'Biceps' || m === 'Triceps' || m === 'Quads' || m === 'Abs' || m === 'Glutes' || m === 'Hamstrings') return ARMOR_GLOW
+  if (m === 'Head' || m === 'Biceps' || m === 'Triceps' || m === 'Quads' || m === 'Abs' || m === 'Glutes' || m === 'Hamstrings' || m === 'Lower Back') return ARMOR_GLOW
   if (m === 'Calves' || m === 'Chest' || m === 'Core' || m === 'Traps' || m === 'Upper Back') return ARMOR_RED
   if (m === 'Shoulders') return ARMOR_GOLD
   return ARMOR_NAVY
@@ -748,7 +748,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 ? '42.4489796 2.85714286 40 11.8367347 42.0408163 19.5918367 46.122449 23.2653061 49.7959184 25.3061224 54.6938776 22.4489796 57.5510204 19.1836735 59.1836735 10.2040816 57.1428571 2.44897959 49.7959184 0'
                 : '50.6382979 0 45.9574468 0.85106383 40.8510638 5.53191489 40.4255319 12.7659574 45.106383 20 55.7446809 20 59.1489362 13.6170213 59.5744681 4.68085106 55.7446809 1.27659574'
               }
-              fill="rgba(232,244,255,0.60)"
+              fill="rgba(232,244,255,0.85)"
               stroke="rgba(232,244,255,1)"
               strokeWidth={selected === 'Head' ? 0.9 : 0.42}
               strokeLinejoin="round"
@@ -763,31 +763,30 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             {/* Facial definition — anterior only */}
             {view === 'anterior' && (
               <g
-                opacity={selected === 'Head' ? 0.92 : 0.32}
+                opacity={selected === 'Head' ? 1.0 : 0.72}
                 pointerEvents="none"
                 style={{
-                  filter: selected === 'Head' ? 'drop-shadow(0 0 1.5px rgba(255,255,255,0.65))' : undefined,
+                  filter: selected === 'Head'
+                    ? 'drop-shadow(0 0 2px rgba(255,255,255,0.9))'
+                    : 'drop-shadow(0 0 0.8px rgba(255,255,255,0.5))',
                   transition: 'opacity 0.3s',
                 }}
               >
                 {/* Eyes */}
-                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.35"/>
-                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.35"/>
+                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.75"/>
+                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.75"/>
                 {/* Nose */}
-                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.6" strokeLinecap="round"/>
                 {/* Mouth */}
-                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.42" strokeLinecap="round"/>
+                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.75" strokeLinecap="round"/>
                 {/* Jaw lines */}
-                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.28" strokeLinecap="round"/>
-                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(30,30,50,0.7)" strokeWidth="0.55" strokeLinecap="round"/>
+                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(30,30,50,0.7)" strokeWidth="0.55" strokeLinecap="round"/>
                 {/* Chin cleft */}
-                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.28" strokeLinecap="round"/>
+                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(30,30,50,0.7)" strokeWidth="0.55" strokeLinecap="round"/>
                 {/* Cheekbones — zygomatic arch */}
-                <path d="M 43.5 12.2 Q 38.8 13.8 39.8 17.2" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.42" strokeLinecap="round"/>
-                <path d="M 56.5 12.2 Q 61.2 13.8 60.2 17.2" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.42" strokeLinecap="round"/>
-                {/* Zygomatic frontal process (vertical at outer eye corner) */}
-                <path d="M 44 10.2 L 43 13.2" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.3" strokeLinecap="round"/>
-                <path d="M 56 10.2 L 57 13.2" fill="none" stroke="rgba(232,244,255,1)" strokeWidth="0.3" strokeLinecap="round"/>
+                <path d="M 43.5 12.2 Q 38.8 13.8 39.8 17.2" fill="none" stroke="rgba(30,30,50,0.65)" strokeWidth="0.65" strokeLinecap="round"/>
+                <path d="M 56.5 12.2 Q 61.2 13.8 60.2 17.2" fill="none" stroke="rgba(30,30,50,0.65)" strokeWidth="0.65" strokeLinecap="round"/>
               </g>
             )}
 
