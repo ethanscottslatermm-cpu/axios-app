@@ -1051,7 +1051,7 @@ const [prsOpen,         setPrsOpen]         = useState(true)
                       <img
                         src={MUSCLE_IMAGES[group]}
                         alt={group}
-                        style={{ width:52, height:52, objectFit:'contain', objectPosition:'center', flexShrink:0, opacity:0.72, filter:'brightness(0.88) saturate(0.8)' }}
+                        style={{ width:52, height:52, objectFit:'contain', objectPosition:'center', flexShrink:0, opacity:0.72, filter:'brightness(0.88) saturate(0.8)', transform:'rotate(90deg)' }}
                       />
                       <div style={{ flex:1, minWidth:0 }}>
                         <p style={{ color:'rgba(212,212,232,0.82)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{group}</p>
