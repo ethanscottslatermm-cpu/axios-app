@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useToday } from '../../hooks/useToday'
 import { useHaptic } from '../../hooks/useHaptic'
-import fitnessIconSrc from '../../fitness-icon.png'
+import fitnessIconSrc from './Images/fitness-icon.png'
 import { useNavigate } from 'react-router-dom'
 import { useWeightLog } from '../../hooks/useWeightLog'
 import { useProfile } from '../../hooks/useProfile'

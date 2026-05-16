@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import fitnessIconSrc from '../fitness-icon.png'
+import fitnessIconSrc from '../modules/fitness/Images/fitness-icon.png'
 import prayerIconSrc  from '../prayer-icon.png'
 import financeIconSrc from '../finance-icon.png'
 import foodIconSrc    from '../food-icon.png'
