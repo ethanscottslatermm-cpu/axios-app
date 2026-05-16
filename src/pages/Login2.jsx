@@ -429,14 +429,26 @@ export default function Login2() {
         {/* ── Cinematic body light wash ── */}
         <div style={{ position:'absolute', top:'8%', left:'50%', transform:'translateX(-50%)', width:'55%', height:'72%', background:'linear-gradient(to bottom, rgba(215,220,235,0.22) 0%, rgba(205,212,228,0.14) 25%, rgba(200,208,225,0.08) 55%, transparent 100%)', filter:'blur(28px)', animation:'l2-body-wash 5.5s ease-in-out infinite', pointerEvents:'none', zIndex:4 }} />
 
-        {/* ── AXIOS Logo with steel shimmer ── */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, paddingTop:'max(env(safe-area-inset-top), 18px)', display:'flex', justifyContent:'center', alignItems:'flex-start', zIndex:5, pointerEvents:'none' }}>
-          <div style={{ position:'relative', width:'52%', maxWidth:210, overflow:'hidden' }}>
-            <img src={axiosLogoSrc} alt="AXIOS" style={{ width:'100%', height:'auto', display:'block', filter:'drop-shadow(0 2px 18px rgba(180,185,210,0.45)) drop-shadow(0 0 40px rgba(170,175,205,0.28))' }} />
-            <div style={{ position:'absolute', inset:0, overflow:'hidden', pointerEvents:'none' }}>
-              <div style={{ position:'absolute', top:0, bottom:0, width:'45%', background:'linear-gradient(105deg, transparent 20%, rgba(200,210,240,0.12) 38%, rgba(225,230,255,0.55) 50%, rgba(255,255,255,0.65) 52%, rgba(225,230,255,0.55) 54%, rgba(200,210,240,0.12) 68%, transparent 80%)', animation:'l2-logo-shimmer 5.5s ease-in-out infinite', animationDelay:'0.8s' }} />
-            </div>
-          </div>
+        {/* ── AXIOS Logo with letter shimmer ── */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, paddingTop:'max(env(safe-area-inset-top), 14px)', display:'flex', justifyContent:'center', alignItems:'flex-start', zIndex:5, pointerEvents:'none' }}>
+          <svg viewBox="0 0 380 70" xmlns="http://www.w3.org/2000/svg" style={{ width:155, height:'auto', overflow:'visible', filter:'drop-shadow(0 2px 14px rgba(180,185,210,0.4))' }}>
+            <defs>
+              <linearGradient id="ax-login-sg" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stopColor="#3a3a42"/>
+                <stop offset="42%"  stopColor="#8a8a96"/>
+                <stop offset="50%"  stopColor="#ffffff"/>
+                <stop offset="58%"  stopColor="#8a8a96"/>
+                <stop offset="100%" stopColor="#3a3a42"/>
+                <animate attributeName="x1" from="-380" to="380"  dur="2.8s" repeatCount="indefinite"/>
+                <animate attributeName="x2" from="0"    to="760"  dur="2.8s" repeatCount="indefinite"/>
+              </linearGradient>
+            </defs>
+            <polygon points="10,62 45,4 80,62"   fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+            <polygon points="22,62 45,20 68,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+            <text x="100" y="52" fontFamily="Georgia,'Times New Roman',serif" fontSize="42" fontWeight="700" letterSpacing="5" fill="url(#ax-login-sg)">AXIOS</text>
+            <polygon points="300,62 335,4 370,62"  fill="none" stroke="url(#ax-login-sg)" strokeWidth="3.5" strokeLinejoin="round"/>
+            <polygon points="312,62 335,20 358,62" fill="none" stroke="url(#ax-login-sg)" strokeWidth="2.5" strokeLinejoin="round"/>
+          </svg>
         </div>
         {/* Closed — full-screen tap zone */}
         {!showLogin && (
