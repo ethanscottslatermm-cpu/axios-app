@@ -431,7 +431,7 @@ export default function Login2() {
 
         {/* ── AX Logo ── */}
         <div style={{ position:'absolute', top:0, left:0, right:0, paddingTop:'max(env(safe-area-inset-top), 46px)', display:'flex', justifyContent:'center', alignItems:'flex-start', zIndex:5, pointerEvents:'none' }}>
-          <img src={axLogoSrc} alt="AX" style={{ width:100, height:'auto', display:'block', mixBlendMode:'screen', filter:'drop-shadow(0 2px 22px rgba(180,185,210,0.5))' }} />
+          <img src={axLogoSrc} alt="AX" style={{ width:165, height:'auto', display:'block', mixBlendMode:'screen', filter:'drop-shadow(0 2px 22px rgba(180,185,210,0.5))' }} />
         </div>
         {/* Closed — full-screen tap zone */}
         {!showLogin && (
