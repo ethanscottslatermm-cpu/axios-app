@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
 import { useNavigate } from 'react-router-dom'
-import prayerIconSrc from '../../prayer-icon.png'
+import prayerIconSrc from '../prayer/Images/prayer-icon.png'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { BottomNav } from '../../pages/Dashboard'

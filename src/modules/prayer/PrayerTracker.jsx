@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import prayerIconSrc from '../../prayer-icon.png'
+import prayerIconSrc from './Images/prayer-icon.png'
 import { useToday } from '../../hooks/useToday'
 import { useHaptic } from '../../hooks/useHaptic'
 import { useNavigate } from 'react-router-dom'
