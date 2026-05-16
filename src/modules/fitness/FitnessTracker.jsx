@@ -9,6 +9,7 @@ import { BottomNav } from '../../pages/Dashboard'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import MuscleMapView from './MuscleMapView'
+import FitPrograms from './FitPrograms'
 import EquipmentScanner from './EquipmentScanner'
 import imgChest     from './Images/Chest.png'
 import imgBack      from './Images/Back.png'
@@ -1015,30 +1016,18 @@ const [prsOpen,         setPrsOpen]         = useState(true)
         <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
           {/* Tab switcher */}
-          <div style={{ display:'flex', gap:8, ...anim(80) }}>
-            {[['recovery','Recovery'],['body','Fit Guide'],['weight','Weight Log']].map(([key,label]) => {
+          <div style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:1, ...anim(80) }}>
+            {[['recovery','Recover'],['body','Fit Guide'],['weight','Weight Log'],['programs','Fit Programs']].map(([key,label]) => {
               const isActive = activeTab === key
-              const isFitGuide = key === 'body'
               return (
                 <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
                   style={{
-                    flex: isFitGuide ? 1.15 : 1,
-                    padding:'10px',
-                    borderRadius:10,
-                    border: isActive
-                      ? '1px solid rgba(248,113,113,0.55)'
-                      : isFitGuide
-                      ? '1px solid rgba(212,212,232,0.14)'
-                      : '1px solid rgba(212,212,232,0.06)',
-                    background: isActive
-                      ? 'rgba(248,113,113,0.12)'
-                      : isFitGuide
-                      ? 'rgba(212,212,232,0.05)'
-                      : 'rgba(212,212,232,0.03)',
-                    color: isActive ? '#f87171' : isFitGuide ? 'rgba(212,212,232,0.6)' : 'rgba(212,212,232,0.35)',
-                    boxShadow: isActive ? '0 0 12px rgba(248,113,113,0.18)' : 'none',
+                    flexShrink:0, padding:'9px 14px', borderRadius:10,
+                    border: `1px solid ${isActive ? 'rgba(248,113,113,0.45)' : 'var(--border)'}`,
+                    background: isActive ? 'rgba(248,113,113,0.10)' : 'transparent',
+                    color: isActive ? '#f87171' : 'var(--text-muted)',
                     fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
-                    fontWeight: isActive ? 700 : isFitGuide ? 600 : 400,
+                    fontWeight: isActive ? 700 : 400,
                     cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
                   }}>
                   {label}
@@ -1291,6 +1280,12 @@ const [prsOpen,         setPrsOpen]         = useState(true)
                 onLogWorkout={muscle => setQuickLogMuscle(muscle)}
                 onSaveExercise={handleQuickLogExercise}
               />
+            </div>
+          )}
+
+          {activeTab === 'programs' && (
+            <div style={anim(80)}>
+              <FitPrograms />
             </div>
           )}
 
