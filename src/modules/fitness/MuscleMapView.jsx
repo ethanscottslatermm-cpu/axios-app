@@ -5,7 +5,18 @@ import { DB } from './WorkoutGuide'
 const FF = 'Helvetica Neue,Arial,sans-serif'
 
 const MIND_COLOR      = '#a78bfa'
-const HIGHLIGHT_COLOR = '#38bdf8'
+const HIGHLIGHT_COLOR = '#F5A623'
+
+const ARMOR_NAVY = '#1B3A6B'
+const ARMOR_GLOW = '#E8F4FF'
+const ARMOR_RED  = '#8B1A1A'
+const ARMOR_GOLD = '#F5A623'
+
+function muscleArmorColor(m) {
+  if (m === 'Biceps' || m === 'Triceps') return ARMOR_GLOW
+  if (m === 'Calves') return ARMOR_RED
+  return ARMOR_NAVY
+}
 
 const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
 
@@ -515,12 +526,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   }
 
   function muscleHeatColor(muscle) {
-    const days = muscleAgeDays(muscle)
-    if (days === null) return '#0c2a4a'
-    if (days === 0) return '#ef4444'
-    if (days === 1) return '#f97316'
-    if (days <= 3)  return '#eab308'
-    return '#38bdf8'
+    return muscleArmorColor(muscle)
   }
 
   useEffect(() => {
@@ -617,8 +623,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
-              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(56,189,248,0.14) 0%, transparent 65%)'
-              : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(10,30,80,0.08) 0%, transparent 65%)',
+              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(245,166,35,0.12) 0%, transparent 65%)'
+              : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(27,58,107,0.08) 0%, transparent 65%)',
             transition: 'background 0.6s ease',
           }}/>
 
@@ -630,7 +636,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
-              filter: 'drop-shadow(0 0 10px rgba(56,189,248,0.50)) drop-shadow(0 0 3px rgba(147,223,253,0.60))',
+              filter: 'drop-shadow(0 0 10px rgba(27,58,107,0.70)) drop-shadow(0 0 3px rgba(232,244,255,0.45))',
             }}
             svgStyle={{ borderRadius: 8 }}
           />
@@ -642,15 +648,14 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             const heatCol = muscleHeatColor(m)
             const days    = muscleAgeDays(m)
             const op      = isSel ? 0.92 : days !== null ? (days <= 1 ? 0.70 : 0.52) : 0.24
+            const armorCol   = muscleArmorColor(m)
             const glowFilter = isSel
-              ? 'drop-shadow(0 0 14px rgba(56,189,248,0.95)) drop-shadow(0 0 6px rgba(186,230,253,0.80))'
-              : days === 0
-              ? 'drop-shadow(0 0 11px rgba(239,68,68,0.80)) drop-shadow(0 0 5px rgba(239,68,68,0.55))'
-              : days === 1
-              ? 'drop-shadow(0 0 9px rgba(249,115,22,0.65)) drop-shadow(0 0 4px rgba(249,115,22,0.45))'
-              : days !== null && days <= 3
-              ? 'drop-shadow(0 0 6px rgba(234,179,8,0.45))'
-              : undefined
+              ? 'drop-shadow(0 0 14px rgba(245,166,35,0.95)) drop-shadow(0 0 6px rgba(245,166,35,0.70))'
+              : armorCol === ARMOR_GLOW
+              ? 'drop-shadow(0 0 10px rgba(232,244,255,0.75)) drop-shadow(0 0 4px rgba(255,255,255,0.50))'
+              : armorCol === ARMOR_RED
+              ? 'drop-shadow(0 0 10px rgba(139,26,26,0.80)) drop-shadow(0 0 4px rgba(180,40,40,0.55))'
+              : 'drop-shadow(0 0 8px rgba(27,58,107,0.70)) drop-shadow(0 0 3px rgba(56,100,180,0.40))'
             const anim = isSel
               ? 'mmPulse 2.4s ease-in-out infinite'
               : days === 0
@@ -674,7 +679,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                     data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
                     type={view}
                     bodyColor="rgba(0,0,0,0)"
-                    highlightedColors={isSel ? ['#38bdf8','#38bdf8','#38bdf8'] : [heatCol, heatCol, heatCol]}
+                    highlightedColors={isSel ? [ARMOR_GOLD,ARMOR_GOLD,ARMOR_GOLD] : [armorCol, armorCol, armorCol]}
                     style={{ width: '100%', display: 'block' }}
                     svgStyle={{ borderRadius: 8 }}
                   />
@@ -703,9 +708,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               </filter>
               <linearGradient id="mm-scan-grad" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%"   stopColor="transparent"/>
-                <stop offset="25%"  stopColor="rgba(56,189,248,0.45)"/>
-                <stop offset="50%"  stopColor="rgba(186,230,253,0.28)"/>
-                <stop offset="75%"  stopColor="rgba(56,189,248,0.45)"/>
+                <stop offset="25%"  stopColor="rgba(245,166,35,0.45)"/>
+                <stop offset="50%"  stopColor="rgba(255,210,120,0.28)"/>
+                <stop offset="75%"  stopColor="rgba(245,166,35,0.45)"/>
                 <stop offset="100%" stopColor="transparent"/>
               </linearGradient>
             </defs>
