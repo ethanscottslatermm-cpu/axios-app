@@ -2,7 +2,7 @@ const FINANCE_IMG = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEB
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import financeIconSrc from '../../finance-icon.png'
+import financeIconSrc from './Images/finance-icon.png'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
 import { getLinkToken, exchangeToken, fetchBalances, fetchTransactions } from '../../lib/plaidClient'
@@ -913,7 +913,7 @@ export default function FinanceTracker() {
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
             <div>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <h1 style={{ color:'#86efac', fontSize:18, fontWeight:400, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase', whiteSpace:'nowrap' }}>Treasury</h1>
+                <h1 style={{ color:'#86efac', fontSize:18, fontWeight:400, fontFamily:"'The Seasons', serif", letterSpacing:'0.08em', textTransform:'uppercase', whiteSpace:'nowrap' }}>WallStreet</h1>
                 <img src={financeIconSrc} width={22} height={22} style={{ filter:'brightness(0) invert(1)', objectFit:'contain', opacity:0.72, display:'block' }} alt="" />
               </div>
               <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:"'EB Garamond',serif", fontStyle:'italic', marginTop:2 }}>Live market data</p>

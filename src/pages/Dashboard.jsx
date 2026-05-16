@@ -2,8 +2,8 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import fitnessIconSrc from '../modules/fitness/Images/fitness-icon.png'
 import prayerIconSrc  from '../modules/prayer/Images/prayer-icon.png'
-import financeIconSrc from '../finance-icon.png'
-import foodIconSrc    from '../food-icon.png'
+import financeIconSrc from '../modules/finance/Images/finance-icon.png'
+import foodIconSrc    from '../modules/food/Images/food-icon.png'
 import homeIconSrc    from '../home-icon.png'
 import settingsIconSrc from './Images/settings-icon.png'
 import { useAuth } from '../context/AuthContext'
@@ -60,7 +60,7 @@ const modules = [
   { key:'food',    label:'NOURISHMENT', path:'/food',    icon: Ico.food },
   { key:'prayer',  label:'DEVOTION',    path:'/prayer',  icon: Ico.prayer },
   { key:'fitness', label:'TRAINING',    path:'/fitness', icon: Ico.fitness },
-  { key:'finance', label:'TREASURY',    path:'/finance', icon: Ico.finance },
+  { key:'finance', label:'WALLSTREET',    path:'/finance', icon: Ico.finance },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -143,7 +143,7 @@ export function BottomNav() {
     { label:'NOURISHMENT', path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
     { label:'TRAINING',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
     { label:'DEVOTION',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
-    { label:'TREASURY',    path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
+    { label:'WALLSTREET',    path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
     { label:'Settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
   ]
   return (
