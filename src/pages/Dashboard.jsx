@@ -144,7 +144,7 @@ export function BottomNav() {
     { label:'TRAINING',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
     { label:'DEVOTION',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
     { label:'TREASURY',    path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
-    { label:'Forge',       path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
+    { label:'Settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
   ]
   return (
     <nav className="ax-bottom-nav" style={{
