@@ -13,22 +13,23 @@ const ARMOR_RED  = '#8B1A1A'
 const ARMOR_GOLD = '#F5A623'
 
 function muscleArmorColor(m) {
-  if (m === 'Biceps' || m === 'Triceps' || m === 'Quads') return ARMOR_GLOW
-  if (m === 'Calves') return ARMOR_RED
+  if (m === 'Head' || m === 'Biceps' || m === 'Triceps' || m === 'Quads' || m === 'Abs') return ARMOR_GLOW
+  if (m === 'Calves' || m === 'Chest' || m === 'Core') return ARMOR_RED
   if (m === 'Shoulders' || m === 'Traps') return ARMOR_GOLD
   return ARMOR_NAVY
 }
 
-const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
+const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Abs','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
 
 const SLUG_MAP = {
   Head:           ['head'],
   Chest:          ['chest'],
   Shoulders:      ['front-deltoids', 'back-deltoids'],
-  Traps:          ['trapezius', 'neck'],  // neck polygon covers upper traps on anterior view
+  Traps:          ['trapezius', 'neck'],
   Biceps:         ['biceps', 'forearm'],
   Triceps:        ['triceps'],
-  Core:           ['abs', 'obliques'],
+  Abs:            ['abs'],
+  Core:           ['obliques'],
   'Upper Back':   ['upper-back'],
   'Lower Back':   ['lower-back'],
   Quads:          ['quadriceps'],
@@ -45,7 +46,7 @@ const GROUP_FROM_SLUG = {
   biceps:          'Biceps',
   forearm:         'Biceps',
   triceps:         'Triceps',
-  abs:             'Core',
+  abs:             'Abs',
   obliques:        'Core',
   trapezius:       'Traps',
   neck:            'Traps',
@@ -68,6 +69,7 @@ const GROUP_TO_DB = {
   Traps:          'traps',
   Biceps:         'biceps',
   Triceps:        'triceps',
+  Abs:            'core',
   Core:           'core',
   'Upper Back':   'upper_back',
   'Lower Back':   'lower_back',
@@ -84,7 +86,8 @@ const SCI_SHORT = {
   Traps:          'Trapezius',
   Biceps:         'Biceps Brachii',
   Triceps:        'Triceps Brachii',
-  Core:           'Rectus Abdominis',
+  Abs:            'Rectus Abdominis',
+  Core:           'Obliques',
   'Upper Back':   'Rhomboids',
   'Lower Back':   'Erector Spinae',
   Quads:          'Quadriceps Femoris',
@@ -138,7 +141,7 @@ const DEFINITION_LINES = {
       { d: 'M 25 57 Q 23 64 22 72',            type: 'muscle' }, // left tricep line
       { d: 'M 75 57 Q 77 64 78 72',            type: 'muscle' }, // right tricep line
     ],
-    Core: [
+    Abs: [
       { d: 'M 50 58 L 50 95',                  type: 'muscle' }, // ab midline
       { d: 'M 42 63 Q 50 62 58 63',            type: 'muscle' }, // subcostal arch
       { d: 'M 42 65 L 58 65',                  type: 'muscle' }, // cut 1
@@ -149,10 +152,12 @@ const DEFINITION_LINES = {
       { d: 'M 56 65 L 56 72',                  type: 'muscle' }, // right inner col 1
       { d: 'M 43 72 L 43 79',                  type: 'muscle' }, // left inner col 2
       { d: 'M 57 72 L 57 79',                  type: 'muscle' }, // right inner col 2
-      { d: 'M 38 64 Q 33 77 35 91',            type: 'muscle' }, // left oblique edge
-      { d: 'M 62 64 Q 67 77 65 91',            type: 'muscle' }, // right oblique edge
       { d: 'M 49 65 Q 48 72 49 79',            type: 'muscle' }, // left ab cell line
       { d: 'M 51 65 Q 52 72 51 79',            type: 'muscle' }, // right ab cell line
+    ],
+    Core: [
+      { d: 'M 38 64 Q 33 77 35 91',            type: 'muscle' }, // left oblique edge
+      { d: 'M 62 64 Q 67 77 65 91',            type: 'muscle' }, // right oblique edge
     ],
     Quads: [
       { d: 'M 40 101 Q 37 123 36 144',         type: 'muscle' }, // left RF/VL cut
@@ -272,7 +277,8 @@ const LABELS = {
     { group: 'Shoulders',   x: 103, y: 42,  anchor: 'start', ex: 79 },
     { group: 'Chest',       x: 103, y: 51,  anchor: 'start', ex: 70 },
     { group: 'Biceps',      x: -3,  y: 61,  anchor: 'end',   ex: 17 },
-    { group: 'Core',        x: 103, y: 81,  anchor: 'start', ex: 59 },
+    { group: 'Abs',         x: 103, y: 72,  anchor: 'start', ex: 57 },
+    { group: 'Core',        x: 103, y: 85,  anchor: 'start', ex: 60 },
     { group: 'Quads',       x: -3,  y: 118, anchor: 'end',   ex: 29 },
     { group: 'Calves',      x: 103, y: 175, anchor: 'start', ex: 74 },
   ],
