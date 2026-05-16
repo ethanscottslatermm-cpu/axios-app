@@ -186,19 +186,17 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
       // Tune material properties per zone
       const isGlow  = g === 'biceps' || g === 'triceps' || g === 'forearms'
       const isRed   = g === 'calves'
-      const isNavy  = g && GROUP_COLORS[g] === '#1B3A6B'
 
       const mat = new THREE.MeshStandardMaterial({
         color:             groupColor(g),
         emissive:          new THREE.Color(
-          isGlow  ? '#C8E8FF' :
-          isRed   ? '#4A0A0A' :
-          isNavy  ? '#0A1A3A' :
-                    '#0A0A0A'
+          isGlow ? '#FFFFFF' :
+          isRed  ? '#3A0808' :
+                   '#000000'
         ),
-        emissiveIntensity: isGlow ? 0.55 : isRed ? 0.3 : 0.2,
-        roughness:         isGlow ? 0.08 : isRed ? 0.45 : 0.28,
-        metalness:         isGlow ? 0.6  : isRed ? 0.3  : 0.85,
+        emissiveIntensity: isGlow ? 0.4 : isRed ? 0.25 : 0.0,
+        roughness:         isGlow ? 0.2 : isRed ? 0.6  : 0.55,
+        metalness:         isGlow ? 0.3 : isRed ? 0.1  : 0.4,
         transparent:       false,
         opacity:           1,
         side:              THREE.DoubleSide,
@@ -229,8 +227,8 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
         mat.color.copy(groupColor(g))
         const isGlow = g === 'biceps' || g === 'triceps' || g === 'forearms'
         const isRed  = g === 'calves'
-        mat.emissive.set(isGlow ? '#C8E8FF' : isRed ? '#4A0A0A' : '#0A0A0A')
-        mat.emissiveIntensity = isGlow ? 0.55 : isRed ? 0.3 : 0.2
+        mat.emissive.set(isGlow ? '#FFFFFF' : isRed ? '#3A0808' : '#000000')
+        mat.emissiveIntensity = isGlow ? 0.4 : isRed ? 0.25 : 0.0
       }
     })
   }, [selectedGroup, scene])
@@ -399,12 +397,12 @@ export default function AnatomyModel3D({ selectedGroup, onMuscleSelect, view }) 
         frameloop="always"
         style={{ background:'transparent', width:'100%', height:'100%' }}
       >
-        {/* Armor lighting: warm top key, cool blue fill, navy rim */}
-        <ambientLight     intensity={0.3}  color="#8AA0C0" />
-        <directionalLight position={[2, 8, 6]}   intensity={3.0} color="#FFFFFF" />
-        <directionalLight position={[-4, 3, 3]}  intensity={1.1} color="#6090C8" />
-        <directionalLight position={[0, -4, -6]} intensity={0.4} color="#0A1A3A" />
-        <pointLight       position={[3, 1, 2]}   intensity={0.8} color="#E8F4FF" />
+        {/* Neutral rig — no blue tint so navy reads as navy, not cyan */}
+        <ambientLight     intensity={0.4}  color="#FFFFFF" />
+        <directionalLight position={[2, 8, 6]}   intensity={2.5} color="#FFFFFF" />
+        <directionalLight position={[-4, 3, 3]}  intensity={0.5} color="#FFFFFF" />
+        <directionalLight position={[0, -4, -6]} intensity={0.2} color="#111111" />
+        <pointLight       position={[3, 1, 2]}   intensity={0.4} color="#FFFFFF" />
 
         <Suspense fallback={<Html center><PlatinumLoader /></Html>}>
           <Scene3D
