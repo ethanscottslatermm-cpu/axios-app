@@ -126,7 +126,7 @@ export default function Widget() {
               { label: 'Training',   path: '/fitness'    },
               { label: 'Devotion',   path: '/prayer'     },
               { label: 'Devotional', path: '/devotional' },
-              { label: 'Dashboard',  path: '/dashboard'  },
+              { label: 'Home Base',  path: '/dashboard'  },
             ].map(({ label, path }) => (
               <div key={path} onClick={() => navigate(path)} style={{
                 background: 'var(--bg-card)', border: '1px solid var(--border)',

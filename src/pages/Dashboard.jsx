@@ -4,7 +4,7 @@ import fitnessIconSrc from '../modules/fitness/Images/fitness-icon.png'
 import prayerIconSrc  from '../modules/prayer/Images/prayer-icon.png'
 import financeIconSrc from '../modules/finance/Images/finance-icon.png'
 import foodIconSrc    from '../modules/food/Images/food-icon.png'
-import homeIconSrc    from '../home-icon.png'
+import homeIconSrc    from './Images/home-icon.png'
 import settingsIconSrc from './Images/settings-icon.png'
 import { useAuth } from '../context/AuthContext'
 import { useFoodLog } from '../hooks/useFoodLog'
@@ -139,7 +139,7 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home',        path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
+    { label:'Home Base',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
     { label:'FOOD LOG', path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
     { label:'TRAINING',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
     { label:'DEVOTION',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
