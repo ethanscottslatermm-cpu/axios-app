@@ -742,17 +742,17 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               }}
             />
 
-            {/* Head outline — exact polygon from react-body-highlighter source, no fill, white illuminated */}
+            {/* Head outline — white filled interior so face reads white, not base-model gray */}
             <polygon
               points={view === 'anterior'
                 ? '42.4489796 2.85714286 40 11.8367347 42.0408163 19.5918367 46.122449 23.2653061 49.7959184 25.3061224 54.6938776 22.4489796 57.5510204 19.1836735 59.1836735 10.2040816 57.1428571 2.44897959 49.7959184 0'
                 : '50.6382979 0 45.9574468 0.85106383 40.8510638 5.53191489 40.4255319 12.7659574 45.106383 20 55.7446809 20 59.1489362 13.6170213 59.5744681 4.68085106 55.7446809 1.27659574'
               }
-              fill="none"
+              fill="rgba(232,244,255,0.60)"
               stroke="rgba(232,244,255,1)"
               strokeWidth={selected === 'Head' ? 0.9 : 0.42}
               strokeLinejoin="round"
-              opacity={selected === 'Head' ? 1.0 : 0.42}
+              opacity={selected === 'Head' ? 1.0 : 0.72}
               style={{
                 filter: selected === 'Head' ? 'drop-shadow(0 0 4px rgba(255,255,255,0.95)) drop-shadow(0 0 8px rgba(232,244,255,0.7))' : undefined,
                 transition: 'stroke-width 0.3s, opacity 0.3s',
