@@ -190,13 +190,13 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
       const mat = new THREE.MeshStandardMaterial({
         color:             groupColor(g),
         emissive:          new THREE.Color(
-          isGlow ? '#FFFFFF' :
-          isRed  ? '#3A0808' :
+          isGlow ? '#E8F4FF' :
+          isRed  ? '#8B1A1A' :
                    '#000000'
         ),
-        emissiveIntensity: isGlow ? 0.4 : isRed ? 0.25 : 0.0,
-        roughness:         isGlow ? 0.2 : isRed ? 0.6  : 0.55,
-        metalness:         isGlow ? 0.3 : isRed ? 0.1  : 0.4,
+        emissiveIntensity: isGlow ? 0.6 : isRed ? 0.4 : 0.0,
+        roughness:         isGlow ? 0.3 : isRed ? 0.8 : 0.9,
+        metalness:         0.0,
         transparent:       false,
         opacity:           1,
         side:              THREE.DoubleSide,
@@ -227,8 +227,8 @@ function Scene3D({ selectedGroup, onMuscleSelect, view }) {
         mat.color.copy(groupColor(g))
         const isGlow = g === 'biceps' || g === 'triceps' || g === 'forearms'
         const isRed  = g === 'calves'
-        mat.emissive.set(isGlow ? '#FFFFFF' : isRed ? '#3A0808' : '#000000')
-        mat.emissiveIntensity = isGlow ? 0.4 : isRed ? 0.25 : 0.0
+        mat.emissive.set(isGlow ? '#E8F4FF' : isRed ? '#8B1A1A' : '#000000')
+        mat.emissiveIntensity = isGlow ? 0.6 : isRed ? 0.4 : 0.0
       }
     })
   }, [selectedGroup, scene])
@@ -397,12 +397,11 @@ export default function AnatomyModel3D({ selectedGroup, onMuscleSelect, view }) 
         frameloop="always"
         style={{ background:'transparent', width:'100%', height:'100%' }}
       >
-        {/* Neutral rig — no blue tint so navy reads as navy, not cyan */}
-        <ambientLight     intensity={0.4}  color="#FFFFFF" />
-        <directionalLight position={[2, 8, 6]}   intensity={2.5} color="#FFFFFF" />
-        <directionalLight position={[-4, 3, 3]}  intensity={0.5} color="#FFFFFF" />
-        <directionalLight position={[0, -4, -6]} intensity={0.2} color="#111111" />
-        <pointLight       position={[3, 1, 2]}   intensity={0.4} color="#FFFFFF" />
+        {/* Soft rig — low intensity so base colors read true, not washed */}
+        <ambientLight     intensity={0.6}  color="#FFFFFF" />
+        <directionalLight position={[2, 8, 6]}   intensity={0.8} color="#FFFFFF" />
+        <directionalLight position={[-4, 3, 3]}  intensity={0.3} color="#FFFFFF" />
+        <directionalLight position={[0, -4, -6]} intensity={0.1} color="#FFFFFF" />
 
         <Suspense fallback={<Html center><PlatinumLoader /></Html>}>
           <Scene3D
