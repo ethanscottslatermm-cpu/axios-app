@@ -13,9 +13,9 @@ const ARMOR_RED  = '#8B1A1A'
 const ARMOR_GOLD = '#F5A623'
 
 function muscleArmorColor(m) {
-  if (m === 'Head' || m === 'Biceps' || m === 'Triceps' || m === 'Quads' || m === 'Abs') return ARMOR_GLOW
-  if (m === 'Calves' || m === 'Chest' || m === 'Core') return ARMOR_RED
-  if (m === 'Shoulders' || m === 'Traps') return ARMOR_GOLD
+  if (m === 'Head' || m === 'Biceps' || m === 'Triceps' || m === 'Quads' || m === 'Abs' || m === 'Glutes' || m === 'Hamstrings') return ARMOR_GLOW
+  if (m === 'Calves' || m === 'Chest' || m === 'Core' || m === 'Traps' || m === 'Upper Back') return ARMOR_RED
+  if (m === 'Shoulders') return ARMOR_GOLD
   return ARMOR_NAVY
 }
 
