@@ -15,54 +15,19 @@ export const handler = async (event) => {
 
   const { goal, days, experience, equipment, duration, focusMuscles, notes } = body
 
-  const focusStr = focusMuscles?.length ? focusMuscles.join(', ') : 'balanced full body'
+  const focusStr = focusMuscles?.length ? focusMuscles.join(', ') : 'full body'
   const notesStr = notes?.trim() || 'None'
-  const numWeeks = parseInt(duration) || 8
+  // Cap at 4 weeks to stay within Netlify's 26s timeout
+  const numWeeks = Math.min(parseInt(duration) || 4, 4)
 
-  const prompt = `You are an elite strength and conditioning coach. Build a complete ${duration} training program for this athlete:
+  const prompt = `You are a strength coach. Return ONLY valid JSON, no markdown, no code fences.
 
-- Goal: ${goal}
-- Training days per week: ${days}
-- Experience: ${experience}
-- Equipment: ${equipment}
-- Muscle focus: ${focusStr}
-- Injuries / notes: ${notesStr}
+Athlete: Goal=${goal}, Days/week=${days}, Experience=${experience}, Equipment=${equipment}, Focus=${focusStr}, Notes=${notesStr}
 
-IMPORTANT: Return ONLY a valid JSON object — no markdown, no code fences, no text before or after.
+Build a ${numWeeks}-week program. JSON shape:
+{"name":"","tagline":"","overview":"","weeks":[{"week":1,"theme":"","days":[{"day":"Monday","focus":"","duration":"","exercises":[{"name":"","sets":3,"reps":"8-10","rest":"90s","tempo":"2-0-1","cue":""}]}]}],"progressionNotes":"","nutritionTip":"","recoveryProtocol":""}
 
-{
-  "name": "Short punchy program name",
-  "tagline": "One sentence that captures the program's identity",
-  "overview": "2-3 sentences: the training philosophy, why this approach fits this athlete, and what they'll achieve.",
-  "weeks": [
-    {
-      "week": 1,
-      "theme": "Week phase name (e.g. Foundation, Accumulation, Intensification, Peak, Deload)",
-      "days": [
-        {
-          "day": "Monday",
-          "focus": "Primary muscle group(s)",
-          "duration": "Estimated session length e.g. 50-65 min",
-          "exercises": [
-            {
-              "name": "Exercise name",
-              "sets": 4,
-              "reps": "6-8",
-              "rest": "2 min",
-              "tempo": "3-1-1",
-              "cue": "One coaching cue that makes this exercise click"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "progressionNotes": "Specific week-to-week progression strategy (load increases, rep ranges, etc.)",
-  "nutritionTip": "One concrete nutrition recommendation aligned with the stated goal",
-  "recoveryProtocol": "Recovery recommendations: sleep, mobility, deload timing"
-}
-
-Include all ${numWeeks} weeks. Each week should have exactly ${days} training days with rest days implied. Make the program genuinely progressive — week themes and exercise selection should evolve meaningfully across the program.`
+Rules: exactly ${days} training days per week, 4-6 exercises per day, progressive overload across weeks. Be concise.`
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -73,14 +38,15 @@ Include all ${numWeeks} weeks. Each week should have exactly ${days} training da
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 16000,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 8192,
         messages: [{ role: 'user', content: prompt }],
       }),
     })
 
     if (!response.ok) {
       const err = await response.text()
+      console.error('Anthropic API error:', err)
       return { statusCode: 502, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: err }) }
     }
 
@@ -95,8 +61,8 @@ Include all ${numWeeks} weeks. Each week should have exactly ${days} training da
     try {
       program = JSON.parse(clean)
     } catch (parseErr) {
-      console.error('JSON parse failed. Raw text length:', text.length, 'Clean snippet:', clean.slice(-200))
-      return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Program generation returned invalid JSON. Try a shorter duration or fewer days.' }) }
+      console.error('JSON parse failed. Raw text:', text.slice(0, 500))
+      return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Could not parse program. Try again.' }) }
     }
     return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(program) }
   } catch (e) {
