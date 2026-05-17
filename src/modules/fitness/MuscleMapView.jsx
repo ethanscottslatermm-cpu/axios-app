@@ -640,7 +640,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
-              filter: 'drop-shadow(0 0 10px rgba(27,58,107,0.70)) drop-shadow(0 0 3px rgba(232,244,255,0.45))',
+              filter: 'drop-shadow(0 0 18px rgba(232,244,255,0.90)) drop-shadow(0 0 6px rgba(255,255,255,0.75))',
             }}
             svgStyle={{ borderRadius: 8 }}
           />
@@ -655,13 +655,13 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             const armorCol   = muscleArmorColor(m)
             // Tight white edge traces the polygon boundary on every group; colored ambient glow behind it
             const whiteEdge  = isSel
-              ? 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 5px rgba(255,255,255,1)) drop-shadow(0 0 10px rgba(255,255,255,0.80))'
-              : 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 4px rgba(255,255,255,0.95))'
+              ? 'drop-shadow(0 0 2px rgba(255,255,255,1)) drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 16px rgba(255,255,255,0.90))'
+              : 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 6px rgba(255,255,255,1)) drop-shadow(0 0 12px rgba(255,255,255,0.80))'
             const colorGlow  = (() => {
               if (armorCol === ARMOR_GLOW)
                 return isSel
-                  ? 'drop-shadow(0 0 26px rgba(255,255,255,1.0)) drop-shadow(0 0 12px rgba(232,244,255,1.0))'
-                  : 'drop-shadow(0 0 14px rgba(232,244,255,0.85)) drop-shadow(0 0 6px rgba(255,255,255,0.65))'
+                  ? 'drop-shadow(0 0 36px rgba(255,255,255,1.0)) drop-shadow(0 0 18px rgba(232,244,255,1.0)) drop-shadow(0 0 8px rgba(255,255,255,1.0))'
+                  : 'drop-shadow(0 0 22px rgba(232,244,255,1.0)) drop-shadow(0 0 10px rgba(255,255,255,0.90))'
               if (armorCol === ARMOR_RED)
                 return isSel
                   ? 'drop-shadow(0 0 26px rgba(220,50,50,1.0)) drop-shadow(0 0 12px rgba(196,32,32,0.95))'
