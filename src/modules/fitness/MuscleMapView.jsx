@@ -7,13 +7,15 @@ const FF = 'Helvetica Neue,Arial,sans-serif'
 const MIND_COLOR      = '#a78bfa'
 const HIGHLIGHT_COLOR = '#F5A623'
 
-const ARMOR_NAVY = '#1B3A6B'
-const ARMOR_GLOW = '#E8F4FF'
-const ARMOR_RED  = '#C42020'
-const ARMOR_GOLD = '#F5A623'
+const ARMOR_GLOW  = '#E8F4FF'          // white — arms
+const ARMOR_GREEN = '#10b981'          // emerald — matches Log/Ready header
+const ARMOR_RED   = '#ef4444'          // red — matches Watch button
 
-function muscleArmorColor(_m) {
-  return ARMOR_GLOW
+function muscleArmorColor(m) {
+  if (['Biceps','Triceps'].includes(m))                                        return ARMOR_GLOW
+  if (['Chest','Shoulders','Traps','Calves'].includes(m))                      return ARMOR_RED
+  if (['Abs','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes'].includes(m)) return ARMOR_GREEN
+  return ARMOR_GREEN
 }
 
 const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Abs','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
@@ -636,11 +638,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <Model
             data={[]}
             type={view}
-            bodyColor="#E8F4FF"
+            bodyColor="#4A4A4A"
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
-              filter: 'drop-shadow(0 0 18px rgba(232,244,255,0.90)) drop-shadow(0 0 6px rgba(255,255,255,0.75))',
+              filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.18))',
             }}
             svgStyle={{ borderRadius: 8 }}
           />
@@ -655,24 +657,24 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             const armorCol   = muscleArmorColor(m)
             // Tight white edge traces the polygon boundary on every group; colored ambient glow behind it
             const whiteEdge  = isSel
-              ? 'drop-shadow(0 0 2px rgba(255,255,255,1)) drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 16px rgba(255,255,255,0.90))'
-              : 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 6px rgba(255,255,255,1)) drop-shadow(0 0 12px rgba(255,255,255,0.80))'
+              ? 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 4px rgba(255,255,255,0.90)) drop-shadow(0 0 8px rgba(255,255,255,0.55))'
+              : 'drop-shadow(0 0 1px rgba(255,255,255,0.55))'
             const colorGlow  = (() => {
               if (armorCol === ARMOR_GLOW)
                 return isSel
-                  ? 'drop-shadow(0 0 36px rgba(255,255,255,1.0)) drop-shadow(0 0 18px rgba(232,244,255,1.0)) drop-shadow(0 0 8px rgba(255,255,255,1.0))'
-                  : 'drop-shadow(0 0 22px rgba(232,244,255,1.0)) drop-shadow(0 0 10px rgba(255,255,255,0.90))'
+                  ? 'drop-shadow(0 0 20px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(232,244,255,0.80))'
+                  : 'drop-shadow(0 0 5px rgba(232,244,255,0.35))'
               if (armorCol === ARMOR_RED)
                 return isSel
-                  ? 'drop-shadow(0 0 26px rgba(220,50,50,1.0)) drop-shadow(0 0 12px rgba(196,32,32,0.95))'
-                  : 'drop-shadow(0 0 14px rgba(196,32,32,0.90)) drop-shadow(0 0 6px rgba(220,60,60,0.65))'
-              if (armorCol === ARMOR_GOLD)
+                  ? 'drop-shadow(0 0 20px rgba(239,68,68,0.95)) drop-shadow(0 0 10px rgba(239,68,68,0.75))'
+                  : 'drop-shadow(0 0 5px rgba(239,68,68,0.35))'
+              if (armorCol === ARMOR_GREEN)
                 return isSel
-                  ? 'drop-shadow(0 0 18px rgba(245,166,35,1.0)) drop-shadow(0 0 8px rgba(255,200,80,0.90))'
-                  : 'drop-shadow(0 0 10px rgba(245,166,35,0.60)) drop-shadow(0 0 4px rgba(255,200,80,0.40))'
+                  ? 'drop-shadow(0 0 20px rgba(16,185,129,0.95)) drop-shadow(0 0 10px rgba(16,185,129,0.75))'
+                  : 'drop-shadow(0 0 5px rgba(16,185,129,0.35))'
               return isSel
-                ? 'drop-shadow(0 0 18px rgba(56,100,180,1.0)) drop-shadow(0 0 8px rgba(27,58,107,0.90))'
-                : 'drop-shadow(0 0 8px rgba(27,58,107,0.60)) drop-shadow(0 0 3px rgba(56,100,180,0.35))'
+                ? 'drop-shadow(0 0 20px rgba(16,185,129,0.95)) drop-shadow(0 0 10px rgba(16,185,129,0.75))'
+                : 'drop-shadow(0 0 5px rgba(16,185,129,0.30))'
             })()
             const glowFilter = `${whiteEdge} ${colorGlow}`
             const anim = isSel
