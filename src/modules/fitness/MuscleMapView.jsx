@@ -636,7 +636,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <Model
             data={[]}
             type={view}
-            bodyColor="#606060"
+            bodyColor="#E8F4FF"
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
