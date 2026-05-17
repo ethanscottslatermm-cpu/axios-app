@@ -108,51 +108,50 @@ const SCI_SHORT = {
   Glutes:'Gluteus Maximus', Calves:'Gastrocnemius',
 }
 
-// Hit zones traced against Gemini-humoid.png panel boundaries in 0 0 100 200 space.
-// All zones fill="transparent" at rest — the mech panels show naturally.
-// Joints/dark separator panels between zones are intentionally un-zoned.
-// Coordinates are best-estimate; verify and adjust in browser devtools.
+// Hit zones traced against Gemini-humoid.png (1440×2912 px, 1:2 ratio).
+// Coordinates derived from pixel analysis: x=px/1440*100, y=px/2912*200.
+// fill="transparent" at rest — mech panels show naturally; glow-only on tap.
 const FRONT_HIT_ZONES = [
   // ── TORSO ──
   { id: 'chest',      group: 'Chest',
-    points: '34,28 66,28 70,36 68,56 50,62 32,56 30,36' },
+    points: '33,34 67,34 68,50 66,89 50,96 34,89 32,50' },
   { id: 'abs',        group: 'Abs',
-    points: '40,60 60,60 64,70 58,90 50,94 42,90 36,70' },
+    points: '33,89 67,89 66,112 50,118 34,112' },
   { id: 'l-core',     group: 'Core',
-    points: '26,62 40,60 38,86 24,84' },
+    points: '25,72 33,72 33,109 25,109' },
   { id: 'r-core',     group: 'Core',
-    points: '60,60 74,62 76,84 62,86' },
+    points: '67,72 75,72 75,109 67,109' },
   // ── SHOULDERS / TRAPS ──
   { id: 'l-trap',     group: 'Traps',
-    points: '16,24 42,22 42,30 18,30' },
+    points: '14,34 50,34 50,43 14,43' },
   { id: 'r-trap',     group: 'Traps',
-    points: '58,22 84,24 82,30 58,30' },
+    points: '50,34 86,34 86,43 50,43' },
   { id: 'l-shoulder', group: 'Shoulders',
-    points: '14,26 34,26 36,44 28,50 14,44' },
+    points: '12,36 26,36 28,48 22,55 12,48' },
   { id: 'r-shoulder', group: 'Shoulders',
-    points: '66,26 86,26 86,44 72,50 64,44' },
+    points: '74,36 88,36 88,48 78,55 72,48' },
   // ── ARMS ──
   { id: 'l-bicep',    group: 'Biceps',
-    points: '8,44 28,44 26,72 8,72' },
+    points: '10,39 26,39 26,93 10,93' },
   { id: 'r-bicep',    group: 'Biceps',
-    points: '72,44 92,44 92,72 74,72' },
+    points: '74,39 90,39 90,93 74,93' },
   { id: 'l-forearm',  group: 'Forearms',
-    points: '4,72 24,72 22,94 4,94' },
+    points: '8,93 24,93 24,117 8,117' },
   { id: 'r-forearm',  group: 'Forearms',
-    points: '76,72 96,72 96,94 78,94' },
+    points: '76,93 92,93 92,117 76,117' },
   // ── LEGS ──
   { id: 'l-quad',     group: 'Quads',
-    points: '30,94 50,94 48,144 28,144' },
+    points: '26,118 50,118 50,151 26,151' },
   { id: 'r-quad',     group: 'Quads',
-    points: '50,94 70,94 72,144 52,144' },
+    points: '50,118 74,118 74,151 50,151' },
   { id: 'l-calf',     group: 'Calves',
-    points: '30,154 44,154 42,197 28,197' },
+    points: '26,155 44,155 44,191 26,191' },
   { id: 'r-calf',     group: 'Calves',
-    points: '56,154 70,154 72,197 58,197' },
+    points: '56,155 74,155 74,191 56,191' },
 ]
 
-// Head zone polygon (white helmet region)
-const HEAD_POINTS = '50,4 63,7 65,17 57,23 50,25 43,23 35,17 37,7'
+// Head zone — white helmet region, pixel analysis: y≈200-550 / 2912, x≈500-940 / 1440
+const HEAD_POINTS = '42,14 58,14 64,22 62,36 50,40 38,36 36,22'
 
 // Zones active on front view
 const FRONT_ACTIVE = new Set(['Head','Traps','Chest','Shoulders','Biceps','Forearms','Abs','Core','Quads','Calves'])
@@ -160,16 +159,16 @@ const REAR_ACTIVE  = new Set(['Head','Traps','Shoulders','Upper Back','Lower Bac
 
 const LABELS = {
   anterior: [
-    { group: 'Head',      x: 103, y: 14,  anchor: 'start', ex: 63 },
-    { group: 'Traps',     x: -3,  y: 26,  anchor: 'end',   ex: 18 },
-    { group: 'Shoulders', x: 103, y: 36,  anchor: 'start', ex: 82 },
-    { group: 'Chest',     x: 103, y: 44,  anchor: 'start', ex: 68 },
-    { group: 'Biceps',    x: -3,  y: 58,  anchor: 'end',   ex: 10 },
-    { group: 'Forearms',  x: -3,  y: 82,  anchor: 'end',   ex: 6  },
-    { group: 'Abs',       x: 103, y: 72,  anchor: 'start', ex: 62 },
-    { group: 'Core',      x: 103, y: 84,  anchor: 'start', ex: 74 },
-    { group: 'Quads',     x: -3,  y: 118, anchor: 'end',   ex: 30 },
-    { group: 'Calves',    x: 103, y: 174, anchor: 'start', ex: 70 },
+    { group: 'Head',      x: 103, y: 26,  anchor: 'start', ex: 63 },
+    { group: 'Traps',     x: -3,  y: 38,  anchor: 'end',   ex: 14 },
+    { group: 'Shoulders', x: 103, y: 46,  anchor: 'start', ex: 86 },
+    { group: 'Chest',     x: 103, y: 62,  anchor: 'start', ex: 66 },
+    { group: 'Biceps',    x: -3,  y: 65,  anchor: 'end',   ex: 10 },
+    { group: 'Forearms',  x: -3,  y: 105, anchor: 'end',   ex: 8  },
+    { group: 'Abs',       x: 103, y: 103, anchor: 'start', ex: 66 },
+    { group: 'Core',      x: 103, y: 90,  anchor: 'start', ex: 75 },
+    { group: 'Quads',     x: -3,  y: 134, anchor: 'end',   ex: 26 },
+    { group: 'Calves',    x: 103, y: 172, anchor: 'start', ex: 74 },
   ],
   posterior: [
     { group: 'Head',       x: 103, y: 10,  anchor: 'start', ex: 57 },
@@ -417,7 +416,7 @@ export default function MuscleMapView({ workouts=[], onLogWorkout, onSaveExercis
         {view==='anterior' ? (
           // ── FRONT VIEW: Gemini mech PNG + SVG hit zones ──
           <div
-            style={{position:'relative',width:'100%',maxWidth:240,aspectRatio:'1/2',overflow:'visible'}}
+            style={{position:'relative',width:'100%',maxWidth:240,aspectRatio:'1/2',overflow:'visible',background:'#080808'}}
             {...touchHandlers}
           >
             {/* Ambient glow when zone selected */}
@@ -434,7 +433,7 @@ export default function MuscleMapView({ workouts=[], onLogWorkout, onSaveExercis
               src={geminiModel}
               alt=""
               draggable={false}
-              style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'fill',display:'block',zIndex:1,pointerEvents:'none',userSelect:'none'}}
+              style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain',display:'block',zIndex:1,pointerEvents:'none',userSelect:'none'}}
             />
 
             {/* SVG: glow overlays (selected only) + transparent hit zones + labels + ripples */}
