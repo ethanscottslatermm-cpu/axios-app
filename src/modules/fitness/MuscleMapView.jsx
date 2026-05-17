@@ -9,7 +9,7 @@ const HIGHLIGHT_COLOR = '#F5A623'
 
 const ARMOR_NAVY = '#1B3A6B'
 const ARMOR_GLOW = '#E8F4FF'
-const ARMOR_RED  = '#8B1A1A'
+const ARMOR_RED  = '#C42020'
 const ARMOR_GOLD = '#F5A623'
 
 function muscleArmorColor(m) {
@@ -639,7 +639,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <Model
             data={[]}
             type={view}
-            bodyColor="#3A3A3A"
+            bodyColor="#606060"
             onClick={handleClick}
             style={{
               width: '100%', display: 'block', position: 'relative', zIndex: 1,
@@ -658,17 +658,17 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             const armorCol   = muscleArmorColor(m)
             // Tight white edge traces the polygon boundary on every group; colored ambient glow behind it
             const whiteEdge  = isSel
-              ? 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 6px rgba(255,255,255,0.70))'
-              : 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 2.5px rgba(255,255,255,0.80))'
+              ? 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 5px rgba(255,255,255,1)) drop-shadow(0 0 10px rgba(255,255,255,0.80))'
+              : 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 4px rgba(255,255,255,0.95))'
             const colorGlow  = (() => {
               if (armorCol === ARMOR_GLOW)
                 return isSel
-                  ? 'drop-shadow(0 0 18px rgba(255,255,255,1.0)) drop-shadow(0 0 8px rgba(232,244,255,0.90))'
-                  : 'drop-shadow(0 0 10px rgba(232,244,255,0.60))'
+                  ? 'drop-shadow(0 0 26px rgba(255,255,255,1.0)) drop-shadow(0 0 12px rgba(232,244,255,1.0))'
+                  : 'drop-shadow(0 0 14px rgba(232,244,255,0.85)) drop-shadow(0 0 6px rgba(255,255,255,0.65))'
               if (armorCol === ARMOR_RED)
                 return isSel
-                  ? 'drop-shadow(0 0 18px rgba(180,40,40,1.0)) drop-shadow(0 0 8px rgba(139,26,26,0.90))'
-                  : 'drop-shadow(0 0 10px rgba(139,26,26,0.70)) drop-shadow(0 0 4px rgba(180,40,40,0.45))'
+                  ? 'drop-shadow(0 0 26px rgba(220,50,50,1.0)) drop-shadow(0 0 12px rgba(196,32,32,0.95))'
+                  : 'drop-shadow(0 0 14px rgba(196,32,32,0.90)) drop-shadow(0 0 6px rgba(220,60,60,0.65))'
               if (armorCol === ARMOR_GOLD)
                 return isSel
                   ? 'drop-shadow(0 0 18px rgba(245,166,35,1.0)) drop-shadow(0 0 8px rgba(255,200,80,0.90))'
