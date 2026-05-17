@@ -31,3 +31,6 @@ Thumbs.db
 fix-bills.cjs
 fix-finance.cjs
 patch-*.cjs
+
+# Local Netlify folder
+.netlify
