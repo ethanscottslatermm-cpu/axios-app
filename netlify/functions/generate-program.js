@@ -23,14 +23,11 @@ async function fetchExercisesFromWger(equipmentId, focusMuscles) {
   )]
 
   const buildUrl = (categoryId) => {
-    const params = new URLSearchParams({
-      format: 'json',
-      language: '2',
-      limit: uniqueCategories.length > 0 ? '25' : '80',
-    })
-    if (equipmentId != null) params.set('equipment', String(equipmentId))
-    if (categoryId != null) params.set('category', String(categoryId))
-    return `https://wger.de/api/v2/exerciseinfo/?${params}`
+    let url = 'https://wger.de/api/v2/exerciseinfo/?format=json&language=2'
+    url += uniqueCategories.length > 0 ? '&limit=25' : '&limit=80'
+    if (equipmentId != null) url += `&equipment=${equipmentId}`
+    if (categoryId != null) url += `&category=${categoryId}`
+    return url
   }
 
   const urls = uniqueCategories.length > 0
@@ -54,7 +51,7 @@ async function fetchExercisesFromWger(equipmentId, focusMuscles) {
     const exercises = []
     for (const data of responses) {
       for (const ex of data.results || []) {
-        const t = ex.translations?.find(t => t.language === 2) || ex.translations?.[0]
+        const t = ex.translations?.find(tr => tr.language === 2) || ex.translations?.[0]
         const name = t?.name?.trim()
         if (name && !seen.has(name)) {
           seen.add(name)
