@@ -4,7 +4,7 @@ const GOALS = ['Build Muscle', 'Lose Fat', 'Improve Strength', 'Increase Enduran
 const DAYS_OPTIONS = ['2', '3', '4', '5', '6']
 const EXPERIENCE_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Elite']
 const EQUIPMENT_OPTIONS = ['Full Gym', 'Dumbbells Only', 'Barbell + Rack', 'Bodyweight Only', 'Kettlebells', 'Resistance Bands']
-const DURATION_OPTIONS = ['4', '6', '8', '12', '16']
+const DURATION_OPTIONS = ['4', '6', '8']
 const MUSCLE_OPTIONS = ['Chest', 'Back', 'Shoulders', 'Biceps', 'Triceps', 'Core', 'Quads', 'Hamstrings', 'Glutes', 'Calves']
 
 const RED = '#f87171'
@@ -224,7 +224,7 @@ export default function FitPrograms() {
         }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
         <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.04em' }}>Building your program…</p>
-        <p style={{ color: 'var(--text-faint)', fontSize: 11, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: 'italic' }}>This may take 20–30 seconds</p>
+        <p style={{ color: 'var(--text-faint)', fontSize: 11, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: 'italic' }}>This may take up to 60 seconds</p>
       </div>
     )
   }
