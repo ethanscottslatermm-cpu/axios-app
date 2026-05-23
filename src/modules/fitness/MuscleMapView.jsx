@@ -575,10 +575,14 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @keyframes mmFadeUp         { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
         @keyframes mmGlow           { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
         @keyframes mmPulse          { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
+        @keyframes mmSelectPulse    { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
+        @keyframes mmIdleGlow       { 0%,100% { opacity:0.52 } 50% { opacity:0.82 } }
         @keyframes mmCrosshairPulse { 0%,100% { opacity:0.45; transform:scale(1) } 50% { opacity:0.9; transform:scale(1.14) } }
         @-webkit-keyframes mmFatiguePulse { 0%,100% { opacity:0.58 } 50% { opacity:0.78 } }
         @keyframes mmFatiguePulse         { 0%,100% { opacity:0.58 } 50% { opacity:0.78 } }
         @-webkit-keyframes mmPulse        { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
+        @-webkit-keyframes mmSelectPulse  { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
+        @-webkit-keyframes mmIdleGlow     { 0%,100% { opacity:0.52 } 50% { opacity:0.82 } }
         @keyframes mmVeinDash       { from { stroke-dashoffset:0.6 } to { stroke-dashoffset:-0.6 } }
         @keyframes mmScan           { 0%{transform:translateY(-2px);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(202px);opacity:0.5} 33%{transform:translateY(202px);opacity:0} 100%{transform:translateY(202px);opacity:0} }
         @keyframes mmRipple         { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
@@ -648,7 +652,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           />
 
           {/* Per-muscle DB-colored overlays */}
-          {MUSCLES.map(m => {
+          {MUSCLES.map((m, mIdx) => {
             if (m === 'Head') return null  // Head rendered as SVG outline, no fill
             const isSel   = selected === m
             const heatCol = muscleHeatColor(m)
@@ -663,25 +667,25 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               if (armorCol === ARMOR_GLOW)
                 return isSel
                   ? 'drop-shadow(0 0 20px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(232,244,255,0.80))'
-                  : 'drop-shadow(0 0 5px rgba(232,244,255,0.35))'
+                  : 'drop-shadow(0 0 8px rgba(232,244,255,0.55)) drop-shadow(0 0 3px rgba(232,244,255,0.35))'
               if (armorCol === ARMOR_RED)
                 return isSel
                   ? 'drop-shadow(0 0 20px rgba(239,68,68,0.95)) drop-shadow(0 0 10px rgba(239,68,68,0.75))'
-                  : 'drop-shadow(0 0 5px rgba(239,68,68,0.35))'
+                  : 'drop-shadow(0 0 8px rgba(239,68,68,0.55)) drop-shadow(0 0 3px rgba(239,68,68,0.35))'
               if (armorCol === ARMOR_GREEN)
                 return isSel
                   ? 'drop-shadow(0 0 20px rgba(16,185,129,0.95)) drop-shadow(0 0 10px rgba(16,185,129,0.75))'
-                  : 'drop-shadow(0 0 5px rgba(16,185,129,0.35))'
+                  : 'drop-shadow(0 0 8px rgba(16,185,129,0.55)) drop-shadow(0 0 3px rgba(16,185,129,0.35))'
               return isSel
                 ? 'drop-shadow(0 0 20px rgba(16,185,129,0.95)) drop-shadow(0 0 10px rgba(16,185,129,0.75))'
-                : 'drop-shadow(0 0 5px rgba(16,185,129,0.30))'
+                : 'drop-shadow(0 0 8px rgba(16,185,129,0.50)) drop-shadow(0 0 3px rgba(16,185,129,0.30))'
             })()
             const glowFilter = `${whiteEdge} ${colorGlow}`
             const anim = isSel
-              ? 'mmPulse 2.4s ease-in-out infinite'
+              ? 'mmSelectPulse 2.4s ease-in-out infinite'
               : days === 0
               ? 'mmFatiguePulse 2s ease-in-out infinite'
-              : undefined
+              : `mmIdleGlow 3.5s ease-in-out ${(mIdx * 0.3).toFixed(1)}s infinite`
             return (
               <div key={m} style={{
                 position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
@@ -857,12 +861,15 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             ))}
 
             {labels.map(l => {
-              const isActive  = selected === l.group
-              const dbKey     = GROUP_TO_DB[l.group]
-              const isHeadLbl = l.group === 'Head'
-              const color     = isActive ? '#ffffff' : 'rgba(200,210,230,0.30)'
-              const lineX1    = l.anchor === 'start' ? 101 : -1
-              const dotX      = l.ex
+              const isActive    = selected === l.group
+              const dbKey       = GROUP_TO_DB[l.group]
+              const isHeadLbl   = l.group === 'Head'
+              const armorCol    = isHeadLbl ? MIND_COLOR : muscleArmorColor(l.group)
+              const activeColor = armorCol === ARMOR_GLOW ? '#ffffff' : armorCol
+              const idleColor   = armorCol + '55'
+              const color       = isActive ? activeColor : idleColor
+              const lineX1      = l.anchor === 'start' ? 101 : -1
+              const dotX        = l.ex
 
               return (
                 <g key={l.group} style={{ transition: 'opacity 0.2s' }}>
@@ -905,7 +912,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                     fontFamily={FF}
                     fontWeight="400"
                     fontStyle="italic"
-                    fill={isActive ? `${color}cc` : 'rgba(200,210,230,0.18)'}
+                    fill={isActive ? activeColor + 'cc' : armorCol + '33'}
                     letterSpacing="0.02em"
                     style={{ transition: 'fill 0.2s' }}
                   >
