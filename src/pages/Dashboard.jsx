@@ -304,14 +304,14 @@ export default function Dashboard() {
               const weightRawPct = weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal / latest) * 100)) : 0
               const todayRawPct  = Math.round((loggedCount / 4) * 100)
               return [
-                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,        color: ringColor(calRawPct),   path:'/food',    valSize:14 },
-                { label:'Water',    value:`${waterCount}/${WATER_GOAL}`, sub:'glasses',                        pct: waterPct,      color: ringColor(waterRawPct),       path:'/water',   valSize:17 },
-                { label:'Weight',   value: latest ? `${latest}` : '—',  sub: latest ? 'lb' : 'not logged',    pct: weightRawPct,  color: ringColor(weightRawPct),      path:'/fitness', valSize:17 },
-                { label:'Today',    value:`${loggedCount}/4`,            sub:'logged',                         pct: todayRawPct,   color: ringColor(todayRawPct),       valSize:17 },
+                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,        color: ringColor(calRawPct),   path:'/food',    valSize:14, bg:'calories' },
+                { label:'Water',    value:`${waterCount}/${WATER_GOAL}`, sub:'glasses',                        pct: waterPct,      color: ringColor(waterRawPct),       path:'/water',   valSize:17, bg:'water'    },
+                { label:'Weight',   value: latest ? `${latest}` : '—',  sub: latest ? 'lb' : 'not logged',    pct: weightRawPct,  color: ringColor(weightRawPct),      path:'/fitness', valSize:17, bg:'weight'   },
+                { label:'Today',    value:`${loggedCount}/4`,            sub:'logged',                         pct: todayRawPct,   color: ringColor(todayRawPct),       valSize:17,      bg:'today'  },
               ]
-            })().map(({ label, value, sub, pct, color, path, valSize }) => (
+            })().map(({ label, value, sub, pct, color, path, valSize, bg }) => (
               <div key={label} onClick={path ? () => navigate(path) : undefined}
-                style={{ background:'transparent', border:`1px solid ${color}22`, boxShadow:'none', borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                style={{ backgroundImage:`linear-gradient(rgba(0,0,0,0.58),rgba(0,0,0,0.58)),url('/module-cards/${bg}.png')`, backgroundSize:'cover', backgroundPosition:'center', border:`1px solid ${color}33`, boxShadow:'none', borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
                 <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>{label}</p>
                 <CircleRing pct={pct} color={color} size={84} stroke={5}>
                   <p style={{ color, fontSize:valSize, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{value}</p>
