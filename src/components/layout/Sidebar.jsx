@@ -4,13 +4,13 @@ import { useAuth } from '../../context/AuthContext'
 import SignOutScreen from '../SignOutScreen'
 
 const modules = [
-  { path: '/dashboard', label: 'Home Base' },
-  { path: '/food',      label: 'Food Log' },
-  { path: '/water',     label: 'Water Tracker' },
-  { path: '/weight',    label: 'Weight Tracker' },
-  { path: '/prayer',    label: 'Devotion' },
-  { path: '/devotional',label: 'Daily Devotional' },
-  { path: '/fitness',   label: 'Training' },
+  { path: '/dashboard', label: 'home base' },
+  { path: '/food',      label: 'food log' },
+  { path: '/water',     label: 'water tracker' },
+  { path: '/weight',    label: 'weight tracker' },
+  { path: '/prayer',    label: 'devotion' },
+  { path: '/devotional',label: 'daily devotional' },
+  { path: '/fitness',   label: 'training' },
 ]
 
 export default function Sidebar() {
@@ -49,7 +49,7 @@ export default function Sidebar() {
           }
           style={{ fontFamily: "'The Seasons', serif", fontSize: '0.85rem', letterSpacing: '0.06em' }}
         >
-          Home Base
+          home base
         </NavLink>
 
         <p className="text-white/25 text-[10px] tracking-[0.25em] uppercase px-5 mt-4 mb-2">Modules</p>
