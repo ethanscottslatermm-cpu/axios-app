@@ -139,12 +139,12 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'Home Base',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
-    { label:'FOOD LOG', path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
-    { label:'TRAINING',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
-    { label:'DEVOTION',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
-    { label:'WALLSTREET',    path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
-    { label:'Settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
+    { label:'home base',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
+    { label:'food log',    path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
+    { label:'training',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
+    { label:'devotion',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
+    { label:'wallstreet',  path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
+    { label:'settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
   ]
   return (
     <nav className="ax-bottom-nav" style={{
