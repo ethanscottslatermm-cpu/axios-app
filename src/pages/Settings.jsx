@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { BottomNav } from './Dashboard'
 import { useTheme, THEMES } from '../context/ThemeContext'
 import AvatarCropper from '../components/AvatarCropper'
-import { webAuthnSupported, registerBiometric, hasRegisteredDevice } from '../hooks/useWebAuthn'
+import { isSupported as isBiometricSupported, register as registerBiometric } from '../hooks/useBiometric'
 import { FINANCE_LOCK_KEY } from '../components/FinanceGuard'
 import SignOutScreen from '../components/SignOutScreen'
 import settingsIconSrc from './Images/settings-icon.png'
@@ -131,8 +131,9 @@ export default function Settings() {
   const [avatarUrl, setAvatarUrl] = useState('')
   const [isAdmin,      setIsAdmin]      = useState(false)
   const [financeLock,  setFinanceLock]  = useState(() => localStorage.getItem(FINANCE_LOCK_KEY) === 'true')
-  const [faceIdStatus, setFaceIdStatus] = useState('checking') // checking | registered | unregistered
+  const [faceIdStatus, setFaceIdStatus] = useState('checking')
   const [faceIdBusy,   setFaceIdBusy]   = useState(false)
+  const [faceIdToast,  setFaceIdToast]  = useState(null)
   const [saving,  setSaving]  = useState(false)
   const [saved,   setSaved]   = useState(false)
   const [error,   setError]   = useState('')
@@ -150,9 +151,11 @@ export default function Settings() {
         }
       })
     setTimeout(() => setVisible(true), 60)
-    // Check Face ID registration status
-    if (webAuthnSupported()) {
-      hasRegisteredDevice(user.id).then(has => setFaceIdStatus(has ? 'registered' : 'unregistered'))
+    // Check Face ID registration status from localStorage
+    if (isBiometricSupported()) {
+      const enabled = localStorage.getItem('axios_biometric_enabled') === 'true'
+      const credId  = localStorage.getItem('axios_credential_id')
+      setFaceIdStatus(enabled && credId ? 'registered' : 'unregistered')
     } else {
       setFaceIdStatus('unsupported')
     }
@@ -240,9 +243,18 @@ export default function Settings() {
     setFaceIdBusy(true)
     try {
       await registerBiometric(user)
-      setFaceIdStatus("registered")
-    } catch(e) { console.error("FaceID:", e.message) }
+      setFaceIdStatus('registered')
+    } catch(e) { console.error('FaceID:', e.message) }
     finally { setFaceIdBusy(false) }
+  }
+
+  const disableFaceId = async () => {
+    localStorage.removeItem('axios_biometric_enabled')
+    localStorage.removeItem('axios_credential_id')
+    await supabase.from('profiles').update({ biometric_enabled: false }).eq('id', user.id)
+    setFaceIdStatus('unregistered')
+    setFaceIdToast('Face ID disabled')
+    setTimeout(() => setFaceIdToast(null), 3000)
   }
 
   const uploadAvatar = async (blob) => {
@@ -467,14 +479,37 @@ export default function Settings() {
               <p style={{ color:'rgba(212,212,232,0.4)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>Signed in as</p>
               <p style={{ color:'var(--text-muted)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif' }}>{user?.email}</p>
             </div>
-            {/* Face ID setup */}
+            {/* Face ID / Touch ID toggle */}
             {faceIdStatus !== 'unsupported' && (
-              <button onClick={faceIdStatus === 'unregistered' ? registerFaceId : undefined}
-                disabled={faceIdBusy || faceIdStatus === 'checking'}
-                style={{ width:'100%', padding:'12px', background:'transparent', border:'1px solid var(--border)', borderRadius:9, color: faceIdStatus === 'registered' ? 'var(--glow-bar)' : 'var(--text-muted)', fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor: faceIdStatus === 'unregistered' ? 'pointer' : 'default', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:10, transition:'all 0.2s' }}>
-                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                {faceIdBusy ? 'Setting up…' : faceIdStatus === 'registered' ? 'Face ID Active' : faceIdStatus === 'checking' ? 'Checking…' : 'Enable Face ID'}
-              </button>
+              <div style={{ width:'100%', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:9, display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ color: faceIdStatus === 'registered' ? 'var(--glow-bar)' : 'var(--text-muted)' }}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span style={{ color:'var(--text-primary)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Face ID / Touch ID</span>
+                </div>
+                <button
+                  onClick={faceIdStatus === 'registered' ? disableFaceId : registerFaceId}
+                  disabled={faceIdBusy || faceIdStatus === 'checking'}
+                  style={{
+                    width:40, height:22, borderRadius:11, border:'none',
+                    cursor: faceIdBusy ? 'default' : 'pointer', padding:0,
+                    background: faceIdStatus === 'registered' ? 'var(--btn-bg)' : 'rgba(212,212,232,0.10)',
+                    position:'relative', transition:'background 0.25s', flexShrink:0,
+                    opacity: faceIdBusy ? 0.6 : 1,
+                  }}>
+                  <span style={{
+                    position:'absolute', top:3,
+                    left: faceIdStatus === 'registered' ? 21 : 3,
+                    width:16, height:16, borderRadius:'50%',
+                    background: faceIdStatus === 'registered' ? 'var(--btn-text)' : 'rgba(212,212,232,0.4)',
+                    transition:'left 0.25s', display:'block',
+                  }} />
+                </button>
+              </div>
+            )}
+            {faceIdToast && (
+              <p style={{ color:'rgba(100,220,140,0.8)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em', textAlign:'center', marginBottom:8 }}>
+                {faceIdToast}
+              </p>
             )}
             {/* Finance Lock toggle */}
             <div style={{ width:'100%', padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:9, display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>

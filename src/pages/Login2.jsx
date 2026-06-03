@@ -1,5 +1,7 @@
 ﻿import { useState, useEffect } from 'react'
-import { webAuthnSupported, registerBiometric, hasRegisteredDevice } from '../hooks/useWebAuthn'
+import { useAuthGate } from '../hooks/useAuthGate'
+import { isSupported as isBiometricSupported, authenticate as authenticateBiometric } from '../hooks/useBiometric'
+import BiometricEnrollModal from '../components/BiometricEnrollModal'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import LoadingScreen from '../components/LoadingScreen'
@@ -236,6 +238,14 @@ const styles = `
     80%  { opacity: 0.42; }
     100% { transform: translateY(-200%) translateX(-6%) skewX(1deg)    scale(0.9);  opacity: 0;    }
   }
+  @keyframes bio-pulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.05); }
+  }
+  @keyframes bio-slide-up {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 `
 
 const VARIANTS = ['l2-px-a','l2-px-b','l2-px-c','l2-px-d','l2-px-e']
@@ -255,50 +265,80 @@ const PARTICLES = Array.from({ length: 140 }, (_, i) => {
 })
 
 export default function Login2() {
-  const { signIn, user: authUser } = useAuth()
-  const navigate = useNavigate()
-  const [email, setEmail]       = useState('')
+  const { signIn } = useAuth()
+  const navigate   = useNavigate()
+  const { userType, loading } = useAuthGate()
+
+  const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError]       = useState(null)
-  const [loading, setLoading]   = useState(false)
-  const [showLoader, setShowLoader]               = useState(false)
-  const [offerFaceId, setOfferFaceId]             = useState(false)
-  const [registeringFaceId, setRegisteringFaceId] = useState(false)
-  const [showLogin, setShowLogin]                 = useState(false)
-  const [authenticated, setAuthenticated]         = useState(false)
+  const [error,    setError]    = useState(null)
+  const [busy,     setBusy]     = useState(false)
+
+  const [showLoader,        setShowLoader]        = useState(false)
+  const [showLogin,         setShowLogin]         = useState(false)
+  const [resolved,          setResolved]          = useState(false)
+  const [bioError,          setBioError]          = useState(null)
+  const [showPasswordSlide, setShowPasswordSlide] = useState(false)
+  const [showEnrollModal,   setShowEnrollModal]   = useState(false)
+  const [pendingUser,       setPendingUser]       = useState(null)
 
   useEffect(() => {
     document.body.style.setProperty('background', '#000000', 'important')
     return () => document.body.style.removeProperty('background')
   }, [])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+  useEffect(() => {
+    if (!loading) {
+      const t = setTimeout(() => setResolved(true), 50)
+      return () => clearTimeout(t)
+    }
+  }, [loading])
+
+  useEffect(() => {
+    if (!loading && userType === 'session') navigate('/dashboard', { replace: true })
+  }, [loading, userType, navigate])
+
+  const handlePasswordSubmit = async (e) => {
+    e?.preventDefault()
+    if (!email || !password) return
+    setBusy(true)
     setError(null)
     try {
       const data = await signIn(email, password)
-      if (webAuthnSupported() && data?.user) {
-        const already = await hasRegisteredDevice(data.user.id)
-        if (!already) { setOfferFaceId(true); setLoading(false); return }
+      localStorage.setItem('axios_refresh_token', data.session.refresh_token)
+      localStorage.setItem('axios_user_id', data.user.id)
+      const alreadyEnrolled = localStorage.getItem('axios_biometric_enabled') === 'true'
+      if (!alreadyEnrolled && isBiometricSupported()) {
+        setPendingUser(data.user)
+        setShowEnrollModal(true)
+      } else {
+        setShowLoader(true)
       }
-      setAuthenticated(true)
-      setLoading(false)
     } catch (err) {
       setError(err.message)
-      setLoading(false)
+    } finally {
+      setBusy(false)
     }
   }
 
-  const handleRegisterFaceId = async () => {
-    setRegisteringFaceId(true)
+  const handleBiometricTap = async () => {
+    setBioError(null)
     try {
-      if (authUser) await registerBiometric(authUser)
-    } catch (e) { console.error('FaceID:', e.message) }
-    finally { setRegisteringFaceId(false); setOfferFaceId(false); setAuthenticated(true) }
+      await authenticateBiometric()
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      const msg = err?.message || ''
+      if (msg.includes('refresh') || msg.includes('expired') || msg.includes('session')) {
+        localStorage.removeItem('axios_refresh_token')
+        setBioError('Session expired — please sign in')
+      } else {
+        setBioError('Face ID failed — enter password')
+      }
+      setShowPasswordSlide(true)
+    }
   }
 
-  if (showLoader) return <LoadingScreen onComplete={() => navigate('/dashboard')} />
+  if (showLoader) return <LoadingScreen onComplete={() => navigate('/dashboard', { replace: true })} />
 
   return (
     <>
@@ -413,8 +453,101 @@ export default function Login2() {
           pointerEvents:'none',
         }}/>
 
-        {/* Closed — full-screen tap zone */}
-        {!showLogin && (
+        {/* ── Biometric state: Touch to Enter ── */}
+        {!loading && userType === 'biometric' && !showPasswordSlide && (
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 10,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
+            paddingBottom: '28%',
+            opacity: resolved ? 0.7 : 0,
+            transition: 'opacity 0.4s ease',
+          }}>
+            <button
+              onClick={handleBiometricTap}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16,
+                WebkitTapHighlightColor: 'transparent',
+              }}
+            >
+              <div style={{ animation: 'bio-pulse 2s ease-in-out infinite' }}>
+                <svg width={56} height={56} viewBox="0 0 24 24" fill="none"
+                  stroke="rgba(212,212,232,0.85)" strokeWidth="1.2"
+                  strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <span style={{ color: 'rgba(212,212,232,0.7)', fontSize: '0.65rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.30em', textTransform: 'uppercase' }}>
+                TOUCH TO ENTER
+              </span>
+            </button>
+            {bioError && (
+              <p style={{ color: 'rgba(255,160,160,0.75)', fontSize: '0.65rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em', marginTop: 14 }}>
+                {bioError}
+              </p>
+            )}
+            <button
+              onClick={() => { setBioError(null); setShowPasswordSlide(true) }}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'rgba(212,212,232,0.30)', fontSize: '0.60rem',
+                fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em',
+                marginTop: 20, padding: '8px 12px',
+                WebkitTapHighlightColor: 'transparent',
+              }}
+            >
+              Use password instead
+            </button>
+          </div>
+        )}
+
+        {/* ── Password form — biometric fallback (slides up) ── */}
+        {!loading && userType === 'biometric' && showPasswordSlide && (
+          <div style={{
+            position: 'absolute', zIndex: 10,
+            top: '58%',
+            left: 0, right: 0,
+            padding: '0 2rem',
+            maxWidth: '420px',
+            margin: '0 auto',
+            width: '100%',
+            boxSizing: 'border-box',
+            animation: 'bio-slide-up 0.4s ease-out forwards',
+          }}>
+            {bioError && (
+              <p style={{ color: 'rgba(255,160,160,0.75)', fontSize: '0.65rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em', textAlign: 'center', marginBottom: '1.2rem' }}>
+                {bioError}
+              </p>
+            )}
+            <form onSubmit={handlePasswordSubmit}>
+              <div style={{ marginBottom: '2.2rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
+                  {email.includes('@') && email.includes('.') && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.75)', filter: 'drop-shadow(0 0 6px rgba(212,212,232,0.6))', pointerEvents: 'none' }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div style={{ marginBottom: '3.5rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handlePasswordSubmit(e)} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
+                </div>
+              </div>
+              {error && <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>}
+              <button type="submit" disabled={busy} className="l2-enter-btn l2-btn-active" style={{ width: '100%', opacity: busy ? 0.6 : 1 }}>
+                {busy ? 'Signing in…' : 'ACCESS'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ── Password state: tap anywhere to reveal form ── */}
+        {!loading && userType === 'password' && !showLogin && (
           <div
             onClick={() => setShowLogin(true)}
             style={{
@@ -426,8 +559,8 @@ export default function Login2() {
           />
         )}
 
-        {/* Open — form revealed */}
-        {showLogin && (
+        {/* ── Password state: form revealed ── */}
+        {!loading && userType === 'password' && showLogin && (
           <div style={{
             position: 'absolute', zIndex: 10,
             top: '62%',
@@ -439,63 +572,40 @@ export default function Login2() {
             boxSizing: 'border-box',
             animation: 'formReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards',
           }}>
-            <form onSubmit={handleSubmit}>
-
-              {!authenticated && (
-                <>
-                  <div style={{ marginBottom: '2.2rem' }}>
-                    <div style={{ position: 'relative' }}>
-                      <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
-                      {email.includes('@') && email.includes('.') && (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                          style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.75)', filter: 'drop-shadow(0 0 6px rgba(212,212,232,0.6))', pointerEvents: 'none' }}>
-                          <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: '3.5rem' }}>
-                    <div style={{ position: 'relative' }}>
-                      <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                      <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSubmit(e)} onBlur={() => { if (email && password) handleSubmit({ preventDefault: () => {} }) }} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
-                    </div>
-                  </div>
-
-                  {error && (
-                    <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>
+            <form onSubmit={handlePasswordSubmit}>
+              <div style={{ marginBottom: '2.2rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="EMAIL" autoComplete="off" required className="l2-input l2-input-icon" />
+                  {email.includes('@') && email.includes('.') && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(212,212,232,0.75)', filter: 'drop-shadow(0 0 6px rgba(212,212,232,0.6))', pointerEvents: 'none' }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
                   )}
-
-                  {offerFaceId && (
-                    <div style={{ textAlign: 'center' }}>
-                      <p style={{ color: 'rgba(212,212,232,0.7)', fontSize: '0.75rem', fontFamily: '"Helvetica Neue",sans-serif', marginBottom: '1.2rem', lineHeight: 1.5 }}>Enable Face ID for faster sign-in?</p>
-                      <button type="button" onClick={handleRegisterFaceId} disabled={registeringFaceId}
-                        style={{ width: '100%', padding: '13px', borderRadius: 2, border: 'none', background: '#fff', color: '#000', fontSize: '0.75rem', fontWeight: 700, fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: 10 }}>
-                        {registeringFaceId ? 'Setting up…' : 'Enable Face ID'}
-                      </button>
-                      <button type="button" onClick={() => { setOfferFaceId(false); setAuthenticated(true) }}
-                        style={{ width: '100%', padding: '11px', borderRadius: 2, border: '1px solid rgba(212,212,232,0.15)', background: 'transparent', color: 'rgba(212,212,232,0.45)', fontSize: '0.7rem', fontFamily: '"Helvetica Neue",sans-serif', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
-                        Skip for now
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {authenticated && (
-                <div style={{ display: 'flex', justifyContent: 'center', animation: 'formReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards' }}>
-                  <button type="button" onClick={() => setShowLoader(true)}
-                    style={{ padding: '14px 48px', borderRadius: 2, border: '1px solid rgba(212,212,232,0.15)', background: 'transparent', color: 'rgba(212,212,232,0.45)', fontSize: '1.1rem', fontWeight: 400, fontFamily: '"The Seasons", Georgia, serif', letterSpacing: '0.2em', cursor: 'pointer', animation: 'enterPulse 3s ease-in-out infinite' }}>
-                    Enter
-                  </button>
                 </div>
-              )}
-
+              </div>
+              <div style={{ marginBottom: '3.5rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <img src="/pegasus.png" width="15" height="15" className="l2-lock-icon" style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handlePasswordSubmit(e)} onBlur={() => { if (email && password) handlePasswordSubmit({ preventDefault: () => {} }) }} placeholder="PASSWORD" autoComplete="current-password" required className="l2-input l2-input-icon" />
+                </div>
+              </div>
+              {error && <p style={{ color: 'rgba(255,100,100,0.85)', fontSize: '0.75rem', marginBottom: '1rem', textAlign: 'center', fontFamily: '"Helvetica Neue", Helvetica, sans-serif' }}>{error}</p>}
+              <button type="submit" disabled={busy} className="l2-enter-btn l2-btn-active" style={{ width: '100%', opacity: busy ? 0.6 : 1 }}>
+                {busy ? 'Signing in…' : 'ACCESS'}
+              </button>
             </form>
           </div>
         )}
 
+        {/* ── Enrollment modal ── */}
+        {showEnrollModal && pendingUser && (
+          <BiometricEnrollModal
+            user={pendingUser}
+            onDismiss={() => { setShowEnrollModal(false); setShowLoader(true) }}
+          />
+        )}
 
       </div>
     </>
