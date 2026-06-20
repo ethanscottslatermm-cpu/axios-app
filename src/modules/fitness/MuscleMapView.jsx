@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import Model from 'react-body-highlighter'
 import { DB } from './WorkoutGuide'
 
 const FF = 'Helvetica Neue,Arial,sans-serif'
@@ -7,237 +6,112 @@ const FF = 'Helvetica Neue,Arial,sans-serif'
 const MIND_COLOR      = '#a78bfa'
 const HIGHLIGHT_COLOR = '#F5A623'
 
-const ARMOR_GLOW  = '#E8F4FF'          // white — arms
-const ARMOR_GREEN = '#10b981'          // emerald — matches Log/Ready header
-const ARMOR_RED   = '#ef4444'          // red — matches Watch button
+const ARMOR_GLOW  = '#E8F4FF'
+const ARMOR_GREEN = '#10b981'
+const ARMOR_RED   = '#ef4444'
 
 function muscleArmorColor(m) {
-  if (['Biceps','Triceps'].includes(m))                                        return ARMOR_GLOW
-  if (['Chest','Shoulders','Traps','Calves'].includes(m))                      return ARMOR_RED
-  if (['Abs','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes'].includes(m)) return ARMOR_GREEN
+  if (['Biceps','Triceps'].includes(m))                                    return ARMOR_GLOW
+  if (['Chest','Shoulders','Calves'].includes(m))                          return ARMOR_RED
+  if (['Back','Abs','Core','Quads','Hamstrings','Glutes'].includes(m))     return ARMOR_GREEN
   return ARMOR_GREEN
 }
 
-const MUSCLES = ['Head','Chest','Shoulders','Traps','Biceps','Triceps','Abs','Core','Upper Back','Lower Back','Quads','Hamstrings','Glutes','Calves']
+const MUSCLES = ['Head','Chest','Shoulders','Back','Biceps','Triceps','Abs','Core','Quads','Hamstrings','Glutes','Calves']
 
-const SLUG_MAP = {
-  Head:           ['head'],
-  Chest:          ['chest'],
-  Shoulders:      ['front-deltoids', 'back-deltoids'],
-  Traps:          ['trapezius', 'neck'],
-  Biceps:         ['biceps', 'forearm'],
-  Triceps:        ['triceps'],
-  Abs:            ['abs'],
-  Core:           ['obliques'],
-  'Upper Back':   ['upper-back'],
-  'Lower Back':   ['lower-back'],
-  Quads:          ['quadriceps'],
-  Hamstrings:     ['hamstring'],
-  Glutes:         ['gluteal'],
-  Calves:         ['calves', 'left-soleus', 'right-soleus'],
-}
-
-const GROUP_FROM_SLUG = {
-  head:            'Head',
-  chest:           'Chest',
-  'front-deltoids':'Shoulders',
-  'back-deltoids': 'Shoulders',
-  biceps:          'Biceps',
-  forearm:         'Biceps',
-  triceps:         'Triceps',
-  abs:             'Abs',
-  obliques:        'Core',
-  trapezius:       'Traps',
-  neck:            'Traps',
-  'upper-back':    'Upper Back',
-  'lower-back':    'Lower Back',
-  quadriceps:      'Quads',
-  adductor:        'Quads',
-  abductors:       'Quads',
-  hamstring:       'Hamstrings',
-  gluteal:         'Glutes',
-  calves:          'Calves',
-  'left-soleus':   'Calves',
-  'right-soleus':  'Calves',
+const GROUP_FROM_ID = {
+  head_spine_rear:           'Head',
+  deltoid_anterior_left:     'Shoulders',
+  deltoid_anterior_right:    'Shoulders',
+  deltoid_posterior_left:    'Shoulders',
+  deltoid_posterior_right:   'Shoulders',
+  pectoralis_major_left:     'Chest',
+  pectoralis_major_right:    'Chest',
+  trapezius_left:            'Back',
+  trapezius_right:           'Back',
+  latissimus_dorsi_left:     'Back',
+  latissimus_dorsi_right:    'Back',
+  erector_spinae:            'Back',
+  biceps_brachii_left:       'Biceps',
+  biceps_brachii_right:      'Biceps',
+  triceps_brachii_left:      'Triceps',
+  triceps_brachii_right:     'Triceps',
+  upper_abs:                 'Abs',
+  lower_abs:                 'Abs',
+  external_oblique_left:     'Core',
+  external_oblique_right:    'Core',
+  internal_oblique_left:     'Core',
+  internal_oblique_right:    'Core',
+  quadriceps_femoris_left:   'Quads',
+  quadriceps_femoris_right:  'Quads',
+  hamstrings_left:           'Hamstrings',
+  hamstrings_right:          'Hamstrings',
+  gluteus_maximus_left:      'Glutes',
+  gluteus_maximus_right:     'Glutes',
+  gluteus_medius_left:       'Glutes',
+  gluteus_medius_right:      'Glutes',
+  gastrocnemius_left:        'Calves',
+  gastrocnemius_right:       'Calves',
+  soleus_left:               'Calves',
+  soleus_right:              'Calves',
+  tibialis_anterior_left:    'Calves',
+  tibialis_anterior_right:   'Calves',
 }
 
 const GROUP_TO_DB = {
-  Head:           null,
-  Chest:          'chest',
-  Shoulders:      'shoulders',
-  Traps:          'traps',
-  Biceps:         'biceps',
-  Triceps:        'triceps',
-  Abs:            'core',
-  Core:           'core',
-  'Upper Back':   'upper_back',
-  'Lower Back':   'lower_back',
-  Quads:          'quads',
-  Hamstrings:     'hamstrings',
-  Glutes:         'glutes',
-  Calves:         'calves',
+  Head:       null,
+  Chest:      'chest',
+  Shoulders:  'shoulders',
+  Back:       'back',
+  Biceps:     'biceps',
+  Triceps:    'triceps',
+  Abs:        'core',
+  Core:       'obliques',
+  Quads:      'quads',
+  Hamstrings: 'hamstrings',
+  Glutes:     'glutes',
+  Calves:     'calves',
 }
 
 const SCI_SHORT = {
-  Head:           'Mind & Recovery',
-  Chest:          'Pectoralis',
-  Shoulders:      'Deltoideus',
-  Traps:          'Trapezius',
-  Biceps:         'Biceps Brachii',
-  Triceps:        'Triceps Brachii',
-  Abs:            'Rectus Abdominis',
-  Core:           'Obliques',
-  'Upper Back':   'Rhomboids',
-  'Lower Back':   'Erector Spinae',
-  Quads:          'Quadriceps Femoris',
-  Hamstrings:     'Biceps Femoris',
-  Glutes:         'Gluteus Maximus',
-  Calves:         'Gastrocnemius',
+  Head:       'Mind & Recovery',
+  Chest:      'Pectoralis Major',
+  Shoulders:  'Deltoideus',
+  Back:       'Trapezius · Lats · Erectors',
+  Biceps:     'Biceps Brachii',
+  Triceps:    'Triceps Brachii',
+  Abs:        'Rectus Abdominis',
+  Core:       'External & Internal Obliques',
+  Quads:      'Quadriceps Femoris',
+  Hamstrings: 'Biceps Femoris',
+  Glutes:     'Gluteus Maximus',
+  Calves:     'Gastrocnemius',
 }
 
-// Muscle cuts, bone landmarks, and vein paths — coords in model's 0 0 100 200 space.
-// Based on actual polygon data extracted from react-body-highlighter source.
-const DEFINITION_LINES = {
-  anterior: {
-    Traps: [
-      { d: 'M 44 24 Q 40 30 38 35',           type: 'muscle' }, // left upper trap
-      { d: 'M 56 24 Q 60 30 62 35',           type: 'muscle' }, // right upper trap
-    ],
-    Chest: [
-      { d: 'M 49 34 L 22 31',                 type: 'bone'   }, // left clavicle
-      { d: 'M 51 34 L 78 31',                 type: 'bone'   }, // right clavicle
-      { d: 'M 49.5 34 L 49.5 58',             type: 'bone'   }, // sternum
-      { d: 'M 32 54 Q 41 61 49.5 58',          type: 'muscle' }, // left pec lower arch
-      { d: 'M 68 54 Q 59 61 50.5 58',          type: 'muscle' }, // right pec lower arch
-      { d: 'M 49.5 41 Q 38 47 30 53',          type: 'muscle' }, // left pec fiber
-      { d: 'M 50.5 41 Q 62 47 70 53',          type: 'muscle' }, // right pec fiber
-      { d: 'M 49 38 Q 47.5 48 48.5 57',        type: 'vein'   }, // left sternal vein
-      { d: 'M 51 38 Q 52.5 48 51.5 57',        type: 'vein'   }, // right sternal vein
-    ],
-    Shoulders: [
-      { d: 'M 22 32 Q 18.5 38 20 45',          type: 'muscle' }, // left delt groove
-      { d: 'M 78 32 Q 81.5 38 80 45',          type: 'muscle' }, // right delt groove
-      { d: 'M 20 45 Q 24 51 28 56',            type: 'muscle' }, // left delt/bi junction
-      { d: 'M 80 45 Q 76 51 72 56',            type: 'muscle' }, // right delt/bi junction
-      { d: 'M 21 38 Q 19 44 20 52',            type: 'vein'   }, // left cephalic vein (shoulder)
-      { d: 'M 79 38 Q 81 44 80 52',            type: 'vein'   }, // right cephalic vein (shoulder)
-    ],
-    Biceps: [
-      { d: 'M 23 52 Q 21 61 19 71',            type: 'muscle' }, // left bicep split
-      { d: 'M 77 52 Q 79 61 81 71',            type: 'muscle' }, // right bicep split
-      { d: 'M 21 54 Q 19 65 17 75',            type: 'vein'   }, // left cephalic vein (bicep)
-      { d: 'M 79 54 Q 81 65 83 75',            type: 'vein'   }, // right cephalic vein (bicep)
-      { d: 'M 24 56 Q 22 66 20 74',            type: 'vein'   }, // left basilic vein
-      { d: 'M 76 56 Q 78 66 80 74',            type: 'vein'   }, // right basilic vein
-      { d: 'M 15 78 Q 10 89 7 98',             type: 'vein'   }, // left forearm vein 1
-      { d: 'M 17 79 Q 13 90 10 99',            type: 'vein'   }, // left forearm vein 2
-      { d: 'M 19 78 Q 16 89 14 98',            type: 'vein'   }, // left forearm vein 3
-      { d: 'M 85 78 Q 90 89 93 98',            type: 'vein'   }, // right forearm vein 1
-      { d: 'M 83 79 Q 87 90 90 99',            type: 'vein'   }, // right forearm vein 2
-      { d: 'M 81 78 Q 84 89 86 98',            type: 'vein'   }, // right forearm vein 3
-    ],
-    Triceps: [
-      { d: 'M 25 57 Q 23 64 22 72',            type: 'muscle' }, // left tricep line
-      { d: 'M 75 57 Q 77 64 78 72',            type: 'muscle' }, // right tricep line
-    ],
-    Abs: [
-      { d: 'M 50 58 L 50 95',                  type: 'muscle' }, // ab midline
-      { d: 'M 42 63 Q 50 62 58 63',            type: 'muscle' }, // subcostal arch
-      { d: 'M 42 65 L 58 65',                  type: 'muscle' }, // cut 1
-      { d: 'M 41 72 L 59 72',                  type: 'muscle' }, // cut 2
-      { d: 'M 41 79 L 59 79',                  type: 'muscle' }, // cut 3
-      { d: 'M 40 86 L 60 86',                  type: 'muscle' }, // cut 4
-      { d: 'M 44 65 L 44 72',                  type: 'muscle' }, // left inner col 1
-      { d: 'M 56 65 L 56 72',                  type: 'muscle' }, // right inner col 1
-      { d: 'M 43 72 L 43 79',                  type: 'muscle' }, // left inner col 2
-      { d: 'M 57 72 L 57 79',                  type: 'muscle' }, // right inner col 2
-      { d: 'M 49 65 Q 48 72 49 79',            type: 'muscle' }, // left ab cell line
-      { d: 'M 51 65 Q 52 72 51 79',            type: 'muscle' }, // right ab cell line
-    ],
-    Core: [
-      { d: 'M 38 64 Q 33 77 35 91',            type: 'muscle' }, // left oblique edge
-      { d: 'M 62 64 Q 67 77 65 91',            type: 'muscle' }, // right oblique edge
-    ],
-    Quads: [
-      { d: 'M 40 101 Q 37 123 36 144',         type: 'muscle' }, // left RF/VL cut
-      { d: 'M 60 101 Q 63 123 64 144',         type: 'muscle' }, // right RF/VL cut
-      { d: 'M 29 112 Q 27 129 27 147',         type: 'muscle' }, // left outer VL
-      { d: 'M 71 112 Q 73 129 73 147',         type: 'muscle' }, // right outer VL
-      { d: 'M 39 136 Q 37 143 40 151',         type: 'muscle' }, // left VMO bulge
-      { d: 'M 61 136 Q 63 143 60 151',         type: 'muscle' }, // right VMO bulge
-      { d: 'M 44 102 Q 42 128 42 148',         type: 'vein'   }, // left great saphenous vein
-      { d: 'M 56 102 Q 58 128 58 148',         type: 'vein'   }, // right great saphenous vein
-    ],
-    Calves: [
-      { d: 'M 30 165 Q 29 176 30 187',         type: 'muscle' }, // left medial/lateral split
-      { d: 'M 70 165 Q 71 176 70 187',         type: 'muscle' }, // right medial/lateral split
-      { d: 'M 27 168 Q 26 179 28 187',         type: 'muscle' }, // left lateral head line
-      { d: 'M 73 168 Q 74 179 72 187',         type: 'muscle' }, // right lateral head line
-      { d: 'M 33 163 Q 32 176 33 188',         type: 'vein'   }, // left anterior tibial vein
-      { d: 'M 67 163 Q 68 176 67 188',         type: 'vein'   }, // right anterior tibial vein
-    ],
-  },
-  posterior: {
-    Traps: [
-      { d: 'M 44 22 Q 37 33 32 42',            type: 'muscle' }, // left trap fiber
-      { d: 'M 56 22 Q 63 33 68 42',            type: 'muscle' }, // right trap fiber
-      { d: 'M 47.5 22 L 47.5 62',              type: 'muscle' }, // left inner trap line
-      { d: 'M 52.5 22 L 52.5 62',              type: 'muscle' }, // right inner trap line
-    ],
-    Shoulders: [
-      { d: 'M 24 39 Q 20 48 22 57',            type: 'muscle' }, // left rear delt line
-      { d: 'M 76 39 Q 80 48 78 57',            type: 'muscle' }, // right rear delt line
-    ],
-    'Upper Back': [
-      { d: 'M 50 28 L 50 100',                 type: 'bone'   }, // spine
-      { d: 'M 47 40 L 35 56 L 37 67',          type: 'muscle' }, // left scapula border
-      { d: 'M 53 40 L 65 56 L 63 67',          type: 'muscle' }, // right scapula border
-      { d: 'M 47 41 Q 41 55 37 65',            type: 'muscle' }, // left lat sweep
-      { d: 'M 53 41 Q 59 55 63 65',            type: 'muscle' }, // right lat sweep
-      { d: 'M 41 68 Q 35 77 34 86',            type: 'muscle' }, // left lat lower
-      { d: 'M 59 68 Q 65 77 66 86',            type: 'muscle' }, // right lat lower
-    ],
-    'Lower Back': [
-      { d: 'M 46 74 L 44 101',                 type: 'muscle' }, // left erector spinae
-      { d: 'M 54 74 L 56 101',                 type: 'muscle' }, // right erector spinae
-      { d: 'M 44 80 Q 43 88 44 97',            type: 'vein'   }, // left paraspinal vein
-      { d: 'M 56 80 Q 57 88 56 97',            type: 'vein'   }, // right paraspinal vein
-    ],
-    Triceps: [
-      { d: 'M 22 56 Q 19 67 18 77',            type: 'muscle' }, // left long head
-      { d: 'M 78 56 Q 81 67 82 77',            type: 'muscle' }, // right long head
-      { d: 'M 25 59 Q 22 69 21 79',            type: 'muscle' }, // left lateral head
-      { d: 'M 75 59 Q 78 69 79 79',            type: 'muscle' }, // right lateral head
-      { d: 'M 19 60 Q 17 70 16 80',            type: 'vein'   }, // left posterior vein
-      { d: 'M 81 60 Q 83 70 84 80',            type: 'vein'   }, // right posterior vein
-      { d: 'M 16 82 Q 13 90 11 100',           type: 'vein'   }, // left forearm posterior vein
-      { d: 'M 84 82 Q 87 90 89 100',           type: 'vein'   }, // right forearm posterior vein
-    ],
-    Glutes: [
-      { d: 'M 50 100 L 50 123',                type: 'muscle' }, // glute cleft
-      { d: 'M 32 113 Q 41 120 49.5 117',       type: 'muscle' }, // left glute crease
-      { d: 'M 68 113 Q 59 120 50.5 117',       type: 'muscle' }, // right glute crease
-    ],
-    Hamstrings: [
-      { d: 'M 33 128 Q 31 144 29 161',         type: 'muscle' }, // left biceps femoris
-      { d: 'M 67 128 Q 69 144 71 161',         type: 'muscle' }, // right biceps femoris
-      { d: 'M 38 127 Q 37 146 38 163',         type: 'muscle' }, // left semimembranosus
-      { d: 'M 62 127 Q 63 146 62 163',         type: 'muscle' }, // right semimembranosus
-    ],
-    Calves: [
-      { d: 'M 30 168 Q 29 180 30 193',         type: 'muscle' }, // left lateral/medial split
-      { d: 'M 70 168 Q 71 180 70 193',         type: 'muscle' }, // right lateral/medial split
-      { d: 'M 26 169 Q 25 181 27 193',         type: 'muscle' }, // left lateral head
-      { d: 'M 74 169 Q 75 181 73 193',         type: 'muscle' }, // right lateral head
-      { d: 'M 34 166 Q 33 179 34 193',         type: 'vein'   }, // left small saphenous vein
-      { d: 'M 66 166 Q 67 179 66 193',         type: 'vein'   }, // right small saphenous vein
-    ],
-  },
+// Forward mapping: region → SVG group IDs (used for CSS-based highlighting)
+const REGION_TO_IDS = {
+  Shoulders:  ['deltoid_anterior_left','deltoid_anterior_right','deltoid_posterior_left','deltoid_posterior_right'],
+  Chest:      ['pectoralis_major_left','pectoralis_major_right'],
+  Back:       ['trapezius_left','trapezius_right','latissimus_dorsi_left','latissimus_dorsi_right','erector_spinae'],
+  Biceps:     ['biceps_brachii_left','biceps_brachii_right'],
+  Triceps:    ['triceps_brachii_left','triceps_brachii_right'],
+  Abs:        ['upper_abs','lower_abs'],
+  Core:       ['external_oblique_left','external_oblique_right','internal_oblique_left','internal_oblique_right'],
+  Quads:      ['quadriceps_femoris_left','quadriceps_femoris_right'],
+  Hamstrings: ['hamstrings_left','hamstrings_right'],
+  Glutes:     ['gluteus_maximus_left','gluteus_maximus_right','gluteus_medius_left','gluteus_medius_right'],
+  Calves:     ['gastrocnemius_left','gastrocnemius_right','soleus_left','soleus_right','tibialis_anterior_left','tibialis_anterior_right'],
 }
 
-// Labels positioned in the model's 0 0 100 200 coordinate space.
-// x < 0 or x > 100 renders outside body (requires overflow:visible on parent).
-// ex = x-coordinate of the leader line's body-side endpoint.
+const NON_INTERACTIVE_IDS = [
+  'main_body','hand_left','hand_right','hand_rear_left','hand_rear_right',
+  'iliopsoas_left','iliopsoas_right','adductor_longus_left','adductor_longus_right',
+  'forearm_flexors_left','forearm_flexors_right','forearm_extensors_left','forearm_extensors_right',
+]
+
+// Labels in 0 0 580 1615 viewBox coordinate space.
+// x < 0 or x > 580 renders outside body (requires overflow:visible on parent).
+// ex = x-coordinate of leader-line body-side endpoint.
 const MIND_DATA = {
   color:      MIND_COLOR,
   scientific: 'Mind–Body Recovery',
@@ -272,28 +146,25 @@ const MIND_DATA = {
 
 const LABELS = {
   anterior: [
-    { group: 'Head',        x: 103, y: 11,  anchor: 'start', ex: 57 },
-    { group: 'Shoulders',   x: 103, y: 42,  anchor: 'start', ex: 79 },
-    { group: 'Chest',       x: 103, y: 51,  anchor: 'start', ex: 70 },
-    { group: 'Biceps',      x: -3,  y: 61,  anchor: 'end',   ex: 17 },
-    { group: 'Abs',         x: 103, y: 72,  anchor: 'start', ex: 57 },
-    { group: 'Core',        x: 103, y: 85,  anchor: 'start', ex: 60 },
-    { group: 'Quads',       x: -3,  y: 118, anchor: 'end',   ex: 29 },
-    { group: 'Calves',      x: 103, y: 175, anchor: 'start', ex: 74 },
+    { group: 'Shoulders', x: 605,  y: 345,  anchor: 'start', ex: 468 },
+    { group: 'Chest',     x: 605,  y: 395,  anchor: 'start', ex: 445 },
+    { group: 'Triceps',   x: -25,  y: 450,  anchor: 'end',   ex: 120 },
+    { group: 'Biceps',    x: -25,  y: 510,  anchor: 'end',   ex: 95  },
+    { group: 'Abs',       x: 605,  y: 490,  anchor: 'start', ex: 362 },
+    { group: 'Core',      x: 605,  y: 635,  anchor: 'start', ex: 372 },
+    { group: 'Quads',     x: -25,  y: 940,  anchor: 'end',   ex: 178 },
+    { group: 'Calves',    x: 605,  y: 1310, anchor: 'start', ex: 452 },
   ],
   posterior: [
-    { group: 'Head',        x: 103, y: 10,  anchor: 'start', ex: 57 },
-    { group: 'Traps',       x: 103, y: 38,  anchor: 'start', ex: 64 },
-    { group: 'Shoulders',   x: -3,  y: 46,  anchor: 'end',   ex: 29 },
-    { group: 'Upper Back',  x: 103, y: 57,  anchor: 'start', ex: 66 },
-    { group: 'Triceps',     x: -3,  y: 65,  anchor: 'end',   ex: 27 },
-    { group: 'Lower Back',  x: -3,  y: 82,  anchor: 'end',   ex: 44 },
-    { group: 'Glutes',      x: 103, y: 111, anchor: 'start', ex: 69 },
-    { group: 'Hamstrings',  x: -3,  y: 140, anchor: 'end',   ex: 29 },
-    { group: 'Calves',      x: 103, y: 178, anchor: 'start', ex: 71 },
+    { group: 'Head',       x: 605,  y: 100,  anchor: 'start', ex: 362 },
+    { group: 'Shoulders',  x: -25,  y: 340,  anchor: 'end',   ex: 110 },
+    { group: 'Back',       x: 605,  y: 455,  anchor: 'start', ex: 425 },
+    { group: 'Triceps',    x: -25,  y: 515,  anchor: 'end',   ex: 125 },
+    { group: 'Glutes',     x: 605,  y: 790,  anchor: 'start', ex: 412 },
+    { group: 'Hamstrings', x: -25,  y: 1000, anchor: 'end',   ex: 260 },
+    { group: 'Calves',     x: 605,  y: 1305, anchor: 'start', ex: 450 },
   ],
 }
-
 
 function getRecovery(n) {
   return [
@@ -332,7 +203,6 @@ function BreathingGuide({ exercise, onStop }) {
     return () => clearInterval(t)
   }, [exercise])
 
-  // Derive current phase from elapsed seconds
   const elapsed = tick % totalCycle
   let acc = 0, phase = exercise.phases[0], remaining = phase.s
   for (const ph of exercise.phases) {
@@ -354,7 +224,6 @@ function BreathingGuide({ exercise, onStop }) {
         {exercise.name}
       </p>
 
-      {/* Animated breathing ring */}
       <div style={{ position: 'relative', width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: `1px solid ${MIND_COLOR}20` }}/>
         <div style={{
@@ -410,7 +279,6 @@ function ExCard({ ex, accent, onLog, muscleLabel }) {
 
   return (
     <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-      {/* Always-visible row */}
       <div style={{ padding: '11px 12px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
         <div style={{ flex: 1 }}>
           <p style={{ color: 'var(--text-primary)', fontSize: 12, fontWeight: 700, fontFamily: FF, marginBottom: 3 }}>{ex.name}</p>
@@ -451,7 +319,6 @@ function ExCard({ ex, accent, onLog, muscleLabel }) {
         </div>
       </div>
 
-      {/* Inline quick-log form */}
       <div style={{ overflow: 'hidden', maxHeight: logging ? 130 : 0, transition: 'max-height 0.28s cubic-bezier(.16,1,.3,1)' }}>
         <div style={{ padding: '0 12px 12px', borderTop: '1px solid rgba(212,212,232,0.06)' }}>
           <div style={{ display: 'flex', gap: 7, marginTop: 10, marginBottom: 8 }}>
@@ -488,6 +355,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const [spinning,     setSpinning]    = useState(false)
   const [breathingEx,  setBreathingEx] = useState(null)
   const [ripples,      setRipples]     = useState([])
+  const [svgs,         setSvgs]        = useState({ anterior: '', posterior: '' })
   const svgRef      = useRef(null)
   const touchStartX = useRef(null)
   const didSwipe    = useRef(false)
@@ -495,6 +363,14 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
   const sevenStr = sevenAgo.toISOString().split('T')[0]
+
+  // Load both SVG files once on mount
+  useEffect(() => {
+    Promise.all([
+      fetch('/New%20SVG%202D%20MODEL/Frame%201%20front.svg').then(r => r.text()),
+      fetch('/New%20SVG%202D%20MODEL/Frame%202%20back.svg').then(r => r.text()),
+    ]).then(([ant, post]) => setSvgs({ anterior: ant, posterior: post }))
+  }, [])
 
   const counts = useMemo(() => {
     const c = {}; MUSCLES.forEach(m => { c[m] = 0 })
@@ -531,9 +407,65 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     return Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000)
   }
 
-  function muscleHeatColor(muscle) {
-    return muscleArmorColor(muscle)
-  }
+  // CSS-based muscle highlighting — scoped to .mm-body-scope to avoid leaking to other SVGs
+  const muscleCSS = useMemo(() => {
+    const lines = []
+
+    // Make inline SVG responsive
+    lines.push('.mm-body-scope svg { width: 100% !important; height: auto !important; display: block; }')
+
+    // Non-interactive groups: dark neutral fill, no pointer events
+    NON_INTERACTIVE_IDS.forEach(id => {
+      lines.push(`.mm-body-scope #${id} path { fill: #3C3C3C !important; stroke: rgba(255,255,255,0.07) !important; }`)
+      lines.push(`.mm-body-scope #${id} { pointer-events: none !important; }`)
+    })
+
+    // Head region
+    const headSel  = selected === 'Head'
+    const headFill = headSel ? `${MIND_COLOR}BB` : `${MIND_COLOR}44`
+    const headFilter = headSel
+      ? 'drop-shadow(0 0 12px rgba(167,139,250,0.9)) drop-shadow(0 0 6px rgba(167,139,250,0.7))'
+      : 'drop-shadow(0 0 5px rgba(167,139,250,0.45))'
+    const headAnim = headSel ? 'mmSelectPulse 2.4s ease-in-out infinite' : 'mmIdleGlow 3.5s ease-in-out 0s infinite'
+    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; }`)
+    lines.push(`.mm-body-scope #head_spine_rear { filter: ${headFilter}; cursor: pointer; animation: ${headAnim}; transition: filter 0.4s ease; }`)
+
+    // Interactive muscle regions
+    MUSCLES.filter(m => m !== 'Head').forEach((region, mIdx) => {
+      const isSelected = selected === region
+      const armorCol   = muscleArmorColor(region)
+      const ids        = REGION_TO_IDS[region] || []
+      if (!ids.length) return
+
+      const lw       = lastWorked[region]
+      const isFatigued = lw
+        ? Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000) === 0
+        : false
+
+      const fill = isSelected ? armorCol + 'CC' : armorCol + '55'
+
+      const glowRGB = armorCol === ARMOR_GLOW  ? '232,244,255'
+        : armorCol === ARMOR_RED               ? '239,68,68'
+        : '16,185,129'
+
+      const filter = isSelected
+        ? `drop-shadow(0 0 14px rgba(${glowRGB},0.95)) drop-shadow(0 0 7px rgba(${glowRGB},0.75))`
+        : `drop-shadow(0 0 5px rgba(${glowRGB},0.55)) drop-shadow(0 0 2px rgba(${glowRGB},0.35))`
+
+      const anim = isSelected
+        ? 'mmSelectPulse 2.4s ease-in-out infinite'
+        : isFatigued
+        ? 'mmFatiguePulse 2s ease-in-out infinite'
+        : `mmIdleGlow 3.5s ease-in-out ${(mIdx * 0.3).toFixed(1)}s infinite`
+
+      ids.forEach(id => {
+        lines.push(`.mm-body-scope #${id} path { fill: ${fill} !important; stroke: rgba(0,0,0,0.35) !important; }`)
+        lines.push(`.mm-body-scope #${id} { filter: ${filter}; cursor: pointer; animation: ${anim}; transition: filter 0.4s ease; }`)
+      })
+    })
+
+    return lines.join('\n')
+  }, [selected, lastWorked, todayStr])
 
   useEffect(() => {
     if (selected && selected !== 'Head') {
@@ -545,12 +477,18 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     setBreathingEx(null)
   }, [selected])
 
-  function handleClick({ muscle }) {
+  // Event delegation: walk up from clicked element to find a named muscle group
+  function handleSvgClick(e) {
     if (didSwipe.current) { didSwipe.current = false; return }
-    const group = GROUP_FROM_SLUG[muscle]
-    if (group) {
-      setLastSelected(group)
-      setSelected(s => s === group ? null : group)
+    let el = e.target
+    while (el && el !== e.currentTarget) {
+      if (el.id && GROUP_FROM_ID[el.id]) {
+        const group = GROUP_FROM_ID[el.id]
+        setLastSelected(group)
+        setSelected(s => s === group ? null : group)
+        return
+      }
+      el = el.parentElement
     }
   }
 
@@ -583,10 +521,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @-webkit-keyframes mmPulse        { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
         @-webkit-keyframes mmSelectPulse  { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
         @-webkit-keyframes mmIdleGlow     { 0%,100% { opacity:0.52 } 50% { opacity:0.82 } }
-        @keyframes mmVeinDash       { from { stroke-dashoffset:0.6 } to { stroke-dashoffset:-0.6 } }
-        @keyframes mmScan           { 0%{transform:translateY(-2px);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(202px);opacity:0.5} 33%{transform:translateY(202px);opacity:0} 100%{transform:translateY(202px);opacity:0} }
-        @keyframes mmRipple         { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
+        @keyframes mmScan    { 0%{transform:translateY(0);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(1620px);opacity:0.5} 33%{transform:translateY(1620px);opacity:0} 100%{transform:translateY(1620px);opacity:0} }
+        @keyframes mmRipple  { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
       `}</style>
+
+      {/* Dynamic muscle highlighting */}
+      <style>{muscleCSS}</style>
 
       {/* Front / Back toggle */}
       <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
@@ -621,15 +561,15 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             const svg = svgRef.current
             if (!svg) return
             const rect = svg.getBoundingClientRect()
-            const x = (e.clientX - rect.left) / rect.width * 100
-            const y = (e.clientY - rect.top)  / rect.height * 200
+            if (!rect.width || !rect.height) return
+            const x = (e.clientX - rect.left) / rect.width  * 580
+            const y = (e.clientY - rect.top)  / rect.height * 1615
             const id = Date.now()
             setRipples(r => [...r, { x, y, id }])
             setTimeout(() => setRipples(r => r.filter(ri => ri.id !== id)), 700)
           }}
         >
-
-          {/* Ambient glow — brightens on selection */}
+          {/* Ambient glow */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
@@ -638,85 +578,21 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             transition: 'background 0.6s ease',
           }}/>
 
-          {/* Base body silhouette — handles all click events */}
-          <Model
-            data={[]}
-            type={view}
-            bodyColor="#4A4A4A"
-            onClick={handleClick}
+          {/* Inline SVG body — CSS class scopes all muscle highlighting rules */}
+          <div
+            className="mm-body-scope"
             style={{
-              width: '100%', display: 'block', position: 'relative', zIndex: 1,
+              position: 'relative', zIndex: 1, width: '100%',
               filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.18))',
             }}
-            svgStyle={{ borderRadius: 8 }}
+            dangerouslySetInnerHTML={{ __html: svgs[view] || '' }}
+            onClick={handleSvgClick}
           />
 
-          {/* Per-muscle DB-colored overlays */}
-          {MUSCLES.map((m, mIdx) => {
-            if (m === 'Head') return null  // Head rendered as SVG outline, no fill
-            const isSel   = selected === m
-            const heatCol = muscleHeatColor(m)
-            const days    = muscleAgeDays(m)
-            const op      = isSel ? 1.0 : 0.72
-            const armorCol   = muscleArmorColor(m)
-            // Tight white edge traces the polygon boundary on every group; colored ambient glow behind it
-            const whiteEdge  = isSel
-              ? 'drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 4px rgba(255,255,255,0.90)) drop-shadow(0 0 8px rgba(255,255,255,0.55))'
-              : 'drop-shadow(0 0 1px rgba(255,255,255,0.55))'
-            const colorGlow  = (() => {
-              if (armorCol === ARMOR_GLOW)
-                return isSel
-                  ? 'drop-shadow(0 0 20px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(232,244,255,0.80))'
-                  : 'drop-shadow(0 0 8px rgba(232,244,255,0.55)) drop-shadow(0 0 3px rgba(232,244,255,0.35))'
-              if (armorCol === ARMOR_RED)
-                return isSel
-                  ? 'drop-shadow(0 0 20px rgba(239,68,68,0.95)) drop-shadow(0 0 10px rgba(239,68,68,0.75))'
-                  : 'drop-shadow(0 0 8px rgba(239,68,68,0.55)) drop-shadow(0 0 3px rgba(239,68,68,0.35))'
-              if (armorCol === ARMOR_GREEN)
-                return isSel
-                  ? 'drop-shadow(0 0 20px rgba(16,185,129,0.95)) drop-shadow(0 0 10px rgba(16,185,129,0.75))'
-                  : 'drop-shadow(0 0 8px rgba(16,185,129,0.55)) drop-shadow(0 0 3px rgba(16,185,129,0.35))'
-              return isSel
-                ? 'drop-shadow(0 0 20px rgba(16,185,129,0.95)) drop-shadow(0 0 10px rgba(16,185,129,0.75))'
-                : 'drop-shadow(0 0 8px rgba(16,185,129,0.50)) drop-shadow(0 0 3px rgba(16,185,129,0.30))'
-            })()
-            const glowFilter = `${whiteEdge} ${colorGlow}`
-            const anim = isSel
-              ? 'mmSelectPulse 2.4s ease-in-out infinite'
-              : days === 0
-              ? 'mmFatiguePulse 2s ease-in-out infinite'
-              : `mmIdleGlow 3.5s ease-in-out ${(mIdx * 0.3).toFixed(1)}s infinite`
-            return (
-              <div key={m} style={{
-                position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-                filter: glowFilter,
-                transition: 'filter 0.6s ease',
-              }}>
-                <div style={{
-                  width: '100%', height: '100%',
-                  opacity: op,
-                  transition: 'opacity 0.35s ease',
-                  animation: anim,
-                  WebkitAnimation: anim,
-                  transform: 'translateZ(0)',
-                }}>
-                  <Model
-                    data={[{ name: m, muscles: SLUG_MAP[m], frequency: 1 }]}
-                    type={view}
-                    bodyColor="rgba(0,0,0,0)"
-                    highlightedColors={[armorCol, armorCol, armorCol]}
-                    style={{ width: '100%', display: 'block' }}
-                    svgStyle={{ borderRadius: 8 }}
-                  />
-                </div>
-              </div>
-            )
-          })}
-
-          {/* Label overlay — viewBox matches model's 0 0 100 200 space */}
+          {/* Label overlay — same viewBox as body SVG */}
           <svg
             ref={svgRef}
-            viewBox="0 0 100 200"
+            viewBox="0 0 580 1615"
             preserveAspectRatio="xMidYMid meet"
             style={{
               position: 'absolute', top: 0, left: 0,
@@ -726,9 +602,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           >
             <defs>
               <filter id="mm-label-glow" x="-60%" y="-60%" width="220%" height="220%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
-                <feFlood floodColor="#38bdf8" floodOpacity="1" result="white"/>
-                <feComposite in="white" in2="blur" operator="in" result="wb"/>
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+                <feFlood floodColor="#38bdf8" floodOpacity="1" result="col"/>
+                <feComposite in="col" in2="blur" operator="in" result="wb"/>
                 <feMerge><feMergeNode in="wb"/><feMergeNode in="wb"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
               <linearGradient id="mm-scan-grad" x1="0" y1="0" x2="1" y2="0">
@@ -739,118 +615,26 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 <stop offset="100%" stopColor="transparent"/>
               </linearGradient>
             </defs>
+
             {/* Periodic scan sweep */}
             <rect
-              x="0" y="-1" width="100" height="1.5"
+              x="0" y="-5" width="580" height="10"
               fill="url(#mm-scan-grad)"
               style={{
                 animation: 'mmScan 7s ease-in-out infinite',
-                filter: 'drop-shadow(0 0 1.5px rgba(56,189,248,0.65))',
+                filter: 'drop-shadow(0 0 8px rgba(56,189,248,0.65))',
               }}
             />
-
-            {/* Head outline — white filled interior so face reads white, not base-model gray */}
-            <polygon
-              points={view === 'anterior'
-                ? '42.4489796 2.85714286 40 11.8367347 42.0408163 19.5918367 46.122449 23.2653061 49.7959184 25.3061224 54.6938776 22.4489796 57.5510204 19.1836735 59.1836735 10.2040816 57.1428571 2.44897959 49.7959184 0'
-                : '50.6382979 0 45.9574468 0.85106383 40.8510638 5.53191489 40.4255319 12.7659574 45.106383 20 55.7446809 20 59.1489362 13.6170213 59.5744681 4.68085106 55.7446809 1.27659574'
-              }
-              fill="#E8F4FF"
-              stroke="rgba(232,244,255,1)"
-              strokeWidth={selected === 'Head' ? 0.9 : 0.42}
-              strokeLinejoin="round"
-              opacity={selected === 'Head' ? 1.0 : 0.72}
-              style={{
-                filter: selected === 'Head' ? 'drop-shadow(0 0 4px rgba(255,255,255,0.95)) drop-shadow(0 0 8px rgba(232,244,255,0.7))' : undefined,
-                transition: 'stroke-width 0.3s, opacity 0.3s',
-                animation: selected === 'Head' ? 'mmPulse 2.4s ease-in-out infinite' : undefined,
-              }}
-            />
-
-            {/* Facial definition — anterior only */}
-            {view === 'anterior' && (
-              <g
-                opacity={selected === 'Head' ? 1.0 : 0.72}
-                pointerEvents="none"
-                style={{
-                  filter: selected === 'Head'
-                    ? 'drop-shadow(0 0 2px rgba(255,255,255,0.9))'
-                    : 'drop-shadow(0 0 0.8px rgba(255,255,255,0.5))',
-                  transition: 'opacity 0.3s',
-                }}
-              >
-                {/* Eyes */}
-                <ellipse cx="46.2" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.75"/>
-                <ellipse cx="53.8" cy="9.2" rx="1.9" ry="1.3" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.75"/>
-                {/* Nose */}
-                <path d="M 50 11 L 48.3 14.2 M 50 11 L 51.7 14.2 M 48 14.3 Q 50 15.2 52 14.3" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.6" strokeLinecap="round"/>
-                {/* Mouth */}
-                <path d="M 46.5 17.8 Q 50 20 53.5 17.8" fill="none" stroke="rgba(30,30,50,1)" strokeWidth="0.75" strokeLinecap="round"/>
-                {/* Jaw lines */}
-                <path d="M 41.8 11.5 Q 42.5 20.5 50 24.2" fill="none" stroke="rgba(30,30,50,0.7)" strokeWidth="0.55" strokeLinecap="round"/>
-                <path d="M 58.2 11.5 Q 57.5 20.5 50 24.2" fill="none" stroke="rgba(30,30,50,0.7)" strokeWidth="0.55" strokeLinecap="round"/>
-                {/* Chin cleft */}
-                <path d="M 49.5 21.5 Q 50 22.5 50.5 21.5" fill="none" stroke="rgba(30,30,50,0.7)" strokeWidth="0.55" strokeLinecap="round"/>
-                {/* Cheekbones — zygomatic arch */}
-                <path d="M 43.5 12.2 Q 38.8 13.8 39.8 17.2" fill="none" stroke="rgba(30,30,50,0.65)" strokeWidth="0.65" strokeLinecap="round"/>
-                <path d="M 56.5 12.2 Q 61.2 13.8 60.2 17.2" fill="none" stroke="rgba(30,30,50,0.65)" strokeWidth="0.65" strokeLinecap="round"/>
-              </g>
-            )}
-
-            {/* Definition lines — bone landmarks, muscle cuts, veins */}
-            {Object.entries(DEFINITION_LINES[view] || {}).map(([group, lines]) => {
-              const isActive = selected === group
-              const dbKey    = GROUP_TO_DB[group]
-              const color    = DB[dbKey]?.color || '#b4bccc'
-              return lines.map((line, i) => {
-                const isVein   = line.type === 'vein'
-                const isBone   = line.type === 'bone'
-                const baseOp   = isBone ? 0.55 : isVein ? 1 : 0.46
-                const activeOp = isBone ? 0.96 : isVein ? 1    : 0.92
-                const stroke   = isVein ? 'rgba(220,245,255,1)' : isBone ? 'rgba(255,210,80,1)' : 'rgba(147,223,253,1)'
-                const sw       = isBone ? 0.65 : isVein ? 0.58 : 0.52
-                const baseGlow = isVein
-                  ? 'drop-shadow(0 0 2px rgba(220,245,255,0.85)) drop-shadow(0 0 1px rgba(255,255,255,0.6))'
-                  : isBone
-                  ? 'drop-shadow(0 0 1.2px rgba(255,210,80,0.5))'
-                  : undefined
-                const glowF    = isActive
-                  ? (isVein
-                      ? 'drop-shadow(0 0 4px rgba(255,255,255,1)) drop-shadow(0 0 2px rgba(186,230,253,0.9))'
-                      : isBone
-                      ? 'drop-shadow(0 0 3px rgba(255,210,80,0.9))'
-                      : 'drop-shadow(0 0 2.5px rgba(56,189,248,1))')
-                  : baseGlow
-                return (
-                  <path
-                    key={`def-${group}-${i}`}
-                    d={line.d}
-                    stroke={stroke}
-                    strokeWidth={isActive ? sw * 1.8 : sw}
-                    fill="none"
-                    strokeLinecap="round"
-                    opacity={isActive ? activeOp : baseOp}
-                    filter={glowF}
-                    pathLength={isVein ? '1' : undefined}
-                    strokeDasharray={isVein && !isActive ? '0.12 0.08' : undefined}
-                    style={{
-                      transition: 'opacity 0.3s, stroke-width 0.3s',
-                      animation: !isActive && isVein ? `mmVeinDash 2.8s linear ${i * 0.22}s infinite` : undefined,
-                    }}
-                  />
-                )
-              })
-            })}
 
             {/* Tap ripples */}
             {ripples.map(rp => (
               <circle
                 key={rp.id}
                 cx={rp.x} cy={rp.y}
-                r="11"
+                r="64"
                 fill="rgba(56,189,248,0.10)"
                 stroke="rgba(147,223,253,0.72)"
-                strokeWidth="0.55"
+                strokeWidth="3.2"
                 style={{
                   transformBox: 'fill-box',
                   transformOrigin: 'center',
@@ -860,38 +644,35 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               />
             ))}
 
+            {/* Leader-line labels */}
             {labels.map(l => {
               const isActive    = selected === l.group
-              const dbKey       = GROUP_TO_DB[l.group]
               const isHeadLbl   = l.group === 'Head'
               const armorCol    = isHeadLbl ? MIND_COLOR : muscleArmorColor(l.group)
               const activeColor = armorCol === ARMOR_GLOW ? '#ffffff' : armorCol
               const idleColor   = armorCol + '55'
               const color       = isActive ? activeColor : idleColor
-              const lineX1      = l.anchor === 'start' ? 101 : -1
+              const lineX1      = l.anchor === 'start' ? 581 : -1
               const dotX        = l.ex
 
               return (
                 <g key={l.group} style={{ transition: 'opacity 0.2s' }}>
-                  {/* Leader line */}
                   <line
                     x1={lineX1} y1={l.y}
                     x2={dotX}   y2={l.y}
                     stroke={color}
-                    strokeWidth={isActive ? 0.5 : 0.3}
-                    strokeDasharray={isActive ? 'none' : '2 2'}
+                    strokeWidth={isActive ? 3 : 2}
+                    strokeDasharray={isActive ? 'none' : '12 12'}
                     style={{ transition: 'stroke 0.2s, stroke-width 0.2s' }}
                   />
-                  {/* Endpoint dot on muscle */}
-                  <circle cx={dotX} cy={l.y} r={isActive ? 1.4 : 0.8}
+                  <circle cx={dotX} cy={l.y} r={isActive ? 8 : 5}
                     fill={color}
-                    style={{ transition: 'fill 0.2s, r 0.2s' }}
+                    style={{ transition: 'fill 0.2s' }}
                   />
-                  {/* Label text — common name */}
                   <text
                     x={l.x} y={l.y}
                     textAnchor={l.anchor}
-                    fontSize="4.2"
+                    fontSize="24"
                     fontFamily={FF}
                     fontWeight={isActive ? '700' : '500'}
                     fill={color}
@@ -904,11 +685,10 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   >
                     {l.group}
                   </text>
-                  {/* Scientific name sub-label */}
                   <text
-                    x={l.x} y={l.y + 4.2}
+                    x={l.x} y={l.y + 24}
                     textAnchor={l.anchor}
-                    fontSize="3.0"
+                    fontSize="17"
                     fontFamily={FF}
                     fontWeight="400"
                     fontStyle="italic"
@@ -965,9 +745,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           )}
         </div>
       ) : isHead ? (
-        /* ── Mind & Recovery panel ── */
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, animation: 'mmFadeUp 0.22s ease both' }}>
-          {/* Header */}
           <div style={{
             background: 'var(--bg-card)',
             border: `1px solid ${MIND_COLOR}35`,
@@ -979,7 +757,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               padding: '11px 14px',
               display: 'flex', alignItems: 'center', gap: 9,
             }}>
-              {/* Brain icon */}
               <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={MIND_COLOR} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                 <path d="M9.5 2a3.5 3.5 0 0 1 3 1.7A3.5 3.5 0 0 1 18 7v1a3 3 0 0 1 1 5.74V15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-1.26A3 3 0 0 1 6 8V7a3.5 3.5 0 0 1 3.5-5z"/>
                 <path d="M12 12v5M9 15h6"/>
@@ -994,7 +771,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             </div>
           </div>
 
-          {/* Active breathing guide */}
           {breathingEx ? (
             <div style={{
               background: 'var(--bg-card)', border: `1px solid ${MIND_COLOR}30`,
@@ -1004,7 +780,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               <BreathingGuide exercise={breathingEx} onStop={() => setBreathingEx(null)} />
             </div>
           ) : (
-            /* Breathing exercise cards */
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <p style={{ color: `${MIND_COLOR}88`, fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: FF, fontWeight: 700, margin: '0 0 2px 2px' }}>
                 Breathing Exercises
@@ -1037,14 +812,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, animation: 'mmFadeUp 0.22s ease both' }}>
 
-          {/* Muscle activation card */}
           {dbData && (
             <div style={{
               background: 'var(--bg-card)',
               border: '1px solid rgba(16,185,129,0.28)',
               borderRadius: 14, overflow: 'hidden',
             }}>
-              {/* Header row */}
               <div style={{
                 background: 'linear-gradient(90deg, rgba(16,185,129,0.14) 0%, rgba(255,255,255,0.03) 100%)',
                 borderBottom: '1px solid rgba(16,185,129,0.15)',
@@ -1067,7 +840,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                 </div>
               </div>
 
-              {/* Body */}
               <div style={{ padding: '10px 14px 12px', display: 'flex', flexDirection: 'column', gap: 9 }}>
                 <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: 11, fontFamily: FF, lineHeight: 1.68, margin: 0, textShadow: '0 0 8px rgba(255,255,255,0.3)' }}>{dbData.desc}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
@@ -1110,7 +882,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             </div>
           )}
 
-          {/* Exercises */}
           {dbData && exercises.length > 0 && (
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>

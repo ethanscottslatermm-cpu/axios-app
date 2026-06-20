@@ -229,6 +229,21 @@ export const DB = {
       { name: 'Single-Leg Deadlift', eq: 'Dumbbell',   sets: '3 × 8/side', yt: 'single leg deadlift hamstring balance tutorial' },
     ],
   },
+  back: {
+    label: 'Back', scientific: 'Trapezius · Latissimus Dorsi · Erector Spinae',
+    color: '#06b6d4', intensity: 4,
+    desc: 'The complete posterior chain from neck to lower back. Latissimus dorsi builds the V-taper width; trapezius controls scapular movement and posture; erector spinae extends the spine under every deadlift and squat. Together they are the structural backbone of every pulling and lifting movement.',
+    exercises: [
+      { name: 'Pull-Up',               eq: 'Pull-up Bar', sets: '4 × failure', yt: 'pull up back form tutorial' },
+      { name: 'Barbell Row',           eq: 'Barbell',     sets: '4 × 8',       yt: 'barbell row back form tutorial' },
+      { name: 'Lat Pulldown',          eq: 'Cable',       sets: '3 × 12',      yt: 'lat pulldown proper form tutorial' },
+      { name: 'Barbell Shrug',         eq: 'Barbell',     sets: '4 × 12',      yt: 'barbell shrug traps form tutorial' },
+      { name: 'Conventional Deadlift', eq: 'Barbell',     sets: '4 × 5',       yt: 'conventional deadlift form tutorial' },
+      { name: 'Seated Cable Row',      eq: 'Cable',       sets: '4 × 10',      yt: 'seated cable row upper back form tutorial' },
+      { name: 'T-Bar Row',             eq: 'Barbell',     sets: '3 × 10',      yt: 't bar row back form tutorial' },
+      { name: 'Back Extension',        eq: 'Machine',     sets: '3 × 15',      yt: 'back extension hyperextension tutorial' },
+    ],
+  },
 }
 
 const FRONT_ZONES = ['chest','shoulders','biceps','forearms','core','obliques','quads','calves']
