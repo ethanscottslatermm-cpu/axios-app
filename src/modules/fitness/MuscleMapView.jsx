@@ -11,51 +11,67 @@ const ARMOR_GREEN = '#10b981'
 const ARMOR_RED   = '#ef4444'
 
 function muscleArmorColor(m) {
-  if (['Biceps','Triceps'].includes(m))                                    return ARMOR_GLOW
-  if (['Chest','Shoulders','Calves'].includes(m))                          return ARMOR_RED
-  if (['Back','Abs','Core','Quads','Hamstrings','Glutes'].includes(m))     return ARMOR_GREEN
+  if (['Biceps','Triceps','Forearms'].includes(m))                             return ARMOR_GLOW
+  if (['Chest','Shoulders','Calves','Shins'].includes(m))                      return ARMOR_RED
+  if (['Back','Abs','Core','Quads','Hamstrings','Glutes'].includes(m))         return ARMOR_GREEN
   return ARMOR_GREEN
 }
 
-const MUSCLES = ['Head','Chest','Shoulders','Back','Biceps','Triceps','Abs','Core','Quads','Hamstrings','Glutes','Calves']
+const MUSCLES = ['Head','Chest','Shoulders','Back','Biceps','Triceps','Forearms','Abs','Core','Quads','Hamstrings','Glutes','Calves','Shins']
 
 const GROUP_FROM_ID = {
-  head_spine_rear:           'Head',
-  deltoid_anterior_left:     'Shoulders',
-  deltoid_anterior_right:    'Shoulders',
-  deltoid_posterior_left:    'Shoulders',
-  deltoid_posterior_right:   'Shoulders',
-  pectoralis_major_left:     'Chest',
-  pectoralis_major_right:    'Chest',
-  trapezius_left:            'Back',
-  trapezius_right:           'Back',
-  latissimus_dorsi_left:     'Back',
-  latissimus_dorsi_right:    'Back',
-  erector_spinae:            'Back',
-  biceps_brachii_left:       'Biceps',
-  biceps_brachii_right:      'Biceps',
-  triceps_brachii_left:      'Triceps',
-  triceps_brachii_right:     'Triceps',
-  upper_abs:                 'Abs',
-  lower_abs:                 'Abs',
-  external_oblique_left:     'Core',
-  external_oblique_right:    'Core',
-  internal_oblique_left:     'Core',
-  internal_oblique_right:    'Core',
-  quadriceps_femoris_left:   'Quads',
-  quadriceps_femoris_right:  'Quads',
-  hamstrings_left:           'Hamstrings',
-  hamstrings_right:          'Hamstrings',
-  gluteus_maximus_left:      'Glutes',
-  gluteus_maximus_right:     'Glutes',
-  gluteus_medius_left:       'Glutes',
-  gluteus_medius_right:      'Glutes',
-  gastrocnemius_left:        'Calves',
-  gastrocnemius_right:       'Calves',
-  soleus_left:               'Calves',
-  soleus_right:              'Calves',
-  tibialis_anterior_left:    'Calves',
-  tibialis_anterior_right:   'Calves',
+  head_spine_rear:             'Head',
+  // Shoulders
+  deltoid_anterior_left:       'Shoulders',
+  deltoid_anterior_right:      'Shoulders',
+  deltoid_posterior_left:      'Shoulders',
+  deltoid_posterior_right:     'Shoulders',
+  base:                        'Shoulders',
+  base_2:                      'Shoulders',
+  // Chest
+  pectoralis_major_left:       'Chest',
+  pectoralis_major_right:      'Chest',
+  // Back
+  trapezius_left:              'Back',
+  trapezius_right:             'Back',
+  latissimus_dorsi_left:       'Back',
+  latissimus_dorsi_right:      'Back',
+  erector_spinae:              'Back',
+  // Arms
+  biceps_brachii_left:         'Biceps',
+  biceps_brachii_right:        'Biceps',
+  triceps_brachii_left:        'Triceps',
+  triceps_brachii_right:       'Triceps',
+  forearm_flexors_left:        'Forearms',
+  forearm_flexors_right:       'Forearms',
+  forearm_extensors_left:      'Forearms',
+  forearm_extensors_right:     'Forearms',
+  // Torso
+  upper_abs:                   'Abs',
+  lower_abs:                   'Abs',
+  external_oblique_left:       'Core',
+  external_oblique_right:      'Core',
+  internal_oblique_left:       'Core',
+  internal_oblique_right:      'Core',
+  iliopsoas_left:              'Core',
+  iliopsoas_right:             'Core',
+  // Legs
+  quadriceps_femoris_left:     'Quads',
+  quadriceps_femoris_right:    'Quads',
+  adductor_longus_left:        'Quads',
+  adductor_longus_right:       'Quads',
+  hamstrings_left:             'Hamstrings',
+  hamstrings_right:            'Hamstrings',
+  gluteus_maximus_left:        'Glutes',
+  gluteus_maximus_right:       'Glutes',
+  gluteus_medius_left:         'Glutes',
+  gluteus_medius_right:        'Glutes',
+  gastrocnemius_left:          'Calves',
+  gastrocnemius_right:         'Calves',
+  soleus_left:                 'Calves',
+  soleus_right:                'Calves',
+  tibialis_anterior_left:      'Shins',
+  tibialis_anterior_right:     'Shins',
 }
 
 const GROUP_TO_DB = {
@@ -65,12 +81,14 @@ const GROUP_TO_DB = {
   Back:       'back',
   Biceps:     'biceps',
   Triceps:    'triceps',
+  Forearms:   'forearms',
   Abs:        'core',
   Core:       'obliques',
   Quads:      'quads',
   Hamstrings: 'hamstrings',
   Glutes:     'glutes',
   Calves:     'calves',
+  Shins:      'shins',
 }
 
 const SCI_SHORT = {
@@ -80,33 +98,35 @@ const SCI_SHORT = {
   Back:       'Trapezius · Lats · Erectors',
   Biceps:     'Biceps Brachii',
   Triceps:    'Triceps Brachii',
+  Forearms:   'Flexors & Extensors',
   Abs:        'Rectus Abdominis',
-  Core:       'External & Internal Obliques',
-  Quads:      'Quadriceps Femoris',
+  Core:       'Obliques · Hip Flexors',
+  Quads:      'Quadriceps · Adductors',
   Hamstrings: 'Biceps Femoris',
   Glutes:     'Gluteus Maximus',
-  Calves:     'Gastrocnemius',
+  Calves:     'Gastrocnemius · Soleus',
+  Shins:      'Tibialis Anterior',
 }
 
 // Forward mapping: region → SVG group IDs (used for CSS-based highlighting)
 const REGION_TO_IDS = {
-  Shoulders:  ['deltoid_anterior_left','deltoid_anterior_right','deltoid_posterior_left','deltoid_posterior_right'],
+  Shoulders:  ['deltoid_anterior_left','deltoid_anterior_right','deltoid_posterior_left','deltoid_posterior_right','base','base_2'],
   Chest:      ['pectoralis_major_left','pectoralis_major_right'],
   Back:       ['trapezius_left','trapezius_right','latissimus_dorsi_left','latissimus_dorsi_right','erector_spinae'],
   Biceps:     ['biceps_brachii_left','biceps_brachii_right'],
   Triceps:    ['triceps_brachii_left','triceps_brachii_right'],
+  Forearms:   ['forearm_flexors_left','forearm_flexors_right','forearm_extensors_left','forearm_extensors_right'],
   Abs:        ['upper_abs','lower_abs'],
-  Core:       ['external_oblique_left','external_oblique_right','internal_oblique_left','internal_oblique_right'],
-  Quads:      ['quadriceps_femoris_left','quadriceps_femoris_right'],
+  Core:       ['external_oblique_left','external_oblique_right','internal_oblique_left','internal_oblique_right','iliopsoas_left','iliopsoas_right'],
+  Quads:      ['quadriceps_femoris_left','quadriceps_femoris_right','adductor_longus_left','adductor_longus_right'],
   Hamstrings: ['hamstrings_left','hamstrings_right'],
   Glutes:     ['gluteus_maximus_left','gluteus_maximus_right','gluteus_medius_left','gluteus_medius_right'],
-  Calves:     ['gastrocnemius_left','gastrocnemius_right','soleus_left','soleus_right','tibialis_anterior_left','tibialis_anterior_right'],
+  Calves:     ['gastrocnemius_left','gastrocnemius_right','soleus_left','soleus_right'],
+  Shins:      ['tibialis_anterior_left','tibialis_anterior_right'],
 }
 
 const NON_INTERACTIVE_IDS = [
   'main_body','hand_left','hand_right','hand_rear_left','hand_rear_right',
-  'iliopsoas_left','iliopsoas_right','adductor_longus_left','adductor_longus_right',
-  'forearm_flexors_left','forearm_flexors_right','forearm_extensors_left','forearm_extensors_right',
 ]
 
 // Labels in 0 0 580 1615 viewBox coordinate space.
@@ -147,12 +167,14 @@ const MIND_DATA = {
 const LABELS = {
   anterior: [
     { group: 'Shoulders', x: 605,  y: 345,  anchor: 'start', ex: 468 },
-    { group: 'Chest',     x: 605,  y: 395,  anchor: 'start', ex: 445 },
+    { group: 'Chest',     x: 605,  y: 400,  anchor: 'start', ex: 445 },
     { group: 'Triceps',   x: -25,  y: 450,  anchor: 'end',   ex: 120 },
     { group: 'Biceps',    x: -25,  y: 510,  anchor: 'end',   ex: 95  },
     { group: 'Abs',       x: 605,  y: 490,  anchor: 'start', ex: 362 },
     { group: 'Core',      x: 605,  y: 635,  anchor: 'start', ex: 372 },
-    { group: 'Quads',     x: -25,  y: 940,  anchor: 'end',   ex: 178 },
+    { group: 'Forearms',  x: -25,  y: 650,  anchor: 'end',   ex: 115 },
+    { group: 'Quads',     x: -25,  y: 900,  anchor: 'end',   ex: 178 },
+    { group: 'Shins',     x: -25,  y: 1120, anchor: 'end',   ex: 248 },
     { group: 'Calves',    x: 605,  y: 1310, anchor: 'start', ex: 452 },
   ],
   posterior: [
@@ -160,6 +182,7 @@ const LABELS = {
     { group: 'Shoulders',  x: -25,  y: 340,  anchor: 'end',   ex: 110 },
     { group: 'Back',       x: 605,  y: 455,  anchor: 'start', ex: 425 },
     { group: 'Triceps',    x: -25,  y: 515,  anchor: 'end',   ex: 125 },
+    { group: 'Forearms',   x: -25,  y: 650,  anchor: 'end',   ex: 108 },
     { group: 'Glutes',     x: 605,  y: 790,  anchor: 'start', ex: 412 },
     { group: 'Hamstrings', x: -25,  y: 1000, anchor: 'end',   ex: 260 },
     { group: 'Calves',     x: 605,  y: 1305, anchor: 'start', ex: 450 },

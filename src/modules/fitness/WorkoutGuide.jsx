@@ -244,6 +244,19 @@ export const DB = {
       { name: 'Back Extension',        eq: 'Machine',     sets: '3 × 15',      yt: 'back extension hyperextension tutorial' },
     ],
   },
+  shins: {
+    label: 'Shins', scientific: 'Tibialis Anterior',
+    color: '#f97316', intensity: 2,
+    desc: 'The tibialis anterior runs along the front of the shin and dorsiflexes the foot. Often undertrained relative to the calves, a strong tibialis improves ankle stability, reduces shin splints, and balances the lower leg for injury prevention.',
+    exercises: [
+      { name: 'Tibialis Raise',        eq: 'Bodyweight', sets: '3 × 20',      yt: 'tibialis raise shin exercise tutorial' },
+      { name: 'Toe Walk',              eq: 'Bodyweight', sets: '3 × 30s',     yt: 'toe walking tibialis exercise tutorial' },
+      { name: 'Band Dorsiflexion',     eq: 'Band',       sets: '3 × 15',      yt: 'resistance band dorsiflexion ankle exercise tutorial' },
+      { name: 'Seated Tibialis Raise', eq: 'Weight Plate', sets: '3 × 20',   yt: 'seated tibialis anterior raise exercise tutorial' },
+      { name: 'Heel Walk',             eq: 'Bodyweight', sets: '3 × 30s',     yt: 'heel walk anterior tibialis shin exercise' },
+      { name: 'Ankle Dorsiflexion Stretch', eq: 'Bodyweight', sets: '3 × 30s', yt: 'ankle dorsiflexion flexibility shin stretch tutorial' },
+    ],
+  },
 }
 
 const FRONT_ZONES = ['chest','shoulders','biceps','forearms','core','obliques','quads','calves']
