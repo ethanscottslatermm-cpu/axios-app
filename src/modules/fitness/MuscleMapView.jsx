@@ -421,6 +421,32 @@ function ExCard({ ex, accent, onLog, muscleLabel }) {
   )
 }
 
+// Adds stable CSS classes to stroke-only paths during SVG load so they can be
+// reliably targeted without positional/nth-child selectors (which break on re-export).
+function tagDetailLines(svgText) {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(svgText, 'image/svg+xml')
+  Object.keys(GROUP_FROM_ID).forEach(id => {
+    const g = doc.getElementById(id)
+    if (!g) return
+    g.querySelectorAll('path').forEach(p => {
+      const fill = p.getAttribute('fill')
+      if (!fill || fill === 'none') p.classList.add('muscle-detail-line')
+    })
+  })
+  // Knee-adjacent quad strokes: those whose path data contains y-coords in [1050, 1165].
+  // x-coords are at most ~580 in this viewBox, so any number in 1050-1165 is a y-value.
+  ;['quadriceps_femoris_left', 'quadriceps_femoris_right'].forEach(id => {
+    const g = doc.getElementById(id)
+    if (!g) return
+    g.querySelectorAll('path.muscle-detail-line').forEach(p => {
+      const nums = (p.getAttribute('d') || '').match(/\d+(?:\.\d+)?/g)?.map(Number) ?? []
+      if (nums.some(n => n >= 1050 && n <= 1165)) p.classList.add('knee-detail-line')
+    })
+  })
+  return new XMLSerializer().serializeToString(doc.documentElement)
+}
+
 export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise, defaultSelected = null }) {
   const [selected,     setSelected]    = useState(defaultSelected)
   const [lastSelected, setLastSelected] = useState(null)
@@ -445,7 +471,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
       fetch('/New%20SVG%202D%20MODEL/Frame%201%20front.svg').then(r => r.text()),
       fetch('/New%20SVG%202D%20MODEL/Frame%202%20back.svg').then(r => r.text()),
     ]).then(([ant, post]) => {
-      setSvgs({ anterior: ant, posterior: post })
+      setSvgs({ anterior: tagDetailLines(ant), posterior: post })
       // Double rAF ensures first painted frame with fills applied before transitions are enabled,
       // eliminating the flash-of-unstyled-filter on mobile initial load.
       requestAnimationFrame(() => requestAnimationFrame(() => setTransitionsEnabled(true)))
@@ -536,6 +562,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         lines.push(`.mm-body-scope #${id} { filter: ${filter}; cursor: pointer; animation: ${anim}; ${tr} }`)
       })
     })
+
+    // Knee-adjacent quad detail lines get ghosted so the joint boundary reads cleanly.
+    // Specificity: #id path.knee-detail-line (1,2,1) beats #id path (1,1,1) — wins !important race.
+    lines.push('.mm-body-scope #quadriceps_femoris_left path.knee-detail-line { stroke-opacity: 0.22 !important; }')
+    lines.push('.mm-body-scope #quadriceps_femoris_right path.knee-detail-line { stroke-opacity: 0.22 !important; }')
 
     return lines.join('\n')
   }, [selected, lastWorked, todayStr, transitionsEnabled])
