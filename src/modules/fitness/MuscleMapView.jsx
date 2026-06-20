@@ -9,13 +9,13 @@ const HIGHLIGHT_COLOR = '#F5A623'
 const SELECTED_FILL = '#E8C158'
 
 const IDLE_FILL = {
-  Head:       '#5C4B5E',
+  Head:       '#F2EDE4',
   Shoulders:  '#1F4E79',
   Chest:      '#C7303D',
   Back:       '#1E6B4F',
   Biceps:     '#D4A23E',
   Triceps:    '#1F6B6B',
-  Forearms:   '#6B5640',
+  Forearms:   '#CC3333',
   Abs:        '#D4A23E',
   Obliques:   '#8C2F39',
   Quads:      '#2F7D5B',
@@ -138,11 +138,11 @@ const NON_INTERACTIVE_IDS = [
 ]
 
 const NON_INTERACTIVE_FILLS = {
-  main_body:       '#221A18',
-  hand_left:       '#5C4736',
-  hand_right:      '#5C4736',
-  hand_rear_left:  '#5C4736',
-  hand_rear_right: '#5C4736',
+  main_body:       '#F2EDE4',
+  hand_left:       '#F2EDE4',
+  hand_right:      '#F2EDE4',
+  hand_rear_left:  '#F2EDE4',
+  hand_rear_right: '#F2EDE4',
 }
 
 // Labels in 0 0 580 1615 viewBox coordinate space.
