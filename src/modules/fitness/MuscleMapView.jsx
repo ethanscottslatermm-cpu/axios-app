@@ -6,18 +6,26 @@ const FF = 'Helvetica Neue,Arial,sans-serif'
 const MIND_COLOR      = '#a78bfa'
 const HIGHLIGHT_COLOR = '#F5A623'
 
-const ARMOR_GLOW  = '#E8F4FF'
-const ARMOR_GREEN = '#10b981'
-const ARMOR_RED   = '#ef4444'
+const SELECTED_FILL = '#C9A84C'
 
-function muscleArmorColor(m) {
-  if (['Biceps','Triceps','Forearms'].includes(m))                             return ARMOR_GLOW
-  if (['Chest','Shoulders','Calves','Shins'].includes(m))                      return ARMOR_RED
-  if (['Back','Abs','Core','Quads','Hamstrings','Glutes'].includes(m))         return ARMOR_GREEN
-  return ARMOR_GREEN
+const IDLE_FILL = {
+  Head:       '#5C4B5E',
+  Shoulders:  '#B8864B',
+  Chest:      '#A8553C',
+  Back:       '#6B7355',
+  Biceps:     '#C9A877',
+  Triceps:    '#9C6B4F',
+  Forearms:   '#8A7560',
+  Abs:        '#B89456',
+  Obliques:   '#A6705E',
+  Quads:      '#8C7A4A',
+  Hamstrings: '#6E5A45',
+  Glutes:     '#B97448',
+  Shins:      '#5C6670',
+  Calves:     '#A85C3C',
 }
 
-const MUSCLES = ['Head','Chest','Shoulders','Back','Biceps','Triceps','Forearms','Abs','Core','Quads','Hamstrings','Glutes','Calves','Shins']
+const MUSCLES = ['Head','Chest','Shoulders','Back','Biceps','Triceps','Forearms','Abs','Obliques','Quads','Hamstrings','Glutes','Calves','Shins']
 
 const GROUP_FROM_ID = {
   head_spine_rear:             'Head',
@@ -49,12 +57,12 @@ const GROUP_FROM_ID = {
   // Torso
   upper_abs:                   'Abs',
   lower_abs:                   'Abs',
-  external_oblique_left:       'Core',
-  external_oblique_right:      'Core',
-  internal_oblique_left:       'Core',
-  internal_oblique_right:      'Core',
-  iliopsoas_left:              'Core',
-  iliopsoas_right:             'Core',
+  external_oblique_left:       'Obliques',
+  external_oblique_right:      'Obliques',
+  internal_oblique_left:       'Obliques',
+  internal_oblique_right:      'Obliques',
+  iliopsoas_left:              'Obliques',
+  iliopsoas_right:             'Obliques',
   // Legs
   quadriceps_femoris_left:     'Quads',
   quadriceps_femoris_right:    'Quads',
@@ -83,7 +91,7 @@ const GROUP_TO_DB = {
   Triceps:    'triceps',
   Forearms:   'forearms',
   Abs:        'core',
-  Core:       'obliques',
+  Obliques:   'obliques',
   Quads:      'quads',
   Hamstrings: 'hamstrings',
   Glutes:     'glutes',
@@ -100,7 +108,7 @@ const SCI_SHORT = {
   Triceps:    'Triceps Brachii',
   Forearms:   'Flexors & Extensors',
   Abs:        'Rectus Abdominis',
-  Core:       'Obliques · Hip Flexors',
+  Obliques:   'Hip Flexors',
   Quads:      'Quadriceps · Adductors',
   Hamstrings: 'Biceps Femoris',
   Glutes:     'Gluteus Maximus',
@@ -117,7 +125,7 @@ const REGION_TO_IDS = {
   Triceps:    ['triceps_brachii_left','triceps_brachii_right'],
   Forearms:   ['forearm_flexors_left','forearm_flexors_right','forearm_extensors_left','forearm_extensors_right'],
   Abs:        ['upper_abs','lower_abs'],
-  Core:       ['external_oblique_left','external_oblique_right','internal_oblique_left','internal_oblique_right','iliopsoas_left','iliopsoas_right'],
+  Obliques:   ['external_oblique_left','external_oblique_right','internal_oblique_left','internal_oblique_right','iliopsoas_left','iliopsoas_right'],
   Quads:      ['quadriceps_femoris_left','quadriceps_femoris_right','adductor_longus_left','adductor_longus_right'],
   Hamstrings: ['hamstrings_left','hamstrings_right'],
   Glutes:     ['gluteus_maximus_left','gluteus_maximus_right','gluteus_medius_left','gluteus_medius_right'],
@@ -171,7 +179,7 @@ const LABELS = {
     { group: 'Triceps',   x: -25,  y: 450,  anchor: 'end',   ex: 120 },
     { group: 'Biceps',    x: -25,  y: 510,  anchor: 'end',   ex: 95  },
     { group: 'Abs',       x: 605,  y: 490,  anchor: 'start', ex: 362 },
-    { group: 'Core',      x: 605,  y: 635,  anchor: 'start', ex: 372 },
+    { group: 'Obliques',  x: 605,  y: 635,  anchor: 'start', ex: 372 },
     { group: 'Forearms',  x: -25,  y: 650,  anchor: 'end',   ex: 115 },
     { group: 'Quads',     x: -25,  y: 900,  anchor: 'end',   ex: 178 },
     { group: 'Shins',     x: -25,  y: 1120, anchor: 'end',   ex: 248 },
@@ -378,7 +386,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const [spinning,     setSpinning]    = useState(false)
   const [breathingEx,  setBreathingEx] = useState(null)
   const [ripples,      setRipples]     = useState([])
-  const [svgs,         setSvgs]        = useState({ anterior: '', posterior: '' })
+  const [svgs,               setSvgs]               = useState({ anterior: '', posterior: '' })
+  const [transitionsEnabled, setTransitionsEnabled]  = useState(false)
   const svgRef      = useRef(null)
   const touchStartX = useRef(null)
   const didSwipe    = useRef(false)
@@ -392,7 +401,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     Promise.all([
       fetch('/New%20SVG%202D%20MODEL/Frame%201%20front.svg').then(r => r.text()),
       fetch('/New%20SVG%202D%20MODEL/Frame%202%20back.svg').then(r => r.text()),
-    ]).then(([ant, post]) => setSvgs({ anterior: ant, posterior: post }))
+    ]).then(([ant, post]) => {
+      setSvgs({ anterior: ant, posterior: post })
+      // Double rAF ensures first painted frame with fills applied before transitions are enabled,
+      // eliminating the flash-of-unstyled-filter on mobile initial load.
+      requestAnimationFrame(() => requestAnimationFrame(() => setTransitionsEnabled(true)))
+    })
   }, [])
 
   const counts = useMemo(() => {
@@ -433,47 +447,38 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   // CSS-based muscle highlighting — scoped to .mm-body-scope to avoid leaking to other SVGs
   const muscleCSS = useMemo(() => {
     const lines = []
+    // Transition only enabled after SVGs first paint to prevent flicker on mobile mount
+    const tr = transitionsEnabled ? 'transition: filter 0.4s ease;' : 'transition: none;'
 
-    // Make inline SVG responsive
     lines.push('.mm-body-scope svg { width: 100% !important; height: auto !important; display: block; }')
 
-    // Non-interactive groups: dark neutral fill, no pointer events
     NON_INTERACTIVE_IDS.forEach(id => {
       lines.push(`.mm-body-scope #${id} path { fill: #3C3C3C !important; stroke: rgba(255,255,255,0.07) !important; }`)
       lines.push(`.mm-body-scope #${id} { pointer-events: none !important; }`)
     })
 
+    const GOLD_GLOW = 'drop-shadow(0 0 20px rgba(201,168,76,0.32)) drop-shadow(0 0 10px rgba(201,168,76,0.55)) drop-shadow(0 0 5px rgba(201,168,76,0.75))'
+
     // Head region
     const headSel  = selected === 'Head'
-    const headFill = headSel ? `${MIND_COLOR}BB` : `${MIND_COLOR}44`
-    const headFilter = headSel
-      ? 'drop-shadow(0 0 12px rgba(167,139,250,0.9)) drop-shadow(0 0 6px rgba(167,139,250,0.7))'
-      : 'drop-shadow(0 0 5px rgba(167,139,250,0.45))'
+    const headFill = headSel ? SELECTED_FILL : IDLE_FILL.Head
     const headAnim = headSel ? 'mmSelectPulse 2.4s ease-in-out infinite' : 'mmIdleGlow 3.5s ease-in-out 0s infinite'
-    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; }`)
-    lines.push(`.mm-body-scope #head_spine_rear { filter: ${headFilter}; cursor: pointer; animation: ${headAnim}; transition: filter 0.4s ease; }`)
+    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: #1A1410 !important; }`)
+    lines.push(`.mm-body-scope #head_spine_rear { filter: ${headSel ? GOLD_GLOW : 'none'}; cursor: pointer; animation: ${headAnim}; ${tr} }`)
 
     // Interactive muscle regions
     MUSCLES.filter(m => m !== 'Head').forEach((region, mIdx) => {
       const isSelected = selected === region
-      const armorCol   = muscleArmorColor(region)
       const ids        = REGION_TO_IDS[region] || []
       if (!ids.length) return
 
-      const lw       = lastWorked[region]
+      const lw         = lastWorked[region]
       const isFatigued = lw
         ? Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000) === 0
         : false
 
-      const fill = isSelected ? armorCol + 'CC' : armorCol + '55'
-
-      const glowRGB = armorCol === ARMOR_GLOW  ? '232,244,255'
-        : armorCol === ARMOR_RED               ? '239,68,68'
-        : '16,185,129'
-
-      const filter = isSelected
-        ? `drop-shadow(0 0 14px rgba(${glowRGB},0.95)) drop-shadow(0 0 7px rgba(${glowRGB},0.75))`
-        : `drop-shadow(0 0 5px rgba(${glowRGB},0.55)) drop-shadow(0 0 2px rgba(${glowRGB},0.35))`
+      const fill   = isSelected ? SELECTED_FILL : IDLE_FILL[region]
+      const filter = isSelected ? GOLD_GLOW : 'none'
 
       const anim = isSelected
         ? 'mmSelectPulse 2.4s ease-in-out infinite'
@@ -482,13 +487,13 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         : `mmIdleGlow 3.5s ease-in-out ${(mIdx * 0.3).toFixed(1)}s infinite`
 
       ids.forEach(id => {
-        lines.push(`.mm-body-scope #${id} path { fill: ${fill} !important; stroke: rgba(0,0,0,0.35) !important; }`)
-        lines.push(`.mm-body-scope #${id} { filter: ${filter}; cursor: pointer; animation: ${anim}; transition: filter 0.4s ease; }`)
+        lines.push(`.mm-body-scope #${id} path { fill: ${fill} !important; stroke: #1A1410 !important; }`)
+        lines.push(`.mm-body-scope #${id} { filter: ${filter}; cursor: pointer; animation: ${anim}; ${tr} }`)
       })
     })
 
     return lines.join('\n')
-  }, [selected, lastWorked, todayStr])
+  }, [selected, lastWorked, todayStr, transitionsEnabled])
 
   useEffect(() => {
     if (selected && selected !== 'Head') {
@@ -596,7 +601,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
-              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(245,166,35,0.12) 0%, transparent 65%)'
+              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(201,168,76,0.12) 0%, transparent 65%)'
               : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(27,58,107,0.08) 0%, transparent 65%)',
             transition: 'background 0.6s ease',
           }}/>
@@ -671,10 +676,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
             {labels.map(l => {
               const isActive    = selected === l.group
               const isHeadLbl   = l.group === 'Head'
-              const armorCol    = isHeadLbl ? MIND_COLOR : muscleArmorColor(l.group)
-              const activeColor = armorCol === ARMOR_GLOW ? '#ffffff' : armorCol
-              const idleColor   = armorCol + '55'
-              const color       = isActive ? activeColor : idleColor
+              const idleFill    = isHeadLbl ? MIND_COLOR : (IDLE_FILL[l.group] ?? MIND_COLOR)
+              const color       = isActive ? SELECTED_FILL : idleFill + '88'
               const lineX1      = l.anchor === 'start' ? 581 : -1
               const dotX        = l.ex
 
@@ -715,7 +718,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                     fontFamily={FF}
                     fontWeight="400"
                     fontStyle="italic"
-                    fill={isActive ? activeColor + 'cc' : armorCol + '33'}
+                    fill={isActive ? SELECTED_FILL + 'cc' : idleFill + '44'}
                     letterSpacing="0.02em"
                     style={{ transition: 'fill 0.2s' }}
                   >
