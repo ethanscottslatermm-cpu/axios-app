@@ -6,23 +6,23 @@ const FF = 'Helvetica Neue,Arial,sans-serif'
 const MIND_COLOR      = '#a78bfa'
 const HIGHLIGHT_COLOR = '#F5A623'
 
-const SELECTED_FILL = '#C9A84C'
+const SELECTED_FILL = '#E8C158'
 
 const IDLE_FILL = {
   Head:       '#5C4B5E',
-  Shoulders:  '#B8864B',
-  Chest:      '#A8553C',
-  Back:       '#6B7355',
-  Biceps:     '#C9A877',
-  Triceps:    '#9C6B4F',
-  Forearms:   '#8A7560',
-  Abs:        '#B89456',
-  Obliques:   '#A6705E',
-  Quads:      '#8C7A4A',
-  Hamstrings: '#6E5A45',
-  Glutes:     '#B97448',
-  Shins:      '#5C6670',
-  Calves:     '#A85C3C',
+  Shoulders:  '#1F4E79',
+  Chest:      '#C7303D',
+  Back:       '#1E6B4F',
+  Biceps:     '#D4A23E',
+  Triceps:    '#1F6B6B',
+  Forearms:   '#6B5640',
+  Abs:        '#D4A23E',
+  Obliques:   '#8C2F39',
+  Quads:      '#2F7D5B',
+  Hamstrings: '#1F5C5C',
+  Glutes:     '#2A3F6B',
+  Shins:      '#3A5C70',
+  Calves:     '#B83A2E',
 }
 
 const MUSCLES = ['Head','Chest','Shoulders','Back','Biceps','Triceps','Forearms','Abs','Obliques','Quads','Hamstrings','Glutes','Calves','Shins']
@@ -136,6 +136,14 @@ const REGION_TO_IDS = {
 const NON_INTERACTIVE_IDS = [
   'main_body','hand_left','hand_right','hand_rear_left','hand_rear_right',
 ]
+
+const NON_INTERACTIVE_FILLS = {
+  main_body:       '#221A18',
+  hand_left:       '#5C4736',
+  hand_right:      '#5C4736',
+  hand_rear_left:  '#5C4736',
+  hand_rear_right: '#5C4736',
+}
 
 // Labels in 0 0 580 1615 viewBox coordinate space.
 // x < 0 or x > 580 renders outside body (requires overflow:visible on parent).
@@ -453,11 +461,12 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     lines.push('.mm-body-scope svg { width: 100% !important; height: auto !important; display: block; }')
 
     NON_INTERACTIVE_IDS.forEach(id => {
-      lines.push(`.mm-body-scope #${id} path { fill: #3C3C3C !important; stroke: rgba(255,255,255,0.07) !important; }`)
+      const fill = NON_INTERACTIVE_FILLS[id] ?? '#221A18'
+      lines.push(`.mm-body-scope #${id} path { fill: ${fill} !important; stroke: rgba(255,255,255,0.07) !important; }`)
       lines.push(`.mm-body-scope #${id} { pointer-events: none !important; }`)
     })
 
-    const GOLD_GLOW = 'drop-shadow(0 0 20px rgba(201,168,76,0.32)) drop-shadow(0 0 10px rgba(201,168,76,0.55)) drop-shadow(0 0 5px rgba(201,168,76,0.75))'
+    const GOLD_GLOW = 'drop-shadow(0 0 20px rgba(232,193,88,0.32)) drop-shadow(0 0 10px rgba(232,193,88,0.55)) drop-shadow(0 0 5px rgba(232,193,88,0.75))'
 
     // Head region
     const headSel  = selected === 'Head'
@@ -601,7 +610,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0, borderRadius: 8, pointerEvents: 'none',
             background: selected && selected !== 'Head'
-              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(201,168,76,0.12) 0%, transparent 65%)'
+              ? 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(232,193,88,0.12) 0%, transparent 65%)'
               : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(27,58,107,0.08) 0%, transparent 65%)',
             transition: 'background 0.6s ease',
           }}/>
