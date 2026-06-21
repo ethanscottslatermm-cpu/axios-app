@@ -558,7 +558,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         ? Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000) === 0
         : false
 
-      const isShins  = region === 'Shins'
+      const isShins  = region === 'Shins' || region === 'Triceps'
       const fill     = isShins ? 'none' : isSelected ? ACTIVE_FILL[region] : IDLE_FILL[region]
       const filter   = isSelected ? makeGlow(ACTIVE_GLOW_RGB[region]) + ' ' + BODY_OUTLINE_FILTER + ' ' + WHITE_RIM : BODY_OUTLINE_FILTER + ' ' + WHITE_RIM
       const stroke   = isShins ? 'rgba(255,255,255,0.88)' : isSelected ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.42)'
