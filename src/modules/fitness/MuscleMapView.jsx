@@ -7,7 +7,7 @@ const MIND_COLOR      = '#a78bfa'
 const HIGHLIGHT_COLOR = '#F5A623'
 
 const ACTIVE_FILL = {
-  Head:       '#A090C0',
+  Head:       '#E0A870',
   Shoulders:  '#4A8FD4',
   Chest:      '#E85568',
   Back:       '#32B47C',
@@ -24,7 +24,7 @@ const ACTIVE_FILL = {
 }
 
 const ACTIVE_GLOW_RGB = {
-  Head:       [160, 144, 192],
+  Head:       [224, 168, 112],
   Shoulders:  [74,  143, 212],
   Chest:      [232, 85,  104],
   Back:       [50,  180, 124],
@@ -43,8 +43,12 @@ const ACTIVE_GLOW_RGB = {
 const makeGlow = ([r, g, b]) =>
   `drop-shadow(0 0 22px rgba(${r},${g},${b},0.40)) drop-shadow(0 0 10px rgba(${r},${g},${b},0.65)) drop-shadow(0 0 4px rgba(${r},${g},${b},0.92))`
 
+// Sharp white rim that outlines each muscle group silhouette and pulses with the group's opacity animation.
+// 0.8px layer = near-stroke sharpness; 3px = soft inner halo; 8px = wide ambient white.
+const WHITE_RIM = 'drop-shadow(0 0 0.8px rgba(255,255,255,0.80)) drop-shadow(0 0 3px rgba(255,255,255,0.32)) drop-shadow(0 0 8px rgba(255,255,255,0.12))'
+
 const IDLE_FILL = {
-  Head:       '#5C4B5E',
+  Head:       '#C4864A',
   Shoulders:  '#1F4E79',
   Chest:      '#C7303D',
   Back:       '#1E6B4F',
@@ -173,11 +177,11 @@ const NON_INTERACTIVE_IDS = [
 ]
 
 const NON_INTERACTIVE_FILLS = {
-  main_body:       '#5C4B5E',
-  hand_left:       '#F2EDE4',
-  hand_right:      '#F2EDE4',
-  hand_rear_left:  '#F2EDE4',
-  hand_rear_right: '#F2EDE4',
+  main_body:       '#C4864A',
+  hand_left:       '#C4864A',
+  hand_right:      '#C4864A',
+  hand_rear_left:  '#C4864A',
+  hand_rear_right: '#C4864A',
 }
 
 // Labels in 0 0 580 1615 viewBox coordinate space.
@@ -537,7 +541,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     // Head region
     const headSel  = selected === 'Head'
     const headFill = headSel ? ACTIVE_FILL.Head : IDLE_FILL.Head
-    const headGlow = headSel ? makeGlow(ACTIVE_GLOW_RGB.Head) : 'none'
+    const headGlow = headSel ? makeGlow(ACTIVE_GLOW_RGB.Head) + ' ' + WHITE_RIM : WHITE_RIM
     const headAnim = headSel ? 'mmSelectPulse 2.4s ease-in-out infinite' : 'mmIdleGlow 3.5s ease-in-out 0s infinite'
     lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: ${headSel ? '#0C0A08' : '#1A1410'} !important; stroke-width: ${headSel ? '1.5px' : '1px'} !important; }`)
     lines.push(`.mm-body-scope #head_spine_rear { filter: ${headGlow}; cursor: pointer; animation: ${headAnim}; ${tr} }`)
@@ -554,7 +558,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         : false
 
       const fill     = isSelected ? ACTIVE_FILL[region]            : IDLE_FILL[region]
-      const filter   = isSelected ? makeGlow(ACTIVE_GLOW_RGB[region]) : 'none'
+      const filter   = isSelected ? makeGlow(ACTIVE_GLOW_RGB[region]) + ' ' + WHITE_RIM : WHITE_RIM
       const stroke   = isSelected ? '#0C0A08'                      : '#1A1410'
       const strokeW  = isSelected ? '1.5px'                        : '1px'
 
