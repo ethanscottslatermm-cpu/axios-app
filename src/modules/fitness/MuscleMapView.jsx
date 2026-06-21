@@ -444,6 +444,13 @@ function tagDetailLines(svgText) {
       if (nums.some(n => n >= 1050 && n <= 1165)) p.classList.add('knee-detail-line')
     })
   })
+  // Fix z-order: the new SVG places tibialis_anterior_right before both gastrocnemius groups,
+  // so calf renders on top of the right shin. Move it to just after gastrocnemius_right.
+  const tibR = doc.getElementById('tibialis_anterior_right')
+  const gastR = doc.getElementById('gastrocnemius_right')
+  if (tibR && gastR && tibR.parentNode === gastR.parentNode) {
+    gastR.parentNode.insertBefore(tibR, gastR.nextSibling)
+  }
   return new XMLSerializer().serializeToString(doc.documentElement)
 }
 
@@ -559,6 +566,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
 
       ids.forEach(id => {
         lines.push(`.mm-body-scope #${id} path { fill: ${fill} !important; stroke: ${stroke} !important; stroke-width: ${strokeW} !important; }`)
+        // Compound stroke-only paths (muscle-detail-line) must stay fill:none — CSS forced fills on
+        // compound multi-sub-path elements create winding-rule holes that reveal muscles behind.
+        lines.push(`.mm-body-scope #${id} path.muscle-detail-line { fill: none !important; }`)
         lines.push(`.mm-body-scope #${id} { filter: ${filter}; cursor: pointer; animation: ${anim}; ${tr} }`)
       })
     })
