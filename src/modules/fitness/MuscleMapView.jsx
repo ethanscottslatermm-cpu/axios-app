@@ -7,61 +7,61 @@ const MIND_COLOR      = '#a78bfa'
 const HIGHLIGHT_COLOR = '#F5A623'
 
 const ACTIVE_FILL = {
-  Head:       '#E0A870',
+  Head:       '#EAC99E',
   Shoulders:  '#4A8FD4',
   Chest:      '#E85568',
   Back:       '#32B47C',
   Biceps:     '#F5C84A',
   Triceps:    '#33AAAA',
-  Forearms:   '#F04C4C',
-  Abs:        '#F5C84A',
+  Forearms:   '#3864B8',
+  Abs:        '#3864B8',
   Obliques:   '#C04462',
   Quads:      '#40AE7E',
   Hamstrings: '#2E9090',
   Glutes:     '#3864B8',
   Shins:      '#4C8BAC',
-  Calves:     '#E05848',
+  Calves:     '#3864B8',
 }
 
 const ACTIVE_GLOW_RGB = {
-  Head:       [224, 168, 112],
+  Head:       [212, 185, 156],
   Shoulders:  [74,  143, 212],
   Chest:      [232, 85,  104],
   Back:       [50,  180, 124],
   Biceps:     [245, 200, 74 ],
   Triceps:    [51,  170, 170],
-  Forearms:   [240, 76,  76 ],
-  Abs:        [245, 200, 74 ],
+  Forearms:   [56,  100, 184],
+  Abs:        [56,  100, 184],
   Obliques:   [192, 68,  98 ],
   Quads:      [64,  174, 126],
   Hamstrings: [46,  144, 144],
   Glutes:     [56,  100, 184],
   Shins:      [76,  139, 172],
-  Calves:     [224, 88,  72 ],
+  Calves:     [56,  100, 184],
 }
 
 const makeGlow = ([r, g, b]) =>
   `drop-shadow(0 0 22px rgba(${r},${g},${b},0.40)) drop-shadow(0 0 10px rgba(${r},${g},${b},0.65)) drop-shadow(0 0 4px rgba(${r},${g},${b},0.92))`
 
-// Sharp white rim that outlines each muscle group silhouette and pulses with the group's opacity animation.
-// 0.8px layer = near-stroke sharpness; 3px = soft inner halo; 8px = wide ambient white.
-const WHITE_RIM = 'drop-shadow(0 0 0.8px rgba(255,255,255,0.80)) drop-shadow(0 0 3px rgba(255,255,255,0.32)) drop-shadow(0 0 8px rgba(255,255,255,0.12))'
+// Premium white rim: razor-sharp 0.3px edge traces the muscle silhouette, 1.5px halo softens it,
+// 6px ambient gives depth. Pulses with the group's existing opacity animation.
+const WHITE_RIM = 'drop-shadow(0 0 0.3px rgba(255,255,255,0.95)) drop-shadow(0 0 1.5px rgba(255,255,255,0.50)) drop-shadow(0 0 6px rgba(255,255,255,0.16))'
 
 const IDLE_FILL = {
-  Head:       '#C4864A',
+  Head:       '#D4AF8C',
   Shoulders:  '#1F4E79',
   Chest:      '#C7303D',
   Back:       '#1E6B4F',
   Biceps:     '#D4A23E',
   Triceps:    '#1F6B6B',
-  Forearms:   '#CC3333',
-  Abs:        '#D4A23E',
+  Forearms:   '#2A3F6B',
+  Abs:        '#2A3F6B',
   Obliques:   '#8C2F39',
   Quads:      '#2F7D5B',
   Hamstrings: '#1F5C5C',
   Glutes:     '#2A3F6B',
   Shins:      '#3A5C70',
-  Calves:     '#B83A2E',
+  Calves:     '#2A3F6B',
 }
 
 const MUSCLES = ['Head','Chest','Shoulders','Back','Biceps','Triceps','Forearms','Abs','Obliques','Quads','Hamstrings','Glutes','Calves','Shins']
@@ -177,11 +177,11 @@ const NON_INTERACTIVE_IDS = [
 ]
 
 const NON_INTERACTIVE_FILLS = {
-  main_body:       '#C4864A',
-  hand_left:       '#C4864A',
-  hand_right:      '#C4864A',
-  hand_rear_left:  '#C4864A',
-  hand_rear_right: '#C4864A',
+  main_body:       '#D4AF8C',
+  hand_left:       '#D4AF8C',
+  hand_right:      '#D4AF8C',
+  hand_rear_left:  '#D4AF8C',
+  hand_rear_right: '#D4AF8C',
 }
 
 // Labels in 0 0 580 1615 viewBox coordinate space.
@@ -543,7 +543,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     const headFill = headSel ? ACTIVE_FILL.Head : IDLE_FILL.Head
     const headGlow = headSel ? makeGlow(ACTIVE_GLOW_RGB.Head) + ' ' + WHITE_RIM : WHITE_RIM
     const headAnim = headSel ? 'mmSelectPulse 2.4s ease-in-out infinite' : 'mmIdleGlow 3.5s ease-in-out 0s infinite'
-    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: ${headSel ? '#0C0A08' : '#1A1410'} !important; stroke-width: ${headSel ? '1.5px' : '1px'} !important; }`)
+    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: ${headSel ? '#050302' : '#0A0806'} !important; stroke-width: ${headSel ? '1.1px' : '0.65px'} !important; }`)
     lines.push(`.mm-body-scope #head_spine_rear { filter: ${headGlow}; cursor: pointer; animation: ${headAnim}; ${tr} }`)
 
     // Interactive muscle regions
@@ -559,8 +559,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
 
       const fill     = isSelected ? ACTIVE_FILL[region]            : IDLE_FILL[region]
       const filter   = isSelected ? makeGlow(ACTIVE_GLOW_RGB[region]) + ' ' + WHITE_RIM : WHITE_RIM
-      const stroke   = isSelected ? '#0C0A08'                      : '#1A1410'
-      const strokeW  = isSelected ? '1.5px'                        : '1px'
+      const stroke   = isSelected ? '#050302'                      : '#0A0806'
+      const strokeW  = isSelected ? '1.1px'                        : '0.65px'
 
       const anim = isSelected
         ? 'mmSelectPulse 2.4s ease-in-out infinite'
