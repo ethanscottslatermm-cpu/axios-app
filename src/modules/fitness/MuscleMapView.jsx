@@ -186,30 +186,6 @@ const NON_INTERACTIVE_FILLS = {
   hand_rear_right: '#B8906A',
 }
 
-// Approximate SVG-coordinate origins (580×1616 space) for floating data particles
-const PARTICLE_ORIGINS = {
-  anterior: {
-    Head:       [{ x: 290, y: 305 }],
-    Shoulders:  [{ x: 148, y: 458 }, { x: 432, y: 458 }],
-    Chest:      [{ x: 215, y: 592 }, { x: 365, y: 592 }],
-    Biceps:     [{ x: 120, y: 678 }, { x: 460, y: 678 }],
-    Forearms:   [{ x: 110, y: 860 }, { x: 470, y: 860 }],
-    Abs:        [{ x: 262, y: 838 }, { x: 318, y: 838 }],
-    Obliques:   [{ x: 207, y: 882 }, { x: 373, y: 882 }],
-    Quads:      [{ x: 200, y: 1158 }, { x: 380, y: 1158 }],
-    Shins:      [{ x: 198, y: 1418 }, { x: 382, y: 1418 }],
-  },
-  posterior: {
-    Back:       [{ x: 207, y: 514 }, { x: 373, y: 514 }],
-    Triceps:    [{ x: 120, y: 698 }, { x: 460, y: 698 }],
-    Forearms:   [{ x: 110, y: 860 }, { x: 470, y: 860 }],
-    Obliques:   [{ x: 207, y: 882 }, { x: 373, y: 882 }],
-    Hamstrings: [{ x: 207, y: 1148 }, { x: 373, y: 1148 }],
-    Glutes:     [{ x: 207, y: 968 }, { x: 373, y: 968 }],
-    Calves:     [{ x: 208, y: 1418 }, { x: 372, y: 1418 }],
-  },
-}
-
 // Labels in 0 0 580 1615 viewBox coordinate space.
 // x < 0 or x > 580 renders outside body (requires overflow:visible on parent).
 // ex = x-coordinate of leader-line body-side endpoint.
@@ -492,14 +468,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const [spinning,     setSpinning]    = useState(false)
   const [breathingEx,  setBreathingEx] = useState(null)
   const [ripples,      setRipples]     = useState([])
-  const [particles,    setParticles]   = useState([])
   const [svgs,               setSvgs]               = useState({ anterior: '', posterior: '' })
   const [transitionsEnabled, setTransitionsEnabled]  = useState(false)
-  const svgRef        = useRef(null)
-  const touchStartX   = useRef(null)
-  const didSwipe      = useRef(false)
-  const particleIdRef = useRef(0)
-  const particleData  = useRef({ lastWorked: {}, counts: {}, todayStr: '' })
+  const svgRef      = useRef(null)
+  const touchStartX = useRef(null)
+  const didSwipe    = useRef(false)
 
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
@@ -546,32 +519,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     })
     return lw
   }, [workouts])
-
-  // Keep particle data ref in sync — placed after both memos to avoid temporal dead zone
-  useEffect(() => { particleData.current = { lastWorked, counts, todayStr } }, [lastWorked, counts, todayStr])
-
-  // Floating data particle spawn — fires every 2.6s, picks a random trained muscle in current view
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const origins = PARTICLE_ORIGINS[view] || {}
-      const { lastWorked: lw, counts: cnt, todayStr: ts } = particleData.current
-      const eligible = Object.keys(origins).filter(m => lw[m])
-      if (!eligible.length) return
-      const muscle = eligible[Math.floor(Math.random() * eligible.length)]
-      const pts    = origins[muscle]
-      const origin = pts[Math.floor(Math.random() * pts.length)]
-      const days   = lw[muscle] ? Math.round((new Date(ts + 'T12:00:00') - new Date(lw[muscle] + 'T12:00:00')) / 86400000) : null
-      const wk     = cnt[muscle] || 0
-      const label  = wk > 0 && days !== null
-        ? (Math.random() > 0.5 ? `×${wk}` : days === 0 ? 'today' : `${days}d`)
-        : wk > 0 ? `×${wk}` : days === 0 ? 'today' : `${days}d`
-      const pid    = particleIdRef.current++
-      const jitter = (Math.random() - 0.5) * 50
-      setParticles(p => [...p.slice(-10), { id: pid, x: origin.x + jitter, y: origin.y, label, color: IDLE_FILL[muscle] || '#4A8FD4' }])
-      setTimeout(() => setParticles(p => p.filter(pt => pt.id !== pid)), 3600)
-    }, 2600)
-    return () => clearInterval(timer)
-  }, [view])
 
   function muscleAgeDays(muscle) {
     const lw = lastWorked[muscle]
@@ -674,12 +621,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     setTimeout(() => setSpinning(false), 460)
   }
 
-  const isHead   = selected === 'Head'
-  const n        = selected && !isHead ? (counts[selected] || 0) : 0
-  const rec      = selected && !isHead ? getRecovery(n) : null
-  const dbData   = selected && !isHead ? DB[GROUP_TO_DB[selected]] : null
-  const labels   = LABELS[view] || []
-  const bleedRgb = selected && ACTIVE_GLOW_RGB[selected] ? ACTIVE_GLOW_RGB[selected] : [30, 50, 120]
+  const isHead = selected === 'Head'
+  const n      = selected && !isHead ? (counts[selected] || 0) : 0
+  const rec    = selected && !isHead ? getRecovery(n) : null
+  const dbData = selected && !isHead ? DB[GROUP_TO_DB[selected]] : null
+  const labels = LABELS[view] || []
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -695,11 +641,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @-webkit-keyframes mmPulse        { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
         @-webkit-keyframes mmSelectPulse  { 0%,100% { opacity:0.78 } 50% { opacity:1.00 } }
         @-webkit-keyframes mmIdleGlow     { 0%,100% { opacity:0.42 } 50% { opacity:0.88 } }
-        @keyframes mmScan          { 0%{transform:translateY(0);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(1620px);opacity:0.5} 33%{transform:translateY(1620px);opacity:0} 100%{transform:translateY(1620px);opacity:0} }
-        @keyframes mmRipple        { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
-        @keyframes mmBreath        { 0%,100%{opacity:0.38;transform:scale(1)} 50%{opacity:0.78;transform:scale(1.05)} }
-        @keyframes mmParticleFloat { 0%{transform:translateY(0);opacity:0} 10%{opacity:0.85} 85%{opacity:0.62} 100%{transform:translateY(-88px);opacity:0} }
-        @keyframes mmCornerPulse   { 0%,100%{opacity:0.7} 50%{opacity:1} }
+        @keyframes mmScan    { 0%{transform:translateY(0);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(1620px);opacity:0.5} 33%{transform:translateY(1620px);opacity:0} 100%{transform:translateY(1620px);opacity:0} }
+        @keyframes mmRipple  { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
       `}</style>
 
       {/* Dynamic muscle highlighting */}
@@ -753,31 +696,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               ? `radial-gradient(ellipse 72% 62% at 50% 45%, rgba(${ACTIVE_GLOW_RGB[selected].join(',')},0.16) 0%, transparent 65%)`
               : 'radial-gradient(ellipse 72% 62% at 50% 45%, rgba(27,58,107,0.08) 0%, transparent 65%)',
             transition: 'background 0.6s ease',
-          }}/>
-
-          {/* Breathing backdrop — very slow radial pulse behind the model */}
-          <div style={{
-            position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', borderRadius: 8,
-            background: 'radial-gradient(ellipse 68% 54% at 50% 46%, rgba(12,18,52,0.62) 0%, transparent 72%)',
-            animation: 'mmBreath 5.5s ease-in-out infinite',
-          }}/>
-
-          {/* Top corner light bleed — shifts hue with selected muscle */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, height: '38%',
-            pointerEvents: 'none', zIndex: 0,
-            background: `radial-gradient(ellipse 88% 100% at 50% 0%, rgba(${bleedRgb.join(',')},0.20) 0%, transparent 72%)`,
-            animation: 'mmCornerPulse 6s ease-in-out infinite',
-            transition: 'background 1.4s ease',
-          }}/>
-
-          {/* Bottom corner light bleed */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0, height: '26%',
-            pointerEvents: 'none', zIndex: 0,
-            background: `radial-gradient(ellipse 88% 100% at 50% 100%, rgba(${bleedRgb.join(',')},0.12) 0%, transparent 70%)`,
-            animation: 'mmCornerPulse 6s ease-in-out 3s infinite',
-            transition: 'background 1.4s ease',
           }}/>
 
           {/* Inline SVG body — CSS class scopes all muscle highlighting rules */}
@@ -844,25 +762,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   pointerEvents: 'none',
                 }}
               />
-            ))}
-
-            {/* Floating data particles — drift upward from trained muscles */}
-            {particles.map(pt => (
-              <text
-                key={pt.id}
-                x={pt.x} y={pt.y}
-                textAnchor="middle"
-                fontSize="23"
-                fontFamily={FF}
-                fontWeight="700"
-                fill={pt.color}
-                style={{
-                  animation: 'mmParticleFloat 3.6s ease-out forwards',
-                  filter: `drop-shadow(0 0 5px ${pt.color}99)`,
-                  pointerEvents: 'none',
-                  letterSpacing: '0.04em',
-                }}
-              >{pt.label}</text>
             ))}
 
             {/* Leader-line labels */}
