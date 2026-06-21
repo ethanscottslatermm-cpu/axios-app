@@ -11,40 +11,28 @@ import { useAuth } from '../../context/AuthContext'
 import MuscleMapView from './MuscleMapView'
 import FitPrograms from './FitPrograms'
 import EquipmentScanner from './EquipmentScanner'
-import imgChest     from './Images/Chest.png'
-import imgBack      from './Images/Back.png'
-import imgShoulders from './Images/Shoulders.png'
-import imgArms      from './Images/Arms.png'
-import imgCore      from './Images/Core.png'
-import imgQuads     from './Images/Quads.png'
-import imgGlutes    from './Images/Glutes.png'
-import imgCalves    from './Images/Calves.png'
+import imgChest      from './Recovery Hero cards/Recovery Fitness Hero Cards/chest.png'
+import imgBack       from './Recovery Hero cards/Recovery Fitness Hero Cards/back.png'
+import imgShoulders  from './Recovery Hero cards/Recovery Fitness Hero Cards/shoulders.png'
+import imgBiceps     from './Recovery Hero cards/Recovery Fitness Hero Cards/biceps.png'
+import imgTriceps    from './Recovery Hero cards/Recovery Fitness Hero Cards/triceps.png'
+import imgCore       from './Recovery Hero cards/Recovery Fitness Hero Cards/core.png'
+import imgQuads      from './Recovery Hero cards/Recovery Fitness Hero Cards/quads.png'
+import imgHamstrings from './Recovery Hero cards/Recovery Fitness Hero Cards/hamstrings.png'
+import imgGlutes     from './Recovery Hero cards/Recovery Fitness Hero Cards/glutes.png'
+import imgCalves     from './Recovery Hero cards/Recovery Fitness Hero Cards/calves.png'
 
 const MUSCLE_IMAGES = {
   'Chest':      imgChest,
   'Back':       imgBack,
   'Shoulders':  imgShoulders,
-  'Biceps':     imgArms,
-  'Triceps':    imgArms,
+  'Biceps':     imgBiceps,
+  'Triceps':    imgTriceps,
   'Core':       imgCore,
   'Quads':      imgQuads,
-  'Hamstrings': imgQuads,
+  'Hamstrings': imgHamstrings,
   'Glutes':     imgGlutes,
   'Calves':     imgCalves,
-}
-
-// Per-group rotation to correct image orientation. Adjust per icon as needed.
-const MUSCLE_IMAGE_ROTATION = {
-  'Chest':      '90deg',
-  'Back':       '90deg',
-  'Shoulders':  '90deg',
-  'Biceps':     '90deg',
-  'Triceps':    '90deg',
-  'Core':       '90deg',
-  'Quads':      '90deg',
-  'Hamstrings': '90deg',
-  'Glutes':     '-90deg',
-  'Calves':     '90deg',
 }
 
 
@@ -1050,16 +1038,22 @@ const [prsOpen,         setPrsOpen]         = useState(true)
                   const br  = status === 'fatigued' ? 'rgba(248,113,113,0.22)' : status === 'recovering' ? 'rgba(245,158,11,0.22)' : status === 'ready' ? 'rgba(16,185,129,0.22)' : 'rgba(96,165,250,0.15)'
                   const sub = days === null ? 'Not trained' : days === 0 ? 'Trained today' : days === 1 ? 'Yesterday' : `${days}d ago`
                   return (
-                    <div key={group} onClick={() => setRecoveryMuscle({ group, status, days, label })} style={{ background:bg, border:`1px solid ${br}`, borderRadius:12, padding:'10px 12px', display:'flex', alignItems:'center', gap:10, cursor:'pointer', transition:'opacity 0.15s', overflow:'hidden' }}>
+                    <div key={group} onClick={() => setRecoveryMuscle({ group, status, days, label })} style={{ position:'relative', borderRadius:12, overflow:'hidden', cursor:'pointer', border:`1px solid ${br}`, minHeight:90 }}>
+                      {/* Full-bleed hero image */}
                       <img
                         src={MUSCLE_IMAGES[group]}
                         alt={group}
-                        style={{ width:52, height:52, objectFit:'contain', objectPosition:'center', flexShrink:0, opacity:0.72, filter:'brightness(0.88) saturate(0.8)', transform:`rotate(${MUSCLE_IMAGE_ROTATION[group] || '90deg'})` }}
+                        style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}
                       />
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ color:'rgba(212,212,232,0.82)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{group}</p>
-                        <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{sub}</p>
-                        <span style={{ color:clr, fontSize:9, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', background:`${bg}`, border:`1px solid ${br}`, borderRadius:6, padding:'3px 7px' }}>{label}</span>
+                      {/* Gradient overlay so text stays legible */}
+                      <div style={{ position:'absolute', inset:0, background:'linear-gradient(160deg, rgba(6,8,20,0.78) 0%, rgba(6,8,20,0.48) 55%, rgba(6,8,20,0.22) 100%)' }} />
+                      {/* Text */}
+                      <div style={{ position:'relative', padding:'10px 12px', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:90 }}>
+                        <div>
+                          <p style={{ color:'rgba(255,255,255,0.92)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{group}</p>
+                          <p style={{ color:'rgba(255,255,255,0.40)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif' }}>{sub}</p>
+                        </div>
+                        <span style={{ alignSelf:'flex-start', color:clr, fontSize:9, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', background:bg, border:`1px solid ${br}`, borderRadius:6, padding:'3px 7px' }}>{label}</span>
                       </div>
                     </div>
                   )
