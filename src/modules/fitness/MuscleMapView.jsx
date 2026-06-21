@@ -542,9 +542,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     // Head region
     const headSel  = selected === 'Head'
     const headFill = headSel ? ACTIVE_FILL.Head : 'none'
-    const headGlow = headSel ? makeGlow(ACTIVE_GLOW_RGB.Head) + ' ' + WHITE_RIM : BODY_OUTLINE_FILTER + ' ' + WHITE_RIM
+    const headGlow = headSel ? makeGlow(ACTIVE_GLOW_RGB.Head) + ' ' + BODY_OUTLINE_FILTER + ' ' + WHITE_RIM : BODY_OUTLINE_FILTER + ' ' + WHITE_RIM
     const headAnim = headSel ? 'mmSelectPulse 2.4s ease-in-out infinite' : 'mmIdleGlow 4s ease-in-out 0s infinite'
-    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: ${headSel ? '#050302' : 'rgba(255,255,255,0.88)'} !important; stroke-width: ${headSel ? '1.1px' : '1.8px'} !important; }`)
+    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: rgba(255,255,255,0.88) !important; stroke-width: 1.8px !important; }`)
     lines.push(`.mm-body-scope #head_spine_rear { filter: ${headGlow}; cursor: pointer; animation: ${headAnim}; ${tr} }`)
 
     // Interactive muscle regions
@@ -559,9 +559,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         : false
 
       const fill     = isSelected ? ACTIVE_FILL[region]            : IDLE_FILL[region]
-      const filter   = isSelected ? makeGlow(ACTIVE_GLOW_RGB[region]) + ' ' + WHITE_RIM : WHITE_RIM
-      const stroke   = isSelected ? '#050302'                      : '#0A0806'
-      const strokeW  = isSelected ? '1.1px'                        : '0.65px'
+      const filter   = isSelected ? makeGlow(ACTIVE_GLOW_RGB[region]) + ' ' + BODY_OUTLINE_FILTER + ' ' + WHITE_RIM : BODY_OUTLINE_FILTER + ' ' + WHITE_RIM
+      const stroke   = isSelected ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.42)'
+      const strokeW  = isSelected ? '0.9px'                  : '0.6px'
 
       const anim = isSelected
         ? 'mmSelectPulse 2.4s ease-in-out infinite'
@@ -573,7 +573,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         lines.push(`.mm-body-scope #${id} path { fill: ${fill} !important; stroke: ${stroke} !important; stroke-width: ${strokeW} !important; }`)
         // Compound stroke-only paths (muscle-detail-line) must stay fill:none — CSS forced fills on
         // compound multi-sub-path elements create winding-rule holes that reveal muscles behind.
-        lines.push(`.mm-body-scope #${id} path.muscle-detail-line { fill: none !important; }`)
+        lines.push(`.mm-body-scope #${id} path.muscle-detail-line { fill: none !important; stroke: rgba(255,255,255,0.10) !important; }`)
         lines.push(`.mm-body-scope #${id} { filter: ${filter}; cursor: pointer; animation: ${anim}; ${tr} }`)
       })
     })
