@@ -558,10 +558,11 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         ? Math.round((new Date(todayStr + 'T12:00:00') - new Date(lw + 'T12:00:00')) / 86400000) === 0
         : false
 
-      const fill     = isSelected ? ACTIVE_FILL[region]            : IDLE_FILL[region]
+      const isShins  = region === 'Shins'
+      const fill     = isShins ? 'none' : isSelected ? ACTIVE_FILL[region] : IDLE_FILL[region]
       const filter   = isSelected ? makeGlow(ACTIVE_GLOW_RGB[region]) + ' ' + BODY_OUTLINE_FILTER + ' ' + WHITE_RIM : BODY_OUTLINE_FILTER + ' ' + WHITE_RIM
-      const stroke   = isSelected ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.42)'
-      const strokeW  = isSelected ? '0.9px'                  : '0.6px'
+      const stroke   = isShins ? 'rgba(255,255,255,0.88)' : isSelected ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.42)'
+      const strokeW  = isShins ? '1.8px'                  : isSelected ? '0.9px'                  : '0.6px'
 
       const anim = isSelected
         ? 'mmSelectPulse 2.4s ease-in-out infinite'
@@ -790,7 +791,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   <text
                     x={l.x} y={l.y}
                     textAnchor={l.anchor}
-                    fontSize="24"
+                    fontSize="27"
                     fontFamily={FF}
                     fontWeight={isActive ? '700' : '500'}
                     fill={color}
@@ -806,7 +807,7 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
                   <text
                     x={l.x} y={l.y + 24}
                     textAnchor={l.anchor}
-                    fontSize="17"
+                    fontSize="19"
                     fontFamily={FF}
                     fontWeight="400"
                     fontStyle="italic"
