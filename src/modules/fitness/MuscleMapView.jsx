@@ -729,9 +729,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               </filter>
               <linearGradient id="mm-scan-grad" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%"   stopColor="transparent"/>
-                <stop offset="25%"  stopColor="rgba(245,166,35,0.45)"/>
-                <stop offset="50%"  stopColor="rgba(255,210,120,0.28)"/>
-                <stop offset="75%"  stopColor="rgba(245,166,35,0.45)"/>
+                <stop offset="20%"  stopColor="rgba(255,255,255,0.18)"/>
+                <stop offset="50%"  stopColor="rgba(255,255,255,0.72)"/>
+                <stop offset="80%"  stopColor="rgba(255,255,255,0.18)"/>
                 <stop offset="100%" stopColor="transparent"/>
               </linearGradient>
             </defs>
@@ -741,8 +741,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               x="0" y="-5" width="580" height="10"
               fill="url(#mm-scan-grad)"
               style={{
-                animation: 'mmScan 7s ease-in-out infinite',
-                filter: 'drop-shadow(0 0 8px rgba(56,189,248,0.65))',
+                animation: 'mmScan 14s ease-in-out infinite',
+                filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.90)) drop-shadow(0 0 14px rgba(255,255,255,0.40))',
               }}
             />
 
