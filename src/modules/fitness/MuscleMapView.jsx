@@ -46,6 +46,8 @@ const makeGlow = ([r, g, b]) =>
 // Premium white rim: razor-sharp 0.3px edge traces the muscle silhouette, 1.5px halo softens it,
 // 6px ambient gives depth. Pulses with the group's existing opacity animation.
 const WHITE_RIM = 'drop-shadow(0 0 0.3px rgba(255,255,255,0.95)) drop-shadow(0 0 1.5px rgba(255,255,255,0.50)) drop-shadow(0 0 6px rgba(255,255,255,0.16))'
+// Wider glow for the transparent body outline — 3px bright edge, 8px halo, 18px ambient.
+const BODY_OUTLINE_FILTER = 'drop-shadow(0 0 3px rgba(255,255,255,0.70)) drop-shadow(0 0 8px rgba(255,255,255,0.35)) drop-shadow(0 0 18px rgba(255,255,255,0.14))'
 
 const IDLE_FILL = {
   Head:       '#B8906A',
@@ -533,17 +535,16 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     lines.push('.mm-body-scope svg { width: 100% !important; height: auto !important; display: block; }')
 
     NON_INTERACTIVE_IDS.forEach(id => {
-      const fill = NON_INTERACTIVE_FILLS[id] ?? '#221A18'
-      lines.push(`.mm-body-scope #${id} path { fill: ${fill} !important; stroke: rgba(255,255,255,0.12) !important; stroke-width: 0.8px !important; }`)
-      lines.push(`.mm-body-scope #${id} { pointer-events: none !important; }`)
+      lines.push(`.mm-body-scope #${id} path { fill: none !important; stroke: rgba(255,255,255,0.88) !important; stroke-width: 1.8px !important; }`)
+      lines.push(`.mm-body-scope #${id} { pointer-events: none !important; filter: ${BODY_OUTLINE_FILTER}; animation: mmIdleGlow 4s ease-in-out infinite; }`)
     })
 
     // Head region
     const headSel  = selected === 'Head'
-    const headFill = headSel ? ACTIVE_FILL.Head : IDLE_FILL.Head
-    const headGlow = headSel ? makeGlow(ACTIVE_GLOW_RGB.Head) + ' ' + WHITE_RIM : WHITE_RIM
-    const headAnim = headSel ? 'mmSelectPulse 2.4s ease-in-out infinite' : 'mmIdleGlow 3.5s ease-in-out 0s infinite'
-    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: ${headSel ? '#050302' : '#0A0806'} !important; stroke-width: ${headSel ? '1.1px' : '0.65px'} !important; }`)
+    const headFill = headSel ? ACTIVE_FILL.Head : 'none'
+    const headGlow = headSel ? makeGlow(ACTIVE_GLOW_RGB.Head) + ' ' + WHITE_RIM : BODY_OUTLINE_FILTER + ' ' + WHITE_RIM
+    const headAnim = headSel ? 'mmSelectPulse 2.4s ease-in-out infinite' : 'mmIdleGlow 4s ease-in-out 0s infinite'
+    lines.push(`.mm-body-scope #head_spine_rear path { fill: ${headFill} !important; stroke: ${headSel ? '#050302' : 'rgba(255,255,255,0.88)'} !important; stroke-width: ${headSel ? '1.1px' : '1.8px'} !important; }`)
     lines.push(`.mm-body-scope #head_spine_rear { filter: ${headGlow}; cursor: pointer; animation: ${headAnim}; ${tr} }`)
 
     // Interactive muscle regions
