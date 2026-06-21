@@ -7,11 +7,11 @@ const MIND_COLOR      = '#a78bfa'
 const HIGHLIGHT_COLOR = '#F5A623'
 
 const ACTIVE_FILL = {
-  Head:       '#EAC99E',
+  Head:       '#D4AA80',
   Shoulders:  '#4A8FD4',
   Chest:      '#E85568',
   Back:       '#32B47C',
-  Biceps:     '#F5C84A',
+  Biceps:     '#C04462',
   Triceps:    '#33AAAA',
   Forearms:   '#3864B8',
   Abs:        '#3864B8',
@@ -19,16 +19,16 @@ const ACTIVE_FILL = {
   Quads:      '#40AE7E',
   Hamstrings: '#2E9090',
   Glutes:     '#3864B8',
-  Shins:      '#4C8BAC',
+  Shins:      '#C04462',
   Calves:     '#3864B8',
 }
 
 const ACTIVE_GLOW_RGB = {
-  Head:       [212, 185, 156],
+  Head:       [184, 144, 106],
   Shoulders:  [74,  143, 212],
   Chest:      [232, 85,  104],
   Back:       [50,  180, 124],
-  Biceps:     [245, 200, 74 ],
+  Biceps:     [192, 68,  98 ],
   Triceps:    [51,  170, 170],
   Forearms:   [56,  100, 184],
   Abs:        [56,  100, 184],
@@ -36,7 +36,7 @@ const ACTIVE_GLOW_RGB = {
   Quads:      [64,  174, 126],
   Hamstrings: [46,  144, 144],
   Glutes:     [56,  100, 184],
-  Shins:      [76,  139, 172],
+  Shins:      [192, 68,  98 ],
   Calves:     [56,  100, 184],
 }
 
@@ -48,11 +48,11 @@ const makeGlow = ([r, g, b]) =>
 const WHITE_RIM = 'drop-shadow(0 0 0.3px rgba(255,255,255,0.95)) drop-shadow(0 0 1.5px rgba(255,255,255,0.50)) drop-shadow(0 0 6px rgba(255,255,255,0.16))'
 
 const IDLE_FILL = {
-  Head:       '#D4AF8C',
+  Head:       '#B8906A',
   Shoulders:  '#1F4E79',
   Chest:      '#C7303D',
   Back:       '#1E6B4F',
-  Biceps:     '#D4A23E',
+  Biceps:     '#8C2F39',
   Triceps:    '#1F6B6B',
   Forearms:   '#2A3F6B',
   Abs:        '#2A3F6B',
@@ -60,7 +60,7 @@ const IDLE_FILL = {
   Quads:      '#2F7D5B',
   Hamstrings: '#1F5C5C',
   Glutes:     '#2A3F6B',
-  Shins:      '#3A5C70',
+  Shins:      '#8C2F39',
   Calves:     '#2A3F6B',
 }
 
@@ -177,11 +177,11 @@ const NON_INTERACTIVE_IDS = [
 ]
 
 const NON_INTERACTIVE_FILLS = {
-  main_body:       '#D4AF8C',
-  hand_left:       '#D4AF8C',
-  hand_right:      '#D4AF8C',
-  hand_rear_left:  '#D4AF8C',
-  hand_rear_right: '#D4AF8C',
+  main_body:       '#B8906A',
+  hand_left:       '#B8906A',
+  hand_right:      '#B8906A',
+  hand_rear_left:  '#B8906A',
+  hand_rear_right: '#B8906A',
 }
 
 // Labels in 0 0 580 1615 viewBox coordinate space.
