@@ -518,9 +518,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     })
   }, [])
 
-  // Keep particle data ref in sync so the spawn interval never reads stale closures
-  useEffect(() => { particleData.current = { lastWorked, counts: particleData.current.counts, todayStr } }, [lastWorked, todayStr])
-
   const counts = useMemo(() => {
     const c = {}; MUSCLES.forEach(m => { c[m] = 0 })
     const seen = new Set()
@@ -550,8 +547,8 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
     return lw
   }, [workouts])
 
-  // Sync counts into ref after memo resolves
-  useEffect(() => { particleData.current.counts = counts }, [counts])
+  // Keep particle data ref in sync — placed after both memos to avoid temporal dead zone
+  useEffect(() => { particleData.current = { lastWorked, counts, todayStr } }, [lastWorked, counts, todayStr])
 
   // Floating data particle spawn — fires every 2.6s, picks a random trained muscle in current view
   useEffect(() => {
