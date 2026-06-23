@@ -876,10 +876,9 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
               padding: '11px 14px',
               display: 'flex', alignItems: 'center', gap: 9,
             }}>
-              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={MIND_COLOR} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <circle cx="12" cy="3" r="2" fill={MIND_COLOR}/>
-                <path d="M9 9h6v7c0 2-1 3-3 3s-3-1-3-3V9z" fill={MIND_COLOR} opacity="0.7"/>
-                <path d="M9 9L6 15M15 9l3 6M9 16l-2 5M15 16l2 5" stroke={MIND_COLOR} strokeWidth="1.8"/>
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={MIND_COLOR} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M9.5 2a3.5 3.5 0 0 1 3 1.7A3.5 3.5 0 0 1 18 7v1a3 3 0 0 1 1 5.74V15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-1.26A3 3 0 0 1 6 8V7a3.5 3.5 0 0 1 3.5-5z"/>
+                <path d="M12 12v5M9 15h6"/>
               </svg>
               <div style={{ flex: 1 }}>
                 <p style={{ color: MIND_COLOR, fontSize: 14, fontWeight: 800, fontFamily: FF, margin: 0, lineHeight: 1.2 }}>Mind & Recovery</p>
