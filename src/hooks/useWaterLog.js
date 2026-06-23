@@ -81,3 +81,70 @@ export function useWaterLog(date) {
 
   return { logs, count: logs.length, isLoading, addGlass, removeGlass }
 }
+
+export function useCustomContainers() {
+  const { user } = useAuth()
+  const qc = useQueryClient()
+  const key = ['custom_containers', user?.id]
+
+  const { data: containers = [], isLoading } = useQuery({
+    queryKey: key,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('custom_water_containers')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true })
+      if (error) throw error
+      return data
+    },
+    enabled: !!user,
+  })
+
+  const addContainer = useMutation({
+    mutationFn: async ({ name, amount_oz }) => {
+      const { data, error } = await supabase
+        .from('custom_water_containers')
+        .insert({ user_id: user.id, name, amount_oz })
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: key })
+    },
+  })
+
+  const deleteContainer = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase
+        .from('custom_water_containers')
+        .delete()
+        .eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: key })
+    },
+  })
+
+  const updateContainer = useMutation({
+    mutationFn: async ({ id, name, amount_oz }) => {
+      const { data, error } = await supabase
+        .from('custom_water_containers')
+        .update({ name, amount_oz })
+        .eq('id', id)
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: key })
+    },
+  })
+
+  return { containers, isLoading, addContainer, deleteContainer, updateContainer }
+}
+

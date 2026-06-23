@@ -1,15 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useHaptic } from '../../hooks/useHaptic'
-import { useWaterLog } from '../../hooks/useWaterLog'
+import { useWaterLog, useCustomContainers } from '../../hooks/useWaterLog'
+import WaterRitualView from './WaterRitualView'
 
 const WATER_GOAL = 8
 const WATER_BLUE = '#9ab4cc'
+const GOLD_ACCENT = '#d4af37'
 
 const Ico = {
-  plus:  (s=16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>,
-  drop:  (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>,
-  check: (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>,
-  trash: (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+  plus:   (s=16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>,
+  drop:   (s=18) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>,
+  check:  (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>,
+  trash:  (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+  edit:   (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L21 6z"/></svg>,
+  expand: (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>,
 }
 
 function GlowBar({ pct, h = 5 }) {
@@ -53,7 +57,7 @@ function Card({ children, style = {} }) {
   )
 }
 
-function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
+function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible, isMilestone }) {
   const [pressed, setPressed] = useState(false)
 
   const handleTap = () => {
@@ -63,21 +67,28 @@ function GlassButton({ filled, index, onAdd, onRemove, animDelay, visible }) {
     else onAdd()
   }
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const milestoneStyle = isMilestone && !prefersReduced ? {
+    animation: `pulseGold 0.8s cubic-bezier(0.34,1.56,0.64,1)`,
+    animationDelay: `${index * 80}ms`,
+  } : {}
+
   return (
     <button onClick={handleTap} style={{
       width: '100%', aspectRatio: '1', borderRadius: 12,
-      border: `1px solid ${filled ? 'rgba(154,180,204,0.5)' : 'rgba(212,212,232,0.09)'}`,
-      background: filled ? 'rgba(154,180,204,0.22)' : 'rgba(212,212,232,0.04)',
+      border: `1px solid ${filled || isMilestone ? (isMilestone ? `rgba(212,175,55,0.5)` : 'rgba(154,180,204,0.5)') : 'rgba(212,212,232,0.09)'}`,
+      background: isMilestone ? 'rgba(212,175,55,0.15)' : (filled ? 'rgba(154,180,204,0.22)' : 'rgba(212,212,232,0.04)'),
       cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
       transition: 'background 0.25s, border-color 0.25s, transform 0.15s, box-shadow 0.25s',
       transform: pressed ? 'scale(0.92)' : visible ? 'scale(1)' : 'scale(0.85)',
       opacity: visible ? 1 : 0,
-      boxShadow: filled ? '0 0 14px rgba(154,180,204,0.3)' : 'none',
+      boxShadow: isMilestone ? `0 0 14px rgba(212,175,55,0.4)` : (filled ? '0 0 14px rgba(154,180,204,0.3)' : 'none'),
       transitionDelay: `${animDelay}ms`,
-      color: filled ? WATER_BLUE : 'rgba(212,212,232,0.2)',
+      color: isMilestone ? GOLD_ACCENT : (filled ? WATER_BLUE : 'rgba(212,212,232,0.2)'),
+      ...milestoneStyle,
     }}>
-      <svg width={filled ? 22 : 20} height={filled ? 22 : 20} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={filled ? 'rgba(154,180,204,0.75)' : 'transparent'} stroke="none"/>
+      <svg width={filled || isMilestone ? 22 : 20} height={filled || isMilestone ? 22 : 20} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 5 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L18 5 Z" fill={isMilestone ? 'rgba(212,175,55,0.75)' : (filled ? 'rgba(154,180,204,0.75)' : 'transparent')} stroke="none"/>
         <path d="M5 3 L9 20 C9.2 21.1 10.1 22 11.1 22 L12.9 22 C13.9 22 14.8 21.1 15 20 L19 3" stroke="currentColor" strokeWidth="1.5"/>
         <line x1="5" y1="3" x2="19" y2="3" stroke="currentColor" strokeWidth="1.5"/>
         <path d="M19 8 C21.5 8 21.5 13 19 13" stroke="currentColor" strokeWidth="1.5"/>
@@ -127,6 +138,90 @@ function CustomOzSheet({ onSave, onClose }) {
   )
 }
 
+function ContainerSheet({ onSave, onClose }) {
+  const [name,    setName]    = useState('')
+  const [amount,  setAmount]  = useState('')
+  const [visible, setVisible] = useState(false)
+  const [saving,  setSaving]  = useState(false)
+
+  useEffect(() => { setTimeout(() => setVisible(true), 30) }, [])
+
+  const handleSave = async () => {
+    if (!name?.trim() || !amount || isNaN(amount) || parseFloat(amount) <= 0) return
+    setSaving(true)
+    await onSave({ name: name.trim(), amount_oz: parseFloat(amount) })
+    onClose()
+  }
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'var(--overlay-bg)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', display: 'flex', alignItems: 'flex-end' }}>
+      <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: 'var(--sheet-bg)', borderTop: '1px solid var(--border)', borderRadius: '18px 18px 0 0', padding: '20px 18px max(32px,env(safe-area-inset-bottom))', transform: visible ? 'translateY(0)' : 'translateY(100%)', transition: 'transform 0.35s cubic-bezier(.16,1,.3,1)' }}>
+        <div style={{ width: 36, height: 4, background: 'rgba(212,212,232,0.13)', borderRadius: 99, margin: '0 auto 22px' }} />
+        <h2 style={{ color: 'var(--text-primary)', fontSize: 18, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 22, letterSpacing: '-0.01em' }}>Save Container</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
+          <div>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 8 }}>Container Name</label>
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="e.g., Hydro Flask" autoFocus
+              style={{ width: '100%', padding: '12px 14px', background: 'var(--stat-bg)', border: '1px solid rgba(212,212,232,0.12)', borderRadius: 10, color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif', boxSizing: 'border-box' }} />
+          </div>
+          <div>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 8 }}>Amount (oz)</label>
+            <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="32"
+              style={{ width: '100%', padding: '12px 14px', background: 'var(--stat-bg)', border: '1px solid rgba(212,212,232,0.12)', borderRadius: 10, color: 'var(--text-primary)', fontSize: 14, fontFamily: 'Helvetica Neue,sans-serif', boxSizing: 'border-box' }} />
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button onClick={onClose}
+            style={{ flex: 1, padding: '13px', background: 'transparent', border: '1px solid var(--border)', borderRadius: 10, color: 'rgba(212,212,232,0.4)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', cursor: 'pointer' }}>
+            Cancel
+          </button>
+          <button onClick={handleSave} disabled={saving || !name?.trim() || !amount}
+            style={{ flex: 2, padding: '13px', background: 'rgba(154,180,204,0.15)', color: WATER_BLUE, border: '1px solid rgba(154,180,204,0.4)', borderRadius: 10, fontSize: 12, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Helvetica Neue,sans-serif', cursor: saving || !name?.trim() || !amount ? 'not-allowed' : 'pointer', opacity: saving || !name?.trim() || !amount ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 0 14px rgba(154,180,204,0.12)' }}>
+            {Ico.check()} Save
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MilestoneOverlay({ trigger }) {
+  const [show, setShow] = useState(!!trigger)
+
+  useEffect(() => {
+    if (trigger) {
+      setShow(true)
+      const timer = setTimeout(() => setShow(false), 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [trigger])
+
+  if (!show) return null
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, borderRadius: 14, overflow: 'hidden' }}>
+      <div style={{ opacity: prefersReduced ? 1 : 0, animation: prefersReduced ? 'none' : 'fadeInOut 1.5s ease-in-out', fontSize: 14, fontFamily: "'EB Garamond',serif", fontStyle: 'italic', color: GOLD_ACCENT, textAlign: 'center', letterSpacing: '0.08em' }}>
+        Discipline kept ✦
+      </div>
+      <style>{`
+        @keyframes fadeInOut {
+          0% { opacity: 0; }
+          30% { opacity: 1; }
+          70% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        @keyframes pulseGold {
+          0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+          70% { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+      `}</style>
+    </div>
+  )
+}
+
 const quickSizes = [
   { label: '8 oz',  sub: 'Glass',  oz: 8,  icon: (
     <svg viewBox="0 0 28 36" width={22} height={28} fill="none">
@@ -156,25 +251,54 @@ const quickSizes = [
   )},
 ]
 
-export default function WaterPanel({ todayStr, visible }) {
+export default function WaterPanel({ todayStr, visible: panelVisible }) {
   const haptic = useHaptic()
   const { logs, count, addGlass, removeGlass, isLoading: loading } = useWaterLog(todayStr)
+  const { containers, addContainer, deleteContainer } = useCustomContainers()
 
   const [showCustom, setShowCustom] = useState(false)
-  const [logOpen,    setLogOpen]    = useState(false)
+  const [showContainer, setShowContainer] = useState(false)
+  const [showRitual, setShowRitual] = useState(false)
+  const [logOpen, setLogOpen] = useState(false)
+  const [prevCount, setPrevCount] = useState(count)
+  const [milestone, setMilestone] = useState(null)
+  const [editingContainer, setEditingContainer] = useState(null)
+  const [longPressContainer, setLongPressContainer] = useState(null)
+  const longPressTimer = useRef(null)
 
   const pct       = Math.min(100, Math.round((count / WATER_GOAL) * 100))
   const remaining = Math.max(0, WATER_GOAL - count)
   const goalMet   = count >= WATER_GOAL
+
+  useEffect(() => {
+    if (prevCount < WATER_GOAL && count === WATER_GOAL) {
+      setMilestone(true)
+    }
+    setPrevCount(count)
+  }, [count, prevCount])
 
   const handleAddGlass = async (oz = 8) => {
     haptic.tap()
     await addGlass.mutateAsync(oz)
   }
 
+  const handleAddContainer = async ({ name, amount_oz }) => {
+    await addContainer.mutateAsync({ name, amount_oz })
+    setShowContainer(false)
+    setEditingContainer(null)
+  }
+
+  const handleDeleteContainer = async (id) => {
+    await deleteContainer.mutateAsync(id)
+  }
+
+  const handleLongPressContainer = (id) => {
+    setLongPressContainer(id)
+  }
+
   const anim = (d = 0) => ({
-    opacity: visible ? 1 : 0,
-    transform: visible ? 'translateY(0)' : 'translateY(14px)',
+    opacity: panelVisible ? 1 : 0,
+    transform: panelVisible ? 'translateY(0)' : 'translateY(14px)',
     transition: `opacity 0.5s ease ${d}ms, transform 0.5s ease ${d}ms`,
   })
 
@@ -184,25 +308,45 @@ export default function WaterPanel({ todayStr, visible }) {
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
         .ax-quick:hover{background:rgba(154,180,204,0.12)!important;border-color:rgba(154,180,204,0.38)!important;box-shadow:0 0 12px rgba(154,180,204,0.12)!important;}
         .ax-custom:hover{border-color:rgba(154,180,204,0.38)!important;color:rgba(154,180,204,0.75)!important;}
+        .ax-container:hover{background:rgba(212,175,55,0.12)!important;border-color:rgba(212,175,55,0.38)!important;box-shadow:0 0 12px rgba(212,175,55,0.12)!important;}
+        .ax-container-add:hover{border-color:rgba(154,180,204,0.38)!important;color:rgba(154,180,204,0.75)!important;}
+        @keyframes pulseGold {
+          0% { box-shadow: 0 0 0 0 rgba(212,175,55,0.7); }
+          70% { box-shadow: 0 0 0 8px rgba(212,175,55,0); }
+          100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+        }
       `}</style>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
         {/* Glass grid — 4×2 */}
         <Card style={anim(80)}>
-          <SectionHead title="Tap to Log" sub={`${count} of ${WATER_GOAL}`} />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
-            {Array.from({ length: WATER_GOAL }).map((_, i) => (
-              <GlassButton
-                key={i}
-                index={i}
-                filled={i < count}
-                onAdd={handleAddGlass}
-                onRemove={(idx) => removeGlass.mutate(logs[idx]?.id)}
-                animDelay={i * 50}
-                visible={visible}
-              />
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <SectionHead title="Tap to Log" sub={`${count} of ${WATER_GOAL}`} />
+            <button onClick={() => setShowRitual(true)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '6px 8px', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = WATER_BLUE; e.currentTarget.style.background = 'rgba(154,180,204,0.1)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'none' }}
+              title="Open full-screen view">
+              {Ico.expand(16)}
+            </button>
+          </div>
+          <div style={{ position: 'relative' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
+              {Array.from({ length: WATER_GOAL }).map((_, i) => (
+                <GlassButton
+                  key={i}
+                  index={i}
+                  filled={i < count}
+                  onAdd={handleAddGlass}
+                  onRemove={(idx) => removeGlass.mutate(logs[idx]?.id)}
+                  animDelay={i * 50}
+                  visible={panelVisible}
+                  isMilestone={milestone}
+                />
+              ))}
+            </div>
+            {milestone && <MilestoneOverlay trigger={milestone} />}
           </div>
           <GlowBar pct={pct} />
           <p style={{ color: 'var(--text-muted)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif', textAlign: 'center', marginTop: 10 }}>
@@ -213,7 +357,7 @@ export default function WaterPanel({ todayStr, visible }) {
         {/* Quick add sizes */}
         <div style={anim(160)}>
           <SectionHead title="Quick Add" />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
             {quickSizes.map(({ label, sub, oz, icon }) => (
               <button key={oz} onClick={() => handleAddGlass(oz)} className="ax-quick"
                 style={{ padding: '16px', borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(154,180,204,0.18)', boxShadow: 'var(--card-shadow)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.18s', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -225,6 +369,46 @@ export default function WaterPanel({ todayStr, visible }) {
               </button>
             ))}
           </div>
+
+          {/* Custom containers */}
+          {containers.length > 0 && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+              {containers.map(container => (
+                <div key={container.id} style={{ position: 'relative' }}>
+                  <button onClick={() => handleAddGlass(container.amount_oz)} className="ax-container"
+                    onContextMenu={e => { e.preventDefault(); handleLongPressContainer(container.id) }}
+                    onMouseDown={() => { longPressTimer.current = setTimeout(() => handleLongPressContainer(container.id), 500) }}
+                    onMouseUp={() => clearTimeout(longPressTimer.current)}
+                    onMouseLeave={() => clearTimeout(longPressTimer.current)}
+                    style={{ width: '100%', padding: '16px', borderRadius: 12, background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', boxShadow: 'var(--card-shadow)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.18s', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
+                      <p style={{ color: '#d4af37', fontSize: 18, fontWeight: 900, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 3 }}>{container.amount_oz} oz</p>
+                      <p style={{ color: 'rgba(212,212,232,0.6)', fontSize: 11, fontFamily: 'Helvetica Neue,sans-serif' }}>{container.name}</p>
+                    </div>
+                    <div style={{ opacity: 0.85, color: '#d4af37' }}>{Ico.drop(18)}</div>
+                  </button>
+                  {longPressContainer === container.id && (
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 50 }}>
+                      <button onClick={() => { setEditingContainer(container); setShowContainer(true); setLongPressContainer(null) }}
+                        style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(154,180,204,0.2)', border: '1px solid rgba(154,180,204,0.3)', color: WATER_BLUE, fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'Helvetica Neue,sans-serif' }}>
+                        {Ico.edit(12)} Edit
+                      </button>
+                      <button onClick={() => { handleDeleteContainer(container.id); setLongPressContainer(null) }}
+                        style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(255,60,60,0.2)', border: '1px solid rgba(255,60,60,0.3)', color: 'rgba(255,100,100,0.8)', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'Helvetica Neue,sans-serif' }}>
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <button onClick={() => setShowContainer(true)} className="ax-container-add"
+            style={{ width: '100%', padding: '13px', borderRadius: 12, background: 'transparent', border: '1px dashed rgba(154,180,204,0.2)', color: 'var(--text-muted)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600, letterSpacing: '0.08em', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            {Ico.plus(13)} {containers.length > 0 ? 'Another Container' : 'My Bottle'}
+          </button>
+
           <button onClick={() => setShowCustom(true)} className="ax-custom"
             style={{ width: '100%', marginTop: 10, padding: '13px', borderRadius: 12, background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600, letterSpacing: '0.08em', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             {Ico.plus(13)} Custom amount
@@ -284,6 +468,8 @@ export default function WaterPanel({ todayStr, visible }) {
       </div>
 
       {showCustom && <CustomOzSheet onSave={handleAddGlass} onClose={() => setShowCustom(false)} />}
+      {showContainer && <ContainerSheet onSave={handleAddContainer} onClose={() => { setShowContainer(false); setEditingContainer(null) }} />}
+      {showRitual && <WaterRitualView logs={logs} count={count} addGlass={addGlass} removeGlass={removeGlass} onClose={() => setShowRitual(false)} customContainers={containers} onCustomAdd={handleAddContainer} />}
     </>
   )
 }
