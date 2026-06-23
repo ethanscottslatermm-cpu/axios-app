@@ -311,7 +311,7 @@ export default function Dashboard() {
               ]
             })().map(({ label, value, sub, pct, color, path, valSize, bg }) => (
               <div key={label} onClick={path ? () => navigate(path) : undefined}
-                style={{ backgroundImage:`linear-gradient(rgba(0,0,0,0.58),rgba(0,0,0,0.58)),url('/module-cards/${bg}.png')`, backgroundSize:'cover', backgroundPosition:'center', border:`1px solid ${color}33`, boxShadow:'none', borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                style={{ background:'transparent', border:`1px solid ${color}33`, boxShadow:'none', borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
                 <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>{label}</p>
                 <CircleRing pct={pct} color={color} size={84} stroke={5}>
                   <p style={{ color, fontSize:valSize, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{value}</p>
