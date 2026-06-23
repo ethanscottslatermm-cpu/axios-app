@@ -138,6 +138,9 @@ function SectionHead({ title, action, actionLabel, color, onToggle, collapsed })
 export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
+  const [isExpanded, setIsExpanded] = useState(false)
+  const prefersReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   const items = [
     { label:'Home Base',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
     { label:'Food Log',    path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
@@ -146,46 +149,136 @@ export function BottomNav() {
     { label:'Wallstreet',  path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
     { label:'Settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
   ]
+
+  const activeItem = items.find(item => loc.pathname === item.path) || items[0]
+
+  const handleItemClick = (path) => {
+    navigate(path)
+    setIsExpanded(false)
+  }
+
   return (
-    <nav className="ax-bottom-nav" style={{
-      position:'fixed', bottom:0, left:0, right:0, zIndex:100,
-      background:'var(--header-bg)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
-      borderTop:'1px solid var(--border)',
-      display:'flex', alignItems:'center', justifyContent:'space-around',
-      padding:'8px 4px max(10px,env(safe-area-inset-bottom))',
-    }}>
-      {items.map(({ label, path, src, activeColor }) => {
-        const active = loc.pathname === path
-        const iconColor = active ? activeColor : 'rgba(212,212,232,0.9)'
-        return (
-          <button key={path} onClick={() => navigate(path)} style={{
-            display:'flex', flexDirection:'column', alignItems:'center', gap:3,
-            background:'none', border:'none', cursor:'pointer',
-            opacity: active ? 1 : 0.45,
-            transition:'opacity 0.2s',
-            flex:1, minWidth:0, padding:'2px 1px',
-          }}>
-            <div style={{ filter: active ? `drop-shadow(0 0 6px ${activeColor}99)` : 'none', transition:'filter 0.2s' }}>
+    <>
+      <style>{`
+        @keyframes navPulse {
+          0% { box-shadow: 0 0 0 0 rgba(212,212,232,0.4); }
+          70% { box-shadow: 0 0 0 10px rgba(212,212,232,0); }
+          100% { box-shadow: 0 0 0 0 rgba(212,212,232,0); }
+        }
+        @keyframes chevronBounce {
+          0%, 100% { transform: translateY(0); opacity: 0.5; }
+          50% { transform: translateY(-3px); opacity: 0.8; }
+        }
+        .nav-pulse { animation: ${prefersReduced ? 'none' : 'navPulse 2s infinite'}; }
+        .nav-chevron { animation: ${prefersReduced ? 'none' : 'chevronBounce 1.5s ease-in-out infinite'}; }
+      `}</style>
+
+      {/* Collapsed Pill State */}
+      {!isExpanded && (
+        <div style={{
+          position: 'fixed', bottom: 'max(10px,env(safe-area-inset-bottom))', left: '50%', transform: 'translateX(-50%)',
+          zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 2, opacity: prefersReduced ? 0 : 0.6 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(212,212,232,0.6)" strokeWidth="2" style={{ transform: 'scaleY(-1)' }}>
+              <polyline points="18 15 12 9 6 15"/>
+            </svg>
+            <span style={{ fontSize: '8px', color: 'rgba(212,212,232,0.5)', fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.05em', textTransform: 'uppercase' }}>tap to open</span>
+          </div>
+          <button
+            onClick={() => setIsExpanded(true)}
+            className="nav-pulse"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 52, height: 52, minWidth: 44, minHeight: 44,
+              borderRadius: '50%', background: 'var(--header-bg)', backdropFilter: 'blur(20px)',
+              border: `1px solid ${activeItem.activeColor}44`,
+              cursor: 'pointer', transition: 'all 0.3s ease',
+            }}
+          >
+            <div style={{ filter: `drop-shadow(0 0 6px ${activeItem.activeColor}99)`, transition: 'filter 0.2s' }}>
               <div style={{
-                width:20, height:20,
-                backgroundColor: iconColor,
-                WebkitMaskImage: `url(${src})`,
-                maskImage: `url(${src})`,
+                width: 24, height: 24,
+                backgroundColor: activeItem.activeColor,
+                WebkitMaskImage: `url(${activeItem.src})`,
+                maskImage: `url(${activeItem.src})`,
                 WebkitMaskSize: 'contain',
                 maskSize: 'contain',
                 WebkitMaskRepeat: 'no-repeat',
                 maskRepeat: 'no-repeat',
                 WebkitMaskPosition: 'center',
                 maskPosition: 'center',
-                transition:'background-color 0.2s',
-                flexShrink:0,
               }} />
             </div>
-            <span style={{ color: active ? activeColor : 'rgba(212,212,232,0.9)', fontSize:'clamp(7px,2vw,9px)', letterSpacing:'0.06em', fontFamily:'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, transition:'color 0.2s' }}>{label}</span>
           </button>
-        )
-      })}
-    </nav>
+        </div>
+      )}
+
+      {/* Expanded Full Nav */}
+      <nav className="ax-bottom-nav" style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
+        background: 'var(--header-bg)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+        borderTop: '1px solid var(--border)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-around',
+        padding: '8px 4px max(10px,env(safe-area-inset-bottom))',
+        opacity: isExpanded ? 1 : 0,
+        pointerEvents: isExpanded ? 'auto' : 'none',
+        transform: isExpanded ? 'translateY(0)' : 'translateY(100%)',
+        transition: `opacity 0.3s ease, transform 0.3s cubic-bezier(.16,1,.3,1)`,
+      }}>
+        {items.map(({ label, path, src, activeColor }) => {
+          const active = loc.pathname === path
+          const iconColor = active ? activeColor : 'rgba(212,212,232,0.9)'
+          return (
+            <button key={path} onClick={() => handleItemClick(path)} style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+              background: 'none', border: 'none', cursor: 'pointer',
+              opacity: active ? 1 : 0.45,
+              transition: 'opacity 0.2s',
+              flex: 1, minWidth: 0, padding: '2px 1px',
+            }}>
+              <div style={{ filter: active ? `drop-shadow(0 0 6px ${activeColor}99)` : 'none', transition: 'filter 0.2s' }}>
+                <div style={{
+                  width: 20, height: 20,
+                  backgroundColor: iconColor,
+                  WebkitMaskImage: `url(${src})`,
+                  maskImage: `url(${src})`,
+                  WebkitMaskSize: 'contain',
+                  maskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  maskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center',
+                  maskPosition: 'center',
+                  transition: 'background-color 0.2s',
+                  flexShrink: 0,
+                }} />
+              </div>
+              <span style={{ color: active ? activeColor : 'rgba(212,212,232,0.9)', fontSize: 'clamp(7px,2vw,9px)', letterSpacing: '0.06em', fontFamily: 'Helvetica Neue,sans-serif', fontWeight: active ? 700 : 400, transition: 'color 0.2s' }}>{label}</span>
+            </button>
+          )
+        })}
+
+        {/* Close button when expanded */}
+        <button
+          onClick={() => setIsExpanded(false)}
+          style={{
+            position: 'absolute', top: 8, right: 8,
+            width: 32, height: 32,
+            background: 'rgba(212,212,232,0.08)', border: '1px solid rgba(212,212,232,0.12)',
+            borderRadius: 8, cursor: 'pointer', color: 'rgba(212,212,232,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 18, fontWeight: 300, transition: 'all 0.2s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,212,232,0.12)'; e.currentTarget.style.borderColor = 'rgba(212,212,232,0.18)'; e.currentTarget.style.color = 'rgba(212,212,232,0.7)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(212,212,232,0.08)'; e.currentTarget.style.borderColor = 'rgba(212,212,232,0.12)'; e.currentTarget.style.color = 'rgba(212,212,232,0.5)' }}
+        >
+          ✕
+        </button>
+      </nav>
+
+      {/* Reserved space for nav (prevents layout shift) */}
+      <div style={{ height: 'max(60px,calc(60px + env(safe-area-inset-bottom)))' }} />
+    </>
   )
 }
 
