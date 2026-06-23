@@ -57,10 +57,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'FOOD LOG', path:'/food',    icon: Ico.food },
-  { key:'prayer',  label:'DEVOTION',    path:'/prayer',  icon: Ico.prayer },
-  { key:'fitness', label:'TRAINING',    path:'/fitness', icon: Ico.fitness },
-  { key:'finance', label:'WALLSTREET',    path:'/finance', icon: Ico.finance },
+  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food },
+  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer },
+  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness },
+  { key:'finance', label:'Wallstreet',    path:'/finance', icon: Ico.finance },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -139,12 +139,12 @@ export function BottomNav() {
   const navigate = useNavigate()
   const loc = useLocation()
   const items = [
-    { label:'home base',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
-    { label:'food log',    path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
-    { label:'training',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
-    { label:'devotion',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
-    { label:'wallstreet',  path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
-    { label:'settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
+    { label:'Home Base',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
+    { label:'Food Log',    path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
+    { label:'Training',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
+    { label:'Devotion',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
+    { label:'Wallstreet',  path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
+    { label:'Settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
   ]
   return (
     <nav className="ax-bottom-nav" style={{
