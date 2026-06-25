@@ -57,10 +57,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food, bgImage:'/module-cards/food.png' },
-  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer, bgImage:'/module-cards/devotion.png' },
-  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness, bgImage:'/module-cards/fitness.png' },
-  { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance, bgImage:'/module-cards/finance.png' },
+  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food },
+  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer },
+  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness },
+  { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -487,10 +487,7 @@ export default function Dashboard() {
                 style={{
                   display:'flex', alignItems:'center', gap:16, width:'100%',
                   padding:'18px 16px', borderRadius:12, minHeight:'140px',
-                  background: bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.25) 0%, rgba(20,20,20,0.18) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
-                  backgroundSize:'cover',
-                  backgroundPosition:'center',
-                  backgroundAttachment: 'fixed',
+                  background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
                   border: done ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)',
                   cursor:'pointer', textAlign:'left',
                   opacity: visible ? 1 : 0,
@@ -504,13 +501,11 @@ export default function Dashboard() {
                   e.currentTarget.style.boxShadow=`0 12px 32px ${color}30, inset 0 1px 1px rgba(255,255,255,0.08)`
                   e.currentTarget.style.transform='translateY(-3px)'
                   e.currentTarget.style.borderColor=`${color}70`
-                  e.currentTarget.style.background = bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.18) 0%, rgba(20,20,20,0.10) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.boxShadow=done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)'
                   e.currentTarget.style.transform='translateY(0)'
                   e.currentTarget.style.borderColor=done ? `${color}50` : 'rgba(212,212,232,0.1)'
-                  e.currentTarget.style.background = bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.25) 0%, rgba(20,20,20,0.18) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
               >
                 {/* Icon - Left Side */}
