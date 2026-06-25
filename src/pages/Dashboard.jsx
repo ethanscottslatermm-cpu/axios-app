@@ -142,7 +142,7 @@ export function BottomNav() {
   const prefersReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   const items = [
-    { label:'Home Base',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
+    { label:'Home',   path:'/dashboard', src: homeIconSrc,     activeColor: '#d8d8f0' },
     { label:'Food Log',    path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
     { label:'Training',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
     { label:'Devotion',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
