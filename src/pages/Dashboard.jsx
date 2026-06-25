@@ -57,10 +57,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food },
-  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer },
-  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness },
-  { key:'finance', label:'Wallstreet',    path:'/finance', icon: Ico.finance },
+  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food, bgImage:'/module-cards/food.png' },
+  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer, bgImage:'/module-cards/devotion.png' },
+  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness, bgImage:'/module-cards/fitness.png' },
+  { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance, bgImage:'/module-cards/finance.png' },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -146,7 +146,7 @@ export function BottomNav() {
     { label:'Food Log',    path:'/food',      src: foodIconSrc,     activeColor: '#c8853a' },
     { label:'Training',    path:'/fitness',   src: fitnessIconSrc,  activeColor: '#dc4f3a' },
     { label:'Devotion',    path:'/prayer',    src: prayerIconSrc,   activeColor: '#c8a000' },
-    { label:'Wallstreet',  path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
+    { label:'Finance',  path:'/finance',   src: financeIconSrc,  activeColor: '#4db891' },
     { label:'Settings',    path:'/settings',  src: settingsIconSrc, activeColor: '#7dd3fc' },
   ]
 
@@ -470,8 +470,8 @@ export default function Dashboard() {
             >+ Schedule Event</button>
           </Card>
 
-          {/* PART 2: MODULE HERO BANNERS */}
-          {modules.map(({ key, label, path, icon }, i) => {
+          {/* PART 2: MODULE HERO BANNERS WITH BACKGROUND IMAGES */}
+          {modules.map(({ key, label, path, icon, bgImage }, i) => {
             const done = loggedModules[key]
             const color = MODULE_COLORS[key] || 'rgba(212,212,232,0.5)'
             const subtitles = {
@@ -486,20 +486,32 @@ export default function Dashboard() {
               <button key={key} onClick={() => navigate(path)}
                 style={{
                   display:'flex', alignItems:'center', gap:14, width:'100%',
-                  padding:'16px 14px', borderRadius:12,
-                  background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
+                  padding:'16px 14px', borderRadius:12, minHeight:'120px',
+                  background: bgImage ? `linear-gradient(135deg, rgba(8,8,8,0.85), rgba(8,8,8,0.75)), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
+                  backgroundSize:'cover',
+                  backgroundPosition:'center',
                   border: done ? `1.5px solid ${color}40` : '1px solid rgba(212,212,232,0.06)',
                   cursor:'pointer', textAlign:'left',
                   opacity: visible ? 1 : 0,
                   transform: visible ? 'translateY(0)' : 'translateY(8px)',
-                  transition: `opacity 0.4s ease ${160 + i*60}ms, transform 0.4s ease ${160 + i*60}ms, background 0.2s, border-color 0.2s, box-shadow 0.2s`,
+                  transition: `opacity 0.4s ease ${160 + i*60}ms, transform 0.4s ease ${160 + i*60}ms, background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s`,
                   boxShadow: done ? `0 0 12px ${color}22` : 'none',
+                  position:'relative',
+                  overflow:'hidden',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow=`0 0 16px ${color}33`; e.currentTarget.style.borderColor=`${color}60` }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow=done ? `0 0 12px ${color}22` : 'none'; e.currentTarget.style.borderColor=done ? `${color}40` : 'rgba(212,212,232,0.06)' }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.boxShadow=`0 0 16px ${color}33, inset 0 0 30px ${color}22`
+                  e.currentTarget.style.transform='translateY(-2px)'
+                  e.currentTarget.style.borderColor=`${color}60`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.boxShadow=done ? `0 0 12px ${color}22` : 'none'
+                  e.currentTarget.style.transform='translateY(0)'
+                  e.currentTarget.style.borderColor=done ? `${color}40` : 'rgba(212,212,232,0.06)'
+                }}
               >
                 {/* Icon Block */}
-                <div style={{ width:52, height:52, borderRadius:10, background: done ? `${color}15` : 'rgba(212,212,232,0.04)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, border: done ? `1px solid ${color}30` : 'none', transition:'all 0.2s' }}>
+                <div style={{ width:52, height:52, borderRadius:10, background: done ? `${color}15` : 'rgba(212,212,232,0.04)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, border: done ? `1px solid ${color}30` : 'none', transition:'all 0.2s', backdropFilter:'blur(10px)' }}>
                   <div style={{ color: done ? color : `${color}66`, opacity: done ? 1 : 0.7 }}>
                     {icon(24)}
                   </div>
@@ -507,8 +519,8 @@ export default function Dashboard() {
 
                 {/* Text */}
                 <div style={{ flex:1, minWidth:0 }}>
-                  <p style={{ color: done ? color : 'rgba(212,212,232,0.9)', fontSize:14, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 3px', transition:'color 0.2s' }}>{label}</p>
-                  <p style={{ color: done ? `${color}88` : 'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', margin:0, transition:'color 0.2s' }}>{subtitle}</p>
+                  <p style={{ color: done ? color : 'rgba(212,212,232,0.9)', fontSize:14, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 3px', transition:'color 0.2s', textShadow: bgImage ? '0 2px 8px rgba(0,0,0,0.7)' : 'none' }}>{label}</p>
+                  <p style={{ color: done ? `${color}88` : 'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', margin:0, transition:'color 0.2s', textShadow: bgImage ? '0 1px 4px rgba(0,0,0,0.7)' : 'none' }}>{subtitle}</p>
                 </div>
 
                 {/* Chevron */}
