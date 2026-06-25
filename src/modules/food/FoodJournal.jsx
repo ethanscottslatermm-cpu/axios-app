@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useToday } from '../../hooks/useToday'
 import { useHaptic } from '../../hooks/useHaptic'
-import foodIconSrc from './Images/food-icon.svg'
+import foodIconSrc from './Images/food-icon.png'
 import cameraScanSrc from '../../icons/camera-scan.png'
 import { useNavigate } from 'react-router-dom'
 import { useFoodLog } from '../../hooks/useFoodLog'
