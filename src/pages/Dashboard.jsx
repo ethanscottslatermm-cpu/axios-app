@@ -487,7 +487,7 @@ export default function Dashboard() {
                 style={{
                   display:'flex', alignItems:'center', gap:16, width:'100%',
                   padding:'18px 16px', borderRadius:12, minHeight:'140px',
-                  background: bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.45) 0%, rgba(20,20,20,0.35) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
+                  background: bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.25) 0%, rgba(20,20,20,0.18) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
                   backgroundSize:'cover',
                   backgroundPosition:'center',
                   backgroundAttachment: 'fixed',
@@ -504,13 +504,13 @@ export default function Dashboard() {
                   e.currentTarget.style.boxShadow=`0 12px 32px ${color}30, inset 0 1px 1px rgba(255,255,255,0.08)`
                   e.currentTarget.style.transform='translateY(-3px)'
                   e.currentTarget.style.borderColor=`${color}70`
-                  e.currentTarget.style.background = bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.38) 0%, rgba(20,20,20,0.28) 100%), url(${bgImage})` : e.currentTarget.style.background
+                  e.currentTarget.style.background = bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.18) 0%, rgba(20,20,20,0.10) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.boxShadow=done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)'
                   e.currentTarget.style.transform='translateY(0)'
                   e.currentTarget.style.borderColor=done ? `${color}50` : 'rgba(212,212,232,0.1)'
-                  e.currentTarget.style.background = bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.45) 0%, rgba(20,20,20,0.35) 100%), url(${bgImage})` : e.currentTarget.style.background
+                  e.currentTarget.style.background = bgImage ? `linear-gradient(110deg, rgba(8,8,8,0.25) 0%, rgba(20,20,20,0.18) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
               >
                 {/* Icon - Left Side */}
