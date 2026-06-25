@@ -399,7 +399,7 @@ export default function Dashboard() {
               <p style={{ color:'rgba(212,212,232,0.9)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>Water Intake</p>
               <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 10px' }}>{waterCount} / {WATER_GOAL} glasses</p>
               <button
-                onClick={() => { addWater.mutate(8); }}
+                onClick={() => { addGlass.mutate(8); }}
                 style={{ padding:'6px 12px', borderRadius:6, background:'rgba(201,168,108,0.15)', border:'1px solid rgba(201,168,108,0.3)', color:'#C9A86C', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s' }}
                 onMouseEnter={e => { e.currentTarget.style.background='rgba(201,168,108,0.25)'; e.currentTarget.style.borderColor='rgba(201,168,108,0.5)' }}
                 onMouseLeave={e => { e.currentTarget.style.background='rgba(201,168,108,0.15)'; e.currentTarget.style.borderColor='rgba(201,168,108,0.3)' }}
