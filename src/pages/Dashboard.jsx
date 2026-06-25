@@ -309,7 +309,6 @@ export default function Dashboard() {
   }
   const loggedCount = Object.values(loggedModules).filter(Boolean).length
   const recentFood  = (foodLogs || []).slice(-3).reverse()
-  const calRawPct   = Math.round((calories / CALORIE_GOAL) * 100)
   const weightRawPct = weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal / latest) * 100)) : 0
 
   const anim = (delay = 0) => ({
