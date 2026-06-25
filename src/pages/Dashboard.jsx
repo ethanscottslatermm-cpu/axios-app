@@ -485,8 +485,8 @@ export default function Dashboard() {
             return (
               <button key={key} onClick={() => navigate(path)}
                 style={{
-                  display:'flex', alignItems:'center', gap:16, width:'100%',
-                  padding:'18px 16px', borderRadius:12, minHeight:'140px',
+                  display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', width:'100%',
+                  padding:'28px 20px', borderRadius:12, minHeight:'140px',
                   background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
                   border: done ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)',
                   cursor:'pointer', textAlign:'left',
@@ -508,13 +508,6 @@ export default function Dashboard() {
                   e.currentTarget.style.borderColor=done ? `${color}50` : 'rgba(212,212,232,0.1)'
                 }}
               >
-                {/* Icon - Left Side */}
-                <div style={{ width:48, height:48, borderRadius:8, background: 'rgba(255,255,255,0.08)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, border: '1px solid rgba(255,255,255,0.12)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', transition:'all 0.3s' }}>
-                  <div style={{ color: 'rgba(212,212,232,0.95)', opacity:0.9 }}>
-                    {icon(24)}
-                  </div>
-                </div>
-
                 {/* Text - Elegant Classical Layout */}
                 <div style={{ flex:1, minWidth:0, display:'flex', flexDirection:'column', justifyContent:'center' }}>
                   <p style={{
