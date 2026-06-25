@@ -278,7 +278,7 @@ export default function Dashboard() {
   const toggleSection = (key) => setOpenSections(prev => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n })
 
   const { totals, logs: foodLogs } = useFoodLog(todayStr)
-  const { count: waterCount }      = useWaterLog(todayStr)
+  const { count: waterCount, addGlass }      = useWaterLog(todayStr)
   const { latest, goal: weightGoal } = useWeightLog()
   const { prayers }                = usePrayers()
   const { data: upcomingEvents = [] } = useUpcomingEvents(4)
@@ -309,6 +309,8 @@ export default function Dashboard() {
   }
   const loggedCount = Object.values(loggedModules).filter(Boolean).length
   const recentFood  = (foodLogs || []).slice(-3).reverse()
+  const calRawPct   = Math.round((calories / CALORIE_GOAL) * 100)
+  const weightRawPct = weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal / latest) * 100)) : 0
 
   const anim = (delay = 0) => ({
     opacity: visible ? 1 : 0,
@@ -374,28 +376,64 @@ export default function Dashboard() {
         {/* Scrollable body */}
         <div style={{ padding:'16px 16px 0', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
-          {/* 2×2 Stat Grid */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(60) }}>
-            {(() => {
-              const weightRawPct = weightGoal && latest ? (latest <= weightGoal ? 100 : Math.round((weightGoal / latest) * 100)) : 0
-              const todayRawPct  = Math.round((loggedCount / 4) * 100)
-              return [
-                { label:'Calories', value: calories.toLocaleString(), sub:`${calLeft.toLocaleString()} left`,  pct: calPct,        color: ringColor(calRawPct),   path:'/food',    valSize:14, bg:'calories' },
-                { label:'Water',    value:`${waterCount}/${WATER_GOAL}`, sub:'glasses',                        pct: waterPct,      color: ringColor(waterRawPct),       path:'/water',   valSize:17, bg:'water'    },
-                { label:'Weight',   value: latest ? `${latest}` : '—',  sub: latest ? 'lb' : 'not logged',    pct: weightRawPct,  color: ringColor(weightRawPct),      path:'/fitness', valSize:17, bg:'weight'   },
-                { label:'Today',    value:`${loggedCount}/4`,            sub:'logged',                         pct: todayRawPct,   color: ringColor(todayRawPct),       valSize:17,      bg:'today'  },
-              ]
-            })().map(({ label, value, sub, pct, color, path, valSize, bg }) => (
-              <div key={label} onClick={path ? () => navigate(path) : undefined}
-                style={{ background:'transparent', border:`1px solid ${color}33`, boxShadow:'none', borderRadius:14, padding:'14px 10px 12px', position:'relative', overflow:'hidden', cursor: path ? 'pointer' : 'default', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
-                <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.24em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>{label}</p>
-                <CircleRing pct={pct} color={color} size={84} stroke={5}>
-                  <p style={{ color, fontSize:valSize, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{value}</p>
-                  <p style={{ color:`${color}66`, fontSize:8, fontFamily:'Helvetica Neue,sans-serif', marginTop:2, textAlign:'center' }}>{Math.round(pct)}%</p>
-                </CircleRing>
-                <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center' }}>{sub}</p>
+          {/* PART 1: NEW VITALS ROW */}
+
+          {/* Daily Ritual Bar */}
+          <div style={{ ...anim(40) }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Today's Ritual</p>
+              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>{loggedCount} of 4</p>
+            </div>
+            <GlowBar pct={Math.round((loggedCount / 4) * 100)} h={4} color="#C9A86C" glow="rgba(201,168,108,0.3)" />
+          </div>
+
+          {/* Featured Water Card */}
+          <div style={{ ...anim(80), display:'flex', alignItems:'center', gap:16, padding:'16px 14px', background:'rgba(212,212,232,0.02)', border:'1px solid rgba(154,180,204,0.15)', borderRadius:14 }}>
+            <div style={{ flexShrink:0 }}>
+              <CircleRing pct={Math.round((waterCount / WATER_GOAL) * 100)} color="#9ab4cc" size={88} stroke={5}>
+                <p style={{ color:'#9ab4cc', fontSize:17, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{waterCount}</p>
+                <p style={{ color:'rgba(154,180,204,0.66)', fontSize:8, fontFamily:'Helvetica Neue,sans-serif', marginTop:2, textAlign:'center' }}>glasses</p>
+              </CircleRing>
+            </div>
+            <div style={{ flex:1 }}>
+              <p style={{ color:'rgba(212,212,232,0.9)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>Water Intake</p>
+              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 10px' }}>{waterCount} / {WATER_GOAL} glasses</p>
+              <button
+                onClick={() => { addWater.mutate(8); }}
+                style={{ padding:'6px 12px', borderRadius:6, background:'rgba(201,168,108,0.15)', border:'1px solid rgba(201,168,108,0.3)', color:'#C9A86C', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.background='rgba(201,168,108,0.25)'; e.currentTarget.style.borderColor='rgba(201,168,108,0.5)' }}
+                onMouseLeave={e => { e.currentTarget.style.background='rgba(201,168,108,0.15)'; e.currentTarget.style.borderColor='rgba(201,168,108,0.3)' }}
+              >+ Add Glass</button>
+            </div>
+          </div>
+
+          {/* Calories + Weight Compact Row */}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, ...anim(120) }}>
+            {/* Calories */}
+            <div onClick={() => navigate('/food')} style={{ padding:'12px 14px', background:'rgba(212,212,232,0.02)', border:`1px solid ${ringColor(calRawPct)}22`, borderRadius:11, cursor:'pointer', transition:'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(212,212,232,0.05)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(212,212,232,0.02)'; }}
+            >
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+                {Ico.food(16)}
+                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Calories</p>
               </div>
-            ))}
+              <p style={{ color:ringColor(calRawPct), fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>{calories.toLocaleString()}</p>
+              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>{calLeft.toLocaleString()} left</p>
+            </div>
+
+            {/* Weight */}
+            <div onClick={() => navigate('/fitness')} style={{ padding:'12px 14px', background:'rgba(212,212,232,0.02)', border:`1px solid ${ringColor(weightRawPct)}22`, borderRadius:11, cursor:'pointer', transition:'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(212,212,232,0.05)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(212,212,232,0.02)'; }}
+            >
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+                {Ico.weight(16)}
+                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Weight</p>
+              </div>
+              <p style={{ color:ringColor(weightRawPct), fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>{latest ? `${latest} lb` : '—'}</p>
+              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>{latest ? 'logged' : 'not logged'}</p>
+            </div>
           </div>
 
           {/* Calendar */}
@@ -433,41 +471,54 @@ export default function Dashboard() {
             >+ Schedule Event</button>
           </Card>
 
-          {/* Modules */}
-          <Card style={anim(160)}>
-            <SectionHead title="Today's Modules" actionLabel={`${loggedCount} of 4`} onToggle={() => toggleSection('modules')} collapsed={!openSections.has('modules')} />
-            {openSections.has('modules') && (
-            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-              {modules.map(({ key, label, path, icon }, i) => {
-                const done  = loggedModules[key]
-                const color = MODULE_COLORS[key] || 'rgba(212,212,232,0.5)'
-                return (
-                  <button key={key} onClick={() => navigate(path)} className="ax-pill"
-                    style={{
-                      display:'flex', alignItems:'center', justifyContent:'space-between',
-                      padding:'13px 14px', borderRadius:11,
-                      border:`1px solid ${done ? `${color}30` : 'rgba(212,212,232,0.06)'}`,
-                      background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
-                      cursor:'pointer', textAlign:'left', width:'100%',
-                      opacity: visible ? 1 : 0,
-                      transform: visible ? 'translateX(0)' : 'translateX(-8px)',
-                      transition: `opacity 0.4s ease ${200 + i*45}ms, transform 0.4s ease ${200 + i*45}ms, background 0.2s, border-color 0.2s`,
-                    }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                      <div style={{ width:7, height:7, borderRadius:'50%', background: done ? color : `${color}55`, boxShadow: done ? `0 0 7px ${color}99` : 'none', flexShrink:0 }} />
-                      <div style={{ color: done ? color : `${color}66` }}>{icon(15)}</div>
-                      <div>
-                        <p style={{ color: done ? color : `${color}cc`, fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', marginBottom:1 }}>{label}</p>
-                        <p style={{ color: done ? `${color}88` : `${color}55`, fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{done ? 'Logged' : 'Pending'}</p>
-                      </div>
-                    </div>
-                    <div style={{ color:'rgba(212,212,232,0.2)' }}>{Ico.chevron()}</div>
-                  </button>
-                )
-              })}
-            </div>
-            )}
-          </Card>
+          {/* PART 2: MODULE HERO BANNERS */}
+          {modules.map(({ key, label, path, icon }, i) => {
+            const done = loggedModules[key]
+            const color = MODULE_COLORS[key] || 'rgba(212,212,232,0.5)'
+            const subtitles = {
+              food: done ? '✓ Logged' : 'Log your meals',
+              prayer: done ? '✓ Prayed' : 'Spend time in reflection',
+              fitness: done ? '✓ Trained' : 'Complete a workout',
+              finance: done ? '✓ Reviewed' : 'Check your finances',
+            }
+            const subtitle = subtitles[key] || (done ? 'Completed' : 'Pending')
+
+            return (
+              <button key={key} onClick={() => navigate(path)}
+                style={{
+                  display:'flex', alignItems:'center', gap:14, width:'100%',
+                  padding:'16px 14px', borderRadius:12,
+                  background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
+                  border: done ? `1.5px solid ${color}40` : '1px solid rgba(212,212,232,0.06)',
+                  cursor:'pointer', textAlign:'left',
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? 'translateY(0)' : 'translateY(8px)',
+                  transition: `opacity 0.4s ease ${160 + i*60}ms, transform 0.4s ease ${160 + i*60}ms, background 0.2s, border-color 0.2s, box-shadow 0.2s`,
+                  boxShadow: done ? `0 0 12px ${color}22` : 'none',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow=`0 0 16px ${color}33`; e.currentTarget.style.borderColor=`${color}60` }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow=done ? `0 0 12px ${color}22` : 'none'; e.currentTarget.style.borderColor=done ? `${color}40` : 'rgba(212,212,232,0.06)' }}
+              >
+                {/* Icon Block */}
+                <div style={{ width:52, height:52, borderRadius:10, background: done ? `${color}15` : 'rgba(212,212,232,0.04)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, border: done ? `1px solid ${color}30` : 'none', transition:'all 0.2s' }}>
+                  <div style={{ color: done ? color : `${color}66`, opacity: done ? 1 : 0.7 }}>
+                    {icon(24)}
+                  </div>
+                </div>
+
+                {/* Text */}
+                <div style={{ flex:1, minWidth:0 }}>
+                  <p style={{ color: done ? color : 'rgba(212,212,232,0.9)', fontSize:14, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 3px', transition:'color 0.2s' }}>{label}</p>
+                  <p style={{ color: done ? `${color}88` : 'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', margin:0, transition:'color 0.2s' }}>{subtitle}</p>
+                </div>
+
+                {/* Chevron */}
+                <div style={{ color: done ? color : 'rgba(212,212,232,0.2)', flexShrink:0, transition:'color 0.2s' }}>
+                  {Ico.chevron()}
+                </div>
+              </button>
+            )
+          })}
 
           {/* Food */}
           <Card style={anim(280)}>
