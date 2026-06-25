@@ -257,23 +257,6 @@ export function BottomNav() {
             </button>
           )
         })}
-
-        {/* Close button when expanded */}
-        <button
-          onClick={() => setIsExpanded(false)}
-          style={{
-            position: 'absolute', top: 8, right: 8,
-            width: 32, height: 32,
-            background: 'rgba(212,212,232,0.08)', border: '1px solid rgba(212,212,232,0.12)',
-            borderRadius: 8, cursor: 'pointer', color: 'rgba(212,212,232,0.5)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 18, fontWeight: 300, transition: 'all 0.2s',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,212,232,0.12)'; e.currentTarget.style.borderColor = 'rgba(212,212,232,0.18)'; e.currentTarget.style.color = 'rgba(212,212,232,0.7)' }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(212,212,232,0.08)'; e.currentTarget.style.borderColor = 'rgba(212,212,232,0.12)'; e.currentTarget.style.color = 'rgba(212,212,232,0.5)' }}
-        >
-          ✕
-        </button>
       </nav>
 
       {/* Reserved space for nav (prevents layout shift) */}
