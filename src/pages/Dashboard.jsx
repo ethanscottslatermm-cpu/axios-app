@@ -182,7 +182,7 @@ export function BottomNav() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(212,212,232,0.6)" strokeWidth="2" style={{ transform: 'scaleY(-1)' }}>
               <polyline points="18 15 12 9 6 15"/>
             </svg>
-            <span style={{ fontSize: '8px', color: 'rgba(212,212,232,0.5)', fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.05em', textTransform: 'uppercase' }}>tap to open</span>
+            <span style={{ fontSize: '8px', color: '#bab3a0', fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.05em', textTransform: 'uppercase' }}>tap to open</span>
           </div>
           <button
             onClick={() => setIsExpanded(true)}
@@ -391,8 +391,8 @@ export default function Dashboard() {
           {/* Daily Ritual Bar */}
           <div style={{ ...anim(40) }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', margin:0 }}>Today's Focus</p>
-              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', margin:0 }}>{loggedCount} of 4</p>
+              <p style={{ color:'#bab3a0', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', margin:0 }}>Today's Focus</p>
+              <p style={{ color:'#bab3a0', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', margin:0 }}>{loggedCount} of 4</p>
             </div>
             <GlowBar pct={Math.round((loggedCount / 4) * 100)} h={4} color="#C9A86C" glow="rgba(201,168,108,0.3)" />
           </div>
@@ -406,8 +406,8 @@ export default function Dashboard() {
               </CircleRing>
             </div>
             <div style={{ flex:1 }}>
-              <p style={{ color:'rgba(212,212,232,0.9)', fontSize:13, fontWeight:600, fontFamily:'Mulish, sans-serif', margin:'0 0 2px' }}>Water Intake</p>
-              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Mulish, sans-serif', margin:'0 0 10px' }}>{waterCount} / {WATER_GOAL} glasses</p>
+              <p style={{ color:'#ddd6cc', fontSize:13, fontWeight:600, fontFamily:'Mulish, sans-serif', margin:'0 0 2px' }}>Water Intake</p>
+              <p style={{ color:'#bab3a0', fontSize:12, fontFamily:'Mulish, sans-serif', margin:'0 0 10px' }}>{waterCount} / {WATER_GOAL} glasses</p>
               <button
                 onClick={() => { addGlass.mutate(8); }}
                 style={{ padding:'6px 12px', borderRadius:6, background:'rgba(201,168,108,0.15)', border:'1px solid rgba(201,168,108,0.3)', color:'#C9A86C', fontSize:12, fontWeight:600, fontFamily:'Mulish, sans-serif', cursor:'pointer', transition:'all 0.2s' }}
@@ -428,7 +428,7 @@ export default function Dashboard() {
                 <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Mulish, sans-serif', margin:0 }}>Calories</p>
               </div>
               <p style={{ color:ringColor(calRawPct), fontSize:18, fontWeight:900, fontFamily:'Mulish, sans-serif', margin:'0 0 2px' }}>{calories.toLocaleString()}</p>
-              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Mulish, sans-serif', margin:0 }}>{calLeft.toLocaleString()} left</p>
+              <p style={{ color:'#9d9684', fontSize:10, fontFamily:'Mulish, sans-serif', margin:0 }}>{calLeft.toLocaleString()} left</p>
             </div>
 
             {/* Weight */}
@@ -440,7 +440,7 @@ export default function Dashboard() {
                 <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Mulish, sans-serif', margin:0 }}>Weight</p>
               </div>
               <p style={{ color:ringColor(weightRawPct), fontSize:18, fontWeight:900, fontFamily:'Mulish, sans-serif', margin:'0 0 2px' }}>{latest ? `${latest} lb` : '—'}</p>
-              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Mulish, sans-serif', margin:0 }}>{latest ? 'logged' : 'not logged'}</p>
+              <p style={{ color:'#9d9684', fontSize:10, fontFamily:'Mulish, sans-serif', margin:0 }}>{latest ? 'logged' : 'not logged'}</p>
             </div>
           </div>
 
@@ -525,7 +525,7 @@ export default function Dashboard() {
                 {/* Text - Elegant Classical Layout */}
                 <div style={{ flex:1, minWidth:0, display:'flex', flexDirection:'column', justifyContent:'center' }}>
                   <p style={{
-                    color: 'rgba(237,234,227,0.98)',
+                    color: '#e8dcc8',
                     fontSize:20,
                     fontWeight:700,
                     fontFamily:'Playfair Display, serif',
@@ -537,7 +537,7 @@ export default function Dashboard() {
                     {label}
                   </p>
                   <p style={{
-                    color: 'rgba(212,212,232,0.65)',
+                    color: '#c9c0b0',
                     fontSize:13,
                     fontFamily:'Mulish, sans-serif',
                     fontWeight:400,
