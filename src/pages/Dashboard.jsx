@@ -387,7 +387,7 @@ export default function Dashboard() {
           </div>
 
           {/* Featured Water Card */}
-          <div style={{ ...anim(80), display:'flex', alignItems:'center', gap:16, padding:'16px 14px', background:'rgba(212,212,232,0.02)', border:'1px solid rgba(154,180,204,0.15)', borderRadius:14 }}>
+          <div style={{ ...anim(80), display:'flex', alignItems:'center', gap:16, padding:'16px 14px', background:`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/water-intake-bg.png)`, backgroundSize:'cover', backgroundPosition:'center', border:'1px solid rgba(154,180,204,0.15)', borderRadius:14 }}>
             <div style={{ flexShrink:0 }}>
               <CircleRing pct={Math.round((waterCount / WATER_GOAL) * 100)} color="#9ab4cc" size={88} stroke={5}>
                 <p style={{ color:'#9ab4cc', fontSize:17, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{waterCount}</p>
