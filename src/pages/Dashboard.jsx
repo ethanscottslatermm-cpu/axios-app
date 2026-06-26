@@ -447,7 +447,7 @@ export default function Dashboard() {
           </div>
 
           {/* Calendar */}
-          <Card style={anim(130)}>
+          <Card style={{ ...anim(130), background:`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/calendar-bg.png)`, backgroundSize:'cover', backgroundPosition:'center' }}>
             <SectionHead title="Upcoming" action={() => navigate('/calendar')} actionLabel="Open Calendar →" color="#c8853a" />
             {upcomingEvents.length === 0 ? (
               <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', textAlign:'center', padding:'10px 0 4px' }}>
