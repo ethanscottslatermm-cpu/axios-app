@@ -115,17 +115,17 @@ function SectionHead({ title, action, actionLabel, color, onToggle, collapsed })
     >
       <div style={{ display:'flex', alignItems:'center', gap:9 }}>
         <div style={{ width:2, height:14, background:`linear-gradient(to bottom,${c},${c}22)`, borderRadius:2, boxShadow:`0 0 6px ${c}88` }} />
-        <p style={{ color: color || 'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>{title}</p>
+        <p style={{ color: color || 'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', fontWeight:700 }}>{title}</p>
         {onToggle && (
           <span style={{ display:'inline-block', color:'var(--text-muted)', fontSize:14, lineHeight:1, transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition:'transform 0.22s ease' }}>›</span>
         )}
       </div>
       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
         {actionLabel && !action && (
-          <span style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{actionLabel}</span>
+          <span style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Mulish, sans-serif' }}>{actionLabel}</span>
         )}
         {action && (
-          <button onClick={e => { e.stopPropagation(); action() }} style={{ background:'none', border:'none', cursor:'pointer', color: color ? `${color}99` : 'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>
+          <button onClick={e => { e.stopPropagation(); action() }} style={{ background:'none', border:'none', cursor:'pointer', color: color ? `${color}99` : 'var(--text-muted)', fontSize:11, fontFamily:'Mulish, sans-serif' }}>
             {actionLabel}
           </button>
         )}
@@ -364,16 +364,16 @@ export default function Dashboard() {
           background:'var(--header-bg)', backdropFilter:'blur(18px)', WebkitBackdropFilter:'blur(18px)',
           padding:'14px 16px 12px',
         }}>
-          <p style={{ color:'var(--text-muted)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>
+          <p style={{ color:'var(--text-muted)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', marginBottom:6 }}>
             {dayName} · {dateStr}
           </p>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10 }}>
-            <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:21, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
+            <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:21, fontFamily:'Mulish, sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
               {getGreeting()},{' '}
               <span style={{ fontStyle:'italic', fontFamily:"'EB Garamond',serif", fontWeight:400, fontSize:23 }}>{displayName}.</span>
             </h1>
             <button onClick={() => navigate('/food')} className="ax-btn-white"
-              style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
+              style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
               {Ico.plus(12)} Log
             </button>
           </div>
@@ -391,8 +391,8 @@ export default function Dashboard() {
           {/* Daily Ritual Bar */}
           <div style={{ ...anim(40) }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Today's Focus</p>
-              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>{loggedCount} of 4</p>
+              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', margin:0 }}>Today's Focus</p>
+              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', margin:0 }}>{loggedCount} of 4</p>
             </div>
             <GlowBar pct={Math.round((loggedCount / 4) * 100)} h={4} color="#C9A86C" glow="rgba(201,168,108,0.3)" />
           </div>
@@ -401,16 +401,16 @@ export default function Dashboard() {
           <div style={{ ...anim(80), display:'flex', alignItems:'center', gap:16, padding:'16px 14px', background:`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/water-intake-bg.png)`, backgroundSize:'cover', backgroundPosition:'center', border:'1px solid rgba(154,180,204,0.15)', borderRadius:14 }}>
             <div style={{ flexShrink:0 }}>
               <CircleRing pct={Math.round((waterCount / WATER_GOAL) * 100)} color="#9ab4cc" size={88} stroke={5}>
-                <p style={{ color:'#9ab4cc', fontSize:17, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{waterCount}</p>
-                <p style={{ color:'rgba(154,180,204,0.66)', fontSize:8, fontFamily:'Helvetica Neue,sans-serif', marginTop:2, textAlign:'center' }}>glasses</p>
+                <p style={{ color:'#9ab4cc', fontSize:17, fontWeight:900, fontFamily:'Mulish, sans-serif', lineHeight:1, textAlign:'center', margin:0 }}>{waterCount}</p>
+                <p style={{ color:'rgba(154,180,204,0.66)', fontSize:8, fontFamily:'Mulish, sans-serif', marginTop:2, textAlign:'center' }}>glasses</p>
               </CircleRing>
             </div>
             <div style={{ flex:1 }}>
-              <p style={{ color:'rgba(212,212,232,0.9)', fontSize:13, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>Water Intake</p>
-              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 10px' }}>{waterCount} / {WATER_GOAL} glasses</p>
+              <p style={{ color:'rgba(212,212,232,0.9)', fontSize:13, fontWeight:600, fontFamily:'Mulish, sans-serif', margin:'0 0 2px' }}>Water Intake</p>
+              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:12, fontFamily:'Mulish, sans-serif', margin:'0 0 10px' }}>{waterCount} / {WATER_GOAL} glasses</p>
               <button
                 onClick={() => { addGlass.mutate(8); }}
-                style={{ padding:'6px 12px', borderRadius:6, background:'rgba(201,168,108,0.15)', border:'1px solid rgba(201,168,108,0.3)', color:'#C9A86C', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', transition:'all 0.2s' }}
+                style={{ padding:'6px 12px', borderRadius:6, background:'rgba(201,168,108,0.15)', border:'1px solid rgba(201,168,108,0.3)', color:'#C9A86C', fontSize:12, fontWeight:600, fontFamily:'Mulish, sans-serif', cursor:'pointer', transition:'all 0.2s' }}
                 onMouseEnter={e => { e.currentTarget.style.background='rgba(201,168,108,0.25)'; e.currentTarget.style.borderColor='rgba(201,168,108,0.5)' }}
                 onMouseLeave={e => { e.currentTarget.style.background='rgba(201,168,108,0.15)'; e.currentTarget.style.borderColor='rgba(201,168,108,0.3)' }}
               >+ Add Glass</button>
@@ -425,10 +425,10 @@ export default function Dashboard() {
               onMouseLeave={e => { e.currentTarget.style.background=`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/calories-bg.png)`; }}
             >
               <div style={{ marginBottom:6 }}>
-                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Calories</p>
+                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Mulish, sans-serif', margin:0 }}>Calories</p>
               </div>
-              <p style={{ color:ringColor(calRawPct), fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>{calories.toLocaleString()}</p>
-              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>{calLeft.toLocaleString()} left</p>
+              <p style={{ color:ringColor(calRawPct), fontSize:18, fontWeight:900, fontFamily:'Mulish, sans-serif', margin:'0 0 2px' }}>{calories.toLocaleString()}</p>
+              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Mulish, sans-serif', margin:0 }}>{calLeft.toLocaleString()} left</p>
             </div>
 
             {/* Weight */}
@@ -437,10 +437,10 @@ export default function Dashboard() {
               onMouseLeave={e => { e.currentTarget.style.background=`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/weight-bg.png)`; }}
             >
               <div style={{ marginBottom:6 }}>
-                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Weight</p>
+                <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Mulish, sans-serif', margin:0 }}>Weight</p>
               </div>
-              <p style={{ color:ringColor(weightRawPct), fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>{latest ? `${latest} lb` : '—'}</p>
-              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>{latest ? 'logged' : 'not logged'}</p>
+              <p style={{ color:ringColor(weightRawPct), fontSize:18, fontWeight:900, fontFamily:'Mulish, sans-serif', margin:'0 0 2px' }}>{latest ? `${latest} lb` : '—'}</p>
+              <p style={{ color:'rgba(212,212,232,0.4)', fontSize:10, fontFamily:'Mulish, sans-serif', margin:0 }}>{latest ? 'logged' : 'not logged'}</p>
             </div>
           </div>
 
@@ -448,7 +448,7 @@ export default function Dashboard() {
           <Card style={{ ...anim(130), background:`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/calendar-bg.png)`, backgroundSize:'cover', backgroundPosition:'center' }}>
             <SectionHead title="Upcoming" action={() => navigate('/calendar')} actionLabel="Open Calendar →" color="#c8853a" />
             {upcomingEvents.length === 0 ? (
-              <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic', textAlign:'center', padding:'10px 0 4px' }}>
+              <p style={{ color:'var(--text-faint)', fontSize:12, fontFamily:'Mulish, sans-serif', fontStyle:'italic', textAlign:'center', padding:'10px 0 4px' }}>
                 No upcoming events
               </p>
             ) : (
@@ -463,8 +463,8 @@ export default function Dashboard() {
                     <div key={ev.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 12px', background:'var(--stat-bg)', border:`1px solid ${color}22`, borderRadius:9 }}>
                       <span style={{ width:7, height:7, borderRadius:'50%', background:color, boxShadow:`0 0 5px ${color}88`, flexShrink:0, display:'inline-block' }}/>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{ev.title}</p>
-                        <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', margin:'1px 0 0' }}>{dateLabel}{timeLabel ? ' · ' + timeLabel : ''}</p>
+                        <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, fontFamily:'Mulish, sans-serif', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{ev.title}</p>
+                        <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Mulish, sans-serif', margin:'1px 0 0' }}>{dateLabel}{timeLabel ? ' · ' + timeLabel : ''}</p>
                       </div>
                     </div>
                   )
@@ -473,7 +473,7 @@ export default function Dashboard() {
             )}
             <button
               onClick={() => navigate('/calendar')}
-              style={{ width:'100%', marginTop:12, padding:'10px', borderRadius:8, background:'transparent', border:'1px solid #c8853a44', color:'#c8853a99', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
+              style={{ width:'100%', marginTop:12, padding:'10px', borderRadius:8, background:'transparent', border:'1px solid #c8853a44', color:'#c8853a99', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', fontWeight:700, cursor:'pointer', transition:'border-color 0.2s,color 0.2s' }}
               onMouseEnter={e=>{e.currentTarget.style.borderColor='#c8853a';e.currentTarget.style.color='#c8853a'}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor='#c8853a44';e.currentTarget.style.color='#c8853a99'}}
             >+ Schedule Event</button>
@@ -526,11 +526,11 @@ export default function Dashboard() {
                 <div style={{ flex:1, minWidth:0, display:'flex', flexDirection:'column', justifyContent:'center' }}>
                   <p style={{
                     color: 'rgba(237,234,227,0.98)',
-                    fontSize:18,
+                    fontSize:20,
                     fontWeight:700,
-                    fontFamily:'EB Garamond, serif',
+                    fontFamily:'Playfair Display, serif',
                     margin:'0 0 4px',
-                    letterSpacing:'-0.3px',
+                    letterSpacing:'-0.5px',
                     textShadow: '0 2px 12px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.3)',
                     transition:'color 0.3s'
                   }}>
@@ -539,7 +539,7 @@ export default function Dashboard() {
                   <p style={{
                     color: 'rgba(212,212,232,0.65)',
                     fontSize:13,
-                    fontFamily:'Helvetica Neue, sans-serif',
+                    fontFamily:'Mulish, sans-serif',
                     fontWeight:400,
                     letterSpacing:'0.3px',
                     margin:0,
