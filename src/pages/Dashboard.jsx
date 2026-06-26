@@ -421,12 +421,11 @@ export default function Dashboard() {
             </div>
 
             {/* Weight */}
-            <div onClick={() => navigate('/fitness')} style={{ padding:'12px 14px', background:'rgba(212,212,232,0.02)', border:`1px solid ${ringColor(weightRawPct)}22`, borderRadius:11, cursor:'pointer', transition:'all 0.2s' }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(212,212,232,0.05)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(212,212,232,0.02)'; }}
+            <div onClick={() => navigate('/fitness')} style={{ padding:'12px 14px', background:`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/weight-bg.png)`, backgroundSize:'cover', backgroundPosition:'center', border:`1px solid ${ringColor(weightRawPct)}22`, borderRadius:11, cursor:'pointer', transition:'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background=`linear-gradient(135deg, rgba(20,20,20,0.45) 0%, rgba(30,30,30,0.35) 100%), url(/weight-bg.png)`; }}
+              onMouseLeave={e => { e.currentTarget.style.background=`linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(/weight-bg.png)`; }}
             >
-              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-                {Ico.weight(16)}
+              <div style={{ marginBottom:6 }}>
                 <p style={{ color:'rgba(212,212,232,0.7)', fontSize:12, fontWeight:600, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Weight</p>
               </div>
               <p style={{ color:ringColor(weightRawPct), fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', margin:'0 0 2px' }}>{latest ? `${latest} lb` : '—'}</p>
