@@ -17,7 +17,6 @@ const CAR_IMG = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAUFBQoH
 
 import { usePrayers } from '../hooks/usePrayers'
 import { useToday } from '../hooks/useToday'
-import { useStreaks } from '../hooks/useStreaks'
 import LineChart from '../components/LineChart'
 import { supabase } from '../lib/supabase'
 
@@ -267,7 +266,6 @@ export function BottomNav() {
 
 export default function Dashboard() {
   const todayStr = useToday()
-  const streaks  = useStreaks()
   const dayName  = new Date(todayStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' })
   const dateStr  = new Date(todayStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
@@ -562,34 +560,6 @@ export default function Dashboard() {
 
         </div>
       </div>
-
-
-        {/* Streaks */}
-        <div style={{ padding:'0 16px 100px' }}>
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
-            <p style={{ color:'var(--text-primary)', fontSize:12, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>Streaks</p>
-            <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic' }}>consecutive days</p>
-          </div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:8 }}>
-            {[
-              { label:'Food',    val: streaks.food,       color: MODULE_COLORS.food       },
-              { label:'Water',   val: streaks.water,      color: MODULE_COLORS.water      },
-              { label:'Fitness', val: streaks.fitness,    color: MODULE_COLORS.fitness    },
-              { label:'Devotion',val: streaks.prayer,     color: MODULE_COLORS.prayer     },
-              { label:'Devot.',  val: streaks.devotional, color: MODULE_COLORS.devotional },
-            ].map(({ label, val, color }) => (
-              <div key={label} style={{ background:`${color}11`, border:`1px solid ${color}44`, boxShadow:`0 0 10px ${color}22`, borderRadius:10, padding:'10px 6px', textAlign:'center' }}>
-                <p style={{ color, fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em', lineHeight:1 }}>{val}</p>
-                <p style={{ color:`${color}99`, fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>{label}</p>
-                {val >= 1 && (
-                  <p style={{ fontSize:11, marginTop:3 }}>
-                    {val >= 7 ? '🔥🔥 ×2' : '🔥 ×1'}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
       <BottomNav />
     </>
   )
