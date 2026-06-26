@@ -57,10 +57,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food, bgImage:'/module-cards/dashboard modules/food log.png' },
-  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer, bgImage:'/module-cards/dashboard modules/devotional.png' },
-  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness, bgImage:'/module-cards/dashboard modules/training.png' },
-  { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance, bgImage:'/module-cards/dashboard modules/finance.png' },
+  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food, bgImage:'/module-cards/dashboard%20modules/food%20log.png' },
+  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer, bgImage:'/module-cards/dashboard%20modules/devotional.png' },
+  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness, bgImage:'/module-cards/dashboard%20modules/training.png' },
+  { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance, bgImage:'/module-cards/dashboard%20modules/finance.png' },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
