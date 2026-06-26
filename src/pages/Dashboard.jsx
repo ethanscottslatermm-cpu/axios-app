@@ -49,7 +49,7 @@ const Ico = {
 const MODULE_COLORS = {
   food:       '#c8d4c8', // lettuce green
   water:      '#9ab4cc', // sky blue
-  prayer:     '#c8a000', // dark gold
+  prayer:     '#d4d9e1', // platinum silver
   devotional: '#a8b4c0', // red
   fitness:    '#b4bccc', // dark blue
   finance:    '#b4c4b0', // money green
@@ -339,6 +339,20 @@ export default function Dashboard() {
         .ax-pill:hover{background:rgba(212,212,232,0.06)!important;border-color:rgba(212,212,232,0.18)!important;}
         .ax-log-row:hover{background:rgba(212,212,232,0.03);border-radius:8px;}
         .ax-btn-white:hover{background:rgba(212,212,232,0.88)!important;box-shadow:0 0 22px rgba(212,212,232,0.22)!important;}
+        @keyframes shimmer-border {
+          0% {
+            box-shadow: 0 8px 24px rgba(212, 217, 225, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 0 20px rgba(212, 217, 225, 0.3);
+          }
+          50% {
+            box-shadow: 0 8px 24px rgba(212, 217, 225, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 0 30px rgba(212, 217, 225, 0.5);
+          }
+          100% {
+            box-shadow: 0 8px 24px rgba(212, 217, 225, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 0 20px rgba(212, 217, 225, 0.3);
+          }
+        }
+        .devotion-card {
+          animation: shimmer-border 3s ease-in-out infinite;
+        }
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
@@ -494,6 +508,7 @@ export default function Dashboard() {
             const isFocused = key === focusModuleKey
             return (
               <button key={key} onClick={() => navigate(path)}
+                className={key === 'prayer' ? 'devotion-card' : ''}
                 style={{
                   display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', width:'100%',
                   padding:'28px 20px', borderRadius:16, minHeight:'140px',
