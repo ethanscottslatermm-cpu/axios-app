@@ -270,6 +270,19 @@ export default function Dashboard() {
   const streaks  = useStreaks()
   const dayName  = new Date(todayStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' })
   const dateStr  = new Date(todayStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+
+  // Calculate current week's focus module
+  const getWeekNumber = (date) => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+    const dayNum = d.getUTCDay() || 7
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1))
+    return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+  }
+  const weekNum = getWeekNumber(new Date(todayStr + 'T00:00:00'))
+  const focusModuleIndex = (weekNum - 1) % 4
+  const focusModuleKey = ['food', 'prayer', 'fitness', 'finance'][focusModuleIndex]
+
   const navigate = useNavigate()
   const { user }  = useAuth()
   const [profile, setProfile] = useState(null)
@@ -380,7 +393,7 @@ export default function Dashboard() {
           {/* Daily Ritual Bar */}
           <div style={{ ...anim(40) }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Today's Ritual</p>
+              <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>Today's Focus</p>
               <p style={{ color:'rgba(212,212,232,0.5)', fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>{loggedCount} of 4</p>
             </div>
             <GlowBar pct={Math.round((loggedCount / 4) * 100)} h={4} color="#C9A86C" glow="rgba(201,168,108,0.3)" />
@@ -480,6 +493,7 @@ export default function Dashboard() {
             }
             const subtitle = subtitles[key] || (done ? 'Completed' : 'Pending')
 
+            const isFocused = key === focusModuleKey
             return (
               <button key={key} onClick={() => navigate(path)}
                 style={{
@@ -488,12 +502,12 @@ export default function Dashboard() {
                   background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.35) 0%, rgba(30,30,30,0.25) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
                   backgroundSize:'cover',
                   backgroundPosition:'center',
-                  border: done ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)',
+                  border: isFocused ? `2px solid ${color}` : (done ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)'),
                   cursor:'pointer', textAlign:'left',
                   opacity: visible ? 1 : 0,
                   transform: visible ? 'translateY(0)' : 'translateY(8px)',
                   transition: `opacity 0.4s ease ${160 + i*60}ms, transform 0.4s ease ${160 + i*60}ms, background 0.3s, border-color 0.2s, box-shadow 0.3s`,
-                  boxShadow: done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)',
+                  boxShadow: isFocused ? `0 8px 24px ${color}40, inset 0 1px 1px rgba(255,255,255,0.05)` : (done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)'),
                   position:'relative',
                   overflow:'hidden',
                 }}
@@ -504,9 +518,9 @@ export default function Dashboard() {
                   e.currentTarget.style.background = bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.3) 0%, rgba(30,30,30,0.2) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.boxShadow=done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)'
+                  e.currentTarget.style.boxShadow=isFocused ? `0 8px 24px ${color}40, inset 0 1px 1px rgba(255,255,255,0.05)` : (done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)')
                   e.currentTarget.style.transform='translateY(0)'
-                  e.currentTarget.style.borderColor=done ? `${color}50` : 'rgba(212,212,232,0.1)'
+                  e.currentTarget.style.borderColor=isFocused ? color : (done ? `${color}50` : 'rgba(212,212,232,0.1)')
                   e.currentTarget.style.background = bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.4) 0%, rgba(30,30,30,0.3) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
               >
