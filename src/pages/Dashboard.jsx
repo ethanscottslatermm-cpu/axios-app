@@ -57,10 +57,10 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food },
-  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer },
-  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness },
-  { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance },
+  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food, bgImage:'/module-cards/dashboard modules/food log.png' },
+  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer, bgImage:'/module-cards/dashboard modules/devotional.png' },
+  { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness, bgImage:'/module-cards/dashboard modules/training.png' },
+  { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance, bgImage:'/module-cards/dashboard modules/finance.png' },
 ]
 
 function GlowBar({ pct, h = 3, color = 'var(--btn-bg)', glow = 'rgba(212,212,232,0.55)' }) {
@@ -487,7 +487,12 @@ export default function Dashboard() {
                 style={{
                   display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', width:'100%',
                   padding:'28px 20px', borderRadius:12, minHeight:'140px',
-                  background: done ? `${color}0d` : 'rgba(212,212,232,0.02)',
+                  background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.4) 0%, rgba(30,30,30,0.3) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
+                  backgroundSize:'cover',
+                  backgroundPosition:'center',
+                  backgroundAttachment:'fixed',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
                   border: done ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)',
                   cursor:'pointer', textAlign:'left',
                   opacity: visible ? 1 : 0,
@@ -501,11 +506,13 @@ export default function Dashboard() {
                   e.currentTarget.style.boxShadow=`0 12px 32px ${color}30, inset 0 1px 1px rgba(255,255,255,0.08)`
                   e.currentTarget.style.transform='translateY(-3px)'
                   e.currentTarget.style.borderColor=`${color}70`
+                  e.currentTarget.style.background = bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.3) 0%, rgba(30,30,30,0.2) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.boxShadow=done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)'
                   e.currentTarget.style.transform='translateY(0)'
                   e.currentTarget.style.borderColor=done ? `${color}50` : 'rgba(212,212,232,0.1)'
+                  e.currentTarget.style.background = bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.4) 0%, rgba(30,30,30,0.3) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
               >
                 {/* Text - Elegant Classical Layout */}
