@@ -134,6 +134,7 @@ function IndexCard({ label, symbol, onClick }) {
 const CRYPTO_MAP = {
   BTC:  'BTCUSDT',
   ETH:  'ETHUSDT',
+  USDT: 'USDTUSD',
   XRP:  'XRPUSDT',
   SOL:  'SOLUSDT',
   BNB:  'BNBUSDT',
@@ -173,7 +174,8 @@ function CryptoTopCard({ coin, fhSymbol, badge, onClick }) {
 
   const bgImageMap = {
     'BTC': '/bitcoin-card.png',
-    'ETH': '/ethereum-card.png'
+    'ETH': '/ethereum-card.png',
+    'USDT': '/tether-card.png'
   }
   const bgImage = bgImageMap[coin]
 
@@ -262,7 +264,7 @@ const RANGES = [
 
 // Yahoo Finance symbols for crypto (Finnhub uses BINANCE:X format)
 const CRYPTO_YAHOO = {
-  BTC:'BTC-USD', ETH:'ETH-USD', XRP:'XRP-USD', SOL:'SOL-USD',
+  BTC:'BTC-USD', ETH:'ETH-USD', USDT:'USDT-USD', XRP:'XRP-USD', SOL:'SOL-USD',
   BNB:'BNB-USD', DOGE:'DOGE-USD', ADA:'ADA-USD', AVAX:'AVAX-USD',
   LINK:'LINK-USD', DOT:'DOT-USD', MATIC:'MATIC-USD', LTC:'LTC-USD',
 }
@@ -1153,10 +1155,7 @@ export default function FinanceTracker() {
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
                 <CryptoTopCard coin="BTC" fhSymbol={CRYPTO_MAP.BTC} onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO.BTC, display: 'BTC' })} />
                 <CryptoTopCard coin="ETH" fhSymbol={CRYPTO_MAP.ETH} onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO.ETH, display: 'ETH' })} />
-                {rotatingCoin
-                  ? <CryptoTopCard coin={rotatingCoin} fhSymbol={CRYPTO_MAP[rotatingCoin]} badge="hot" onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO[rotatingCoin] || (rotatingCoin + '-USD'), display: rotatingCoin })} />
-                  : <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 12px', display:'flex', alignItems:'center', justifyContent:'center' }}><p style={{ color:'var(--text-faint)', fontSize:11 }}>—</p></div>
-                }
+                <CryptoTopCard coin="USDT" fhSymbol={CRYPTO_MAP.USDT} onClick={() => setDetailSymbol({ symbol: CRYPTO_YAHOO.USDT, display: 'USDT' })} />
               </div>
             </div>
 
