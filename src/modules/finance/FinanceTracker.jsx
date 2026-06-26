@@ -132,18 +132,18 @@ function IndexCard({ label, symbol, onClick }) {
 
 // ── Crypto symbol map ────────────────────────────────────────────────────────
 const CRYPTO_MAP = {
-  BTC:  'BINANCE:BTCUSDT',
-  ETH:  'BINANCE:ETHUSDT',
-  XRP:  'BINANCE:XRPUSDT',
-  SOL:  'BINANCE:SOLUSDT',
-  BNB:  'BINANCE:BNBUSDT',
-  DOGE: 'BINANCE:DOGEUSDT',
-  ADA:  'BINANCE:ADAUSDT',
-  AVAX: 'BINANCE:AVAXUSDT',
-  LINK: 'BINANCE:LINKUSDT',
-  DOT:  'BINANCE:DOTUSDT',
-  MATIC:'BINANCE:MATICUSDT',
-  LTC:  'BINANCE:LTCUSDT',
+  BTC:  'BTCUSDT',
+  ETH:  'ETHUSDT',
+  XRP:  'XRPUSDT',
+  SOL:  'SOLUSDT',
+  BNB:  'BNBUSDT',
+  DOGE: 'DOGEUSDT',
+  ADA:  'ADAUSDT',
+  AVAX: 'AVAXUSDT',
+  LINK: 'LINKUSDT',
+  DOT:  'DOTUSDT',
+  MATIC:'MATICUSDT',
+  LTC:  'LTCUSDT',
 }
 const ROTATION_COINS = ['SOL','BNB','DOGE','ADA','AVAX','LINK','DOT','MATIC']
 
@@ -157,9 +157,16 @@ function fmtCrypto(n) {
 function CryptoTopCard({ coin, fhSymbol, badge, onClick }) {
   const [quote,   setQuote]   = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error,   setError]   = useState(null)
   useEffect(() => {
-    getQuote(fhSymbol).then(d => { setQuote(d); setLoading(false) }).catch(() => setLoading(false))
-  }, [fhSymbol])
+    getQuote(fhSymbol)
+      .then(d => { setQuote(d); setLoading(false); setError(null) })
+      .catch(err => {
+        console.error(`Failed to load ${coin} (${fhSymbol}):`, err)
+        setError(err.message)
+        setLoading(false)
+      })
+  }, [fhSymbol, coin])
   const change = quote ? quote.c - quote.pc : null
   const pct    = quote ? ((change / quote.pc) * 100) : null
   const up     = change >= 0
@@ -178,11 +185,15 @@ function CryptoTopCard({ coin, fhSymbol, badge, onClick }) {
       <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{coin}</p>
       {loading ? (
         <p style={{ color:'var(--text-faint)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>—</p>
-      ) : (
+      ) : error ? (
+        <p style={{ color:'#fca5a5', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontStyle:'italic' }}>Error</p>
+      ) : quote?.c ? (
         <>
           <p style={{ color:'var(--text-primary)', fontSize:15, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>${fmtCrypto(quote?.c)}</p>
           <p style={{ color: up ? '#86efac' : '#fca5a5', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, marginTop:3 }}>{fmtPct(pct)}</p>
         </>
+      ) : (
+        <p style={{ color:'var(--text-faint)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>No data</p>
       )}
     </div>
   )
