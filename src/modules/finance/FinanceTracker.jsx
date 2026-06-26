@@ -108,8 +108,15 @@ function IndexCard({ label, symbol, onClick }) {
   const pct    = quote ? ((change / quote.pc) * 100) : null
   const up     = change >= 0
 
+  const bgImageMap = {
+    'DIA': '/dow-card.png',
+    'SPY': '/sp500-card.png',
+    'QQQ': '/nasdaq-card.png'
+  }
+  const bgImage = bgImageMap[symbol]
+
   return (
-    <div onClick={onClick} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px 12px', textAlign:'center', cursor: onClick ? 'pointer' : 'default' }}>
+    <div onClick={onClick} style={{ background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(${bgImage})` : 'var(--bg-card)', backgroundSize: bgImage ? 'cover' : 'auto', backgroundPosition: bgImage ? 'center' : 'auto', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:12, padding:'14px 12px', textAlign:'center', cursor: onClick ? 'pointer' : 'default' }}>
       <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:6 }}>{label}</p>
       {loading ? (
         <p style={{ color:'var(--text-faint)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif' }}>—</p>
