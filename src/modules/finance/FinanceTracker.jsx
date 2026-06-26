@@ -163,8 +163,15 @@ function CryptoTopCard({ coin, fhSymbol, badge, onClick }) {
   const change = quote ? quote.c - quote.pc : null
   const pct    = quote ? ((change / quote.pc) * 100) : null
   const up     = change >= 0
+
+  const bgImageMap = {
+    'BTC': '/bitcoin-card.png',
+    'ETH': '/ethereum-card.png'
+  }
+  const bgImage = bgImageMap[coin]
+
   return (
-    <div onClick={onClick} style={{ background:'var(--bg-card)', border:`1px solid ${badge === 'hot' ? 'rgba(251,146,60,0.35)' : 'var(--border)'}`, boxShadow:'var(--card-shadow)', borderRadius:14, padding:'14px 12px', textAlign:'center', position:'relative', overflow:'hidden', cursor: onClick ? 'pointer' : 'default' }}>
+    <div onClick={onClick} style={{ background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.5) 0%, rgba(30,30,30,0.4) 100%), url(${bgImage})` : 'var(--bg-card)', backgroundSize: bgImage ? 'cover' : 'auto', backgroundPosition: bgImage ? 'center' : 'auto', border:`1px solid ${badge === 'hot' ? 'rgba(251,146,60,0.35)' : 'var(--border)'}`, boxShadow:'var(--card-shadow)', borderRadius:14, padding:'14px 12px', textAlign:'center', position:'relative', overflow:'hidden', cursor: onClick ? 'pointer' : 'default' }}>
       {badge === 'hot' && (
         <span style={{ position:'absolute', top:6, right:8, fontSize:7, fontWeight:800, letterSpacing:'0.18em', color:'#fb923c', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>TOP</span>
       )}
