@@ -486,13 +486,11 @@ export default function Dashboard() {
               <button key={key} onClick={() => navigate(path)}
                 style={{
                   display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', width:'100%',
-                  padding:'28px 20px', borderRadius:12, minHeight:'140px',
-                  background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.4) 0%, rgba(30,30,30,0.3) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
+                  padding:'28px 20px', borderRadius:16, minHeight:'140px',
+                  background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.35) 0%, rgba(30,30,30,0.25) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
                   backgroundSize:'cover',
                   backgroundPosition:'center',
                   backgroundAttachment:'fixed',
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
                   border: done ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)',
                   cursor:'pointer', textAlign:'left',
                   opacity: visible ? 1 : 0,
