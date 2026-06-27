@@ -917,6 +917,10 @@ export default function FoodJournal() {
                 style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 14px', borderRadius:9, background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s' }}>
                 {Ico.plus(13)} Add
               </button>
+              <button onClick={() => navigate('/food/meal-plan')} className="ax-meal-plan-btn"
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'10px 14px', borderRadius:9, background:'rgba(77,184,145,0.15)', color:'#4db891', border:'1px solid #4db891', cursor:'pointer', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', transition:'all 0.2s', marginLeft:8 }}>
+                📋 Plan
+              </button>
             </div>
           </div>
 
