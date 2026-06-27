@@ -56,9 +56,9 @@ const MODULE_COLORS = {
 }
 
 const modules = [
-  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food, bgImage:'/module-cards/dashboard%20modules/food%20log.png' },
-  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer, bgImage:'/module-cards/dashboard%20modules/devotional.png' },
   { key:'fitness', label:'Training',    path:'/fitness', icon: Ico.fitness, bgImage:'/module-cards/dashboard%20modules/training.png' },
+  { key:'prayer',  label:'Devotion',    path:'/prayer',  icon: Ico.prayer, bgImage:'/module-cards/dashboard%20modules/devotional.png' },
+  { key:'food',    label:'Food Log', path:'/food',    icon: Ico.food, bgImage:'/module-cards/dashboard%20modules/food%20log.png' },
   { key:'finance', label:'Finance',    path:'/finance', icon: Ico.finance, bgImage:'/module-cards/dashboard%20modules/finance.png' },
 ]
 
