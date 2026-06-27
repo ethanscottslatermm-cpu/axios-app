@@ -491,8 +491,9 @@ export default function Dashboard() {
           </Card>
 
           {/* Modules Section Header */}
-          <div style={{ marginTop:24, marginBottom:16 }}>
-            <h2 style={{ fontSize:18, fontWeight:700, fontFamily:'Mulish, sans-serif', color:'var(--text-primary)', margin:0, letterSpacing:'-0.3px' }}>Modules</h2>
+          <div style={{ marginTop:32, marginBottom:24, paddingBottom:16, borderBottom:'2px solid rgba(200,210,220,0.4)', position:'relative' }}>
+            <h2 style={{ fontSize:28, fontWeight:700, fontFamily:'Playfair Display, serif', color:'var(--text-primary)', margin:0, letterSpacing:'-0.8px', textShadow:'0 2px 8px rgba(0,0,0,0.3)' }}>Modules</h2>
+            <div style={{ position:'absolute', bottom:'-2px', left:0, height:'2px', width:'60px', background:'linear-gradient(90deg, rgba(212,212,232,0.8) 0%, rgba(212,212,232,0.2) 100%)' }} />
           </div>
 
           {/* PART 2: MODULE HERO BANNERS WITH ENHANCED LIGHTING AND CLASSICAL AESTHETIC */}
