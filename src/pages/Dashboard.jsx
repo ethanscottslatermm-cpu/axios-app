@@ -286,6 +286,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState(null)
   const [visible, setVisible] = useState(false)
   const [openSections, setOpenSections] = useState(new Set(['modules', 'food', 'water', 'prayer']))
+  const [logDropdownOpen, setLogDropdownOpen] = useState(false)
   const toggleSection = (key) => setOpenSections(prev => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n })
 
   const { totals, logs: foodLogs } = useFoodLog(todayStr)
@@ -383,10 +384,33 @@ export default function Dashboard() {
               {getGreeting()},{' '}
               <span style={{ fontStyle:'italic', fontFamily:"'EB Garamond',serif", fontWeight:400, fontSize:23 }}>{displayName}.</span>
             </h1>
-            <button onClick={() => navigate('/food')} className="ax-btn-white"
-              style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
-              {Ico.plus(12)} Log
-            </button>
+            <div style={{ position:'relative' }}>
+              <button onClick={() => setLogDropdownOpen(!logDropdownOpen)} className="ax-btn-white"
+                style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
+                {Ico.plus(12)} Log
+              </button>
+              {logDropdownOpen && (
+                <div style={{ position:'absolute', top:'100%', right:0, marginTop:8, background:'var(--stat-bg)', border:'1px solid rgba(212,212,232,0.2)', borderRadius:10, boxShadow:'0 8px 24px rgba(0,0,0,0.5)', minWidth:180, zIndex:1000, overflow:'hidden' }}>
+                  <button onClick={() => { navigate('/food'); setLogDropdownOpen(false) }} style={{ width:'100%', padding:'12px 16px', textAlign:'left', background:'transparent', border:'none', color:'var(--text-primary)', fontSize:13, fontFamily:'Mulish, sans-serif', cursor:'pointer', transition:'background 0.2s', display:'flex', alignItems:'center', gap:8 }}
+                    onMouseEnter={e => e.currentTarget.style.background='rgba(212,212,232,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                    {Ico.food(14)} Food Log
+                  </button>
+                  <div style={{ height:'1px', background:'rgba(212,212,232,0.1)' }} />
+                  <button onClick={() => { addGlass.mutate(8); setLogDropdownOpen(false) }} style={{ width:'100%', padding:'12px 16px', textAlign:'left', background:'transparent', border:'none', color:'var(--text-primary)', fontSize:13, fontFamily:'Mulish, sans-serif', cursor:'pointer', transition:'background 0.2s', display:'flex', alignItems:'center', gap:8 }}
+                    onMouseEnter={e => e.currentTarget.style.background='rgba(212,212,232,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                    {Ico.water(14)} Water Intake
+                  </button>
+                  <div style={{ height:'1px', background:'rgba(212,212,232,0.1)' }} />
+                  <button onClick={() => { navigate('/prayer'); setLogDropdownOpen(false) }} style={{ width:'100%', padding:'12px 16px', textAlign:'left', background:'transparent', border:'none', color:'var(--text-primary)', fontSize:13, fontFamily:'Mulish, sans-serif', cursor:'pointer', transition:'background 0.2s', display:'flex', alignItems:'center', gap:8 }}
+                    onMouseEnter={e => e.currentTarget.style.background='rgba(212,212,232,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                    {Ico.prayer(14)} Devotion
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           {/* Ticker spans full width, bleeding past the 16px padding */}
           <div style={{ margin:'12px -16px 0' }}>
