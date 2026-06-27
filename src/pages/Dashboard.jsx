@@ -516,7 +516,7 @@ export default function Dashboard() {
                   background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.35) 0%, rgba(30,30,30,0.25) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
                   backgroundSize:'cover',
                   backgroundPosition:'center',
-                  border: isFocused ? `2px solid ${color}` : (done ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)'),
+                  border: isFocused ? `2px solid ${color}` : (done && key !== 'prayer' ? `1.5px solid ${color}50` : '1px solid rgba(212,212,232,0.1)'),
                   cursor:'pointer', textAlign:'left',
                   opacity: visible ? 1 : 0,
                   transform: visible ? 'translateY(0)' : 'translateY(8px)',
