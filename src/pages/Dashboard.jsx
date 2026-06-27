@@ -521,18 +521,18 @@ export default function Dashboard() {
                   opacity: visible ? 1 : 0,
                   transform: visible ? 'translateY(0)' : 'translateY(8px)',
                   transition: `opacity 0.4s ease ${160 + i*60}ms, transform 0.4s ease ${160 + i*60}ms, background 0.3s, border-color 0.2s, box-shadow 0.3s`,
-                  boxShadow: isFocused ? `0 8px 24px ${color}40, inset 0 1px 1px rgba(255,255,255,0.05)` : (done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)'),
+                  boxShadow: key === 'prayer' ? '0 4px 12px rgba(0,0,0,0.3)' : (isFocused ? `0 8px 24px ${color}40, inset 0 1px 1px rgba(255,255,255,0.05)` : (done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)')),
                   position:'relative',
                   overflow:'hidden',
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.boxShadow=`0 12px 32px ${color}30, inset 0 1px 1px rgba(255,255,255,0.08)`
+                  e.currentTarget.style.boxShadow=key === 'prayer' ? `0 12px 32px rgba(0,0,0,0.5)` : `0 12px 32px ${color}30, inset 0 1px 1px rgba(255,255,255,0.08)`
                   e.currentTarget.style.transform='translateY(-3px)'
                   e.currentTarget.style.borderColor=`${color}70`
                   e.currentTarget.style.background = bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.3) 0%, rgba(30,30,30,0.2) 100%), url(${bgImage})` : e.currentTarget.style.background
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.boxShadow=isFocused ? `0 8px 24px ${color}40, inset 0 1px 1px rgba(255,255,255,0.05)` : (done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)')
+                  e.currentTarget.style.boxShadow=key === 'prayer' ? '0 4px 12px rgba(0,0,0,0.3)' : (isFocused ? `0 8px 24px ${color}40, inset 0 1px 1px rgba(255,255,255,0.05)` : (done ? `0 8px 24px ${color}20, inset 0 1px 1px rgba(255,255,255,0.05)` : '0 4px 12px rgba(0,0,0,0.3)'))
                   e.currentTarget.style.transform='translateY(0)'
                   e.currentTarget.style.borderColor=isFocused ? color : (done ? `${color}50` : 'rgba(212,212,232,0.1)')
                   e.currentTarget.style.background = bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.4) 0%, rgba(30,30,30,0.3) 100%), url(${bgImage})` : e.currentTarget.style.background
