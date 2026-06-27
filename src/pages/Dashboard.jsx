@@ -380,7 +380,7 @@ export default function Dashboard() {
             {dayName} · {dateStr}
           </p>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10 }}>
-            <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:21, fontFamily:'Mulish, sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
+            <h1 style={{ color:'#bab3a0', fontWeight:900, fontSize:21, fontFamily:'Mulish, sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
               {getGreeting()},{' '}
               <span style={{ fontStyle:'italic', fontFamily:"'EB Garamond',serif", fontWeight:400, fontSize:23 }}>{displayName}.</span>
             </h1>
@@ -520,7 +520,7 @@ export default function Dashboard() {
 
           {/* Modules Section Header */}
           <div style={{ marginTop:32, marginBottom:24, paddingBottom:16, borderBottom:'2px solid rgba(200,210,220,0.4)', position:'relative' }}>
-            <h2 style={{ fontSize:28, fontWeight:700, fontFamily:'Playfair Display, serif', color:'var(--text-primary)', margin:0, letterSpacing:'-0.8px', textShadow:'0 2px 8px rgba(0,0,0,0.3)' }}>Modules</h2>
+            <h2 style={{ fontSize:28, fontWeight:700, fontFamily:'Playfair Display, serif', color:'#bab3a0', margin:0, letterSpacing:'-0.8px', textShadow:'0 2px 8px rgba(0,0,0,0.3)' }}>Modules</h2>
             <div style={{ position:'absolute', bottom:'-2px', left:0, height:'2px', width:'60px', background:'linear-gradient(90deg, rgba(212,212,232,0.8) 0%, rgba(212,212,232,0.2) 100%)' }} />
           </div>
 
