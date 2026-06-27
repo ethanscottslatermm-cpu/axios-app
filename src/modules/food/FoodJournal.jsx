@@ -9,6 +9,7 @@ import { BottomNav } from '../../pages/Dashboard'
 import { searchFood, lookupBarcode } from '../../lib/foodSearch'
 import { useWaterLog } from '../../hooks/useWaterLog'
 import WaterPanel from './WaterPanel'
+import MealPlanBuilder from './MealPlanBuilder/MealPlanBuilder'
 
 // ── Date ───────────────────────────────────────────────────────────────────────
 

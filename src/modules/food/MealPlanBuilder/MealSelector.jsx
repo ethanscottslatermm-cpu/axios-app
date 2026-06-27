@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useFoodLog } from '../hooks/useFoodLog'
+import { useFoodLog } from '../../../hooks/useFoodLog'
 
 export default function MealSelector({ onSelectMeal, onClose }) {
-  const { logs } = useFoodLog()
+  const today = new Date().toISOString().split('T')[0]
+  const { logs } = useFoodLog(today)
   const [searchTerm, setSearchTerm] = useState('')
   const [quantity, setQuantity] = useState(100)
   const [selectedFood, setSelectedFood] = useState(null)

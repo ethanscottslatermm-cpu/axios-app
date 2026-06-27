@@ -11,6 +11,7 @@ import Settings   from './pages/Settings'
 import Onboarding from './pages/Onboarding'
 import Widget     from './pages/Widget'
 import FoodJournal    from './modules/food/FoodJournal'
+import MealPlanBuilder from './modules/food/MealPlanBuilder/MealPlanBuilder'
 // WaterTracker consolidated into FoodJournal tab
 import WeightTracker  from './modules/weight/WeightTracker'
 import FitnessTracker from './modules/fitness/FitnessTracker'
@@ -53,6 +54,9 @@ export default function App() {
                 } />
                 <Route path="/food" element={
                   <ProtectedRoute><OnboardingRoute><FoodJournal /></OnboardingRoute></ProtectedRoute>
+                } />
+                <Route path="/food/meal-plan" element={
+                  <ProtectedRoute><OnboardingRoute><MealPlanBuilder /></OnboardingRoute></ProtectedRoute>
                 } />
                 <Route path="/water" element={<Navigate to="/food" replace />} />
                 <Route path="/weight" element={
