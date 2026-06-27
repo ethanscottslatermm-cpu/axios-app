@@ -390,7 +390,7 @@ export default function Dashboard() {
                 <span style={{ fontSize:9, fontWeight:600, fontFamily:'Mulish, sans-serif', color:'#22c55e', letterSpacing:'0.05em', textTransform:'uppercase' }}>online</span>
               </div>
               <button onClick={() => setLogDropdownOpen(!logDropdownOpen)} className="ax-btn-white"
-                style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
+                style={{ background:'transparent', color:'#bab3a0', border:'1px solid #bab3a0', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s,color 0.2s,border-color 0.2s', display:'flex', alignItems:'center', gap:5 }}>
                 {Ico.plus(12)} Log
               </button>
               {logDropdownOpen && (
