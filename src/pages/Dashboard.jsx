@@ -540,7 +540,7 @@ export default function Dashboard() {
                 {/* Text - Elegant Classical Layout */}
                 <div style={{ flex:1, minWidth:0, display:'flex', flexDirection:'column', justifyContent:'center' }}>
                   <p style={{
-                    color: '#e8dcc8',
+                    color: '#F87171',
                     fontSize:20,
                     fontWeight:700,
                     fontFamily:'Playfair Display, serif',
