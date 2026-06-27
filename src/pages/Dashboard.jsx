@@ -350,9 +350,6 @@ export default function Dashboard() {
             box-shadow: 0 8px 24px rgba(212, 217, 225, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 0 20px rgba(212, 217, 225, 0.3);
           }
         }
-        .devotion-card {
-          animation: shimmer-border 3s ease-in-out infinite;
-        }
       `}</style>
 
       <div style={{ minHeight:'100vh', background:'var(--bg-primary)', WebkitFontSmoothing:'antialiased', paddingBottom:90, position:'relative' }}>
@@ -493,6 +490,11 @@ export default function Dashboard() {
             >+ Schedule Event</button>
           </Card>
 
+          {/* Modules Section Header */}
+          <div style={{ marginTop:24, marginBottom:16 }}>
+            <h2 style={{ fontSize:18, fontWeight:700, fontFamily:'Mulish, sans-serif', color:'var(--text-primary)', margin:0, letterSpacing:'-0.3px' }}>Modules</h2>
+          </div>
+
           {/* PART 2: MODULE HERO BANNERS WITH ENHANCED LIGHTING AND CLASSICAL AESTHETIC */}
           {modules.map(({ key, label, path, icon, bgImage }, i) => {
             const done = loggedModules[key]
@@ -508,7 +510,6 @@ export default function Dashboard() {
             const isFocused = key === focusModuleKey
             return (
               <button key={key} onClick={() => navigate(path)}
-                className={key === 'prayer' ? 'devotion-card' : ''}
                 style={{
                   display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', width:'100%',
                   padding:'28px 20px', borderRadius:16, minHeight:'140px',
