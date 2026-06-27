@@ -517,6 +517,7 @@ export default function Dashboard() {
                   background: bgImage ? `linear-gradient(135deg, rgba(20,20,20,0.35) 0%, rgba(30,30,30,0.25) 100%), url(${bgImage})` : (done ? `${color}0d` : 'rgba(212,212,232,0.02)'),
                   backgroundSize:'cover',
                   backgroundPosition:'center',
+                  filter: bgImage ? 'brightness(1.1) contrast(1.15) saturate(1.1)' : 'none',
                   border: `1px solid rgba(200,210,220,0.3)`,
                   cursor:'pointer', textAlign:'left',
                   opacity: visible ? 1 : 0,
