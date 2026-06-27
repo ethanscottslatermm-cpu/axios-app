@@ -380,17 +380,15 @@ export default function Dashboard() {
             {dayName} · {dateStr}
           </p>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:21, fontFamily:'Mulish, sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
-                {getGreeting()},{' '}
-                <span style={{ fontStyle:'italic', fontFamily:"'EB Garamond',serif", fontWeight:400, fontSize:23 }}>{displayName}.</span>
-              </h1>
-              <div style={{ display:'flex', alignItems:'center', gap:6, paddingLeft:12, borderLeft:'1px solid rgba(212,212,232,0.2)' }}>
-                <div style={{ width:8, height:8, borderRadius:'50%', background:'#22c55e', boxShadow:'0 0 8px rgba(34,197,94,0.6)' }} />
-                <span style={{ fontSize:11, fontWeight:600, fontFamily:'Mulish, sans-serif', color:'#22c55e', letterSpacing:'0.05em', textTransform:'uppercase' }}>online</span>
+            <h1 style={{ color:'var(--text-primary)', fontWeight:900, fontSize:21, fontFamily:'Mulish, sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
+              {getGreeting()},{' '}
+              <span style={{ fontStyle:'italic', fontFamily:"'EB Garamond',serif", fontWeight:400, fontSize:23 }}>{displayName}.</span>
+            </h1>
+            <div style={{ position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:3 }}>
+                <div style={{ width:6, height:6, borderRadius:'50%', background:'#22c55e', boxShadow:'0 0 6px rgba(34,197,94,0.6)' }} />
+                <span style={{ fontSize:9, fontWeight:600, fontFamily:'Mulish, sans-serif', color:'#22c55e', letterSpacing:'0.05em', textTransform:'uppercase' }}>online</span>
               </div>
-            </div>
-            <div style={{ position:'relative' }}>
               <button onClick={() => setLogDropdownOpen(!logDropdownOpen)} className="ax-btn-white"
                 style={{ background:'var(--btn-bg)', color:'var(--bg-primary)', border:'none', borderRadius:9, padding:'9px 14px', fontSize:11, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Mulish, sans-serif', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,box-shadow 0.2s', display:'flex', alignItems:'center', gap:5 }}>
                 {Ico.plus(12)} Log
