@@ -581,7 +581,7 @@ export default function Dashboard() {
                     {label}
                   </p>
                   <p style={{
-                    color: '#c9c0b0',
+                    color: '#bab3a0',
                     fontSize:13,
                     fontFamily:'Mulish, sans-serif',
                     fontWeight:400,
