@@ -21,6 +21,7 @@ import imgQuads      from './Recovery Hero cards/Recovery Fitness Hero Cards/qua
 import imgHamstrings from './Recovery Hero cards/Recovery Fitness Hero Cards/hamstrings.png'
 import imgGlutes     from './Recovery Hero cards/Recovery Fitness Hero Cards/glutes.png'
 import imgCalves     from './Recovery Hero cards/Recovery Fitness Hero Cards/calves.png'
+import imgWeightHero from './Recovery Hero cards/Recovery Fitness Hero Cards/weight-hero.png'
 
 const MUSCLE_IMAGES = {
   'Chest':      imgChest,
@@ -1142,8 +1143,9 @@ const [prsOpen,         setPrsOpen]         = useState(true)
             <div style={anim(140)}>
 
               {/* Headline: current weight + trend + streak */}
-              <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'16px', marginBottom:12 }}>
-                <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between' }}>
+              <div style={{ background:`linear-gradient(135deg, var(--bg-card) 0%, rgba(0,0,0,0.4) 100%), url(${imgWeightHero})`, backgroundSize:'cover', backgroundPosition:'right center', border:'1px solid var(--border)', borderRadius:14, padding:'16px', marginBottom:12, position:'relative', overflow:'hidden' }}>
+                <div style={{ position:'absolute', inset:0, background:'linear-gradient(90deg, rgba(20,20,35,0.95) 0%, rgba(20,20,35,0.7) 50%, transparent 100%)', borderRadius:14, zIndex:1 }} />
+                <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', position:'relative', zIndex:2 }}>
                   <div>
                     <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>CURRENT WEIGHT</p>
                     <p style={{ color:'var(--text-primary)', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.03em' }}>
