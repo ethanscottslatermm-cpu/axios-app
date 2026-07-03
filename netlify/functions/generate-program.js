@@ -1,4 +1,4 @@
-const GROQ_API_KEY = process.env.GROQ_API_KEY
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 
 // wger.de equipment IDs
 const EQUIPMENT_IDS = {
@@ -68,30 +68,33 @@ async function fetchExercisesFromWger(equipmentId, focusMuscles) {
 }
 
 async function generateProgramVariation(prompt, variation) {
-  const groqPrompt = `${prompt}\n\nGeneration variant #${variation}: Create a UNIQUE program with different exercise selection and periodization strategy. Return ONLY valid JSON.`
+  const geminiPrompt = `${prompt}\n\nGeneration variant #${variation}: Create a UNIQUE program with different exercise selection and periodization strategy. Return ONLY valid JSON.`
 
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${GROQ_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.2-70b-versatile',
-      messages: [{ role: 'user', content: groqPrompt }],
-      max_tokens: 2048,
-      temperature: 0.7 + (variation * 0.15),
+      contents: [{
+        role: 'user',
+        parts: [{ text: geminiPrompt }]
+      }],
+      generationConfig: {
+        maxOutputTokens: 2048,
+        temperature: 0.7 + (variation * 0.15),
+      },
     }),
   })
 
   if (!response.ok) {
     const err = await response.text()
-    console.error(`Groq API error (variant ${variation}):`, err)
+    console.error(`Gemini API error (variant ${variation}):`, err)
     throw new Error(err)
   }
 
   const data = await response.json()
-  const text = (data.choices?.[0]?.message?.content || '').trim()
+  const text = (data.candidates?.[0]?.content?.parts?.[0]?.text || '').trim()
 
   const stripped = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
   const jsonStart = stripped.indexOf('{')
@@ -110,7 +113,7 @@ export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
-  if (!GROQ_API_KEY) {
+  if (!GEMINI_API_KEY) {
     return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'API key not configured' }) }
   }
 
