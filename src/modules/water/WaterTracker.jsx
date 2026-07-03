@@ -292,7 +292,7 @@ export default function WaterTracker() {
 
           {/* Large Water Bottle */}
           <Card style={anim(80)}>
-            <SectionHead title="Daily Water Intake" sub={`${count} of ${WATER_GOAL}`} />
+            <SectionHead title="Daily Water Intake 💧" sub={`${count} of ${WATER_GOAL}`} />
 
             {/* Bottle Display */}
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:20, marginBottom:20 }}>
