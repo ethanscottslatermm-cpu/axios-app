@@ -1,4 +1,4 @@
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY
+const GROQ_API_KEY = process.env.GROQ_API_KEY
 
 // wger.de equipment IDs
 const EQUIPMENT_IDS = {
@@ -67,11 +67,50 @@ async function fetchExercisesFromWger(equipmentId, focusMuscles) {
   }
 }
 
+async function generateProgramVariation(prompt, variation) {
+  const groqPrompt = `${prompt}\n\nGeneration variant #${variation}: Create a UNIQUE program with different exercise selection and periodization strategy. Return ONLY valid JSON.`
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'mixtral-8x7b-32768',
+      messages: [{ role: 'user', content: groqPrompt }],
+      max_tokens: 2048,
+      temperature: 0.7 + (variation * 0.15),
+    }),
+  })
+
+  if (!response.ok) {
+    const err = await response.text()
+    console.error(`Groq API error (variant ${variation}):`, err)
+    throw new Error(err)
+  }
+
+  const data = await response.json()
+  const text = (data.choices?.[0]?.message?.content || '').trim()
+
+  const stripped = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+  const jsonStart = stripped.indexOf('{')
+  const jsonEnd = stripped.lastIndexOf('}')
+  const clean = jsonStart !== -1 && jsonEnd !== -1 ? stripped.slice(jsonStart, jsonEnd + 1) : stripped
+
+  try {
+    return JSON.parse(clean)
+  } catch {
+    console.error(`JSON parse failed (variant ${variation}). Raw text:`, text.slice(0, 500))
+    throw new Error('Could not parse program variant')
+  }
+}
+
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
-  if (!ANTHROPIC_API_KEY) {
+  if (!GROQ_API_KEY) {
     return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'API key not configured' }) }
   }
 
@@ -103,42 +142,20 @@ Build a ${numWeeks}-week program. JSON shape:
 Rules: exactly ${days} training days per week, 4-5 exercises per day, progressive overload across weeks. Be concise.${exerciseContext}`
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
+    // Generate 3 program variations in parallel for speed
+    const [variant1, variant2, variant3] = await Promise.all([
+      generateProgramVariation(prompt, 1),
+      generateProgramVariation(prompt, 2),
+      generateProgramVariation(prompt, 3),
+    ])
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 8192,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    })
-
-    if (!response.ok) {
-      const err = await response.text()
-      console.error('Anthropic API error:', err)
-      return { statusCode: 502, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: err }) }
+        variants: [variant1, variant2, variant3]
+      })
     }
-
-    const data = await response.json()
-    const text = (data.content?.[0]?.text || '').trim()
-
-    const stripped = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
-    const jsonStart = stripped.indexOf('{')
-    const jsonEnd = stripped.lastIndexOf('}')
-    const clean = jsonStart !== -1 && jsonEnd !== -1 ? stripped.slice(jsonStart, jsonEnd + 1) : stripped
-
-    let program
-    try {
-      program = JSON.parse(clean)
-    } catch {
-      console.error('JSON parse failed. Raw text:', text.slice(0, 500))
-      return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Could not parse program. Try again.' }) }
-    }
-    return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(program) }
   } catch (e) {
     console.error('generate-program error:', e.message)
     return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: e.message }) }

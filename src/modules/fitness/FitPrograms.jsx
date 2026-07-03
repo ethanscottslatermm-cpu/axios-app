@@ -188,6 +188,8 @@ export default function FitPrograms() {
   const [loading,       setLoading]      = useState(false)
   const [error,         setError]        = useState(null)
   const [program,       setProgram]      = useState(null)
+  const [variants,      setVariants]     = useState(null)
+  const [selectedVariant, setSelectedVariant] = useState(0)
 
   const toggleMuscle = m => setFocusMuscles(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m])
 
@@ -197,6 +199,8 @@ export default function FitPrograms() {
     setLoading(true)
     setError(null)
     setProgram(null)
+    setVariants(null)
+    setSelectedVariant(0)
     try {
       const res = await fetch('/.netlify/functions/generate-program', {
         method: 'POST',
@@ -205,7 +209,8 @@ export default function FitPrograms() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Generation failed')
-      setProgram(data)
+      setVariants(data.variants || [data])
+      setSelectedVariant(0)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -215,25 +220,36 @@ export default function FitPrograms() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320, gap: 18 }}>
-        <div style={{
-          width: 40, height: 40, borderRadius: '50%',
-          border: `2px solid var(--border)`,
-          borderTop: `2px solid ${RED}`,
-          animation: 'spin 0.8s linear infinite',
-        }} />
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 9999, backdropFilter: 'blur(2px)' }}>
         <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-        <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.04em' }}>Building your program…</p>
-        <p style={{ color: 'var(--text-faint)', fontSize: 11, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: 'italic' }}>This may take up to 60 seconds</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+          <div style={{
+            width: 60, height: 60, borderRadius: '50%',
+            border: `3px solid var(--border)`,
+            borderTop: `3px solid ${RED}`,
+            animation: 'spin 0.8s linear infinite',
+          }} />
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-primary)', fontSize: 18, fontWeight: 700, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '-0.01em', marginBottom: 8 }}>Generating 3 Program Variants…</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: 'Helvetica Neue,sans-serif', marginBottom: 12 }}>Hold tight! This usually takes 15-30 seconds</p>
+            <div style={{ background: 'rgba(248,113,113,0.15)', border: `1px solid rgba(248,113,113,0.3)`, borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 20 }}>⚠️</span>
+              <p style={{ color: '#f87171', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', lineHeight: 1.4 }}>
+                <strong>Don't navigate away or refresh.</strong> This will cancel your generation and you'll lose progress.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
 
-  if (program) {
+  if (variants && variants.length > 0) {
+    const currentProgram = variants[selectedVariant]
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <button
-          onClick={() => setProgram(null)}
+          onClick={() => { setVariants(null); setProgram(null) }}
           style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', padding: 0, alignSelf: 'flex-start' }}
         >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--text-muted)' }}>
@@ -241,7 +257,41 @@ export default function FitPrograms() {
           </svg>
           <span style={{ color: 'var(--text-muted)', fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', letterSpacing: '0.04em' }}>New Program</span>
         </button>
-        <ProgramDisplay program={program} />
+
+        {/* Variant selector */}
+        <div style={{ display: 'flex', gap: 8, background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: 6 }}>
+          {variants.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setSelectedVariant(idx)}
+              style={{
+                flex: 1, padding: '10px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                background: selectedVariant === idx ? RED : 'transparent',
+                color: selectedVariant === idx ? '#fff' : 'var(--text-muted)',
+                fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 600,
+                transition: 'all 0.2s', letterSpacing: '0.05em'
+              }}
+            >
+              Option {idx + 1}
+            </button>
+          ))}
+        </div>
+
+        <ProgramDisplay program={currentProgram} />
+
+        <button
+          onClick={generate}
+          style={{
+            padding: '13px', borderRadius: 12, border: 'none', cursor: 'pointer',
+            background: RED, color: '#fff',
+            fontSize: 12, fontFamily: 'Helvetica Neue,sans-serif', fontWeight: 700,
+            letterSpacing: '0.08em', textTransform: 'uppercase', transition: 'all 0.2s',
+          }}
+          onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
+          onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+        >
+          Regenerate All Variants
+        </button>
       </div>
     )
   }
