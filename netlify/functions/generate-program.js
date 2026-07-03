@@ -70,7 +70,7 @@ async function fetchExercisesFromWger(equipmentId, focusMuscles) {
 async function generateProgramVariation(prompt, variation) {
   const geminiPrompt = `${prompt}\n\nGeneration variant #${variation}: Create a UNIQUE program with different exercise selection and periodization strategy. Return ONLY valid JSON.`
 
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`, {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
