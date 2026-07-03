@@ -1055,69 +1055,190 @@ function ZoneOverlay({ view, selected, hovered, onSelect, onHover }) {
   )
 }
 
+// ─── YouTube Video Modal ────────────────────────────────────────────────────────
+function YouTubeModal({ query, onClose }) {
+  const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`
+  const embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}`
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div onClick={onClose} style={{
+        position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', zIndex:999,
+        backdropFilter:'blur(4px)', display:'flex', alignItems:'center', justifyContent:'center',
+        padding:'16px',
+      }}>
+        {/* Modal */}
+        <div onClick={e => e.stopPropagation()} style={{
+          background:'var(--bg-card)', border:'1px solid var(--border)',
+          borderRadius:16, width:'100%', maxWidth:'600px', maxHeight:'90vh',
+          overflow:'auto', display:'flex', flexDirection:'column',
+        }}>
+          {/* Header */}
+          <div style={{
+            display:'flex', alignItems:'center', justifyContent:'space-between',
+            padding:'16px', borderBottom:'1px solid var(--border)',
+            flexShrink:0,
+          }}>
+            <p style={{ color:'var(--text-primary)', fontSize:16, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', margin:0 }}>
+              {query}
+            </p>
+            <button onClick={onClose} style={{
+              background:'transparent', border:'none', cursor:'pointer', fontSize:20, color:'var(--text-muted)',
+              padding:'0 8px',
+            }}>
+              ✕
+            </button>
+          </div>
+
+          {/* Video Embed */}
+          <div style={{
+            flex:1, padding:'16px', display:'flex', justifyContent:'center', alignItems:'center',
+            background:'rgba(0,0,0,0.3)',
+          }}>
+            <iframe
+              width="100%"
+              height="400"
+              src={embedUrl}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{ borderRadius:8, maxWidth:'100%' }}
+            />
+          </div>
+
+          {/* Footer */}
+          <div style={{
+            padding:'12px 16px', borderTop:'1px solid var(--border)',
+            display:'flex', justifyContent:'flex-end', gap:8, flexShrink:0,
+          }}>
+            <a href={ytUrl} target="_blank" rel="noopener noreferrer" style={{
+              display:'flex', alignItems:'center', gap:5,
+              padding:'8px 14px', borderRadius:8,
+              background:'rgba(239,68,68,0.12)', border:'1px solid rgba(239,68,68,0.3)',
+              color:'#ef4444', fontSize:11, fontWeight:700,
+              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em',
+              textDecoration:'none', cursor:'pointer',
+              transition:'all 0.2s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'rgba(239,68,68,0.2)'
+              e.currentTarget.style.borderColor = 'rgba(239,68,68,0.5)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'rgba(239,68,68,0.12)'
+              e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'
+            }}
+            >
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="#ef4444">
+                <path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/>
+                <polygon fill="white" points="10,8.5 16,12 10,15.5"/>
+              </svg>
+              Open in YouTube
+            </a>
+            <button onClick={onClose} style={{
+              padding:'8px 14px', borderRadius:8,
+              background:'rgba(212,212,232,0.1)', border:'1px solid rgba(212,212,232,0.2)',
+              color:'var(--text-muted)', fontSize:11, fontWeight:700,
+              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em',
+              textDecoration:'none', cursor:'pointer',
+              transition:'all 0.2s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'rgba(212,212,232,0.15)'
+              e.currentTarget.style.color = 'var(--text-primary)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'rgba(212,212,232,0.1)'
+              e.currentTarget.style.color = 'var(--text-muted)'
+            }}>
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 // ─── Exercise Card ────────────────────────────────────────────────────────────
 function ExerciseCard({ ex }) {
   const [open, setOpen] = useState(false)
-  const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(ex.yt)}`
+  const [showVideo, setShowVideo] = useState(false)
+
   return (
-    <div style={{
-      background:'var(--bg-card)', border:'1px solid var(--border)',
-      borderRadius:12, overflow:'hidden',
-    }}>
-      {/* Always-visible header — tap to toggle */}
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{
-          width:'100%', display:'flex', alignItems:'center',
-          justifyContent:'space-between', gap:10,
-          padding:'13px 14px 11px', background:'transparent', border:'none',
-          cursor:'pointer', textAlign:'left',
-        }}
-      >
-        <div style={{ flex:1 }}>
-          <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{ex.name}</p>
-          <div style={{ display:'flex', gap:6 }}>
-            <span style={{ color:'rgba(212,212,232,0.32)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', background:'rgba(212,212,232,0.06)', padding:'2px 7px', borderRadius:5 }}>{ex.eq}</span>
-            <span style={{ color:'#b4bccc', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, background:'rgba(180,188,204,0.1)', padding:'2px 7px', borderRadius:5 }}>{ex.sets}</span>
+    <>
+      <div style={{
+        background:'var(--bg-card)', border:'1px solid var(--border)',
+        borderRadius:12, overflow:'hidden',
+      }}>
+        {/* Always-visible header — tap to toggle */}
+        <button
+          onClick={() => setOpen(o => !o)}
+          style={{
+            width:'100%', display:'flex', alignItems:'center',
+            justifyContent:'space-between', gap:10,
+            padding:'13px 14px 11px', background:'transparent', border:'none',
+            cursor:'pointer', textAlign:'left',
+          }}
+        >
+          <div style={{ flex:1 }}>
+            <p style={{ color:'var(--text-primary)', fontSize:13, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginBottom:3 }}>{ex.name}</p>
+            <div style={{ display:'flex', gap:6 }}>
+              <span style={{ color:'rgba(212,212,232,0.32)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', background:'rgba(212,212,232,0.06)', padding:'2px 7px', borderRadius:5 }}>{ex.eq}</span>
+              <span style={{ color:'#b4bccc', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, background:'rgba(180,188,204,0.1)', padding:'2px 7px', borderRadius:5 }}>{ex.sets}</span>
+            </div>
+          </div>
+          {/* Chevron — rotates 180° when open */}
+          <svg
+            width={14} height={14} viewBox="0 0 24 24" fill="none"
+            stroke="rgba(212,212,232,0.4)" strokeWidth="2.5"
+            strokeLinecap="round" strokeLinejoin="round"
+            style={{ flexShrink:0, transition:'transform 250ms ease-in-out', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          >
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        {/* Collapsible detail — hidden by default */}
+        <div style={{
+          overflow:'hidden',
+          maxHeight: open ? 72 : 0,
+          transition:'max-height 250ms ease-in-out',
+        }}>
+          <div style={{ padding:'0 14px 12px', display:'flex', justifyContent:'flex-end' }}>
+            <button
+              onClick={() => setShowVideo(true)}
+              style={{
+                display:'flex', alignItems:'center', gap:5,
+                padding:'7px 11px', borderRadius:8,
+                background:'rgba(239,68,68,0.12)', border:'1px solid rgba(239,68,68,0.3)',
+                color:'#ef4444', fontSize:10, fontWeight:700,
+                fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em',
+                textDecoration:'none', cursor:'pointer',
+                transition:'all 0.2s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.2)'
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.5)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.12)'
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'
+              }}>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="#ef4444">
+                <path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/>
+                <polygon fill="white" points="10,8.5 16,12 10,15.5"/>
+              </svg>
+              Watch
+            </button>
           </div>
         </div>
-        {/* Chevron — rotates 180° when open */}
-        <svg
-          width={14} height={14} viewBox="0 0 24 24" fill="none"
-          stroke="rgba(212,212,232,0.4)" strokeWidth="2.5"
-          strokeLinecap="round" strokeLinejoin="round"
-          style={{ flexShrink:0, transition:'transform 250ms ease-in-out', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-        >
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-
-      {/* Collapsible detail — hidden by default */}
-      <div style={{
-        overflow:'hidden',
-        maxHeight: open ? 72 : 0,
-        transition:'max-height 250ms ease-in-out',
-      }}>
-        <div style={{ padding:'0 14px 12px', display:'flex', justifyContent:'flex-end' }}>
-          <a href={ytUrl} target="_blank" rel="noopener noreferrer"
-            style={{
-              display:'flex', alignItems:'center', gap:5,
-              padding:'7px 11px', borderRadius:8,
-              background:'rgba(239,68,68,0.12)', border:'1px solid rgba(239,68,68,0.3)',
-              color:'#ef4444', fontSize:10, fontWeight:700,
-              fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.08em',
-              textDecoration:'none',
-            }}
-            onClick={e => e.stopPropagation()}>
-            <svg width={12} height={12} viewBox="0 0 24 24" fill="#ef4444">
-              <path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.8 5 12 5 12 5s-4.8 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.8 19 12 19 12 19s4.8 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8z"/>
-              <polygon fill="white" points="10,8.5 16,12 10,15.5"/>
-            </svg>
-            Watch
-          </a>
-        </div>
       </div>
-    </div>
+
+      {/* Video Modal */}
+      {showVideo && <YouTubeModal query={ex.yt} onClose={() => setShowVideo(false)} />}
+    </>
   )
 }
 
