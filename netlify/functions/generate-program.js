@@ -77,7 +77,7 @@ async function generateProgramVariation(prompt, variation) {
       'Authorization': `Bearer ${GROQ_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'mixtral-8x7b-32768',
+      model: 'llama-3.1-70b-versatile',
       messages: [{ role: 'user', content: groqPrompt }],
       max_tokens: 2048,
       temperature: 0.7 + (variation * 0.15),
