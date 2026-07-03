@@ -290,25 +290,88 @@ export default function WaterTracker() {
         {/* ── Body ── */}
         <div style={{ padding:'16px', display:'flex', flexDirection:'column', gap:14, maxWidth:600, margin:'0 auto', position:'relative', zIndex:1 }}>
 
-          {/* Glass grid — 4×2 tap targets */}
+          {/* Large Water Bottle */}
           <Card style={anim(80)}>
-            <SectionHead title="Tap to Log" sub={`${count} of ${WATER_GOAL}`} />
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:10, marginBottom:14 }}>
-              {Array.from({ length: WATER_GOAL }).map((_, i) => (
-                <GlassButton
-                  key={i}
-                  index={i}
-                  filled={i < count}
-                  onAdd={() => handleAddGlass(8)}
-                  onRemove={() => removeGlass.mutate(undefined)}
-                  animDelay={i * 50}
-                  visible={visible}
-                />
-              ))}
+            <SectionHead title="Daily Water Intake" sub={`${count} of ${WATER_GOAL}`} />
+
+            {/* Bottle Display */}
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:20, marginBottom:20 }}>
+              <div style={{ position:'relative', width:140, height:240 }}>
+                {/* Bottle SVG */}
+                <svg width={140} height={240} viewBox="0 0 140 240" style={{ position:'absolute', top:0, left:0 }}>
+                  <defs>
+                    <linearGradient id="waterGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style={{ stopColor:'#38bdf8', stopOpacity:0.6 }} />
+                      <stop offset="50%" style={{ stopColor:WATER_BLUE, stopOpacity:0.8 }} />
+                      <stop offset="100%" style={{ stopColor:'#0ea5e9', stopOpacity:0.6 }} />
+                    </linearGradient>
+                    <clipPath id="bottleClip">
+                      <path d="M35 25 L30 40 Q30 45 35 45 L105 45 Q110 45 110 40 L105 25 Z M30 50 L30 200 Q30 210 40 210 L100 210 Q110 210 110 200 L110 50 Z" />
+                    </clipPath>
+                  </defs>
+
+                  {/* Water fill */}
+                  <g clipPath="url(#bottleClip)">
+                    <rect x="25" y={200 - (pct * 1.5)} width="90" height={Math.max(pct * 1.5, 0)} fill="url(#waterGradient)" opacity={0.85} style={{ transition:'y 0.8s cubic-bezier(.16,1,.3,1)' }} />
+                    <path d={`M25 ${200 - (pct * 1.5)} Q35 ${198 - (pct * 1.5)} 45 ${200 - (pct * 1.5)} T65 ${200 - (pct * 1.5)} T85 ${200 - (pct * 1.5)} T105 ${200 - (pct * 1.5)}`} fill="none" stroke={WATER_BLUE} strokeWidth="1" opacity="0.3" />
+                  </g>
+
+                  {/* Bottle outline */}
+                  <path d="M35 25 L30 40 Q30 45 35 45 L105 45 Q110 45 110 40 L105 25 Z" fill="none" stroke={WATER_BLUE} strokeWidth="1.5" strokeLinejoin="round" />
+                  <path d="M30 50 L30 200 Q30 210 40 210 L100 210 Q110 210 110 200 L110 50 Z" fill="none" stroke={WATER_BLUE} strokeWidth="1.5" strokeLinejoin="round" />
+                  <path d="M38 60 Q40 100 42 150" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+
+                {/* Percentage text */}
+                <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:4 }}>
+                  <p style={{ color:'var(--text-primary)', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>{pct}%</p>
+                  <p style={{ color:'var(--text-muted)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'0.04em' }}>
+                    {goalMet ? '✓ Goal met!' : `${remaining} to go`}
+                  </p>
+                </div>
+              </div>
             </div>
-            <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', textAlign:'center' }}>
-              Tap a glass to add · tap a filled glass to remove
-            </p>
+
+            {/* Glass Size Selection */}
+            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+              <p style={{ color:'var(--text-muted)', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, marginBottom:4 }}>Select Glass Size</p>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+                {[
+                  { label:'Small', oz:8, icon:'🥤' },
+                  { label:'Medium', oz:12, icon:'🧃' },
+                  { label:'Large', oz:16, icon:'🍶' }
+                ].map(({ label, oz, icon }) => (
+                  <button
+                    key={oz}
+                    onClick={() => handleAddGlass(oz)}
+                    style={{
+                      padding:'14px 10px', borderRadius:12, border:`1px solid rgba(154,180,204,0.2)`, background:'rgba(154,180,204,0.08)',
+                      cursor:'pointer', transition:'all 0.2s', display:'flex', flexDirection:'column', alignItems:'center', gap:6,
+                      color:'var(--text-primary)', fontFamily:'Helvetica Neue,sans-serif'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background='rgba(154,180,204,0.15)'; e.currentTarget.style.borderColor='rgba(154,180,204,0.35)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background='rgba(154,180,204,0.08)'; e.currentTarget.style.borderColor='rgba(154,180,204,0.2)' }}
+                  >
+                    <span style={{ fontSize:20 }}>{icon}</span>
+                    <div style={{ textAlign:'center' }}>
+                      <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.03em', marginBottom:2 }}>{label}</p>
+                      <p style={{ fontSize:9, color:'var(--text-muted)', fontWeight:400 }}>{oz} oz</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Undo Last */}
+            {count > 0 && (
+              <button onClick={() => removeGlass.mutate(undefined)}
+                style={{ width:'100%', marginTop:14, padding:'10px', borderRadius:10, background:'transparent', border:'1px solid rgba(154,180,204,0.15)', color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight:600, letterSpacing:'0.06em', cursor:'pointer', transition:'all 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(154,180,204,0.3)'; e.currentTarget.style.color='var(--text-primary)' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(154,180,204,0.15)'; e.currentTarget.style.color='var(--text-muted)' }}
+              >
+                {Ico.undo(12)} Undo Last
+              </button>
+            )}
           </Card>
 
           {/* Quick add sizes */}
