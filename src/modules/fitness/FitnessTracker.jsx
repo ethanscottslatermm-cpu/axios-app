@@ -723,7 +723,7 @@ export default function FitnessTracker() {
   const [loadingW,     setLoadingW]     = useState(false)
   const [chartRange,   setChartRange]   = useState('1M')
   const [historyOpen,     setHistoryOpen]     = useState(false)
-const [prsOpen,         setPrsOpen]         = useState(true)
+const [prsOpen,         setPrsOpen]         = useState(false)
   const [showScanner,     setShowScanner]     = useState(false)
   const [prefillWorkout,  setPrefillWorkout]  = useState(null)
   const [sleepHrs,        setSleepHrs]        = useState(() => { try { return localStorage.getItem(`ax-sleep-${new Date().toISOString().split('T')[0]}`) || '' } catch { return '' } })
@@ -881,6 +881,20 @@ const [prsOpen,         setPrsOpen]         = useState(true)
   // Weekly workout count
   const weekAgo      = new Date(); weekAgo.setDate(weekAgo.getDate()-7)
   const weeklyCount  = workouts.filter(w => new Date(w.created_at) >= weekAgo).length
+
+  // Clear all fitness logs
+  const handleClearLogs = async () => {
+    if (!window.confirm('Are you sure you want to delete all fitness logs? This cannot be undone.')) return
+    try {
+      const { error } = await supabase.from('workouts').delete().eq('user_id', user?.id)
+      if (error) throw error
+      setWorkouts([])
+      haptic?.('success')
+    } catch (err) {
+      console.error('Error clearing logs:', err)
+      haptic?.('error')
+    }
+  }
 
   // ── Personal Records ──────────────────────────────────────────────────────
   const prs = useMemo(() => {
@@ -1153,8 +1167,8 @@ const [prsOpen,         setPrsOpen]         = useState(true)
               </div>
 
               {/* ── Personal Records (collapsible) ── */}
-              <button onClick={() => setPrsOpen(o => !o)} style={{ width:'100%', background:'none', border:'none', cursor:'pointer', padding:0, marginBottom: prsOpen ? 12 : 18 }}>
-                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: prsOpen ? 12 : 18 }}>
+                <button onClick={() => setPrsOpen(o => !o)} style={{ flex:1, background:'none', border:'none', cursor:'pointer', padding:0, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:9 }}>
                     <div style={{ width:2, height:14, background:'linear-gradient(to bottom,var(--accent-fitness),transparent)', borderRadius:2, boxShadow:'0 0 8px var(--accent-fitness)' }} />
                     <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Fitness Logs</p>
@@ -1163,8 +1177,17 @@ const [prsOpen,         setPrsOpen]         = useState(true)
                     <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{prs.length} lifts tracked</p>
                     <span style={{ color:'rgba(212,212,232,0.35)', fontSize:12, display:'inline-block', transform: prsOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.25s cubic-bezier(.16,1,.3,1)' }}>▾</span>
                   </div>
-                </div>
-              </button>
+                </button>
+                {prsOpen && prs.length > 0 && (
+                  <button onClick={handleClearLogs} style={{
+                    padding:'6px 12px', borderRadius:8, background:'rgba(248,113,113,0.12)', border:'1px solid rgba(248,113,113,0.3)',
+                    color:'#f87171', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
+                    transition:'all 0.2s', marginLeft:10, letterSpacing:'0.04em'
+                  }} onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(248,113,113,0.2)'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.5)' }} onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.3)' }}>
+                    Clear All
+                  </button>
+                )}
+              </div>
               {prsOpen && (
                 <div style={{ marginBottom:18 }}>
                   {prs.length === 0 ? (
