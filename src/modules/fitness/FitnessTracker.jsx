@@ -22,6 +22,7 @@ import imgHamstrings from './Recovery Hero cards/Recovery Fitness Hero Cards/ham
 import imgGlutes     from './Recovery Hero cards/Recovery Fitness Hero Cards/glutes.png'
 import imgCalves     from './Recovery Hero cards/Recovery Fitness Hero Cards/calves.png'
 import imgWeightHero from './Recovery Hero cards/Recovery Fitness Hero Cards/weight-hero.png'
+import imgRecoveryWellness from './Recovery Hero cards/Recovery Fitness Hero Cards/recovery-wellness.png'
 
 const MUSCLE_IMAGES = {
   'Chest':      imgChest,
@@ -1079,30 +1080,43 @@ const [prsOpen,         setPrsOpen]         = useState(true)
 
               {/* ── Daily Check-in ── */}
               <SectionHead title="Today's Check-in" sub={todayStr} />
-              <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'16px', marginBottom:18 }}>
-                <div style={{ display:'flex', gap:14, alignItems:'flex-start' }}>
-                  <div style={{ flex:1 }}>
-                    <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Sleep last night</p>
-                    <div style={{ display:'flex', alignItems:'baseline', gap:6, background:'var(--stat-bg)', border:'1px solid rgba(212,212,232,0.09)', borderRadius:10, padding:'10px 12px' }}>
-                      <input type="number" min="0" max="12" step="0.5" value={sleepHrs} placeholder="7"
-                        onChange={e => { setSleepHrs(e.target.value); try { localStorage.setItem(`ax-sleep-${todayStr}`, e.target.value) } catch {} }}
-                        style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:26, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:56, textAlign:'center' }} />
-                      <span style={{ color:'var(--text-muted)', fontSize:12 }}>hrs</span>
+              <div style={{ position:'relative', borderRadius:14, overflow:'hidden', border:'1px solid rgba(212,212,232,0.08)', minHeight:160, marginBottom:18 }}>
+                {/* Full-bleed hero image */}
+                <img
+                  src={imgRecoveryWellness}
+                  alt="Recovery & Wellness"
+                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}
+                />
+                {/* Gradient overlay */}
+                <div style={{ position:'absolute', inset:0, background:'linear-gradient(135deg, rgba(6,8,20,0.88) 0%, rgba(6,8,20,0.72) 50%, rgba(6,8,20,0.58) 100%)' }} />
+                {/* Content */}
+                <div style={{ position:'relative', padding:'16px', display:'flex', gap:16, alignItems:'flex-start', height:'100%' }}>
+                  <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%' }}>
+                    <div>
+                      <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700 }}>Sleep last night</p>
+                      <div style={{ display:'flex', alignItems:'baseline', gap:6, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(212,212,232,0.12)', borderRadius:10, padding:'10px 12px' }}>
+                        <input type="number" min="0" max="12" step="0.5" value={sleepHrs} placeholder="7"
+                          onChange={e => { setSleepHrs(e.target.value); try { localStorage.setItem(`ax-sleep-${todayStr}`, e.target.value) } catch {} }}
+                          style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:64, textAlign:'center' }} />
+                        <span style={{ color:'rgba(212,212,232,0.45)', fontSize:12, fontWeight:600 }}>hrs</span>
+                      </div>
                     </div>
                   </div>
-                  <div style={{ flex:1 }}>
-                    <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8 }}>Soreness</p>
-                    <div style={{ display:'flex', gap:6 }}>
-                      {[1,2,3,4,5].map(n => (
-                        <button key={n} onClick={() => { setSoreness(n); try { localStorage.setItem(`ax-soreness-${todayStr}`, n) } catch {} }}
-                          style={{ flex:1, padding:'10px 0', borderRadius:9, border:`1px solid ${soreness >= n ? 'rgba(248,113,113,0.45)' : 'rgba(212,212,232,0.09)'}`, background: soreness >= n ? 'rgba(248,113,113,0.14)' : 'transparent', color: soreness >= n ? '#f87171' : 'rgba(212,212,232,0.25)', fontSize:13, cursor:'pointer', transition:'all 0.15s' }}>
-                          {n}
-                        </button>
-                      ))}
+                  <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%' }}>
+                    <div>
+                      <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700 }}>Soreness</p>
+                      <div style={{ display:'flex', gap:5 }}>
+                        {[1,2,3,4,5].map(n => (
+                          <button key={n} onClick={() => { setSoreness(n); try { localStorage.setItem(`ax-soreness-${todayStr}`, n) } catch {} }}
+                            style={{ flex:1, padding:'8px 0', borderRadius:8, border:`1px solid ${soreness >= n ? 'rgba(248,113,113,0.55)' : 'rgba(212,212,232,0.12)'}`, background: soreness >= n ? 'rgba(248,113,113,0.18)' : 'rgba(255,255,255,0.02)', color: soreness >= n ? '#f87171' : 'rgba(212,212,232,0.3)', fontSize:12, fontWeight:600, cursor:'pointer', transition:'all 0.15s' }}>
+                            {n}
+                          </button>
+                        ))}
+                      </div>
+                      <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', marginTop:6, textAlign:'center', fontWeight:500 }}>
+                        {soreness === 0 ? 'Rate 1–5' : soreness <= 2 ? 'Feeling good' : soreness === 3 ? 'Moderate' : soreness === 4 ? 'Pretty sore' : 'Very sore'}
+                      </p>
                     </div>
-                    <p style={{ color:'rgba(212,212,232,0.2)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', marginTop:5, textAlign:'center' }}>
-                      {soreness === 0 ? 'Rate 1–5' : soreness <= 2 ? 'Feeling good' : soreness === 3 ? 'Moderate' : soreness === 4 ? 'Pretty sore' : 'Very sore'}
-                    </p>
                   </div>
                 </div>
               </div>
