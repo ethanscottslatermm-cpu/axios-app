@@ -70,7 +70,7 @@ function formatDate(ds) {
 function GlowBar({ pct, h=3 }) {
   return (
     <div style={{ width:'100%', height:h, borderRadius:99, background:'rgba(212,212,232,0.07)', overflow:'hidden' }}>
-      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'#b4bccc', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(180,188,204,0.5)' }} />
+      <div style={{ height:'100%', width:`${Math.min(100,pct)}%`, background:'#f59e0b', borderRadius:99, transition:'width 0.9s cubic-bezier(.16,1,.3,1)', boxShadow:'0 0 8px rgba(245,158,11,0.6)' }} />
     </div>
   )
 }
@@ -129,16 +129,16 @@ function WeightChart({ logs, goal, range, onRange }) {
   return (
     <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 14px 8px', marginBottom:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
-        <p style={{ color:'rgba(212,212,232,0.35)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>WEIGHT CHART</p>
+        <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>WEIGHT CHART</p>
         <div style={{ display:'flex', gap:4 }}>
           {RANGES.map(([lbl]) => (
             <button key={lbl} onClick={() => onRange(lbl)} style={{
               padding:'3px 8px', borderRadius:6, cursor:'pointer', fontSize:10,
               fontFamily:'Helvetica Neue,sans-serif', fontWeight: range===lbl ? 700 : 400,
               transition:'all 0.15s',
-              border:`1px solid ${range===lbl ? 'rgba(180,188,204,0.45)' : 'rgba(212,212,232,0.09)'}`,
-              background: range===lbl ? 'rgba(180,188,204,0.15)' : 'transparent',
-              color: range===lbl ? '#b4bccc' : 'rgba(212,212,232,0.28)',
+              border:`1px solid ${range===lbl ? 'rgba(245,158,11,0.45)' : 'rgba(212,212,232,0.09)'}`,
+              background: range===lbl ? 'rgba(245,158,11,0.15)' : 'transparent',
+              color: range===lbl ? '#f59e0b' : 'rgba(212,212,232,0.28)',
             }}>{lbl}</button>
           ))}
         </div>
@@ -146,8 +146,8 @@ function WeightChart({ logs, goal, range, onRange }) {
       <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow:'visible', display:'block' }}>
         <defs>
           <linearGradient id="wc-area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(180,188,204,0.14)"/>
-            <stop offset="100%" stopColor="rgba(180,188,204,0)"/>
+            <stop offset="0%" stopColor="rgba(245,158,11,0.18)"/>
+            <stop offset="100%" stopColor="rgba(245,158,11,0)"/>
           </linearGradient>
         </defs>
         {yLabels.map(v => (
@@ -171,7 +171,7 @@ function WeightChart({ logs, goal, range, onRange }) {
             points={`${toX(times[0]).toFixed(1)},${(PT+ph).toFixed(1)} ${pts} ${toX(times[times.length-1]).toFixed(1)},${(PT+ph).toFixed(1)}`}
             fill="url(#wc-area)"/>
         )}
-        <polyline points={pts} fill="none" stroke="rgba(180,188,204,0.72)" strokeWidth="1.8"
+        <polyline points={pts} fill="none" stroke="rgba(245,158,11,0.78)" strokeWidth="1.8"
           strokeLinejoin="round" strokeLinecap="round"/>
         {filtered.slice(-12).map((l, i) => (
           <circle key={i}
@@ -216,10 +216,10 @@ function GoalBar({ current, goal, start }) {
   return (
     <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding:'14px 16px', marginBottom:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:10 }}>
-        <p style={{ color:'rgba(212,212,232,0.35)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>GOAL PROGRESS</p>
+        <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif' }}>GOAL PROGRESS</p>
         <div style={{ display:'flex', gap:10, alignItems:'baseline' }}>
-          <span style={{ color:'rgba(212,212,232,0.3)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{s} start</span>
-          <span style={{ color:'var(--text-primary)', fontSize:14, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>{g} lbs goal</span>
+          <span style={{ color:'rgba(245,158,11,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{s} start</span>
+          <span style={{ color:'#fcd34d', fontSize:14, fontWeight:800, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.01em' }}>{g} lbs goal</span>
         </div>
       </div>
       <div style={{ background:'rgba(212,212,232,0.07)', borderRadius:99, height:8, overflow:'hidden' }}>
@@ -327,7 +327,7 @@ function LogWorkoutSheet({ onSave, onClose, prefillMuscle, prefillWorkout }) {
               <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                 {WORKOUT_TYPES.map(t => (
                   <button key={t} onClick={() => setWorkout(w=>({...w,type:t}))}
-                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(180,188,204,0.5)' : 'rgba(212,212,232,0.09)'}`, background: workout.type===t ? 'rgba(180,188,204,0.15)' : 'rgba(212,212,232,0.03)', color: workout.type===t ? '#b4bccc' : 'rgba(212,212,232,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
+                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(96,165,250,0.5)' : 'rgba(212,212,232,0.09)'}`, background: workout.type===t ? 'rgba(96,165,250,0.15)' : 'rgba(212,212,232,0.03)', color: workout.type===t ? '#60a5fa' : 'rgba(212,212,232,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
                     {t}
                   </button>
                 ))}
@@ -337,7 +337,7 @@ function LogWorkoutSheet({ onSave, onClose, prefillMuscle, prefillWorkout }) {
             <InputField label="Duration (minutes)" value={workout.duration} onChange={v => setWorkout(w=>({...w,duration:v}))} type="number" placeholder="45" />
 
             <button onClick={() => setStep('exercises')}
-              style={{ width:'100%', padding:'14px', background:'rgba(180,188,204,0.15)', color:'#b4bccc', border:'1px solid rgba(180,188,204,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', marginTop:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(180,188,204,0.1)' }}>
+              style={{ width:'100%', padding:'14px', background:'rgba(96,165,250,0.15)', color:'#60a5fa', border:'1px solid rgba(96,165,250,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', marginTop:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(96,165,250,0.1)' }}>
               Next → Add Exercises
             </button>
           </>
@@ -401,7 +401,7 @@ function LogWorkoutSheet({ onSave, onClose, prefillMuscle, prefillWorkout }) {
                 ← Back
               </button>
               <button onClick={handleSave} disabled={saving}
-                style={{ flex:2, padding:'13px', background:'rgba(180,188,204,0.15)', color:'#b4bccc', border:'1px solid rgba(180,188,204,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'all 0.2s', boxShadow:'0 0 14px rgba(180,188,204,0.1)' }}>
+                style={{ flex:2, padding:'13px', background:'rgba(96,165,250,0.15)', color:'#60a5fa', border:'1px solid rgba(96,165,250,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'all 0.2s', boxShadow:'0 0 14px rgba(96,165,250,0.1)' }}>
                 {saving ? 'Saving…' : <>{Ico.check()} Save Workout</>}
               </button>
             </div>
@@ -444,11 +444,11 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
   }
 
   const ringColor = !hasVal ? 'rgba(212,212,232,0.12)'
-    : delta === null       ? 'rgba(180,188,204,0.45)'
+    : delta === null       ? 'rgba(245,158,11,0.45)'
     : deltaPos             ? 'rgba(245,158,11,0.55)'
     :                        'rgba(16,185,129,0.55)'
   const ringGlow = !hasVal ? 'none'
-    : delta === null       ? '0 0 22px rgba(180,188,204,0.18)'
+    : delta === null       ? '0 0 22px rgba(245,158,11,0.18)'
     : deltaPos             ? '0 0 22px rgba(245,158,11,0.22)'
     :                        '0 0 22px rgba(16,185,129,0.22)'
 
@@ -469,7 +469,7 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
           <div>
             <h2 style={{ color:'var(--text-primary)', fontSize:19, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', letterSpacing:'-0.02em' }}>Log Weight</h2>
-            {current && <p style={{ color:'rgba(212,212,232,0.32)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>Last: <span style={{ color:'rgba(212,212,232,0.55)' }}>{current} lbs</span></p>}
+            {current && <p style={{ color:'rgba(245,158,11,0.55)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>Last: <span style={{ color:'rgba(245,158,11,0.75)' }}>{current} lbs</span></p>}
           </div>
           <button onClick={onClose} style={{ background:'rgba(212,212,232,0.05)', border:'1px solid rgba(212,212,232,0.09)', borderRadius:99, width:32, height:32, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'rgba(212,212,232,0.4)' }}>{Ico.close(14)}</button>
         </div>
@@ -523,14 +523,14 @@ function LogWeightSheet({ onSave, onClose, current, todayStr }) {
         <button onClick={handleSave} disabled={saving || saved}
           style={{
             width:'100%', padding:'16px',
-            background: saved ? 'rgba(16,185,129,0.18)' : hasVal ? 'rgba(180,188,204,0.18)' : 'rgba(180,188,204,0.07)',
-            color: saved ? '#10b981' : hasVal ? '#d4d4e8' : 'rgba(212,212,232,0.28)',
-            border:`1px solid ${saved ? 'rgba(16,185,129,0.45)' : hasVal ? 'rgba(180,188,204,0.38)' : 'rgba(212,212,232,0.09)'}`,
+            background: saved ? 'rgba(16,185,129,0.18)' : hasVal ? 'rgba(245,158,11,0.18)' : 'rgba(245,158,11,0.07)',
+            color: saved ? '#10b981' : hasVal ? '#fcd34d' : 'rgba(245,158,11,0.4)',
+            border:`1px solid ${saved ? 'rgba(16,185,129,0.45)' : hasVal ? 'rgba(245,158,11,0.38)' : 'rgba(212,212,232,0.09)'}`,
             borderRadius:12, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase',
             fontFamily:'Helvetica Neue,sans-serif', cursor: saving || saved || !hasVal ? 'not-allowed' : 'pointer',
             display:'flex', alignItems:'center', justifyContent:'center', gap:8,
             transition:'all 0.3s cubic-bezier(.16,1,.3,1)',
-            boxShadow: saved ? '0 0 20px rgba(16,185,129,0.2)' : hasVal ? '0 0 18px rgba(180,188,204,0.12)' : 'none',
+            boxShadow: saved ? '0 0 20px rgba(16,185,129,0.2)' : hasVal ? '0 0 18px rgba(245,158,11,0.12)' : 'none',
           }}>
           {saved ? (
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ animation:'lwSavedScale 0.35s ease' }}>
@@ -723,7 +723,7 @@ export default function FitnessTracker() {
   const [loadingW,     setLoadingW]     = useState(false)
   const [chartRange,   setChartRange]   = useState('1M')
   const [historyOpen,     setHistoryOpen]     = useState(false)
-const [prsOpen,         setPrsOpen]         = useState(false)
+const [prsOpen,         setPrsOpen]         = useState(true)
   const [showScanner,     setShowScanner]     = useState(false)
   const [prefillWorkout,  setPrefillWorkout]  = useState(null)
   const [sleepHrs,        setSleepHrs]        = useState(() => { try { return localStorage.getItem(`ax-sleep-${new Date().toISOString().split('T')[0]}`) || '' } catch { return '' } })
@@ -882,20 +882,6 @@ const [prsOpen,         setPrsOpen]         = useState(false)
   const weekAgo      = new Date(); weekAgo.setDate(weekAgo.getDate()-7)
   const weeklyCount  = workouts.filter(w => new Date(w.created_at) >= weekAgo).length
 
-  // Clear all fitness logs
-  const handleClearLogs = async () => {
-    if (!window.confirm('Are you sure you want to delete all fitness logs? This cannot be undone.')) return
-    try {
-      const { error } = await supabase.from('workouts').delete().eq('user_id', user?.id)
-      if (error) throw error
-      setWorkouts([])
-      haptic?.('success')
-    } catch (err) {
-      console.error('Error clearing logs:', err)
-      haptic?.('error')
-    }
-  }
-
   // ── Personal Records ──────────────────────────────────────────────────────
   const prs = useMemo(() => {
     const map = {}
@@ -1039,13 +1025,14 @@ const [prsOpen,         setPrsOpen]         = useState(false)
           <div style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:1, ...anim(80) }}>
             {[['recovery','Recover'],['body','Fit Guide'],['weight','Weight Log'],['programs','Fit Programs']].map(([key,label]) => {
               const isActive = activeTab === key
+              const tabColor = key === 'recovery' ? { color: '#60a5fa', bg: 'rgba(96,165,250,0.12)', border: 'rgba(96,165,250,0.35)' } : key === 'weight' ? { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)' } : key === 'body' ? { color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.35)' } : { color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.35)' }
               return (
                 <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
                   style={{
                     flexShrink:0, padding:'9px 14px', borderRadius:10,
-                    border: `1px solid ${isActive ? 'rgba(248,113,113,0.45)' : 'var(--border)'}`,
-                    background: isActive ? 'rgba(248,113,113,0.10)' : 'transparent',
-                    color: isActive ? '#f87171' : 'var(--text-muted)',
+                    border: `1px solid ${isActive ? tabColor.border : 'var(--border)'}`,
+                    background: isActive ? tabColor.bg : 'transparent',
+                    color: isActive ? tabColor.color : 'var(--text-muted)',
                     fontSize:12, fontFamily:'Helvetica Neue,sans-serif',
                     fontWeight: isActive ? 700 : 400,
                     cursor:'pointer', transition:'all 0.2s', letterSpacing:'0.04em',
@@ -1125,7 +1112,7 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                   </div>
                   <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%' }}>
                     <div>
-                      <p style={{ color: soreness > 0 ? 'rgba(248,113,113,0.7)' : 'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700, transition:'color 0.3s ease' }}>Soreness</p>
+                      <p style={{ color: soreness === 0 ? 'rgba(212,212,232,0.45)' : soreness <= 2 ? 'rgba(16,185,129,0.7)' : soreness === 3 ? 'rgba(245,158,11,0.7)' : 'rgba(248,113,113,0.7)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700, transition:'color 0.3s ease' }}>Soreness</p>
                       <div style={{ display:'flex', gap:5 }}>
                         {[1,2,3,4,5].map(n => {
                           const isSelected = soreness >= n
@@ -1158,7 +1145,7 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                           )
                         })}
                       </div>
-                      <p style={{ color: soreness > 0 ? 'rgba(248,113,113,0.5)' : 'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', marginTop:6, textAlign:'center', fontWeight:600, transition:'color 0.3s ease' }}>
+                      <p style={{ color: soreness === 0 ? 'rgba(212,212,232,0.4)' : soreness <= 2 ? 'rgba(16,185,129,0.6)' : soreness === 3 ? 'rgba(245,158,11,0.6)' : 'rgba(248,113,113,0.6)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', marginTop:6, textAlign:'center', fontWeight:600, transition:'color 0.3s ease' }}>
                         {soreness === 0 ? 'Rate 1–5' : soreness <= 2 ? '✓ Feeling good' : soreness === 3 ? '⚠ Moderate' : soreness === 4 ? '⚠ Pretty sore' : '⚠ Very sore'}
                       </p>
                     </div>
@@ -1167,8 +1154,8 @@ const [prsOpen,         setPrsOpen]         = useState(false)
               </div>
 
               {/* ── Personal Records (collapsible) ── */}
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: prsOpen ? 12 : 18 }}>
-                <button onClick={() => setPrsOpen(o => !o)} style={{ flex:1, background:'none', border:'none', cursor:'pointer', padding:0, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <button onClick={() => setPrsOpen(o => !o)} style={{ width:'100%', background:'none', border:'none', cursor:'pointer', padding:0, marginBottom: prsOpen ? 12 : 18 }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:9 }}>
                     <div style={{ width:2, height:14, background:'linear-gradient(to bottom,var(--accent-fitness),transparent)', borderRadius:2, boxShadow:'0 0 8px var(--accent-fitness)' }} />
                     <p style={{ color:'var(--text-secondary)', fontSize:10, letterSpacing:'0.26em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700 }}>Fitness Logs</p>
@@ -1177,17 +1164,8 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                     <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{prs.length} lifts tracked</p>
                     <span style={{ color:'rgba(212,212,232,0.35)', fontSize:12, display:'inline-block', transform: prsOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.25s cubic-bezier(.16,1,.3,1)' }}>▾</span>
                   </div>
-                </button>
-                {prsOpen && prs.length > 0 && (
-                  <button onClick={handleClearLogs} style={{
-                    padding:'6px 12px', borderRadius:8, background:'rgba(248,113,113,0.12)', border:'1px solid rgba(248,113,113,0.3)',
-                    color:'#f87171', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer',
-                    transition:'all 0.2s', marginLeft:10, letterSpacing:'0.04em'
-                  }} onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(248,113,113,0.2)'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.5)' }} onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.3)' }}>
-                    Clear All
-                  </button>
-                )}
-              </div>
+                </div>
+              </button>
               {prsOpen && (
                 <div style={{ marginBottom:18 }}>
                   {prs.length === 0 ? (
@@ -1208,7 +1186,7 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                           </div>
                           <div style={{ textAlign:'right', flexShrink:0 }}>
                             <p style={{ color:'#f87171', fontSize:20, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
-                              {pr.weight}<span style={{ fontSize:10, color:'rgba(212,212,232,0.35)', fontWeight:400, marginLeft:3 }}>lbs</span>
+                              {pr.weight}<span style={{ fontSize:10, color:'rgba(248,113,113,0.5)', fontWeight:400, marginLeft:3 }}>lbs</span>
                             </p>
                             <p style={{ color:'rgba(248,113,113,0.45)', fontSize:9, letterSpacing:'0.12em', fontFamily:'Helvetica Neue,sans-serif', textTransform:'uppercase', marginTop:2 }}>PR</p>
                           </div>
@@ -1231,9 +1209,9 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(90deg, rgba(20,20,35,0.95) 0%, rgba(20,20,35,0.7) 50%, transparent 100%)', borderRadius:14, zIndex:1 }} />
                 <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', position:'relative', zIndex:2 }}>
                   <div>
-                    <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>CURRENT WEIGHT</p>
-                    <p style={{ color:'var(--text-primary)', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.03em' }}>
-                      {latest || '—'}<span style={{ fontSize:14, fontWeight:400, color:'var(--text-muted)', marginLeft:5 }}>lbs</span>
+                    <p style={{ color:'rgba(245,158,11,0.65)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>CURRENT WEIGHT</p>
+                    <p style={{ color:'#fcd34d', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.03em' }}>
+                      {latest || '—'}<span style={{ fontSize:14, fontWeight:400, color:'rgba(245,158,11,0.55)', marginLeft:5 }}>lbs</span>
                     </p>
                     {diff && (
                       <p style={{ color: parseFloat(diff) < 0 ? '#10b981' : '#f59e0b', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginTop:6 }}>
@@ -1267,7 +1245,7 @@ const [prsOpen,         setPrsOpen]         = useState(false)
               {/* Stats grid */}
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>BMI</p>
+                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>BMI</p>
                   {bmi ? (
                     <>
                       <p style={{ color:'var(--text-primary)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:3 }}>{bmi}</p>
@@ -1278,26 +1256,26 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                   )}
                 </div>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>LOWEST</p>
-                  <p style={{ color:'#10b981', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:3 }}>
-                    {lowestW || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:3 }}>lbs</span>
+                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>LOWEST</p>
+                  <p style={{ color:'#fcd34d', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:3 }}>
+                    {lowestW || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(245,158,11,0.45)', marginLeft:3 }}>lbs</span>
                   </p>
-                  {lowestDate && <p style={{ color:'rgba(212,212,232,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{lowestDate}</p>}
+                  {lowestDate && <p style={{ color:'rgba(245,158,11,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{lowestDate}</p>}
                 </div>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>30-DAY AVG</p>
-                  <p style={{ color:'var(--text-secondary)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
-                    {avg30 || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:3 }}>lbs</span>
+                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>30-DAY AVG</p>
+                  <p style={{ color:'#f59e0b', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
+                    {avg30 || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(245,158,11,0.45)', marginLeft:3 }}>lbs</span>
                   </p>
                 </div>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>NET CHANGE</p>
+                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>NET CHANGE</p>
                   {netChange !== null ? (
                     <>
                       <p style={{ color: parseFloat(netChange) < 0 ? '#10b981' : '#f59e0b', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
                         {parseFloat(netChange) > 0 ? '+' : ''}{netChange}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:3 }}>lbs</span>
                       </p>
-                      <p style={{ color:'rgba(212,212,232,0.28)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>since first log</p>
+                      <p style={{ color:'rgba(245,158,11,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>since first log</p>
                     </>
                   ) : (
                     <p style={{ color:'rgba(212,212,232,0.2)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:4 }}>—</p>
@@ -1307,9 +1285,9 @@ const [prsOpen,         setPrsOpen]         = useState(false)
 
               {/* Log button */}
               <button onClick={() => setShowWeight(true)}
-                style={{ width:'100%', marginBottom:16, padding:'13px', borderRadius:10, background:'rgba(180,188,204,0.1)', border:'1px solid rgba(180,188,204,0.22)', color:'rgba(212,212,232,0.6)', fontSize:12, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}
-                onMouseEnter={e=>{e.currentTarget.style.background='rgba(180,188,204,0.18)';e.currentTarget.style.color='rgba(212,212,232,0.85)'}}
-                onMouseLeave={e=>{e.currentTarget.style.background='rgba(180,188,204,0.1)';e.currentTarget.style.color='rgba(212,212,232,0.6)'}}>
+                style={{ width:'100%', marginBottom:16, padding:'13px', borderRadius:10, background:'rgba(245,158,11,0.12)', border:'1px solid rgba(245,158,11,0.28)', color:'rgba(245,158,11,0.75)', fontSize:12, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', fontWeight:700, cursor:'pointer', transition:'all 0.2s', display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}
+                onMouseEnter={e=>{e.currentTarget.style.background='rgba(245,158,11,0.22)';e.currentTarget.style.color='rgba(245,158,11,0.95)'}}
+                onMouseLeave={e=>{e.currentTarget.style.background='rgba(245,158,11,0.12)';e.currentTarget.style.color='rgba(245,158,11,0.75)'}}>
                 {Ico.plus(12)} Log Today's Weight
               </button>
 
@@ -1338,11 +1316,11 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                     return (
                       <div key={log.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 14px', background:'var(--bg-card)', border:'1px solid var(--border)', boxShadow:'var(--card-shadow)', borderRadius:11 }}>
                         <div>
-                          <p style={{ color:'rgba(212,212,232,0.7)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
+                          <p style={{ color:'rgba(245,158,11,0.75)', fontSize:13, fontFamily:'Helvetica Neue,sans-serif', marginBottom:2 }}>{formatDate(log.logged_date||log.date)}</p>
                           {log.note && <p style={{ color:'var(--text-muted)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif' }}>{log.note}</p>}
                         </div>
                         <div style={{ textAlign:'right' }}>
-                          <p style={{ color:'var(--text-primary)', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{log.weight_lbs}<span style={{ fontSize:11, color:'var(--text-muted)', fontWeight:400, marginLeft:3 }}>lbs</span></p>
+                          <p style={{ color:'#f59e0b', fontSize:18, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif' }}>{log.weight_lbs}<span style={{ fontSize:11, color:'rgba(245,158,11,0.5)', fontWeight:400, marginLeft:3 }}>lbs</span></p>
                           {delta && <p style={{ color: parseFloat(delta) < 0 ? '#10b981' : '#f59e0b', fontSize:10, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{parseFloat(delta) > 0 ? '+' : ''}{delta}</p>}
                         </div>
                       </div>
