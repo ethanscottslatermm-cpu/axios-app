@@ -1080,7 +1080,14 @@ const [prsOpen,         setPrsOpen]         = useState(true)
 
               {/* ── Daily Check-in ── */}
               <SectionHead title="Today's Check-in" sub={todayStr} />
-              <div style={{ position:'relative', borderRadius:14, overflow:'hidden', border:'1px solid rgba(212,212,232,0.08)', minHeight:160, marginBottom:18 }}>
+              <style>{`
+                @keyframes glowPulse { 0%,100%{opacity:0.5; filter:brightness(0.9)} 50%{opacity:1; filter:brightness(1.2)} }
+                @keyframes inputGlow { 0%,100%{box-shadow:0 0 0 0 rgba(96,165,250,0.5)} 50%{box-shadow:0 0 8px 2px rgba(96,165,250,0.3)} }
+                @keyframes sorenessGlow { 0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.5)} 50%{box-shadow:0 0 10px 3px rgba(248,113,113,0.2)} }
+                .sleep-tracker { animation: inputGlow 2.2s ease-in-out infinite; }
+                .soreness-active { animation: sorenessGlow 2s ease-in-out infinite; }
+              `}</style>
+              <div style={{ position:'relative', borderRadius:14, overflow:'hidden', border:'1px solid rgba(212,212,232,0.12)', minHeight:160, marginBottom:18 }}>
                 {/* Full-bleed hero image */}
                 <img
                   src={imgRecoveryWellness}
@@ -1093,28 +1100,52 @@ const [prsOpen,         setPrsOpen]         = useState(true)
                 <div style={{ position:'relative', padding:'16px', display:'flex', gap:16, alignItems:'flex-start', height:'100%' }}>
                   <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%' }}>
                     <div>
-                      <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700 }}>Sleep last night</p>
-                      <div style={{ display:'flex', alignItems:'baseline', gap:6, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(212,212,232,0.12)', borderRadius:10, padding:'10px 12px' }}>
+                      <p style={{ color:'rgba(96,165,250,0.6)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700 }}>Sleep last night</p>
+                      <div className={sleepHrs ? 'sleep-tracker' : ''} style={{ display:'flex', alignItems:'baseline', gap:6, background: sleepHrs ? 'rgba(96,165,250,0.1)' : 'rgba(255,255,255,0.04)', border: sleepHrs ? '1px solid rgba(96,165,250,0.4)' : '1px solid rgba(212,212,232,0.12)', borderRadius:10, padding:'10px 12px', transition:'all 0.3s ease' }}>
                         <input type="number" min="0" max="12" step="0.5" value={sleepHrs} placeholder="7"
                           onChange={e => { setSleepHrs(e.target.value); try { localStorage.setItem(`ax-sleep-${todayStr}`, e.target.value) } catch {} }}
-                          style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:28, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:64, textAlign:'center' }} />
-                        <span style={{ color:'rgba(212,212,232,0.45)', fontSize:12, fontWeight:600 }}>hrs</span>
+                          style={{ background:'transparent', border:'none', outline:'none', color: sleepHrs ? '#60a5fa' : 'var(--text-primary)', fontSize:32, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:72, textAlign:'center', transition:'color 0.3s ease' }} />
+                        <span style={{ color: sleepHrs ? 'rgba(96,165,250,0.7)' : 'rgba(212,212,232,0.45)', fontSize:13, fontWeight:700, transition:'color 0.3s ease' }}>hrs</span>
                       </div>
                     </div>
                   </div>
                   <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%' }}>
                     <div>
-                      <p style={{ color:'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700 }}>Soreness</p>
+                      <p style={{ color: soreness > 0 ? 'rgba(248,113,113,0.7)' : 'rgba(212,212,232,0.32)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700, transition:'color 0.3s ease' }}>Soreness</p>
                       <div style={{ display:'flex', gap:5 }}>
-                        {[1,2,3,4,5].map(n => (
-                          <button key={n} onClick={() => { setSoreness(n); try { localStorage.setItem(`ax-soreness-${todayStr}`, n) } catch {} }}
-                            style={{ flex:1, padding:'8px 0', borderRadius:8, border:`1px solid ${soreness >= n ? 'rgba(248,113,113,0.55)' : 'rgba(212,212,232,0.12)'}`, background: soreness >= n ? 'rgba(248,113,113,0.18)' : 'rgba(255,255,255,0.02)', color: soreness >= n ? '#f87171' : 'rgba(212,212,232,0.3)', fontSize:12, fontWeight:600, cursor:'pointer', transition:'all 0.15s' }}>
-                            {n}
-                          </button>
-                        ))}
+                        {[1,2,3,4,5].map(n => {
+                          const isSelected = soreness >= n
+                          const getSorenessColor = (level) => {
+                            if (level <= 2) return '#10b981'
+                            if (level === 3) return '#f59e0b'
+                            return '#f87171'
+                          }
+                          const color = isSelected ? getSorenessColor(soreness) : 'rgba(212,212,232,0.3)'
+                          return (
+                            <button key={n} onClick={() => { setSoreness(n); try { localStorage.setItem(`ax-soreness-${todayStr}`, n) } catch {} }}
+                              className={isSelected ? 'soreness-active' : ''}
+                              onMouseEnter={(e) => {
+                                if (!isSelected) {
+                                  e.currentTarget.style.background = 'rgba(248,113,113,0.08)'
+                                  e.currentTarget.style.borderColor = 'rgba(248,113,113,0.3)'
+                                  e.currentTarget.style.color = '#f87171'
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!isSelected) {
+                                  e.currentTarget.style.background = 'rgba(255,255,255,0.02)'
+                                  e.currentTarget.style.borderColor = 'rgba(212,212,232,0.12)'
+                                  e.currentTarget.style.color = 'rgba(212,212,232,0.3)'
+                                }
+                              }}
+                              style={{ flex:1, padding:'10px 0', borderRadius:8, border:`1px solid ${isSelected ? color : 'rgba(212,212,232,0.12)'}`, background: isSelected ? `${color}18` : 'rgba(255,255,255,0.02)', color: color, fontSize:12, fontWeight:700, cursor:'pointer', transition:'all 0.25s ease', textShadow: isSelected ? `0 0 8px ${color}40` : 'none' }}>
+                              {n}
+                            </button>
+                          )
+                        })}
                       </div>
-                      <p style={{ color:'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', marginTop:6, textAlign:'center', fontWeight:500 }}>
-                        {soreness === 0 ? 'Rate 1–5' : soreness <= 2 ? 'Feeling good' : soreness === 3 ? 'Moderate' : soreness === 4 ? 'Pretty sore' : 'Very sore'}
+                      <p style={{ color: soreness > 0 ? 'rgba(248,113,113,0.5)' : 'rgba(212,212,232,0.28)', fontSize:9, fontFamily:'Helvetica Neue,sans-serif', marginTop:6, textAlign:'center', fontWeight:600, transition:'color 0.3s ease' }}>
+                        {soreness === 0 ? 'Rate 1–5' : soreness <= 2 ? '✓ Feeling good' : soreness === 3 ? '⚠ Moderate' : soreness === 4 ? '⚠ Pretty sore' : '⚠ Very sore'}
                       </p>
                     </div>
                   </div>
