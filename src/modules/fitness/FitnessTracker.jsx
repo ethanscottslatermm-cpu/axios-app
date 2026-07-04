@@ -667,7 +667,15 @@ function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, on
             <p style={{ color:'rgba(212,212,232,0.9)', fontSize:17, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif' }}>{group}</p>
             <p style={{ color:'rgba(212,212,232,0.4)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', marginTop:2 }}>{sub}</p>
           </div>
-          <span style={{ color:clr, fontSize:10, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', background:bg, border:`1px solid ${br}`, borderRadius:7, padding:'4px 9px' }}>{label}</span>
+          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <span style={{ color:clr, fontSize:10, fontWeight:800, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', background:bg, border:`1px solid ${br}`, borderRadius:7, padding:'4px 9px' }}>{label}</span>
+            <button onClick={close} style={{ background:'none', border:'none', cursor:'pointer', padding:'4px 8px', display:'flex', alignItems:'center', justifyContent:'center', color:'rgba(212,212,232,0.5)', transition:'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(212,212,232,0.9)'} onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(212,212,232,0.5)'}>
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
         </div>
         {/* Recent exercises */}
         {latest.length > 0 && (
