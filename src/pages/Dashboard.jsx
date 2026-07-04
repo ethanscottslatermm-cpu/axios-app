@@ -516,13 +516,11 @@ export default function Dashboard() {
           {/* Modules Section Header */}
           <style>{`
             @keyframes shimmer { 0%,100% { opacity:0.6; filter:brightness(1) } 50% { opacity:1; filter:brightness(1.3) } }
-            @keyframes lineSlide { 0% { transform:translateX(-100%); opacity:0 } 10% { opacity:1 } 90% { opacity:1 } 100% { transform:translateX(800%); opacity:0 } }
             .modules-header { animation: shimmer 3s ease-in-out infinite; }
-            .modules-line { animation: lineSlide 2.5s ease-in-out infinite; }
           `}</style>
           <div style={{ marginTop:32, marginBottom:24, paddingBottom:16, borderBottom:'2px solid rgba(200,210,220,0.4)', position:'relative' }}>
             <h2 className="modules-header" style={{ fontSize:28, fontWeight:700, fontFamily:'Playfair Display, serif', color:'#bab3a0', margin:0, letterSpacing:'-0.8px', textShadow:'0 2px 8px rgba(0,0,0,0.3)' }}>Modules</h2>
-            <div className="modules-line" style={{ position:'absolute', bottom:'-2px', left:0, height:'2px', width:'60px', background:'linear-gradient(90deg, rgba(6,182,212,0.9) 0%, rgba(6,182,212,0.4) 100%)', borderRadius:'1px' }} />
+            <div style={{ position:'absolute', bottom:'-2px', left:0, height:'2px', width:'60px', background:'linear-gradient(90deg, rgba(212,212,232,0.8) 0%, rgba(212,212,232,0.2) 100%)' }} />
           </div>
 
           {/* PART 2: MODULE HERO BANNERS WITH ENHANCED LIGHTING AND CLASSICAL AESTHETIC */}
