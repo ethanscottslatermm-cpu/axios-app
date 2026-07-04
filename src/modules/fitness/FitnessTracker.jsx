@@ -327,7 +327,7 @@ function LogWorkoutSheet({ onSave, onClose, prefillMuscle, prefillWorkout }) {
               <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                 {WORKOUT_TYPES.map(t => (
                   <button key={t} onClick={() => setWorkout(w=>({...w,type:t}))}
-                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(96,165,250,0.5)' : 'rgba(212,212,232,0.09)'}`, background: workout.type===t ? 'rgba(96,165,250,0.15)' : 'rgba(212,212,232,0.03)', color: workout.type===t ? '#60a5fa' : 'rgba(212,212,232,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
+                    style={{ padding:'7px 14px', borderRadius:99, border:`1px solid ${workout.type===t ? 'rgba(6,182,212,0.5)' : 'rgba(212,212,232,0.09)'}`, background: workout.type===t ? 'rgba(6,182,212,0.15)' : 'rgba(212,212,232,0.03)', color: workout.type===t ? '#06b6d4' : 'rgba(212,212,232,0.38)', fontSize:11, fontFamily:'Helvetica Neue,sans-serif', fontWeight: workout.type===t ? 700 : 400, cursor:'pointer', transition:'all 0.18s' }}>
                     {t}
                   </button>
                 ))}
@@ -337,7 +337,7 @@ function LogWorkoutSheet({ onSave, onClose, prefillMuscle, prefillWorkout }) {
             <InputField label="Duration (minutes)" value={workout.duration} onChange={v => setWorkout(w=>({...w,duration:v}))} type="number" placeholder="45" />
 
             <button onClick={() => setStep('exercises')}
-              style={{ width:'100%', padding:'14px', background:'rgba(96,165,250,0.15)', color:'#60a5fa', border:'1px solid rgba(96,165,250,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', marginTop:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(96,165,250,0.1)' }}>
+              style={{ width:'100%', padding:'14px', background:'rgba(6,182,212,0.15)', color:'#06b6d4', border:'1px solid rgba(6,182,212,0.4)', borderRadius:11, fontSize:12, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor:'pointer', marginTop:8, transition:'all 0.2s', boxShadow:'0 0 14px rgba(6,182,212,0.1)' }}>
               Next → Add Exercises
             </button>
           </>
@@ -401,7 +401,7 @@ function LogWorkoutSheet({ onSave, onClose, prefillMuscle, prefillWorkout }) {
                 ← Back
               </button>
               <button onClick={handleSave} disabled={saving}
-                style={{ flex:2, padding:'13px', background:'rgba(96,165,250,0.15)', color:'#60a5fa', border:'1px solid rgba(96,165,250,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'all 0.2s', boxShadow:'0 0 14px rgba(96,165,250,0.1)' }}>
+                style={{ flex:2, padding:'13px', background:'rgba(6,182,212,0.15)', color:'#06b6d4', border:'1px solid rgba(6,182,212,0.4)', borderRadius:10, fontSize:12, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:7, transition:'all 0.2s', boxShadow:'0 0 14px rgba(6,182,212,0.1)' }}>
                 {saving ? 'Saving…' : <>{Ico.check()} Save Workout</>}
               </button>
             </div>
@@ -609,9 +609,9 @@ function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, on
   useEffect(() => { setTimeout(() => setVisible(true), 30) }, [])
   const close = () => { setVisible(false); setTimeout(onClose, 280) }
 
-  const clr = status === 'fatigued' ? '#f87171' : status === 'recovering' ? '#f59e0b' : status === 'ready' ? '#10b981' : '#60a5fa'
-  const bg  = status === 'fatigued' ? 'rgba(248,113,113,0.1)' : status === 'recovering' ? 'rgba(245,158,11,0.1)' : status === 'ready' ? 'rgba(16,185,129,0.1)' : 'rgba(96,165,250,0.08)'
-  const br  = status === 'fatigued' ? 'rgba(248,113,113,0.25)' : status === 'recovering' ? 'rgba(245,158,11,0.25)' : status === 'ready' ? 'rgba(16,185,129,0.25)' : 'rgba(96,165,250,0.18)'
+  const clr = status === 'fatigued' ? '#f87171' : status === 'recovering' ? '#f59e0b' : status === 'ready' ? '#10b981' : '#06b6d4'
+  const bg  = status === 'fatigued' ? 'rgba(248,113,113,0.1)' : status === 'recovering' ? 'rgba(245,158,11,0.1)' : status === 'ready' ? 'rgba(16,185,129,0.1)' : 'rgba(6,182,212,0.08)'
+  const br  = status === 'fatigued' ? 'rgba(248,113,113,0.25)' : status === 'recovering' ? 'rgba(245,158,11,0.25)' : status === 'ready' ? 'rgba(16,185,129,0.25)' : 'rgba(6,182,212,0.18)'
   const sub = days === null ? 'Not trained' : days === 0 ? 'Trained today' : days === 1 ? 'Yesterday' : `${days}d ago`
 
   const GROUP_EXERCISES_MAP = {
@@ -884,7 +884,7 @@ const [prsOpen,         setPrsOpen]         = useState(true)
   const heightIn     = (profile?.height_ft||0)*12 + (profile?.height_in||0)
   const bmi          = heightIn > 0 && latest ? ((parseFloat(latest)*703)/(heightIn*heightIn)).toFixed(1) : null
   const bmiLabel     = !bmi ? '' : bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese'
-  const bmiColor     = !bmi ? '' : bmi < 18.5 ? '#60a5fa' : bmi < 25 ? '#10b981' : bmi < 30 ? '#f59e0b' : '#ef4444'
+  const bmiColor     = !bmi ? '' : bmi < 18.5 ? '#06b6d4' : bmi < 25 ? '#10b981' : bmi < 30 ? '#f59e0b' : '#ef4444'
 
   // Weekly workout count
   const weekAgo      = new Date(); weekAgo.setDate(weekAgo.getDate()-7)
@@ -1033,7 +1033,7 @@ const [prsOpen,         setPrsOpen]         = useState(true)
           <div style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:1, ...anim(80) }}>
             {[['recovery','Recover'],['body','Fit Guide'],['weight','Weight Log'],['programs','Fit Programs']].map(([key,label]) => {
               const isActive = activeTab === key
-              const tabColor = key === 'recovery' ? { color: '#60a5fa', bg: 'rgba(96,165,250,0.12)', border: 'rgba(96,165,250,0.35)' } : key === 'weight' ? { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)' } : key === 'body' ? { color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.35)' } : { color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.35)' }
+              const tabColor = key === 'recovery' ? { color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.35)' } : key === 'weight' ? { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)' } : key === 'body' ? { color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.35)' } : { color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.35)' }
               return (
                 <button key={key} onClick={() => setActiveTab(key)} className="ax-tab"
                   style={{
@@ -1060,9 +1060,9 @@ const [prsOpen,         setPrsOpen]         = useState(true)
               <SectionHead title="Muscle Readiness" sub="Based on recent sessions" />
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:18 }}>
                 {muscleReadiness.map(({ group, status, days, label }) => {
-                  const clr = status === 'fatigued' ? '#f87171' : status === 'recovering' ? '#f59e0b' : status === 'ready' ? '#10b981' : '#60a5fa'
-                  const bg  = status === 'fatigued' ? 'rgba(248,113,113,0.07)' : status === 'recovering' ? 'rgba(245,158,11,0.07)' : status === 'ready' ? 'rgba(16,185,129,0.07)' : 'rgba(96,165,250,0.05)'
-                  const br  = status === 'fatigued' ? 'rgba(248,113,113,0.22)' : status === 'recovering' ? 'rgba(245,158,11,0.22)' : status === 'ready' ? 'rgba(16,185,129,0.22)' : 'rgba(96,165,250,0.15)'
+                  const clr = status === 'fatigued' ? '#f87171' : status === 'recovering' ? '#f59e0b' : status === 'ready' ? '#10b981' : '#06b6d4'
+                  const bg  = status === 'fatigued' ? 'rgba(248,113,113,0.07)' : status === 'recovering' ? 'rgba(245,158,11,0.07)' : status === 'ready' ? 'rgba(16,185,129,0.07)' : 'rgba(6,182,212,0.05)'
+                  const br  = status === 'fatigued' ? 'rgba(248,113,113,0.22)' : status === 'recovering' ? 'rgba(245,158,11,0.22)' : status === 'ready' ? 'rgba(16,185,129,0.22)' : 'rgba(6,182,212,0.15)'
                   const sub = days === null ? 'Not trained' : days === 0 ? 'Trained today' : days === 1 ? 'Yesterday' : `${days}d ago`
                   return (
                     <div key={group} onClick={() => setRecoveryMuscle({ group, status, days, label })} style={{ position:'relative', borderRadius:12, overflow:'hidden', cursor:'pointer', border:`1px solid ${br}`, minHeight:90 }}>
@@ -1091,7 +1091,7 @@ const [prsOpen,         setPrsOpen]         = useState(true)
               <SectionHead title="Today's Check-in" sub={todayStr} />
               <style>{`
                 @keyframes glowPulse { 0%,100%{opacity:0.5; filter:brightness(0.9)} 50%{opacity:1; filter:brightness(1.2)} }
-                @keyframes inputGlow { 0%,100%{box-shadow:0 0 0 0 rgba(96,165,250,0.5)} 50%{box-shadow:0 0 8px 2px rgba(96,165,250,0.3)} }
+                @keyframes inputGlow { 0%,100%{box-shadow:0 0 0 0 rgba(6,182,212,0.5)} 50%{box-shadow:0 0 8px 2px rgba(6,182,212,0.3)} }
                 @keyframes sorenessGlow { 0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.5)} 50%{box-shadow:0 0 10px 3px rgba(248,113,113,0.2)} }
                 .sleep-tracker { animation: inputGlow 2.2s ease-in-out infinite; }
                 .soreness-active { animation: sorenessGlow 2s ease-in-out infinite; }
@@ -1109,12 +1109,12 @@ const [prsOpen,         setPrsOpen]         = useState(true)
                 <div style={{ position:'relative', padding:'16px', display:'flex', gap:16, alignItems:'flex-start', height:'100%' }}>
                   <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%' }}>
                     <div>
-                      <p style={{ color:'rgba(96,165,250,0.6)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700 }}>Sleep last night</p>
-                      <div className={sleepHrs ? 'sleep-tracker' : ''} style={{ display:'flex', alignItems:'baseline', gap:6, background: sleepHrs ? 'rgba(96,165,250,0.1)' : 'rgba(255,255,255,0.04)', border: sleepHrs ? '1px solid rgba(96,165,250,0.4)' : '1px solid rgba(212,212,232,0.12)', borderRadius:10, padding:'10px 12px', transition:'all 0.3s ease' }}>
+                      <p style={{ color:'rgba(6,182,212,0.6)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:8, fontWeight:700 }}>Sleep last night</p>
+                      <div className={sleepHrs ? 'sleep-tracker' : ''} style={{ display:'flex', alignItems:'baseline', gap:6, background: sleepHrs ? 'rgba(6,182,212,0.1)' : 'rgba(255,255,255,0.04)', border: sleepHrs ? '1px solid rgba(6,182,212,0.4)' : '1px solid rgba(212,212,232,0.12)', borderRadius:10, padding:'10px 12px', transition:'all 0.3s ease' }}>
                         <input type="number" min="0" max="12" step="0.5" value={sleepHrs} placeholder="7"
                           onChange={e => { setSleepHrs(e.target.value); try { localStorage.setItem(`ax-sleep-${todayStr}`, e.target.value) } catch {} }}
-                          style={{ background:'transparent', border:'none', outline:'none', color: sleepHrs ? '#60a5fa' : 'var(--text-primary)', fontSize:32, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:72, textAlign:'center', transition:'color 0.3s ease' }} />
-                        <span style={{ color: sleepHrs ? 'rgba(96,165,250,0.7)' : 'rgba(212,212,232,0.45)', fontSize:13, fontWeight:700, transition:'color 0.3s ease' }}>hrs</span>
+                          style={{ background:'transparent', border:'none', outline:'none', color: sleepHrs ? '#06b6d4' : 'var(--text-primary)', fontSize:32, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', width:72, textAlign:'center', transition:'color 0.3s ease' }} />
+                        <span style={{ color: sleepHrs ? 'rgba(6,182,212,0.7)' : 'rgba(212,212,232,0.45)', fontSize:13, fontWeight:700, transition:'color 0.3s ease' }}>hrs</span>
                       </div>
                     </div>
                   </div>
