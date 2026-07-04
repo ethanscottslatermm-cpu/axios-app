@@ -1290,7 +1290,7 @@ export default function WorkoutGuide({ onClose, inline = false }) {
         @keyframes slideUp  { from{transform:translateY(100%)} to{transform:translateY(0)} }
         @keyframes scanCW   { to { transform: rotate( 360deg) } }
         @keyframes scanCCW  { to { transform: rotate(-360deg) } }
-        @keyframes bgPulse  { 0%,100%{opacity:0.6} 50%{opacity:1} }
+        @keyframes bgPulse  { 0%,100%{opacity:0.45; filter:brightness(0.85)} 50%{opacity:1; filter:brightness(1.4)} }
         @keyframes gridFade { 0%,100%{opacity:0.03} 50%{opacity:0.06} }
       `}</style>
 
@@ -1345,10 +1345,10 @@ export default function WorkoutGuide({ onClose, inline = false }) {
           <div style={{
             position:'absolute', inset:0, zIndex:0, borderRadius:16, pointerEvents:'none',
             background: selectedDB
-              ? 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(255,255,255,0.10) 0%, transparent 68%)'
+              ? 'radial-gradient(ellipse 70% 60% at 50% 44%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.06) 45%, transparent 72%)'
               : 'radial-gradient(ellipse 65% 55% at 50% 44%, rgba(180,188,204,0.06) 0%, transparent 68%)',
             transition:'background 0.7s ease',
-            animation:'bgPulse 3.5s ease-in-out infinite',
+            animation: selectedDB ? 'bgPulse 2.8s ease-in-out infinite' : 'none',
           }} />
 
           {/* Subtle dot-grid */}

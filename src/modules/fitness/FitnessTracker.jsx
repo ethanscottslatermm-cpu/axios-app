@@ -625,6 +625,22 @@ function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, on
     'Glutes':     ['Glutes'],
     'Calves':     ['Calves'],
   }
+
+  // Map recovery group names to MuscleMapView names + identify posterior muscles
+  const RECOVERY_TO_MUSCLE_MAP = {
+    'Chest': { name: 'Chest', isPosterior: false },
+    'Back': { name: 'Back', isPosterior: true },
+    'Shoulders': { name: 'Shoulders', isPosterior: true },
+    'Biceps': { name: 'Biceps', isPosterior: false },
+    'Triceps': { name: 'Triceps', isPosterior: true },
+    'Core': { name: 'Abs', isPosterior: false },
+    'Quads': { name: 'Quads', isPosterior: false },
+    'Hamstrings': { name: 'Hamstrings', isPosterior: true },
+    'Glutes': { name: 'Glutes', isPosterior: true },
+    'Calves': { name: 'Calves', isPosterior: true },
+  }
+
+  const muscleMapping = RECOVERY_TO_MUSCLE_MAP[group] || { name: group, isPosterior: false }
   const labels = GROUP_EXERCISES_MAP[group] || [group]
   const recentExercises = []
   ;(workouts||[]).forEach(w => {
@@ -676,7 +692,9 @@ function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, on
         <div style={{ padding:'0 4px' }}>
           <MuscleMapView
             workouts={workouts}
-            defaultSelected={group}
+            defaultSelected={muscleMapping.name}
+            defaultView={muscleMapping.isPosterior ? 'posterior' : 'anterior'}
+            posteriorMuscles={[muscleMapping.name]}
             onLogWorkout={onLogWorkout}
             onSaveExercise={onSaveExercise}
           />

@@ -460,10 +460,10 @@ function tagDetailLines(svgText) {
   return new XMLSerializer().serializeToString(doc.documentElement)
 }
 
-export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise, defaultSelected = null }) {
+export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise, defaultSelected = null, defaultView = 'anterior', posteriorMuscles = [] }) {
   const [selected,     setSelected]    = useState(defaultSelected)
   const [lastSelected, setLastSelected] = useState(null)
-  const [view,         setView]        = useState('anterior')
+  const [view,         setView]        = useState(defaultView)
   const [exercises,    setExercises]   = useState([])
   const [spinning,     setSpinning]    = useState(false)
   const [breathingEx,  setBreathingEx] = useState(null)
@@ -477,6 +477,13 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
   const sevenStr = sevenAgo.toISOString().split('T')[0]
+
+  // Auto-flip view for posterior muscles in recovery context
+  useEffect(() => {
+    if (posteriorMuscles.length > 0 && posteriorMuscles.includes(selected) && view === 'anterior') {
+      setView('posterior')
+    }
+  }, [selected, posteriorMuscles, view])
 
   // Load both SVG files once on mount
   useEffect(() => {
@@ -633,13 +640,13 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
         @keyframes mmFadeUp         { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
         @keyframes mmGlow           { 0%,100% { opacity:0.85 } 50% { opacity:1 } }
         @keyframes mmPulse          { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
-        @keyframes mmSelectPulse    { 0%,100% { opacity:0.78 } 50% { opacity:1.00 } }
+        @keyframes mmSelectPulse    { 0%,100% { opacity:0.65; filter:brightness(0.9) } 50% { opacity:1.00; filter:brightness(1.35) } }
         @keyframes mmIdleGlow       { 0%,100% { opacity:0.42 } 50% { opacity:0.88 } }
         @keyframes mmCrosshairPulse { 0%,100% { opacity:0.45; transform:scale(1) } 50% { opacity:0.9; transform:scale(1.14) } }
         @-webkit-keyframes mmFatiguePulse { 0%,100% { opacity:0.32 } 50% { opacity:0.62 } }
         @keyframes mmFatiguePulse         { 0%,100% { opacity:0.32 } 50% { opacity:0.62 } }
         @-webkit-keyframes mmPulse        { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
-        @-webkit-keyframes mmSelectPulse  { 0%,100% { opacity:0.78 } 50% { opacity:1.00 } }
+        @-webkit-keyframes mmSelectPulse  { 0%,100% { opacity:0.65; filter:brightness(0.9) } 50% { opacity:1.00; filter:brightness(1.35) } }
         @-webkit-keyframes mmIdleGlow     { 0%,100% { opacity:0.42 } 50% { opacity:0.88 } }
         @keyframes mmScan    { 0%{transform:translateY(0);opacity:0} 4%{opacity:0.85} 30%{transform:translateY(1620px);opacity:0.5} 33%{transform:translateY(1620px);opacity:0} 100%{transform:translateY(1620px);opacity:0} }
         @keyframes mmRipple  { from{transform:scale(0);opacity:0.85} to{transform:scale(1);opacity:0} }
