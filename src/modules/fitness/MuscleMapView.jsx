@@ -460,7 +460,7 @@ function tagDetailLines(svgText) {
   return new XMLSerializer().serializeToString(doc.documentElement)
 }
 
-export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise, defaultSelected = null, defaultView = 'anterior', posteriorMuscles = [] }) {
+export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExercise, defaultSelected = null, defaultView = 'anterior' }) {
   const [selected,     setSelected]    = useState(defaultSelected)
   const [lastSelected, setLastSelected] = useState(null)
   const [view,         setView]        = useState(defaultView)
@@ -477,13 +477,6 @@ export default function MuscleMapView({ workouts = [], onLogWorkout, onSaveExerc
   const todayStr = new Date().toISOString().split('T')[0]
   const sevenAgo = new Date(); sevenAgo.setDate(sevenAgo.getDate() - 7)
   const sevenStr = sevenAgo.toISOString().split('T')[0]
-
-  // Auto-flip view for posterior muscles in recovery context
-  useEffect(() => {
-    if (posteriorMuscles.length > 0 && posteriorMuscles.includes(selected) && view === 'anterior') {
-      setView('posterior')
-    }
-  }, [selected, posteriorMuscles, view])
 
   // Load both SVG files once on mount
   useEffect(() => {

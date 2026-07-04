@@ -693,8 +693,6 @@ function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, on
           <MuscleMapView
             workouts={workouts}
             defaultSelected={muscleMapping.name}
-            defaultView={muscleMapping.isPosterior ? 'posterior' : 'anterior'}
-            posteriorMuscles={[muscleMapping.name]}
             onLogWorkout={onLogWorkout}
             onSaveExercise={onSaveExercise}
           />
