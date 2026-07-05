@@ -1240,12 +1240,12 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(90deg, rgba(20,20,35,0.95) 0%, rgba(20,20,35,0.7) 50%, transparent 100%)', borderRadius:14, zIndex:1 }} />
                 <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', position:'relative', zIndex:2 }}>
                   <div>
-                    <p style={{ color:'rgba(245,158,11,0.65)', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>CURRENT WEIGHT</p>
-                    <p style={{ color:'#fcd34d', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.03em' }}>
-                      {latest || '—'}<span style={{ fontSize:14, fontWeight:400, color:'rgba(245,158,11,0.55)', marginLeft:5 }}>lbs</span>
+                    <p style={{ color: diff && parseFloat(diff) < 0 ? '#10b981' : diff && parseFloat(diff) > 0 ? '#ef4444' : '#10b981', fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>CURRENT WEIGHT</p>
+                    <p style={{ color: diff ? (parseFloat(diff) < 0 ? '#10b981' : '#ef4444') : '#fcd34d', fontSize:42, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, letterSpacing:'-0.03em' }}>
+                      {latest || '—'}<span style={{ fontSize:14, fontWeight:400, color: diff ? (parseFloat(diff) < 0 ? 'rgba(16,185,129,0.55)' : 'rgba(239,68,68,0.55)') : 'rgba(245,158,11,0.55)', marginLeft:5 }}>lbs</span>
                     </p>
                     {diff && (
-                      <p style={{ color: parseFloat(diff) < 0 ? '#10b981' : '#f59e0b', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginTop:6 }}>
+                      <p style={{ color: parseFloat(diff) < 0 ? '#10b981' : '#ef4444', fontSize:12, fontWeight:700, fontFamily:'Helvetica Neue,sans-serif', marginTop:6 }}>
                         {parseFloat(diff) < 0 ? '▼' : '▲'} {Math.abs(diff)} lbs since last log
                       </p>
                     )}
@@ -1276,7 +1276,7 @@ const [prsOpen,         setPrsOpen]         = useState(false)
               {/* Stats grid */}
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>BMI</p>
+                  <p style={{ color:'#8fa58c', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>BMI</p>
                   {bmi ? (
                     <>
                       <p style={{ color:'var(--text-primary)', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:3 }}>{bmi}</p>
@@ -1287,24 +1287,24 @@ const [prsOpen,         setPrsOpen]         = useState(false)
                   )}
                 </div>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>LOWEST</p>
+                  <p style={{ color:'#10b981', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>LOWEST</p>
                   <p style={{ color:'#fcd34d', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1, marginBottom:3 }}>
                     {lowestW || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(245,158,11,0.45)', marginLeft:3 }}>lbs</span>
                   </p>
                   {lowestDate && <p style={{ color:'rgba(245,158,11,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif' }}>{lowestDate}</p>}
                 </div>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>30-DAY AVG</p>
+                  <p style={{ color:'#f59e0b', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>30-DAY AVG</p>
                   <p style={{ color:'#f59e0b', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
                     {avg30 || '—'}<span style={{ fontSize:11, fontWeight:400, color:'rgba(245,158,11,0.45)', marginLeft:3 }}>lbs</span>
                   </p>
                 </div>
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'12px 14px' }}>
-                  <p style={{ color:'rgba(245,158,11,0.58)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>NET CHANGE</p>
+                  <p style={{ color: netChange && parseFloat(netChange) < 0 ? '#10b981' : '#ef4444', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:'Helvetica Neue,sans-serif', marginBottom:5 }}>NET CHANGE</p>
                   {netChange !== null ? (
                     <>
-                      <p style={{ color: parseFloat(netChange) < 0 ? '#10b981' : '#f59e0b', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
-                        {parseFloat(netChange) > 0 ? '+' : ''}{netChange}<span style={{ fontSize:11, fontWeight:400, color:'rgba(212,212,232,0.35)', marginLeft:3 }}>lbs</span>
+                      <p style={{ color: parseFloat(netChange) < 0 ? '#10b981' : '#ef4444', fontSize:22, fontWeight:900, fontFamily:'Helvetica Neue,sans-serif', lineHeight:1 }}>
+                        {parseFloat(netChange) > 0 ? '+' : ''}{netChange}<span style={{ fontSize:11, fontWeight:400, color: parseFloat(netChange) < 0 ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)', marginLeft:3 }}>lbs</span>
                       </p>
                       <p style={{ color:'rgba(245,158,11,0.45)', fontSize:10, fontFamily:'Helvetica Neue,sans-serif', marginTop:3 }}>since first log</p>
                     </>
