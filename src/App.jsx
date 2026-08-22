@@ -23,6 +23,9 @@ import Admin       from './pages/Admin'
 import AdminGuard   from './components/AdminGuard'
 import FinanceGuard from './components/FinanceGuard'
 import AppLock      from './components/AppLock'
+// TEMP (muscle-map-test-new-svg branch): unguarded preview of the new muscle
+// map so it can be reviewed without signing in. Remove before merging.
+import MuscleMapNew from './modules/fitness/MuscleMapNew'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +43,14 @@ export default function App() {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Login2 />} />
+                {/* TEMP preview route - remove before merging */}
+                <Route path="/muscle-test" element={
+                  <div style={{ minHeight:'100vh', background:'#0a0d14', padding:'24px 12px' }}>
+                    <div style={{ maxWidth:520, margin:'0 auto' }}>
+                      <MuscleMapNew context="fitguide" />
+                    </div>
+                  </div>
+                } />
                 <Route path="/onboarding" element={
                   <ProtectedRoute><Onboarding /></ProtectedRoute>
                 } />
