@@ -107,6 +107,9 @@ const LABELS = {
   },
 }
 
+/* Backdrop the muscles sit on - see the body_line block below. */
+const BODY_FILL = '#1c2431'
+
 const ALL_COLORS = [...new Set([...Object.values(FRONT_COLORS), ...Object.values(REAR_COLORS)])]
 const glowId = c => `glow_${c.replace('#', '')}`
 
@@ -216,14 +219,19 @@ export default function MuscleMapNew({
     svg.style.overflow = 'visible'
     svg.insertAdjacentHTML('afterbegin', DEFS)
 
-    // body outline: transparent fill + white neon glow, never interactive
+    /* Body silhouette. It paints before the muscles, so this fill is the
+       surface they sit on - it shows through the gaps (neck, hands, feet,
+       joints, and the rear skull). Chosen with pick-bodyline-fill.mjs: the
+       lightest value that still leaves every muscle hue above 3:1 against it.
+       Going lighter drops green #008300 under the line. The authored tan
+       #AC7F5E puts all eight hues under 3:1, which is why it is discarded. */
     const bodyLine = svg.querySelector('#body_line')
     if (bodyLine) {
       bodyLine.querySelectorAll('path').forEach(p => {
-        p.setAttribute('fill', 'transparent')
+        p.setAttribute('fill', BODY_FILL)
         p.setAttribute('stroke', 'rgba(255,255,255,0.9)')
         p.setAttribute('stroke-width', '1.5')
-        p.style.fill = 'transparent'
+        p.style.fill = BODY_FILL
       })
       bodyLine.setAttribute('filter', 'url(#bodyGlow)')
       bodyLine.setAttribute('pointer-events', 'none')
