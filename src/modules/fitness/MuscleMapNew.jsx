@@ -11,6 +11,7 @@ import {
    ──────────────────────────────────────────────────────────── */
 
 const FRONT_MUSCLE_PAIRS = {
+  head:       ['head'],
   chest:      ['chest_both'],
   upper_abs:  ['upper_abs'],
   lower_abs:  ['lower_abs'],
@@ -42,6 +43,7 @@ const REAR_MUSCLE_PAIRS = {
 }
 
 const MUSCLE_NAMES = {
+  head:'Head',
   chest:'Chest', upper_abs:'Upper Abs', lower_abs:'Lower Abs', traps:'Trapezius',
   deltoids:'Shoulders', biceps:'Biceps', forearms:'Forearms', obliques:'Obliques',
   hips:'Hips', outer_quad:'Quads', inner_quad:'Inner Quad', tibialis:'Shins',
@@ -52,6 +54,7 @@ const MUSCLE_NAMES = {
 }
 
 const SCIENTIFIC_NAMES = {
+  head:'Cranium / Cervical',
   chest:'Pectoralis Major', upper_abs:'Rectus Abdominis (Upper)',
   lower_abs:'Rectus Abdominis (Lower)', traps:'Trapezius', deltoids:'Deltoideus',
   biceps:'Biceps Brachii', forearms:'Flexors & Extensors', obliques:'Obliquus Externus',
@@ -65,19 +68,30 @@ const SCIENTIFIC_NAMES = {
   calves_rear:'Gastrocnemius', shins_rear:'Tibialis Anterior',
 }
 
-/* Split per view: `hips` exists in BOTH SVGs and takes a different
-   colour in each, which a single merged map cannot express. */
+/* Palette solved as a graph colouring against the measured adjacency of the
+   two figures, using the validated categorical hue set. Every touching pair
+   clears CVD ΔE >= 8 and normal-vision ΔE >= 15 on the near-black surface
+   (worst measured: 8.4 and 15.3). Hues repeat across non-touching regions by
+   design - a map only has to separate neighbours, not all twenty.
+   Regenerate with solve-muscle-palette.mjs if the artwork changes.
+
+   Split per view because `hips` exists in BOTH sheets; a single merged map
+   silently kept only the last definition. */
 const FRONT_COLORS = {
-  chest:'#E05C6E', upper_abs:'#3A7BD5', lower_abs:'#3A7BD5', traps:'#2E8B57',
-  deltoids:'#3A7BD5', biceps:'#3A7BD5', forearms:'#2C3E6B', obliques:'#C0392B',
-  hips:'#2E8B57', outer_quad:'#2E8B57', inner_quad:'#2E8B57', tibialis:'#2E8B57',
-  calves:'#2E8B57', knees:'#7F8C8D',
+  head:'#8a8f98',                              // inert - not trainable
+  traps:'#d95926',      deltoids:'#3987e5',    chest:'#d55181',
+  biceps:'#008300',     forearms:'#d55181',
+  upper_abs:'#9085e9',  lower_abs:'#199e70',   obliques:'#d95926',
+  hips:'#199e70',       outer_quad:'#9085e9',  inner_quad:'#c98500',
+  knees:'#64748b',                             // inert - not trainable
+  tibialis:'#008300',   calves:'#e66767',
 }
 const REAR_COLORS = {
-  spine:'#00CED1', traps_lats:'#2E8B57', deltoids_rear:'#00BFFF',
-  triceps_rear:'#2C3E6B', forearms_rear:'#2C3E6B', lower_back:'#2E8B57',
-  glute_med:'#3A7BD5', hamstrings:'#2C3E6B', calves_rear:'#2E8B57',
-  shins_rear:'#2E8B57', hips:'#C0392B',
+  traps_lats:'#d95926', deltoids_rear:'#3987e5', triceps_rear:'#c98500',
+  forearms_rear:'#d55181',
+  spine:'#3987e5',      lower_back:'#199e70',
+  glute_med:'#d95926',  hips:'#199e70',          hamstrings:'#9085e9',
+  calves_rear:'#e66767', shins_rear:'#008300',
 }
 
 /* Label columns. Front has no triceps element, so it is not listed.
@@ -215,17 +229,12 @@ export default function MuscleMapNew({
       bodyLine.setAttribute('pointer-events', 'none')
     }
 
-    // Structural: head only. The `Frame N` group is the ROOT wrapper - giving
-    // it a fill would repaint every descendant (including body_line), and
-    // giving it pointer-events:none would disable every muscle that inherits.
-    const head = svg.querySelector('#head')
-    if (head) {
-      head.setAttribute('pointer-events', 'none')
-      paintTargets(head).forEach(n => {
-        n.setAttribute('fill', 'rgba(30,30,50,0.8)')
-        n.style.fill = 'rgba(30,30,50,0.8)'
-      })
-    }
+    // The `Frame N` group is the SVG root wrapper - giving it a fill would
+    // repaint every descendant (including body_line), and pointer-events:none
+    // on it would disable every muscle that inherits. Leave it alone.
+    // #head is a real group on the front sheet and is treated as a normal
+    // region below; the rear sheet has no head element (its skull is part of
+    // the single full-body body_line path), so rear has no head to paint.
 
     // tag every muscle element so one delegated listener can resolve it
     Object.entries(pairs).forEach(([pairKey, ids]) => {
