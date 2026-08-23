@@ -70,6 +70,22 @@ export const PAIR_TO_DB = {
   calves_rear: 'calves', shins_rear: 'shins',
 }
 
+/**
+ * Four exercises drawn at random from a group's pool.
+ *
+ * Same behaviour as pickFour in MuscleMapView.jsx: Fisher-Yates, then take the
+ * first four. Each group has eight (six for shins), so a shuffle meaningfully
+ * changes the set rather than reordering the same list.
+ */
+export function pickFour(pool = []) {
+  const arr = [...pool]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr.slice(0, 4)
+}
+
 /** The app's convention: a curated search query, never a hardcoded video id. */
 export const ytUrlFor = query =>
   `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import frontSVGNew from '../../assets/body/axios_front_new.svg?raw'
 import rearSVGNew  from '../../assets/body/axios_rear_new.svg?raw'
 import {
-  PAIR_TO_LEGACY, PAIR_TO_DB,
+  PAIR_TO_LEGACY, PAIR_TO_DB, pickFour,
   pairsForLegacy, viewForLegacy, recentlyTrainedPairs,
 } from './muscleMapBridge'
 import { DB } from './WorkoutGuide'
@@ -184,9 +184,11 @@ export default function MuscleMapNew({
     : (defaultSelected && viewForLegacy(defaultSelected))
       || (defaultView === 'posterior' ? 'rear' : 'front')
 
-  const [view, setView]       = useState(initialView)
-  const [active, setActive]   = useState(null)
-  const [hovered, setHovered] = useState(null)
+  const [view, setView]           = useState(initialView)
+  const [active, setActive]       = useState(null)
+  const [hovered, setHovered]     = useState(null)
+  const [exercises, setExercises] = useState([])
+  const [spinning, setSpinning]   = useState(false)
   const containerRef = useRef(null)
 
   useEffect(() => { if (viewProp) setView(viewProp) }, [viewProp])
@@ -463,10 +465,20 @@ export default function MuscleMapNew({
   const selected = active && MUSCLE_NAMES[active] ? active : null
 
   /* Exercises for the selected region, pulled from the same WorkoutGuide DB the
-     current 2D model uses - one source of truth for both maps. */
-  const entry     = selected ? DB[PAIR_TO_DB[selected]] : null
-  const exercises = entry?.exercises ?? []
-  const accent    = (selected && colors[selected]) || '#8a8f98'
+     current 2D model uses - one source of truth for both maps. Four at a time,
+     re-drawn on shuffle, matching how the 2D model presents them. */
+  const entry = selected ? DB[PAIR_TO_DB[selected]] : null
+
+  useEffect(() => {
+    setExercises(entry?.exercises ? pickFour(entry.exercises) : [])
+  }, [entry])
+
+  const handleShuffle = () => {
+    if (!entry?.exercises) return
+    setSpinning(true)
+    setExercises(pickFour(entry.exercises))
+    setTimeout(() => setSpinning(false), 460)
+  }
 
   /* ── label rendering ── */
   const labelStyle = key => {
@@ -614,10 +626,28 @@ export default function MuscleMapNew({
 
             {exercises.length > 0 && (
               <div style={{ textAlign:'left', marginBottom:16 }}>
-                <p style={{
-                  margin:'0 0 8px', fontSize:9.5, letterSpacing:'.14em',
-                  textTransform:'uppercase', color:'rgba(255,255,255,0.35)',
-                }}>Exercises · {exercises.length}</p>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+                  <div style={{ width:3, height:12, background:'#ffffff', borderRadius:2, boxShadow:'0 0 6px rgba(255,255,255,0.7)' }}/>
+                  <p style={{
+                    color:'rgba(255,255,255,0.85)', fontSize:9, letterSpacing:'0.22em',
+                    textTransform:'uppercase', fontWeight:700, flex:1, margin:0,
+                  }}>Exercises</p>
+                  <button onClick={handleShuffle} style={{
+                    display:'flex', alignItems:'center', gap:5,
+                    padding:'4px 9px', borderRadius:7,
+                    background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.25)',
+                    color:'rgba(255,255,255,0.75)', fontSize:9, fontWeight:700,
+                    cursor:'pointer', letterSpacing:'0.08em',
+                  }}>
+                    <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ transform: spinning ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.46s ease' }}>
+                      <polyline points="1 4 1 10 7 10"/>
+                      <polyline points="23 20 23 14 17 14"/>
+                      <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                    </svg>
+                    Shuffle
+                  </button>
+                </div>
 
                 {/* same rows, same accent, same handler wiring as the current 2D model */}
                 <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
