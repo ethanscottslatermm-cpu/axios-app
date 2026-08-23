@@ -2,8 +2,11 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import frontSVGNew from '../../assets/body/axios_front_new.svg?raw'
 import rearSVGNew  from '../../assets/body/axios_rear_new.svg?raw'
 import {
-  PAIR_TO_LEGACY, pairsForLegacy, viewForLegacy, recentlyTrainedPairs,
+  PAIR_TO_LEGACY, PAIR_TO_DB,
+  pairsForLegacy, viewForLegacy, recentlyTrainedPairs,
 } from './muscleMapBridge'
+import { DB } from './WorkoutGuide'
+import ExerciseRow, { ExerciseRowStyles } from './ExerciseRow'
 
 /* ────────────────────────────────────────────────────────────
    Muscle groups. Every id below was verified present in the
@@ -107,8 +110,22 @@ const LABELS = {
   },
 }
 
-/* Backdrop the muscles sit on - see the body_line block below. */
-const BODY_FILL = '#1c2431'
+/* The figure reads as a glowing outline, not a filled body. A fill here would
+   become the surface the muscle hues sit on; pick-bodyline-fill.mjs measured
+   the options if that is ever wanted (#1c2431 was the lightest value keeping
+   every hue above 3:1, and the authored tan #AC7F5E put all eight under it). */
+const BODY_FILL = 'transparent'
+
+/* The single source of truth for the outline look. The body line and every
+   OUTLINE_ONLY region read from these, so the head cannot drift from the body. */
+const OUTLINE_STROKE = 'rgba(255,255,255,0.9)'
+const OUTLINE_WIDTH  = '1.5'
+const OUTLINE_FILTER = 'url(#bodyGlow)'
+
+/* Regions drawn as outline only - no colour fill, identical to the body line.
+   `transparent` rather than `none` on purpose: none removes the interior from
+   hit-testing, transparent keeps the region tappable while staying invisible. */
+const OUTLINE_ONLY = new Set(['head'])
 
 const ALL_COLORS = [...new Set([...Object.values(FRONT_COLORS), ...Object.values(REAR_COLORS)])]
 const glowId = c => `glow_${c.replace('#', '')}`
@@ -229,11 +246,11 @@ export default function MuscleMapNew({
     if (bodyLine) {
       bodyLine.querySelectorAll('path').forEach(p => {
         p.setAttribute('fill', BODY_FILL)
-        p.setAttribute('stroke', 'rgba(255,255,255,0.9)')
-        p.setAttribute('stroke-width', '1.5')
+        p.setAttribute('stroke', OUTLINE_STROKE)
+        p.setAttribute('stroke-width', OUTLINE_WIDTH)
         p.style.fill = BODY_FILL
       })
-      bodyLine.setAttribute('filter', 'url(#bodyGlow)')
+      bodyLine.setAttribute('filter', OUTLINE_FILTER)
       bodyLine.setAttribute('pointer-events', 'none')
     }
 
@@ -297,17 +314,30 @@ export default function MuscleMapNew({
       const color    = colors[pairKey] || '#7F8C8D'
       const isActive = active === pairKey || highlighted.includes(pairKey)
       const isHover  = !isActive && hovered === pairKey
+      // Outline-only regions render exactly as the body line does - same
+      // stroke, width and glow, read from the same constants - so the head
+      // sits on the figure as one continuous contour. Selection is carried by
+      // the label and the info card rather than by tinting the shape.
+      const outline = OUTLINE_ONLY.has(pairKey)
+
       ids.forEach(id => {
         const el = svg.getElementById(id)
         if (!el) return
         paintTargets(el).forEach(n => {
+          if (outline) {
+            n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
+            n.setAttribute('stroke', OUTLINE_STROKE)
+            n.setAttribute('stroke-width', OUTLINE_WIDTH)
+            return
+          }
           n.setAttribute('fill', color);        n.style.fill = color
           n.setAttribute('fill-opacity', '1');  n.style.fillOpacity = '1'
           n.setAttribute('stroke',
             isActive ? 'rgba(255,255,255,0.9)' : isHover ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.3)')
           n.setAttribute('stroke-width', isActive ? '1.5' : isHover ? '1' : '0.5')
         })
-        if (isActive)      el.setAttribute('filter', `url(#${glowId(color)})`)
+        if (outline)       el.setAttribute('filter', OUTLINE_FILTER)
+        else if (isActive) el.setAttribute('filter', `url(#${glowId(color)})`)
         else if (isHover)  el.setAttribute('filter', 'url(#hoverGlow)')
         else               el.removeAttribute('filter')
       })
@@ -432,6 +462,12 @@ export default function MuscleMapNew({
 
   const selected = active && MUSCLE_NAMES[active] ? active : null
 
+  /* Exercises for the selected region, pulled from the same WorkoutGuide DB the
+     current 2D model uses - one source of truth for both maps. */
+  const entry     = selected ? DB[PAIR_TO_DB[selected]] : null
+  const exercises = entry?.exercises ?? []
+  const accent    = (selected && colors[selected]) || '#8a8f98'
+
   /* ── label rendering ── */
   const labelStyle = key => {
     const isActive = selected === key
@@ -515,6 +551,7 @@ export default function MuscleMapNew({
 
   return (
     <div style={{ width:'100%' }}>
+      <ExerciseRowStyles />
 
       {/* front / back toggle */}
       <div style={{ display:'flex', justifyContent:'center', gap:10, marginBottom:'1.1rem' }}>
@@ -567,6 +604,35 @@ export default function MuscleMapNew({
             <p style={{ margin:'0 0 14px', fontSize:11, fontStyle:'italic', opacity:.65 }}>
               {SCIENTIFIC_NAMES[selected]}
             </p>
+
+            {entry?.desc && (
+              <p style={{
+                margin:'0 0 14px', fontSize:11.5, lineHeight:1.55, textAlign:'left',
+                color:'rgba(255,255,255,0.55)',
+              }}>{entry.desc}</p>
+            )}
+
+            {exercises.length > 0 && (
+              <div style={{ textAlign:'left', marginBottom:16 }}>
+                <p style={{
+                  margin:'0 0 8px', fontSize:9.5, letterSpacing:'.14em',
+                  textTransform:'uppercase', color:'rgba(255,255,255,0.35)',
+                }}>Exercises · {exercises.length}</p>
+
+                {/* same rows, same accent, same handler wiring as the current 2D model */}
+                <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                  {exercises.map((ex, i) => (
+                    <ExerciseRow
+                      key={`${ex.name}-${i}`}
+                      ex={ex}
+                      accent="#10b981"
+                      onLog={onSaveExercise}
+                      muscleLabel={entry?.label}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
             <button
               onClick={() => emitPress(selected)}
               disabled={!PAIR_TO_LEGACY[selected]}

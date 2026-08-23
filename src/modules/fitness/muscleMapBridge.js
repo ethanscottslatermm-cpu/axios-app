@@ -46,6 +46,34 @@ export const PAIR_TO_LEGACY = {
   knees: null,
 }
 
+/**
+ * New group key -> key in the WorkoutGuide exercise DB.
+ *
+ * The DB is coarser than the map in places: upper_abs and lower_abs both draw
+ * from `core`, both quad heads from `quads`, and hips from `glutes`. head and
+ * knees have no training entry at all and resolve to null.
+ */
+export const PAIR_TO_DB = {
+  // front
+  head: null,
+  traps: 'traps',        deltoids: 'shoulders',  chest: 'chest',
+  biceps: 'biceps',      forearms: 'forearms',
+  upper_abs: 'core',     lower_abs: 'core',      obliques: 'obliques',
+  hips: 'glutes',        outer_quad: 'quads',    inner_quad: 'quads',
+  knees: null,
+  tibialis: 'shins',     calves: 'calves',
+  // rear
+  traps_lats: 'lats',    deltoids_rear: 'shoulders', triceps_rear: 'triceps',
+  forearms_rear: 'forearms',
+  spine: 'lower_back',   lower_back: 'lower_back',
+  glute_med: 'glutes',   hamstrings: 'hamstrings',
+  calves_rear: 'calves', shins_rear: 'shins',
+}
+
+/** The app's convention: a curated search query, never a hardcoded video id. */
+export const ytUrlFor = query =>
+  `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`
+
 /** Which view should be shown to reveal a given stored muscle name. */
 export function viewForLegacy(name) {
   const m = LEGACY_TO_PAIRS[name]
