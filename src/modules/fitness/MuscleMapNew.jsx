@@ -299,6 +299,120 @@ export default function MuscleMapNew({
 
   useEffect(() => { paint() })
 
+  /* ── anchor labels to real muscle geometry ───────────────────────────
+     An evenly-spaced column drifts out of register with the figure, so each
+     label is measured against the muscle it names. getScreenCTM maps SVG
+     user units through whatever scaling preserveAspectRatio applied, which
+     keeps this correct at any container width. */
+  const wrapperRef = useRef(null)
+  const [layout, setLayout] = useState({ w: 0, h: 0, anchors: {} })
+
+  const measure = useCallback(() => {
+    const wrap = wrapperRef.current
+    const svg  = containerRef.current?.querySelector('svg')
+    if (!wrap || !svg) return
+    const ctm = svg.getScreenCTM()
+    if (!ctm) return
+
+    const wrapBox = wrap.getBoundingClientRect()
+    const pt = svg.createSVGPoint()
+    const toWrap = (x, y) => {
+      pt.x = x; pt.y = y
+      const s = pt.matrixTransform(ctm)
+      return { x: s.x - wrapBox.left, y: s.y - wrapBox.top }
+    }
+
+    const anchors = {}
+    ;['left', 'right'].forEach(side => {
+      LABELS[view][side].forEach(key => {
+        let best = null
+        ;(pairs[key] || []).forEach(id => {
+          const el = svg.getElementById(id)
+          if (!el) return
+          let b
+          try { b = el.getBBox() } catch { return }
+          if (!b || !b.width) return
+          // a left label points at the left-most of a bilateral pair
+          const edgeX = side === 'left' ? b.x : b.x + b.width
+          const better = !best || (side === 'left' ? edgeX < best.edgeX : edgeX > best.edgeX)
+          if (better) best = { edgeX, cy: b.y + b.height / 2 }
+        })
+        if (best) anchors[key] = { ...toWrap(best.edgeX, best.cy), side }
+      })
+    })
+
+    setLayout(prev => {
+      const unchanged =
+        Math.abs(prev.w - wrapBox.width) < 0.5 &&
+        Math.abs(prev.h - wrapBox.height) < 0.5 &&
+        Object.keys(anchors).length === Object.keys(prev.anchors).length &&
+        Object.entries(anchors).every(([k, v]) =>
+          prev.anchors[k] &&
+          Math.abs(prev.anchors[k].x - v.x) < 0.5 &&
+          Math.abs(prev.anchors[k].y - v.y) < 0.5)
+      return unchanged ? prev : { w: wrapBox.width, h: wrapBox.height, anchors }
+    })
+  }, [view, pairs])
+
+  useEffect(() => {
+    // two frames: the first lets the injected SVG lay out, the second measures it
+    let raf2
+    const raf1 = requestAnimationFrame(() => { raf2 = requestAnimationFrame(measure) })
+    const ro = new ResizeObserver(measure)
+    if (wrapperRef.current) ro.observe(wrapperRef.current)
+    return () => {
+      cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); ro.disconnect()
+    }
+  }, [measure])
+
+  /* Place labels at their muscle's height, resolving overlap by centring each
+     colliding cluster on its members' mean rather than pushing the stack down.
+     A push-down pass makes one near-coincident pair (deltoids and chest sit
+     2px apart) cascade into 35px of drift for every label beneath it. */
+  const LABEL_SLOT = 32
+  const placed = useMemo(() => {
+    const out = {}
+    ;['left', 'right'].forEach(side => {
+      const items = LABELS[view][side]
+        .map(key => ({ key, target: layout.anchors[key]?.y }))
+        .filter(i => typeof i.target === 'number')
+        .sort((a, b) => a.target - b.target)
+      if (!items.length || !layout.h) return
+
+      // merge overlapping runs into blocks, each centred on its own mean
+      let blocks = items.map((it, i) => ({ start: i, count: 1, sum: it.target }))
+      for (let merged = true; merged;) {
+        merged = false
+        for (let i = 0; i < blocks.length - 1; i++) {
+          const a = blocks[i], b = blocks[i + 1]
+          const aBottom = a.sum / a.count + ((a.count - 1) / 2) * LABEL_SLOT
+          const bTop    = b.sum / b.count - ((b.count - 1) / 2) * LABEL_SLOT
+          if (bTop - aBottom < LABEL_SLOT) {
+            blocks[i] = { start: a.start, count: a.count + b.count, sum: a.sum + b.sum }
+            blocks.splice(i + 1, 1)
+            merged = true
+            break
+          }
+        }
+      }
+
+      const ys = []
+      blocks.forEach(b => {
+        const top = b.sum / b.count - ((b.count - 1) / 2) * LABEL_SLOT
+        for (let k = 0; k < b.count; k++) ys[b.start + k] = top + k * LABEL_SLOT
+      })
+
+      // keep the whole column inside the figure box
+      const minY = LABEL_SLOT / 2
+      const maxY = layout.h - LABEL_SLOT / 2
+      const shift = Math.max(0, minY - ys[0]) - Math.max(0, ys[ys.length - 1] - maxY)
+      if (shift) ys.forEach((_, i) => { ys[i] += shift })
+
+      items.forEach((it, i) => { out[it.key] = ys[i] })
+    })
+    return out
+  }, [layout, view])
+
   const selected = active && MUSCLE_NAMES[active] ? active : null
 
   /* ── label rendering ── */
@@ -315,45 +429,64 @@ export default function MuscleMapNew({
     }
   }
 
-  const renderLabels = (side) => (
-    <div style={{
-      display:'flex', flexDirection:'column', justifyContent:'center',
-      gap:'1.6rem', flex:'0 0 96px', minWidth:0,
-    }}>
-      {LABELS[view][side].map(key => {
-        const s = labelStyle(key)
-        const connector = (
-          <div style={{
-            flex:1, height:1, minWidth:14,
-            borderTop:`1px ${s.solid ? 'solid' : 'dashed'} ${s.line}`,
-            transition:'border-color .25s ease',
-          }}/>
-        )
-        return (
-          <div key={key}
-            onClick={() => interactive && (setActive(p => p === key ? null : key), onMusclePress?.(key))}
-            style={{
-              display:'flex', alignItems:'center', gap:6,
-              flexDirection: side === 'left' ? 'row' : 'row-reverse',
-              cursor: interactive ? 'pointer' : 'default',
-            }}>
-            <div style={{ textAlign: side === 'left' ? 'right' : 'left', minWidth:0 }}>
-              <p style={{
-                margin:0, fontSize:13, fontWeight:500, letterSpacing:'.05em',
-                color:s.name, transition:'color .25s ease', whiteSpace:'nowrap',
-              }}>{MUSCLE_NAMES[key]}</p>
-              <p style={{
-                margin:0, fontSize:10, fontStyle:'italic', color:s.sci,
-                opacity:s.op, transition:'color .25s ease',
-                overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
-              }}>{SCIENTIFIC_NAMES[key]}</p>
-            </div>
-            {connector}
-          </div>
-        )
-      })}
-    </div>
-  )
+  const LABEL_W = 88
+
+  const renderLabel = (key, side) => {
+    const y = placed[key]
+    if (y == null) return null
+    const s = labelStyle(key)
+    return (
+      <div key={key}
+        onClick={() => interactive && (setActive(p => p === key ? null : key), onMusclePress?.(key))}
+        style={{
+          position:'absolute', top:y, [side]:0, transform:'translateY(-50%)',
+          width:LABEL_W, textAlign: side === 'left' ? 'right' : 'left',
+          cursor: interactive ? 'pointer' : 'default',
+          transition:'top .3s cubic-bezier(.16,1,.3,1)',
+        }}>
+        <p style={{
+          margin:0, fontSize:12.5, fontWeight:500, letterSpacing:'.04em',
+          color:s.name, transition:'color .25s ease', whiteSpace:'nowrap',
+          overflow:'hidden', textOverflow:'ellipsis',
+        }}>{MUSCLE_NAMES[key]}</p>
+        <p style={{
+          margin:0, fontSize:9.5, fontStyle:'italic', color:s.sci, opacity:s.op,
+          transition:'color .25s ease', whiteSpace:'nowrap',
+          overflow:'hidden', textOverflow:'ellipsis',
+        }}>{SCIENTIFIC_NAMES[key]}</p>
+      </div>
+    )
+  }
+
+  /* Leader lines: short horizontal run off the label, then a diagonal into
+     the muscle edge - so a nudged label still reads unambiguously. */
+  const renderLeaders = () => {
+    if (!layout.w || !layout.h) return null
+    return (
+      <svg
+        width={layout.w} height={layout.h}
+        viewBox={`0 0 ${layout.w} ${layout.h}`}
+        style={{ position:'absolute', inset:0, pointerEvents:'none', overflow:'visible' }}>
+        {Object.entries(placed).map(([key, y]) => {
+          const a = layout.anchors[key]
+          if (!a) return null
+          const s    = labelStyle(key)
+          const left = a.side === 'left'
+          const lx   = left ? LABEL_W + 5 : layout.w - LABEL_W - 5
+          const bend = left ? Math.max(lx + 4, a.x - 10) : Math.min(lx - 4, a.x + 10)
+          return (
+            <polyline key={key}
+              points={`${lx},${y} ${bend},${y} ${a.x},${a.y}`}
+              fill="none"
+              stroke={s.line}
+              strokeWidth={s.solid ? 1.4 : 1}
+              strokeDasharray={s.solid ? 'none' : '3 3'}
+              style={{ transition:'stroke .25s ease' }} />
+          )
+        })}
+      </svg>
+    )
+  }
 
   const pillStyle = isActive => ({
     padding:'6px 24px', borderRadius:20,
@@ -372,18 +505,22 @@ export default function MuscleMapNew({
         <button style={pillStyle(view === 'rear')}  onClick={() => { setView('rear');  setActive(null) }}>BACK</button>
       </div>
 
-      {/* labels + figure */}
-      <div style={{ display:'flex', alignItems:'stretch', gap:4, overflow:'visible' }}>
-        {renderLabels('left')}
-        <div
-          key={view}
-          ref={containerRef}
-          style={{
-            width:'100%', flex:'1 1 auto', aspectRatio:'326 / 1043',
-            overflow:'visible', position:'relative',
-          }}
-        />
-        {renderLabels('right')}
+      {/* figure with anchored labels */}
+      <div ref={wrapperRef} style={{ position:'relative', width:'100%', overflow:'visible' }}>
+        <div style={{ display:'flex', justifyContent:'center' }}>
+          <div
+            key={view}
+            ref={containerRef}
+            style={{
+              width:'46%', minWidth:140, maxWidth:250,
+              aspectRatio:'326 / 1043',
+              overflow:'visible', position:'relative',
+            }}
+          />
+        </div>
+        {renderLeaders()}
+        {LABELS[view].left.map(k => renderLabel(k, 'left'))}
+        {LABELS[view].right.map(k => renderLabel(k, 'right'))}
       </div>
 
       {/* bottom info card */}
