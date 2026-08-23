@@ -110,11 +110,13 @@ const LABELS = {
   },
 }
 
-/* The figure reads as a glowing outline, not a filled body. A fill here would
-   become the surface the muscle hues sit on; pick-bodyline-fill.mjs measured
-   the options if that is ever wanted (#1c2431 was the lightest value keeping
-   every hue above 3:1, and the authored tan #AC7F5E put all eight under it). */
-const BODY_FILL = 'transparent'
+/* The muscle shapes are islands - they do not tessellate, so bare negative
+   space between them shows the page through as dark bands. Filling the body
+   makes that space read as body instead. This fill is also the surface the
+   muscle hues sit on, so it is not a free choice: pick-bodyline-fill.mjs
+   measured it as the lightest value keeping every hue above 3:1 (the authored
+   tan #AC7F5E puts all eight under it, worst 1.03:1). */
+const BODY_FILL = '#1c2431'
 
 /* The single source of truth for the outline look. The body line and every
    OUTLINE_ONLY region read from these, so the head cannot drift from the body. */
@@ -327,7 +329,9 @@ export default function MuscleMapNew({
         if (!el) return
         paintTargets(el).forEach(n => {
           if (outline) {
-            n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
+            // BODY_FILL, not a literal - the head tracks the body line rather
+            // than being pinned to one value, so the two never diverge.
+            n.setAttribute('fill', BODY_FILL); n.style.fill = BODY_FILL
             n.setAttribute('stroke', OUTLINE_STROKE)
             n.setAttribute('stroke-width', OUTLINE_WIDTH)
             return
