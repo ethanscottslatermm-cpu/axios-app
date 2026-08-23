@@ -1,6 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import frontSVGNew from '../../assets/body/axios_front_new.svg?raw'
 import rearSVGNew  from '../../assets/body/axios_rear_new.svg?raw'
+import {
+  PAIR_TO_LEGACY, pairsForLegacy, viewForLegacy, recentlyTrainedPairs,
+} from './muscleMapBridge'
 
 /* ────────────────────────────────────────────────────────────
    Muscle groups. Every id below was verified present in the
@@ -125,14 +128,29 @@ const DEFS = `
   </filter>`).join('')}
 </defs>`
 
+/* Accepts the MuscleMapView prop shape (workouts / onLogWorkout /
+   defaultSelected / defaultView) so it can be swapped in without touching
+   call sites, plus the newer activeMuscles / onMusclePress form. */
 export default function MuscleMapNew({
+  // legacy-compatible
+  workouts = [],
+  onLogWorkout,
+  onSaveExercise,          // eslint-disable-line no-unused-vars -- accepted for prop parity
+  defaultSelected = null,  // a stored muscle_group name, e.g. 'Chest'
+  defaultView = 'anterior',
+  // newer form
   activeMuscles = [],
   onMusclePress,
   view: viewProp,
   interactive = true,
   context = 'fitguide',
 }) {
-  const [view, setView]       = useState(viewProp === 'rear' ? 'rear' : 'front')
+  const initialView =
+    viewProp === 'rear' || viewProp === 'front' ? viewProp
+    : (defaultSelected && viewForLegacy(defaultSelected))
+      || (defaultView === 'posterior' ? 'rear' : 'front')
+
+  const [view, setView]       = useState(initialView)
   const [active, setActive]   = useState(null)
   const [hovered, setHovered] = useState(null)
   const containerRef = useRef(null)
@@ -141,6 +159,28 @@ export default function MuscleMapNew({
 
   const pairs  = view === 'front' ? FRONT_MUSCLE_PAIRS : REAR_MUSCLE_PAIRS
   const colors = view === 'front' ? FRONT_COLORS       : REAR_COLORS
+
+  // preselect the region matching a stored muscle name
+  useEffect(() => {
+    if (!defaultSelected) return
+    const [first] = pairsForLegacy(defaultSelected, view)
+    if (first) setActive(first)
+  }, [defaultSelected, view])
+
+  // Regions to highlight without a tap. An explicit list wins; otherwise only
+  // the recovery view derives them from training history, since the Fit Guide
+  // is meant to show every muscle fully coloured and un-glowed at rest.
+  const highlighted = useMemo(() => {
+    if (activeMuscles.length) return activeMuscles
+    if (context === 'recovery') return recentlyTrainedPairs(workouts, view)
+    return []
+  }, [activeMuscles, context, workouts, view])
+
+  const emitPress = useCallback((pairKey) => {
+    onMusclePress?.(pairKey)
+    const legacy = PAIR_TO_LEGACY[pairKey]
+    if (legacy) onLogWorkout?.(legacy)
+  }, [onMusclePress, onLogWorkout])
 
   /* ── inject SVG + wire delegated events (once per view) ── */
   useEffect(() => {
@@ -217,6 +257,8 @@ export default function MuscleMapNew({
       setActive(prev => (prev === p ? null : p))
       onMusclePress?.(p)
     }
+    // note: selecting a region only highlights it; logging is driven by the
+    // card CTA so a stray tap on the figure never opens the workout sheet
     const onOver  = e => { const p = findPair(e); if (p) setHovered(p) }
     const onOut   = e => { const p = findPair(e); if (p) setHovered(h => (h === p ? null : h)) }
 
@@ -236,7 +278,7 @@ export default function MuscleMapNew({
     if (!svg) return
     Object.entries(pairs).forEach(([pairKey, ids]) => {
       const color    = colors[pairKey] || '#7F8C8D'
-      const isActive = active === pairKey || activeMuscles.includes(pairKey)
+      const isActive = active === pairKey || highlighted.includes(pairKey)
       const isHover  = !isActive && hovered === pairKey
       ids.forEach(id => {
         const el = svg.getElementById(id)
@@ -253,7 +295,7 @@ export default function MuscleMapNew({
         else               el.removeAttribute('filter')
       })
     })
-  }, [pairs, colors, active, hovered, activeMuscles])
+  }, [pairs, colors, active, hovered, highlighted])
 
   useEffect(() => { paint() })
 
@@ -372,13 +414,16 @@ export default function MuscleMapNew({
               {SCIENTIFIC_NAMES[selected]}
             </p>
             <button
-              onClick={() => onMusclePress?.(selected)}
+              onClick={() => emitPress(selected)}
+              disabled={!PAIR_TO_LEGACY[selected]}
               style={{
                 width:'100%', padding:14, fontSize:14,
                 background:'transparent', border:'1px solid rgba(255,255,255,0.2)',
                 color:'rgba(255,255,255,0.8)', borderRadius:8, cursor:'pointer',
               }}>
-              + Log {MUSCLE_NAMES[selected]} {context === 'recovery' ? 'Recovery' : 'Workout'}
+              {PAIR_TO_LEGACY[selected]
+                ? `+ Log ${MUSCLE_NAMES[selected]} ${context === 'recovery' ? 'Recovery' : 'Workout'}`
+                : `${MUSCLE_NAMES[selected]} — no exercises tracked`}
             </button>
           </>
         )}

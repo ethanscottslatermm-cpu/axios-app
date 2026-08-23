@@ -8,7 +8,10 @@ import { useProfile } from '../../hooks/useProfile'
 import { BottomNav } from '../../pages/Dashboard'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import MuscleMapView from './MuscleMapView'
+// muscle-map-test-new-svg: new warrior-figure model. MuscleMapNew is
+// prop-compatible with MuscleMapView, so both render sites are covered by
+// this alias. Revert by pointing the alias back at './MuscleMapView'.
+import MuscleMapView from './MuscleMapNew'
 import FitPrograms from './FitPrograms'
 import EquipmentScanner from './EquipmentScanner'
 import imgChest      from './Recovery Hero cards/Recovery Fitness Hero Cards/chest.png'
@@ -702,6 +705,8 @@ function RecoveryMuscleSheet({ group, status, days, label, workouts, onClose, on
           <MuscleMapView
             workouts={workouts}
             defaultSelected={muscleMapping.name}
+            defaultView={muscleMapping.isPosterior ? 'posterior' : 'anterior'}
+            context="recovery"
             onLogWorkout={onLogWorkout}
             onSaveExercise={onSaveExercise}
           />
