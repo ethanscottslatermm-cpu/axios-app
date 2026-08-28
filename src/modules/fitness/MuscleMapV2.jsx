@@ -35,6 +35,13 @@ const FRONT_MUSCLE_PAIRS = {
   tibialis:   ['tibialis_left',    'tibialis_right'],
   calves:     ['calves_left',      'calves_right'],
   elbows:     ['elbow_joint_left', 'elbow_joint_right'],
+  /* One shape per leg covering thigh mass, lower-leg background and foot,
+     with holes where quads, tibialis and calves sit. Figma named it "shins",
+     but #tibialis is the actual shin muscle - this is the surrounding leg
+     mass, so it carries the Hamstrings label. Keyed _front because the rear
+     sheet has its own `hamstrings` and the merged name/colour maps require
+     the two views to stay disjoint. */
+  hamstrings_front: ['shins_left', 'shins_right'],
 }
 
 const REAR_MUSCLE_PAIRS = {
@@ -60,19 +67,14 @@ const STRUCTURAL = {
           'foot_rear_left', 'foot_rear_right'],
 }
 
-/* Body fill, NOT muscles - despite the names Figma gave them.
-   Measured on the front sheet: #midsection is 553x639 covering the whole
-   torso from neck to hips and painting first, and #shins_left/right are
-   166x844 covering each leg from hip to foot and painting last, over the
-   quad, calf and tibialis shapes. They are the silhouette that shows through
-   the gaps between muscle islands - the same job #body_line does on the
-   primary build - so they get its fill rather than a hue of their own.
-   Treating them as muscles gives an orange slab for the torso and green legs
-   that bury everything beneath them.
-   The real shin muscle is #tibialis_left/right, which is a separate region.
-   The rear sheet has no equivalent; every region there is a true muscle. */
+/* Body fill, NOT a muscle. #midsection is 553x639 covering the whole torso
+   from neck to hips and painting before everything else, so it is the
+   surface the chest, abs and obliques sit on and it shows through the gaps
+   between them. Colouring it as a muscle gives an orange slab across the
+   torso. The rear sheet has no equivalent; every region there is a real
+   muscle. */
 const BODY_BASE = {
-  front: ['midsection', 'shins_left', 'shins_right'],
+  front: ['midsection'],
   rear:  [],
 }
 
@@ -80,6 +82,14 @@ const BODY_BASE = {
    where it was measured as the lightest value that keeps every hue above 3:1
    against it. */
 const BODY_FILL = '#1c2431'
+
+/* Silhouette treatment. The artwork outlines the figure in black line art,
+   which is invisible against the near-black page - the feet and the outer
+   leg edge disappear. A white stroke on the body fill plus a soft glow on
+   the whole figure gives the silhouette back its edge, matching how the
+   primary build draws its #body_line. */
+const OUTLINE_STROKE = 'rgba(255,255,255,0.9)'
+const OUTLINE_WIDTH  = '1.5'
 
 /* Front and rear key sets are disjoint here (deltoids vs deltoids_rear, and
    so on), so one merged name/colour map is unambiguous. MuscleMapNew could
@@ -89,7 +99,7 @@ const MUSCLE_NAMES = {
   upper_abs:'Upper Abs', lower_abs:'Lower Abs',
   traps:'Trapezius', deltoids:'Shoulders', chest:'Chest', biceps:'Biceps',
   forearms:'Forearms', obliques:'Obliques', quads:'Quads', tibialis:'Shins',
-  calves:'Calves', elbows:'Elbows',
+  calves:'Calves', elbows:'Elbows', hamstrings_front:'Hamstrings',
   // rear
   spine:'Spine', traps_lats:'Back', deltoids_rear:'Shoulders',
   infraspinatus:'Infraspinatus', triceps_rear:'Triceps',
@@ -106,6 +116,7 @@ const SCIENTIFIC_NAMES = {
   forearms:'Flexors & Extensors', obliques:'Obliquus Externus',
   quads:'Quadriceps / Adductors', tibialis:'Tibialis Anterior',
   calves:'Gastrocnemius', elbows:'Elbow Joint',
+  hamstrings_front:'Biceps Femoris',
   // rear
   spine:'Erector Spinae', traps_lats:'Trapezius / Latissimus Dorsi',
   deltoids_rear:'Posterior Deltoid', infraspinatus:'Infraspinatus',
@@ -122,6 +133,7 @@ const MUSCLE_COLORS = {
   biceps:'#9B59B6',    forearms:'#E74C3C',  obliques:'#27AE60',
   quads:'#A855F7',     tibialis:'#F39C12',
   calves:'#27AE60',    elbows:'#7F8C8D',
+  hamstrings_front:'#C0392B',
   // rear
   spine:'#00CED1',         traps_lats:'#1ABC9C',    deltoids_rear:'#3498DB',
   infraspinatus:'#E67E22', triceps_rear:'#9B59B6',  forearms_rear:'#E74C3C',
@@ -132,7 +144,7 @@ const MUSCLE_COLORS = {
 /* Label columns, per the left/right split in the spec. */
 const LABELS = {
   front: {
-    left:  ['biceps', 'forearms', 'quads', 'tibialis'],
+    left:  ['biceps', 'forearms', 'quads', 'hamstrings_front', 'tibialis'],
     right: ['deltoids', 'chest', 'upper_abs', 'obliques', 'calves'],
   },
   rear: {
@@ -169,6 +181,12 @@ const glowId = c => `glowv2_${c.replace('#', '')}`
 
 const DEFS = `
 <defs id="axios_v2_defs">
+  <filter id="bodyGlowV2" x="-12%" y="-6%" width="124%" height="112%">
+    <feGaussianBlur stdDeviation="4" result="blur"/>
+    <feFlood flood-color="#FFFFFF" flood-opacity="0.8" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
   <filter id="hoverGlowV2" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation="3" result="blur"/>
     <feFlood flood-color="#FFFFFF" flood-opacity="0.4" result="color"/>
@@ -272,6 +290,15 @@ export default function MuscleMapV2({
     if (!svg) return
     svg.insertAdjacentHTML('afterbegin', DEFS)
 
+    /* Glow the figure as a whole rather than any one shape. Every region is
+       opaque and they tile without gaps, so the composite alpha of the root
+       group IS the silhouette - the halo lands on the outer contour only,
+       and internal boundaries between adjacent muscles produce no alpha edge
+       to glow. Doing it here rather than in paint() keeps it off the hot
+       path; filters do not affect hit-testing of the content inside. */
+    const root = svg.querySelector('g[id^="Frame"]')
+    if (root) root.setAttribute('filter', 'url(#bodyGlowV2)')
+
     /* Structural regions keep their authored Figma fills (the tan head, the
        branded shorts, the fists) and only come out of hit-testing. */
     STRUCTURAL[view].forEach(id => {
@@ -291,7 +318,8 @@ export default function MuscleMapV2({
       paintTargets(el).forEach(n => {
         n.setAttribute('fill', BODY_FILL); n.style.fill = BODY_FILL
         n.setAttribute('fill-opacity', '1')
-        n.removeAttribute('stroke')
+        n.setAttribute('stroke', OUTLINE_STROKE)
+        n.setAttribute('stroke-width', OUTLINE_WIDTH)
       })
       el.setAttribute('pointer-events', 'none')
     })

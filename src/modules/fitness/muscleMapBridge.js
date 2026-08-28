@@ -170,7 +170,7 @@ export const LEGACY_TO_PAIRS_V2 = {
   Abs:        { front: ['upper_abs', 'lower_abs'],              rear: [] },
   Obliques:   { front: ['obliques'],                           rear: ['obliques_rear'] },
   Quads:      { front: ['quads'],                              rear: [] },
-  Hamstrings: { front: [],                                     rear: ['hamstrings'] },
+  Hamstrings: { front: ['hamstrings_front'],                   rear: ['hamstrings'] },
   Glutes:     { front: [],                                     rear: ['glute_med'] },
   Calves:     { front: ['calves'],                             rear: ['calves_rear'] },
   Shins:      { front: ['tibialis'],                           rear: ['shins_rear'] },
@@ -184,7 +184,7 @@ export const PAIR_TO_LEGACY_V2 = {
   traps: 'Back',         deltoids: 'Shoulders',   chest: 'Chest',
   biceps: 'Biceps',      forearms: 'Forearms',    obliques: 'Obliques',
   quads: 'Quads',        tibialis: 'Shins',
-  calves: 'Calves',      elbows: null,
+  calves: 'Calves',      elbows: null,       hamstrings_front: 'Hamstrings',
   // rear
   spine: 'Back',         traps_lats: 'Back',      deltoids_rear: 'Shoulders',
   infraspinatus: 'Back', triceps_rear: 'Triceps', forearms_rear: 'Forearms',
@@ -202,7 +202,7 @@ export const PAIR_TO_DB_V2 = {
   traps: 'traps',        deltoids: 'shoulders',   chest: 'chest',
   biceps: 'biceps',      forearms: 'forearms',    obliques: 'obliques',
   quads: 'quads',        tibialis: 'shins',
-  calves: 'calves',      elbows: null,
+  calves: 'calves',      elbows: null,       hamstrings_front: 'hamstrings',
   // rear
   spine: 'lower_back',   traps_lats: 'lats',      deltoids_rear: 'shoulders',
   infraspinatus: 'upper_back', triceps_rear: 'triceps', forearms_rear: 'forearms',
