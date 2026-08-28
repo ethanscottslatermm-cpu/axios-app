@@ -8,10 +8,12 @@ import { useProfile } from '../../hooks/useProfile'
 import { BottomNav } from '../../pages/Dashboard'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-// muscle-map-test-new-svg: new warrior-figure model. MuscleMapNew is
-// prop-compatible with MuscleMapView, so both render sites are covered by
-// this alias. Revert by pointing the alias back at './MuscleMapView'.
-import MuscleMapView from './MuscleMapNew'
+// muscle-map-secondary-build: MuscleMapV2 (Figma front/rear figures). It is
+// prop-compatible with MuscleMapView, so both render sites - Recover and the
+// Fit Guide body tab - are covered by this one alias.
+// Revert to the primary build by pointing the alias back at './MuscleMapNew',
+// or to the original 2D model with './MuscleMapView'.
+import MuscleMapView from './MuscleMapV2'
 import FitPrograms from './FitPrograms'
 import EquipmentScanner from './EquipmentScanner'
 import imgChest      from './Recovery Hero cards/Recovery Fitness Hero Cards/chest.png'
