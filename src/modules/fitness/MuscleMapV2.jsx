@@ -94,6 +94,13 @@ const OUTLINE_ONLY_PAIRS = new Set(['elbows'])
    what carries selection while the figure itself has no fill to tint. */
 const WIREFRAME = true
 
+/* Labels and their leader lines. Off for now - set back to true to bring
+   them back; the columns and their contents are left defined so nothing
+   else has to be reconstructed. The anchoring work behind them is real
+   (a getBBox per region, a CTM mapping and a ResizeObserver), so it is
+   skipped outright rather than computed and then hidden. */
+const SHOW_LABELS = false
+
 /* The shorts are the one garment on the figure, so they stay opaque even in
    wireframe. A single flat fill made them a heavy block, so they get a small
    palette of their own instead: a deep slate body that reads as fabric
@@ -636,6 +643,7 @@ export default function MuscleMapV2({
   }, [view, pairs])
 
   useEffect(() => {
+    if (!SHOW_LABELS) return
     // two frames: the first lets the injected SVG lay out, the second measures
     let raf2
     const raf1 = requestAnimationFrame(() => { raf2 = requestAnimationFrame(measure) })
@@ -814,9 +822,9 @@ export default function MuscleMapV2({
             }}
           />
         </div>
-        {renderLeaders()}
-        {LABELS[view].left.map(k => renderLabel(k, 'left'))}
-        {LABELS[view].right.map(k => renderLabel(k, 'right'))}
+        {SHOW_LABELS && renderLeaders()}
+        {SHOW_LABELS && LABELS[view].left.map(k => renderLabel(k, 'left'))}
+        {SHOW_LABELS && LABELS[view].right.map(k => renderLabel(k, 'right'))}
       </div>
 
       {/* bottom info card */}
