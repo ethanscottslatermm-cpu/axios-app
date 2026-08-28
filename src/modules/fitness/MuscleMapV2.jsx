@@ -451,9 +451,13 @@ export default function MuscleMapV2({
         if (!el) return
         paintTargets(el).forEach(n => {
           if (outline) {
-            // no fill to tint, so state reads through stroke weight alone
+            /* In wireframe the contour carries the region's own hue, so the
+               palette still reads with nothing filled. Outside wireframe this
+               branch is only the elbow joints, which stay white with the rest
+               of the structural line work. */
+            const line = WIREFRAME ? color : OUTLINE_STROKE
             n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
-            n.setAttribute('stroke', OUTLINE_STROKE)
+            n.setAttribute('stroke', line); n.style.stroke = line
             n.setAttribute('stroke-width', isActive ? '3' : isHover ? '2.2' : OUTLINE_WIDTH)
             n.style.transition = 'stroke-width 0.15s ease'
             return
@@ -468,8 +472,11 @@ export default function MuscleMapV2({
           n.setAttribute('stroke-linejoin', 'round')
           n.setAttribute('stroke-linecap', 'round')
         })
-        // a colour glow around an unfilled contour just smears the stroke
-        if (outline)      el.removeAttribute('filter')
+        // a white glow around an unfilled contour just smears it, but in
+        // wireframe the stroke already carries the hue, so the matching
+        // colour glow reads as the line lighting up rather than blurring
+        if (outline && WIREFRAME && isActive) el.setAttribute('filter', `url(#${glowId(color)})`)
+        else if (outline) el.removeAttribute('filter')
         else if (isActive)el.setAttribute('filter', `url(#${glowId(color)})`)
         else if (isHover) el.setAttribute('filter', 'url(#hoverGlowV2)')
         else              el.removeAttribute('filter')
