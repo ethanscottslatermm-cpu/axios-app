@@ -85,6 +85,15 @@ const OUTLINE_ONLY = {
    and the info card rather than by a colour that has nothing to fill. */
 const OUTLINE_ONLY_PAIRS = new Set(['elbows'])
 
+/* Wireframe pass: the WHOLE figure drawn as contour only, the way the head,
+   hands and elbow joints already are - no fills anywhere.
+
+   Set back to false to restore the palette; nothing else has to change.
+   MUSCLE_COLORS is deliberately left intact rather than stripped, because
+   the labels and the info card still colour-code by region, and that is
+   what carries selection while the figure itself has no fill to tint. */
+const WIREFRAME = true
+
 /* Body fill, NOT a muscle. #midsection is 553x639 covering the whole torso
    from neck to hips and painting before everything else, so it is the
    surface the chest, abs and obliques sit on and it shows through the gaps
@@ -344,25 +353,12 @@ export default function MuscleMapV2({
       paintTargets(el).forEach(n => n.setAttribute('pointer-events', 'none'))
     })
 
-    /* Contour-only regions. Runs after STRUCTURAL so the head and fists lose
-       their Figma fill, and before the muscle wiring so the elbow joints keep
-       their pointer-events. */
-    OUTLINE_ONLY[view].forEach(id => {
-      const el = svg.getElementById(id)
-      if (!el) return
-      paintTargets(el).forEach(n => {
-        n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
-        n.removeAttribute('fill-opacity')
-        n.setAttribute('stroke', OUTLINE_STROKE)
-        n.setAttribute('stroke-width', OUTLINE_WIDTH)
-      })
-    })
-
     /* Body fill. Figma authored these in the same bright placeholder palette
        as the muscles (#34C759, #00C3D0, #FF383C), so unlike the structural
        regions above they DO have to be repainted, or the figure reads as a
-       colour test sheet. */
-    BODY_BASE[view].forEach(id => {
+       colour test sheet. Skipped in wireframe mode, where the contour pass
+       below strips it back to transparent anyway. */
+    if (!WIREFRAME) BODY_BASE[view].forEach(id => {
       const el = svg.getElementById(id)
       if (!el) return
       paintTargets(el).forEach(n => {
@@ -372,6 +368,26 @@ export default function MuscleMapV2({
         n.setAttribute('stroke-width', OUTLINE_WIDTH)
       })
       el.setAttribute('pointer-events', 'none')
+    })
+
+    /* Contour-only regions. Runs after STRUCTURAL and BODY_BASE so it wins
+       over both their fills, and before the muscle wiring so the elbow joints
+       keep their pointer-events. In wireframe mode this is every shape on the
+       sheet; otherwise just the head, hands and elbow joints. */
+    const contourIds = WIREFRAME
+      ? [...STRUCTURAL[view], ...BODY_BASE[view], ...Object.values(pairs).flat()]
+      : OUTLINE_ONLY[view]
+
+    contourIds.forEach(id => {
+      const el = svg.getElementById(id)
+      if (!el) return
+      paintTargets(el).forEach(n => {
+        n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
+        n.removeAttribute('fill-opacity')
+        n.setAttribute('stroke', OUTLINE_STROKE)
+        n.setAttribute('stroke-width', OUTLINE_WIDTH)
+      })
+      if (WIREFRAME && BODY_BASE[view].includes(id)) el.setAttribute('pointer-events', 'none')
     })
 
     Object.entries(pairs).forEach(([pairKey, ids]) => {
@@ -428,7 +444,7 @@ export default function MuscleMapV2({
       const color    = MUSCLE_COLORS[pairKey] || '#7F8C8D'
       const isActive = active === pairKey || highlighted.includes(pairKey)
       const isHover  = !isActive && hovered === pairKey
-      const outline  = OUTLINE_ONLY_PAIRS.has(pairKey)
+      const outline  = WIREFRAME || OUTLINE_ONLY_PAIRS.has(pairKey)
 
       ids.forEach(id => {
         const el = svg.getElementById(id)
