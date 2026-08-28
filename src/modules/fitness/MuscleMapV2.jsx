@@ -59,13 +59,31 @@ const REAR_MUSCLE_PAIRS = {
   calves_rear:   ['calves_rear_left',     'calves_rear_right'],
 }
 
-/* Structural regions. Left with the fills Figma authored and taken out of
-   hit-testing, so a tap near a hand or the head never selects anything. */
+/* Structural regions. Taken out of hit-testing, so a tap near a hand or the
+   head never selects anything. The ones also listed in OUTLINE_ONLY below
+   lose their Figma fill; the rest (shorts, feet) keep it. */
 const STRUCTURAL = {
   front: ['head', 'branded_shorts', 'fist_left', 'fist_right'],
   rear:  ['head', 'shorts_rear', 'hand_rear_left', 'hand_rear_right',
           'foot_rear_left', 'foot_rear_right'],
 }
+
+/* Drawn as contour only - the page shows through and just the outline reads.
+   `transparent` rather than `none` on purpose: none takes the interior out
+   of hit-testing, which would kill the elbow tap target; transparent keeps
+   the region tappable while staying invisible.
+
+   The head is a whole face worth of paths, so this turns it into white line
+   art rather than only tracing the skull. */
+const OUTLINE_ONLY = {
+  front: ['head', 'fist_left', 'fist_right', 'elbow_joint_left', 'elbow_joint_right'],
+  rear:  ['head', 'hand_rear_left', 'hand_rear_right'],
+}
+
+/* Region keys whose shapes are outline-only, so paint() leaves their fill
+   alone instead of tinting them. Selection is carried by the stroke weight
+   and the info card rather than by a colour that has nothing to fill. */
+const OUTLINE_ONLY_PAIRS = new Set(['elbows'])
 
 /* Body fill, NOT a muscle. #midsection is 553x639 covering the whole torso
    from neck to hips and painting before everything else, so it is the
@@ -308,6 +326,20 @@ export default function MuscleMapV2({
       paintTargets(el).forEach(n => n.setAttribute('pointer-events', 'none'))
     })
 
+    /* Contour-only regions. Runs after STRUCTURAL so the head and fists lose
+       their Figma fill, and before the muscle wiring so the elbow joints keep
+       their pointer-events. */
+    OUTLINE_ONLY[view].forEach(id => {
+      const el = svg.getElementById(id)
+      if (!el) return
+      paintTargets(el).forEach(n => {
+        n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
+        n.removeAttribute('fill-opacity')
+        n.setAttribute('stroke', OUTLINE_STROKE)
+        n.setAttribute('stroke-width', OUTLINE_WIDTH)
+      })
+    })
+
     /* Body fill. Figma authored these in the same bright placeholder palette
        as the muscles (#34C759, #00C3D0, #FF383C), so unlike the structural
        regions above they DO have to be repainted, or the figure reads as a
@@ -378,11 +410,20 @@ export default function MuscleMapV2({
       const color    = MUSCLE_COLORS[pairKey] || '#7F8C8D'
       const isActive = active === pairKey || highlighted.includes(pairKey)
       const isHover  = !isActive && hovered === pairKey
+      const outline  = OUTLINE_ONLY_PAIRS.has(pairKey)
 
       ids.forEach(id => {
         const el = svg.getElementById(id)
         if (!el) return
         paintTargets(el).forEach(n => {
+          if (outline) {
+            // no fill to tint, so state reads through stroke weight alone
+            n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
+            n.setAttribute('stroke', OUTLINE_STROKE)
+            n.setAttribute('stroke-width', isActive ? '3' : isHover ? '2.2' : OUTLINE_WIDTH)
+            n.style.transition = 'stroke-width 0.15s ease'
+            return
+          }
           // attribute AND inline style: Figma writes a presentation attribute
           // on every path, and inline style is what reliably wins over it
           n.setAttribute('fill', color);       n.style.fill = color
@@ -392,7 +433,9 @@ export default function MuscleMapV2({
           n.setAttribute('stroke-width', isActive ? '2' : isHover ? '1' : '0.5')
           n.style.transition = 'stroke 0.15s ease, stroke-width 0.15s ease'
         })
-        if (isActive)     el.setAttribute('filter', `url(#${glowId(color)})`)
+        // a colour glow around an unfilled contour just smears the stroke
+        if (outline)      el.removeAttribute('filter')
+        else if (isActive)el.setAttribute('filter', `url(#${glowId(color)})`)
         else if (isHover) el.setAttribute('filter', 'url(#hoverGlowV2)')
         else              el.removeAttribute('filter')
       })
