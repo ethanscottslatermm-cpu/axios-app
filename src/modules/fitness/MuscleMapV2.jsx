@@ -94,6 +94,14 @@ const OUTLINE_ONLY_PAIRS = new Set(['elbows'])
    what carries selection while the figure itself has no fill to tint. */
 const WIREFRAME = true
 
+/* The shorts are a garment, not anatomy, so they stay opaque even in
+   wireframe - a solid block that grounds the figure against all the line
+   work. Held slightly off pure white; the value is nudged toward blue
+   rather than yellow, since a warm off-white reads as cream against this
+   blue-black page. */
+const SHORTS = { front: ['branded_shorts'], rear: ['shorts_rear'] }
+const SHORTS_FILL = '#F2F4F7'
+
 /* Body fill, NOT a muscle. #midsection is 553x639 covering the whole torso
    from neck to hips and painting before everything else, so it is the
    surface the chest, abs and obliques sit on and it shows through the gaps
@@ -388,6 +396,23 @@ export default function MuscleMapV2({
         n.setAttribute('stroke-width', OUTLINE_WIDTH)
       })
       if (WIREFRAME && BODY_BASE[view].includes(id)) el.setAttribute('pointer-events', 'none')
+    })
+
+    /* Shorts last, so they win back their fill after the contour pass above
+       stripped it along with everything else. */
+    SHORTS[view].forEach(id => {
+      const el = svg.getElementById(id)
+      if (!el) return
+      paintTargets(el).forEach(n => {
+        n.setAttribute('fill', SHORTS_FILL); n.style.fill = SHORTS_FILL
+        n.setAttribute('fill-opacity', '1'); n.style.fillOpacity = '1'
+        // stroked in the fill colour for the same reason the muscles are:
+        // the sub-paths leave slivers that would otherwise show through
+        n.setAttribute('stroke', SHORTS_FILL); n.style.stroke = SHORTS_FILL
+        n.setAttribute('stroke-width', WELD_WIDTH)
+        n.setAttribute('stroke-linejoin', 'round')
+      })
+      el.setAttribute('pointer-events', 'none')
     })
 
     Object.entries(pairs).forEach(([pairKey, ids]) => {
