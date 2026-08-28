@@ -168,6 +168,37 @@ const OUTLINE_WIDTH  = '1.5'
    Active and hover are carried by the glow filters instead. */
 const WELD_WIDTH = '2'
 
+/* Wireframe fill: a wash of the region's own hue sitting flush inside its
+   contour, so a group reads as filled while the outline still carries the
+   colour at full strength.
+
+   It has to be an OPAQUE mix rather than a low fill-opacity. A group is
+   several overlapping sub-paths, so any alpha below 1 compounds where they
+   overlap - the chest alone would stack six times and come out blotchy.
+   Mixing the hue into the page colour gives the same wash with alpha 1, so
+   overlaps are invisible.
+
+   FILL_MIX is how much of the hue survives the mix; raise it for a heavier
+   fill, drop it toward 0 to fade back to bare wireframe. */
+const FILL_BASE = '#0a0d14'
+const FILL_MIX  = 0.22
+
+const tint = (() => {
+  const cache = new Map()
+  const channels = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16))
+  const base = channels(FILL_BASE)
+  return c => {
+    let hit = cache.get(c)
+    if (hit) return hit
+    hit = '#' + channels(c)
+      .map((v, i) => Math.round(v * FILL_MIX + base[i] * (1 - FILL_MIX))
+        .toString(16).padStart(2, '0'))
+      .join('')
+    cache.set(c, hit)
+    return hit
+  }
+})()
+
 /* Front and rear key sets are disjoint here (deltoids vs deltoids_rear, and
    so on), so one merged name/colour map is unambiguous. MuscleMapNew could
    not do this because `hips` existed in both of its sheets. */
@@ -515,7 +546,10 @@ export default function MuscleMapV2({
                branch is only the elbow joints, which stay white with the rest
                of the structural line work. */
             const line = WIREFRAME ? color : OUTLINE_STROKE
-            n.setAttribute('fill', 'transparent'); n.style.fill = 'transparent'
+            // filled flush to the contour in wireframe; the elbow joints
+            // outside wireframe stay hollow, as does everything structural
+            const body = WIREFRAME ? tint(color) : 'transparent'
+            n.setAttribute('fill', body); n.style.fill = body
             n.setAttribute('stroke', line); n.style.stroke = line
             n.setAttribute('stroke-width', isActive ? '3' : isHover ? '2.2' : OUTLINE_WIDTH)
             n.style.transition = 'stroke-width 0.15s ease'
