@@ -94,13 +94,37 @@ const OUTLINE_ONLY_PAIRS = new Set(['elbows'])
    what carries selection while the figure itself has no fill to tint. */
 const WIREFRAME = true
 
-/* The shorts are a garment, not anatomy, so they stay opaque even in
-   wireframe - a solid block that grounds the figure against all the line
-   work. Held slightly off pure white; the value is nudged toward blue
-   rather than yellow, since a warm off-white reads as cream against this
-   blue-black page. */
+/* The shorts are the one garment on the figure, so they stay opaque even in
+   wireframe. A single flat fill made them a heavy block, so they get a small
+   palette of their own instead: a deep slate body that reads as fabric
+   without competing with the line work, and off-white trim on the waistband
+   and both leg cuffs.
+
+   The trim deliberately matches the head, hands and silhouette rather than
+   introducing a hue of its own - it puts the garment in the same structural
+   layer as the rest of the non-muscle line work. Teal was tried here and
+   read as a belt, besides colliding with the FRONT/BACK toggle and the
+   spine, both of which are already #00CED1. */
 const SHORTS = { front: ['branded_shorts'], rear: ['shorts_rear'] }
-const SHORTS_FILL = '#F2F4F7'
+const SHORTS_BODY = '#1D2739'
+const SHORTS_TRIM = '#F2F4F7'
+const SHORTS_MARK = '#F2F4F7'
+
+/* Which part of the garment a sub-path is, worked out from its proportions
+   rather than its index - the two sheets order and duplicate these paths
+   differently, so positions in the list cannot be relied on.
+
+   Trim is any band running most of the width but little of the height, at
+   the very top (waistband) or down at the cuffs. A small shape floating in
+   the middle is the brand mark. Everything else is body. */
+function shortsPart(b, box) {
+  const relY  = (b.y - box.y) / box.height
+  const wide  = b.width  > box.width  * 0.4
+  const short = b.height < box.height * 0.30
+  if (wide && short && (relY < 0.25 || relY > 0.6)) return 'trim'
+  if (b.width < box.width * 0.4 && b.height < box.height * 0.35) return 'mark'
+  return 'body'
+}
 
 /* Body fill, NOT a muscle. #midsection is 553x639 covering the whole torso
    from neck to hips and painting before everything else, so it is the
@@ -403,12 +427,22 @@ export default function MuscleMapV2({
     SHORTS[view].forEach(id => {
       const el = svg.getElementById(id)
       if (!el) return
+      let box
+      try { box = el.getBBox() } catch { return }
+      if (!box || !box.height) return
+
       paintTargets(el).forEach(n => {
-        n.setAttribute('fill', SHORTS_FILL); n.style.fill = SHORTS_FILL
+        let b
+        try { b = n.getBBox() } catch { return }
+        const part = shortsPart(b, box)
+        const c = part === 'trim' ? SHORTS_TRIM
+                : part === 'mark' ? SHORTS_MARK
+                : SHORTS_BODY
+        n.setAttribute('fill', c); n.style.fill = c
         n.setAttribute('fill-opacity', '1'); n.style.fillOpacity = '1'
-        // stroked in the fill colour for the same reason the muscles are:
-        // the sub-paths leave slivers that would otherwise show through
-        n.setAttribute('stroke', SHORTS_FILL); n.style.stroke = SHORTS_FILL
+        // stroked in its own fill for the same reason the muscles are: the
+        // sub-paths leave slivers that would otherwise show the page through
+        n.setAttribute('stroke', c); n.style.stroke = c
         n.setAttribute('stroke-width', WELD_WIDTH)
         n.setAttribute('stroke-linejoin', 'round')
       })
