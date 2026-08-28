@@ -109,6 +109,24 @@ const BODY_FILL = '#1c2431'
 const OUTLINE_STROKE = 'rgba(255,255,255,0.9)'
 const OUTLINE_WIDTH  = '1.5'
 
+/* Each muscle group is several overlapping sub-paths that do not quite tile:
+   the artwork leaves hairline negative space between them (the pec crease,
+   the nipple ellipse, and so on). Filling alone leaves those slivers showing
+   whatever is behind - dark on their own, white once the body glow catches
+   them - which reads as uneven shading inside a group that should be one
+   flat colour.
+
+   Stroking every sub-path in its OWN fill colour welds them: each shape
+   grows by half this width, the slivers close, and the group renders as a
+   single exact colour. 2 user units is ~0.4 css px at render scale, so the
+   group's outer boundary barely moves and the channels between groups stay
+   intact.
+
+   This is also why selection cannot be a white outline any more - that
+   would stroke all six sub-paths and put the internal lines straight back.
+   Active and hover are carried by the glow filters instead. */
+const WELD_WIDTH = '2'
+
 /* Front and rear key sets are disjoint here (deltoids vs deltoids_rear, and
    so on), so one merged name/colour map is unambiguous. MuscleMapNew could
    not do this because `hips` existed in both of its sheets. */
@@ -428,10 +446,11 @@ export default function MuscleMapV2({
           // on every path, and inline style is what reliably wins over it
           n.setAttribute('fill', color);       n.style.fill = color
           n.setAttribute('fill-opacity', '1'); n.style.fillOpacity = '1'
-          n.setAttribute('stroke',
-            isActive ? 'rgba(255,255,255,0.9)' : isHover ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.2)')
-          n.setAttribute('stroke-width', isActive ? '2' : isHover ? '1' : '0.5')
-          n.style.transition = 'stroke 0.15s ease, stroke-width 0.15s ease'
+          // same colour as the fill: welds the sub-paths, never outlines them
+          n.setAttribute('stroke', color);     n.style.stroke = color
+          n.setAttribute('stroke-width', WELD_WIDTH)
+          n.setAttribute('stroke-linejoin', 'round')
+          n.setAttribute('stroke-linecap', 'round')
         })
         // a colour glow around an unfilled contour just smears the stroke
         if (outline)      el.removeAttribute('filter')
