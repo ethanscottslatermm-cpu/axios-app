@@ -112,6 +112,23 @@ const SHOW_LABELS = false
    layer as the rest of the non-muscle line work. Teal was tried here and
    read as a belt, besides colliding with the FRONT/BACK toggle and the
    spine, both of which are already #00CED1. */
+/* Bare skin: the head, the hands, the rear feet, and the body line - the
+   torso surface the muscle groups sit on, which shows through the channels
+   between them.
+
+   Deliberately desaturated. A saturated tan would read as another hue
+   competing with the muscle palette; muted and warm, it sits behind the
+   neon instead of arguing with it. Contours take a darker tone of the same
+   warm rather than the structural white, so the facial features and the
+   knuckles read as line work on skin instead of washing out against it. */
+const SKIN = {
+  front: ['head', 'fist_left', 'fist_right', 'midsection'],
+  rear:  ['head', 'hand_rear_left', 'hand_rear_right',
+          'foot_rear_left', 'foot_rear_right'],
+}
+const SKIN_FILL = '#D2B79B'
+const SKIN_LINE = '#6E5340'
+
 const SHORTS = { front: ['branded_shorts'], rear: ['shorts_rear'] }
 const SHORTS_BODY = '#1D2739'
 const SHORTS_TRIM = '#F2F4F7'
@@ -458,6 +475,20 @@ export default function MuscleMapV2({
         n.setAttribute('stroke-width', OUTLINE_WIDTH)
       })
       if (WIREFRAME && BODY_BASE[view].includes(id)) el.setAttribute('pointer-events', 'none')
+    })
+
+    /* Skin, after the contour pass stripped these back to transparent. The
+       body line is in here too: it is the surface the muscles sit on, so it
+       is what shows through the channels between them. */
+    SKIN[view].forEach(id => {
+      const el = svg.getElementById(id)
+      if (!el) return
+      paintTargets(el).forEach(n => {
+        n.setAttribute('fill', SKIN_FILL); n.style.fill = SKIN_FILL
+        n.setAttribute('fill-opacity', '1'); n.style.fillOpacity = '1'
+        n.setAttribute('stroke', SKIN_LINE); n.style.stroke = SKIN_LINE
+        n.setAttribute('stroke-width', OUTLINE_WIDTH)
+      })
     })
 
     /* Shorts last, so they win back their fill after the contour pass above
