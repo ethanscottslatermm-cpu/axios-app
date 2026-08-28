@@ -141,7 +141,20 @@ const LABELS = {
   },
 }
 
-const ASPECT = { front: '900 / 1944', rear: '750 / 1944' }
+/* One box for both views, shaped to the WIDER sheet.
+
+   The two figures share a height of 1944 user units and differ only in
+   canvas width (900 front, 750 rear), so matching the rendered height is
+   what makes the two bodies the same size. Giving each view its own aspect
+   ratio at a fixed container width does the opposite: it holds the width
+   equal and lets the height float, which scaled the rear to 900/750 = 1.2x
+   the front - measurably 486px tall against 403px.
+
+   Sized to the front, the rear (narrower than the box) is fitted by height
+   by preserveAspectRatio="xMidYMid meet" and centred, so both render at the
+   same scale and the rear simply occupies less horizontal room - which is
+   correct, because it is a narrower drawing. */
+const FIGURE_BOX = '900 / 1944'
 
 /* One glow filter per colour rather than a single filter reading
    var(--glow-color).
@@ -590,7 +603,7 @@ export default function MuscleMapV2({
             ref={containerRef}
             style={{
               width:'46%', minWidth:140, maxWidth:250,
-              aspectRatio: ASPECT[view],
+              aspectRatio: FIGURE_BOX,
               overflow:'visible', position:'relative',
             }}
           />
